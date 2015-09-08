@@ -9,19 +9,10 @@ This program is free software under the GNU General Public License
 @author: Brendan Harmon (brendanharmon@gmail.com)
 """
 
-# TO DO:
-#
-# allow choice of maps or constants as inputs
-# convert both maps and constants' units
-# option to compute mannings from difference between dem and dsm
-# run the procedure in a series based on storm data
-# use temporal framework to save as strds
-# create modules
-
 from grass.script import core as gcore
 
 # small-scale landscape evolution model based on net erosion and deposition
-def landscape_evolution(dem, walkers, rainintensity, stormduration, runoff, mannings, detachment, transport, shearstress, density, fluxmin, fluxmax):
+def landscape(dem, walkers, rainintensity, stormduration, runoff, mannings, detachment, transport, shearstress, density, fluxmin, fluxmax):
     """a process-based landscape evolution model using simulated erosion and deposition to carve a DEM"""
 
     # assign variables
@@ -71,38 +62,9 @@ def landscape_evolution(dem, walkers, rainintensity, stormduration, runoff, mann
     gcore.run_command('r.mapcalc', expression="{evolved_dem} = {dem}-({stormduration}*60*{erdep}/{rho})".format(evolved_dem=evolved_dem, dem=dem, stormduration=stormduration, erdep=erdep, rho=rho), overwrite=True)
     gcore.run_command('r.colors', map=evolved_dem, flags='e', color='elevation')
 
-if __name__ == '__main__':
-
-    # set input digital elevation model
-    dem='dem'
-
-    # set model parameters
-    walkers=6500000  # max walkers = 7000000
-    #walkers=10000
-
-    # set rainfall parameter
-    rainintensity=155 # mm/hr
-    stormduration=10 # minutes
-
-    # set landscape parameters
-    runoff=0.25 # runoff coefficient
-    mannings=0.1 # manning's roughness coefficient
-    #bare=0.03  # manning's roughness coefficient for bare earth
-    detachment=0.001 # detachment coefficient
-    transport=0.01 # transport coefficient
-    shearstress=0 # shear stress coefficient
-    density=1.4 # sediment mass density in g/cm^3
-
-    # set minimum and maximum values for sediment flux
-    fluxmin=-1 # kg/ms
-    fluxmax=1 # kg/ms
-
-    # run model
-    gully_evolution(dem=dem, walkers=walkers, rainintensity=rainintensity, stormduration=stormduration, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, fluxmin=fluxmin, fluxmax=fluxmax)
-
 
 # detachment limited gully evolution model based on sediment flux
-def gully_evolution(dem, walkers, rainintensity, stormduration, runoff, mannings, detachment, transport, shearstress, mass, fluxmin, fluxmax):
+def gully(dem, walkers, rainintensity, stormduration, runoff, mannings, detachment, transport, shearstress, mass, fluxmin, fluxmax):
     """a process-based landscape evolution model using simulated sediment flux to carve a DEM"""
 
     # assign variables
@@ -152,6 +114,7 @@ def gully_evolution(dem, walkers, rainintensity, stormduration, runoff, mannings
     gcore.run_command('r.mapcalc', expression="{evolved_dem} = {dem}-({stormduration}*60*{sedflux}/{rho})".format(evolved_dem=evolved_dem, dem=dem, stormduration=stormduration, sedflux=sedflux), overwrite=True)
     gcore.run_command('r.colors', map=evolved_dem, flags='e', color='elevation')
 
+
 if __name__ == '__main__':
 
     # set input digital elevation model
@@ -159,7 +122,6 @@ if __name__ == '__main__':
 
     # set model parameters
     walkers=6500000  # max walkers = 7000000
-    #walkers=10000
 
     # set rainfall parameter
     rainintensity=155 # mm/hr
@@ -168,10 +130,14 @@ if __name__ == '__main__':
     # set landscape parameters
     runoff=0.25 # runoff coefficient
     mannings=0.1 # manning's roughness coefficient
-    #bare=0.03  # manning's roughness coefficient for bare earth
+    # 0.03 for bare earth
+    # 0.04 for grass or crops
+    # 0.06 for shrubs and trees
+    # 0.1 for forest
     detachment=0.001 # detachment coefficient
     transport=0.01 # transport coefficient
     shearstress=0 # shear stress coefficient
+    density=1.4 # sediment mass density in g/cm^3
     mass=116 # mass of sediment per unit area in kg/m^2
 
     # set minimum and maximum values for sediment flux
@@ -179,4 +145,7 @@ if __name__ == '__main__':
     fluxmax=1 # kg/ms
 
     # run model
-    gully_evolution(dem=dem, walkers=walkers, rainintensity=rainintensity, stormduration=stormduration, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, mass=mass, fluxmin=fluxmin, fluxmax=fluxmax)
+    landscape(dem=dem, walkers=walkers, rainintensity=rainintensity, stormduration=stormduration, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, fluxmin=fluxmin, fluxmax=fluxmax)
+
+    # run detachment limited model
+    # gully(dem=dem, walkers=walkers, rainintensity=rainintensity, stormduration=stormduration, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, mass=mass, fluxmin=fluxmin, fluxmax=fluxmax)
