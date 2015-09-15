@@ -24,59 +24,71 @@ import grass.script as gscript
 
 import process
 
-class = dynamic_evolution:
-    def __init__(self, dem, start, rain_intensity, rain_duration, rain_interval, temporaltype, strds, title, description, start, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, fluxmin, fluxmax):
-        self.dem
-        self.start
-        self.rain_intensity
-        self.rain_duration
-        self.rain_interval
-        self.temporaltype
-        self.strds
-        self.title
-        self.description
-        self.start
-        self.walkers
-        self.runoff
-        self.mannings
-        self.detachment
-        self.transport
-        self.shearstress
-        self.density
-        self.mass
-        self.fluxmin
-        self.fluxmax
+class dynamic_evolution:
+    def __init__(self, dem, rain_intensity, rain_duration, rain_interval, temporaltype, strds, title, description, start, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
+        self.dem = dem
+        self.start = start
+        self.rain_intensity = rain_intensity
+        self.rain_duration = rain_duration
+        self.rain_interval = rain_interval
+        self.temporaltype = temporaltype
+        self.strds = strds
+        self.title = title
+        self.description = description
+        self.start = start
+        self.walkers = walkers
+        self.runoff = runoff
+        self.mannings = mannings
+        self.detachment = detachment
+        self.transport = transport
+        self.shearstress = shearstress
+        self.density = density
+        self.mass = mass
+        self.erdepmin = erdepmin
+        self.erdepmax = erdepmax
+        self.fluxmin = fluxmin
+        self.fluxmax = fluxmax
 
     def rainfall_event(self):
         """a dynamic, process-based landscape evolution model of a single rainfall event that generates a timeseries of digital elevation models"""
 
         # assign local temporal variables
         datatype='strds'
-        increment=str(rain_interval)+" minutes"
+        increment=str(self.rain_interval)+" minutes"
         raster='raster'
-
+        iterations=self.rain_duration/self.rain_interval  
+    
         # create a raster space time dataset
-        gscript.run_command('t.create', type=datatype, temporaltype=temporaltype, output=strds, title=title, description=description)
+        #gscript.run_command('t.create', type=datatype, temporaltype=self.temporaltype, output=self.strds, title=self.title, description=self.description, overwrite=True)
 
         # register the initial digital elevation model
-        gscript.run_command('t.register', type=raster, input=strds, maps=dem, start=start, increment=increment, flags='i')
+        #gscript.run_command('t.register', type=raster, input=self.strds, maps=self.dem, start=self.start, increment=increment, flags='i', overwrite=True)
 
+        # create evolution object
+        evol = process.evolution(dem=self.dem, start=self.start, rain_intensity=self.rain_intensity, rain_interval=self.rain_interval, walkers=self.walkers, runoff=self.runoff, mannings=self.mannings, detachment=self.detachment, transport=self.transport, shearstress=self.shearstress, density=self.density, mass=self.mass, erdepmin=self.erdepmin, erdepmax=self.erdepmax, fluxmin=self.fluxmin, fluxmax=self.fluxmax)
+        
+        # run model
+        evolved_dem, end_time = evol.erosion_deposition()
 
         # run the landscape evolution model as a series of rainfall intervals in a rainfall event
-        for i in range(iterations):
+        i=1
+        while i <= iterations:
 
-            # create evolution object
-            evol = process.evolution(dem=dem, start=start, rain_intensity=rain_intensity, rain_interval=rain_interval, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, fluxmin=fluxmin, fluxmax=fluxmax)
+            # update the elevation and time
+            evol.dem=evolved_dem
+            print evol.dem
+            evol.start=end_time
+            print evol.start
 
             # run model
-            dem = evol.erosion_deposition()
+            evolved_dem, end_time = evol.erosion_deposition()
 
             # register the evolved digital elevation model
-            gscript.run_command('t.register', type=raster, input=strds, maps=evolved_dem, start=start, increment=increment, flags='i')
+            #gscript.run_command('t.register', type=raster, input=self.strds, maps=evolved_dem, start=self.start, increment=increment, flags='i', overwrite=True)
+            
+            i=i+1
 
-            i = i+1
-
-        return dem
+        return evolved_dem, end_time
 
 
 if __name__ == '__main__':
@@ -88,18 +100,18 @@ if __name__ == '__main__':
     rain_intensity=155 # mm/hr
     rain_duration=60 # total duration of the storm event in minutes
     rain_interval=10 # time interval in minutes
-    iterations=rain_duration/rain_interval
 
     # set temporal parameters
     temporaltype='absolute'
     strds='dynamics'
     title="dynamics"
     description="timeseries of digital elevation models simulated using a dynamic, process-based landscape evolution model of a single rainfall event"
-    start="2010-01-01 00:00"
+    #start="2010-01-01 00:00"
+    start=0
 
 
     # set model parameters
-    walkers=6500000  # max walkers = 7000000
+    walkers=10000  # max walkers = 7000000
 
     # set landscape parameters
     runoff=0.25 # runoff coefficient
@@ -114,13 +126,16 @@ if __name__ == '__main__':
     density=1.4 # sediment mass density in g/cm^3
     mass=116 # mass of sediment per unit area in kg/m^2
 
+    # set minimum and maximum values for erosion-deposition
+    erdepmin=-3 # kg/m^2s
+    erdepmax=3 # kg/m^2s
+
     # set minimum and maximum values for sediment flux
-    fluxmin=-1 # kg/ms
-    fluxmax=1 # kg/ms
+    fluxmin=-3 # kg/ms
+    fluxmax=3 # kg/ms
 
     # create dynamic_evolution object
-    event = dynamics.dynamic_evolution(dem=dem, start=start, rain_intensity=rain_intensity, rain_interval=rain_interval, temporaltype=temporaltype, strds=strds, title=title, description=description, raster=raster, start=start, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, fluxmin=fluxmin, fluxmax=fluxmax)
+    event = dynamic_evolution(dem=dem, rain_intensity=rain_intensity, rain_duration=rain_duration, rain_interval=rain_interval, temporaltype=temporaltype, strds=strds, title=title, description=description, start=start, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
 
     # run model
     dem = event.rainfall_event()
-    return dem
