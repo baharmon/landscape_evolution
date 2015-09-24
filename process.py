@@ -10,8 +10,9 @@ This program is free software under the GNU General Public License
 """
 
 import grass.script as gscript
+import datetime
 
-class evolution:
+class Evolution:
     def __init__(self, dem, start, rain_intensity, rain_interval, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
         self.dem = dem
         self.start = start
@@ -31,7 +32,7 @@ class evolution:
         self.fluxmax = fluxmax
 
     # small-scale landscape evolution model based on net erosion and deposition
-    def erosion_deposition(self):
+    def erosion_deposition(self, ):
         """a process-based landscape evolution model using simulated erosion and deposition to carve a DEM"""
 
         # assign variables
@@ -48,17 +49,22 @@ class evolution:
         erdep = 'erdep'
         flux = 'flux'
         erosion_deposition = 'erosion_deposition'
-        time = self.start+self.rain_interval
-        evolved_dem='dem_'+str(time)
+
+        # parse time
+        year=int(self.start[:4])
+        month=int(self.start[5:7])
+        day=int(self.start[8:10])
+        hours=int(self.start[11:13])
+        minutes=int(self.start[14:16])
+        seconds=int(self.start[17:19])
+        time = datetime.datetime(year,month,day,hours,minutes,seconds)
         
-        ## parse time
-        #t = self.start.rsplit(":")
-        #minutes = int(t[1])
-        #t = t[0].rsplit()
-        #hours = int(t[1])
-        #time=self.start.replace(self.start[-2:],str(counter)).replace(" ","_").replace("-","_").replace(":","_")
-        ## advance time
-        #end_time = self.start.replace(self.start[-2:],str(counter))
+        # advance time
+        time = time + datetime.timedelta(minutes = self.rain_interval)
+        time = time.isoformat(" ")
+
+        # timestamp
+        evolved_dem='dem_'+time.replace(" ","_").replace("-","_").replace(":","_")
 
         # compute slope
         gscript.run_command('r.slope.aspect', elevation=self.dem, slope=slope, aspect=aspect, dx=dx, dy=dy, overwrite=True)
@@ -106,9 +112,22 @@ class evolution:
         rho='rho'
         flux='flux'
         sedflux='sedflux'       
-        time = self.start+self.rain_interval
-        evolved_dem='dem_'+time
 
+        # parse time
+        year=int(self.start[:4])
+        month=int(self.start[5:7])
+        day=int(self.start[8:10])
+        hours=int(self.start[11:13])
+        minutes=int(self.start[14:16])
+        seconds=int(self.start[17:19])
+        time = datetime.datetime(year,month,day,hours,minutes,seconds)
+        
+        # advance time
+        time = time + datetime.timedelta(minutes = self.rain_interval)
+        time = time.isoformat(" ")
+
+        # timestamp
+        evolved_dem='dem_'+time.replace(" ","_").replace("-","_").replace(":","_")
 
         # compute slope
         gscript.run_command('r.slope.aspect', elevation=self.dem, slope=slope, aspect=aspect, dx=dx, dy=dy, overwrite=True)
@@ -145,8 +164,7 @@ if __name__ == '__main__':
     dem='dem'
 
     # set temporal parameters
-    #start="2010-01-01 00:00"
-    start=0
+    start="2010-01-01 00:00:00"
 
     # set model parameters
     walkers=10000  # max walkers = 7000000
@@ -177,7 +195,7 @@ if __name__ == '__main__':
     fluxmax=3 # kg/ms
 
     # create evolution object
-    evol = evolution(dem=dem, start=start, rain_intensity=rain_intensity, rain_interval=rain_interval, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
+    evol = Evolution(dem=dem, start=start, rain_intensity=rain_intensity, rain_interval=rain_interval, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
 
     # run model
     evol.erosion_deposition()
