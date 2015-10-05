@@ -13,8 +13,9 @@ import grass.script as gscript
 import datetime
 
 class Evolution:
-    def __init__(self, dem, start, rain_intensity, rain_interval, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
+    def __init__(self, dem, precipitation, start, rain_intensity, rain_interval, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
         self.dem = dem
+        self.precipitation = precipitation
         self.start = start
         self.rain_intensity = rain_intensity
         self.rain_interval = rain_interval
@@ -163,6 +164,9 @@ if __name__ == '__main__':
     # set input digital elevation model
     dem='dem'
 
+    # set precipitation filepath
+    precipitation="Harmon_Brendan_LAKE_Minute_Precip.txt"
+    
     # set temporal parameters
     start="2010-01-01 00:00:00"
 
@@ -195,7 +199,7 @@ if __name__ == '__main__':
     fluxmax=3 # kg/ms
 
     # create evolution object
-    evol = Evolution(dem=dem, start=start, rain_intensity=rain_intensity, rain_interval=rain_interval, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
+    evol = Evolution(dem=dem, precipitation=precipitation, start=start, rain_intensity=rain_intensity, rain_interval=rain_interval, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
 
     # run model
     evol.erosion_deposition()
