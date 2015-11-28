@@ -11,8 +11,6 @@ This program is free software under the GNU General Public License
 
 import grass.script as gscript
 
-import process
-
 import dynamics
 
 class EvolutionSeries:

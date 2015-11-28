@@ -68,7 +68,8 @@ class Evolution:
         evolved_dem='dem_'+time.replace(" ","_").replace("-","_").replace(":","_")
 
         # compute slope
-        gscript.run_command('r.slope.aspect', elevation=self.dem, slope=slope, aspect=aspect, dx=dx, dy=dy, overwrite=True)
+        gscript.run_command('r.param.scale', input=self.dem, output=slope, size=9, method="slope", overwrite=True)
+        gscript.run_command('r.param.scale', input=self.dem, output=aspect, size=9, method="aspect", overwrite=True)
 
         # hyrdology parameters
         gscript.run_command('r.mapcalc', expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain, rain_intensity=self.rain_intensity,runoff=self.runoff), overwrite=True)
