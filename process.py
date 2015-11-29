@@ -13,8 +13,9 @@ import grass.script as gscript
 import datetime
 
 class Evolution:
-    def __init__(self, dem, precipitation, start, rain_intensity, rain_interval, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
+    def __init__(self, dem, search_size, precipitation, start, rain_intensity, rain_interval, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
         self.dem = dem
+        self.search_size = search_size
         self.precipitation = precipitation
         self.start = start
         self.rain_intensity = rain_intensity
@@ -32,9 +33,8 @@ class Evolution:
         self.fluxmin = fluxmin
         self.fluxmax = fluxmax
 
-    # small-scale landscape evolution model based on net erosion and deposition
-    def erosion_deposition(self, ):
-        """a process-based landscape evolution model using simulated erosion and deposition to carve a DEM"""
+    def erosion_deposition(self):
+        """a small-scale, process-based landscape evolution model using simulated net erosion and deposition to carve a DEM"""
 
         # assign variables
         slope = 'slope'
@@ -50,6 +50,7 @@ class Evolution:
         erdep = 'erdep'
         flux = 'flux'
         erosion_deposition = 'erosion_deposition'
+        evolving_dem = 'evolving_dem'
 
         # parse time
         year=int(self.start[:4])
@@ -67,9 +68,27 @@ class Evolution:
         # timestamp
         evolved_dem='dem_'+time.replace(" ","_").replace("-","_").replace(":","_")
 
+        # set temporary region
+        gscript.use_temp_region()
+        info=gscript.parse_command('g.region', flags='g')
+        n=float(info.n)
+        s=float(info.s)
+        e=float(info.e)
+        w=float(info.w)
+        gscript.run_command('g.region', n=n, s=s, e=e, w=w)
+
         # compute slope
-        gscript.run_command('r.param.scale', input=self.dem, output=slope, size=9, method="slope", overwrite=True)
-        gscript.run_command('r.param.scale', input=self.dem, output=aspect, size=9, method="aspect", overwrite=True)
+        gscript.run_command('r.param.scale', input=self.dem, output=slope, size=self.search_size, method="slope", overwrite=True)
+        gscript.run_command('r.param.scale', input=self.dem, output=aspect, size=self.search_size, method="aspect", overwrite=True)
+        gscript.run_command('r.slope.aspect', elevation=self.dem, dx=dx, dy=dy, overwrite=True)        
+        #gscript.run_command('r.slope.aspect', elevation=self.dem, slope=slope, aspect=aspect, dx=dx, dy=dy, overwrite=True)
+
+        # crop temporary region by search size to trim edge effects
+        n=float(info.n)-self.search_size
+        s=float(info.s)+self.search_size
+        e=float(info.e)-self.search_size
+        w=float(info.w)+self.search_size
+        gscript.run_command('g.region', n=n, s=s, e=e, w=w)
 
         # hyrdology parameters
         gscript.run_command('r.mapcalc', expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain, rain_intensity=self.rain_intensity,runoff=self.runoff), overwrite=True)
@@ -90,16 +109,32 @@ class Evolution:
         gscript.run_command('r.mapcalc', expression="{erosion_deposition} = if({erdep}<{erdepmin},{erdepmin},if({erdep}>{erdepmax},{erdepmax},{erdep}))".format(erosion_deposition=erosion_deposition, erdep=erdep, erdepmin=self.erdepmin, erdepmax=self.erdepmax), overwrite=True)
         gscript.run_command('r.colors', map=erosion_deposition, raster=erdep)
 
+#        # evolve landscape
+#        """change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) / sediment mass density (kg/m^3)"""
+#        gscript.run_command('r.mapcalc', expression="{evolved_dem} = {dem}-({rain_interval}*60*{erosion_deposition}/{rho})".format(evolved_dem=evolved_dem, dem=self.dem, rain_interval=self.rain_interval, erosion_deposition=erosion_deposition, rho=rho), overwrite=True)
+
         # evolve landscape
         """change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) / sediment mass density (kg/m^3)"""
-        gscript.run_command('r.mapcalc', expression="{evolved_dem} = {dem}-({rain_interval}*60*{erosion_deposition}/{rho})".format(evolved_dem=evolved_dem, dem=self.dem, rain_interval=self.rain_interval, erosion_deposition=erosion_deposition, rho=rho), overwrite=True)
+        gscript.run_command('r.mapcalc', expression="{evolving_dem} = {dem}-({rain_interval}*60*{erosion_deposition}/{rho})".format(evolving_dem=evolving_dem, dem=self.dem, rain_interval=self.rain_interval, erosion_deposition=erosion_deposition, rho=rho), overwrite=True)
+
+        # reset region
+        n=float(info.n)
+        s=float(info.s)
+        e=float(info.e)
+        w=float(info.w)
+        gscript.run_command('g.region', n=n, s=s, e=e, w=w)
+
+        # rebuild edges
+        gscript.run_command('r.mapcalc', expression="{evolved_dem} = if(isnull({evolving_dem}),{dem},{evolving_dem})".format(evolved_dem=evolved_dem, evolving_dem=evolving_dem, dem=self.dem), overwrite=True)
         gscript.run_command('r.colors', map=evolved_dem, flags='e', color='elevation')
+
+        # remove temporary maps
+        gscript.run_command('g.remove', type='raster', name=['rain', 'evolving_dem', 'dc', 'tc', 'tau', 'rho', 'dx', 'dy'], flags='f')
 
         return evolved_dem, time
 
-    # detachment limited gully evolution model based on sediment flux
     def flux(self):
-        """a process-based landscape evolution model using simulated sediment flux to carve a DEM"""
+        """a detachment limited gully evolution model using simulated sediment flux to carve a DEM"""
 
         # assign variables
         slope='slope'
@@ -165,6 +200,9 @@ if __name__ == '__main__':
     # set input digital elevation model
     dem='dem'
 
+    # set search size
+    search_size=3
+
     # set precipitation filepath
     precipitation="Harmon_Brendan_LAKE_Minute_Precip.txt"
     
@@ -200,7 +238,7 @@ if __name__ == '__main__':
     fluxmax=3 # kg/ms
 
     # create evolution object
-    evol = Evolution(dem=dem, precipitation=precipitation, start=start, rain_intensity=rain_intensity, rain_interval=rain_interval, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
+    evol = Evolution(dem=dem, search_size=search_size, precipitation=precipitation, start=start, rain_intensity=rain_intensity, rain_interval=rain_interval, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
 
     # run model
     evol.erosion_deposition()
