@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+<title>Landscape Evolution</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="layout.css" rel="stylesheet" type="text/css" media="screen">
+<link href="style.css" rel="stylesheet" type="text/css" media="screen">
+</head>
+
+<body>
+
+<div id="outercontainer">
+<div id="container">
+
+<header>
+<div id="header-image"><p>Landscape Evolution</p></div>
+<nav>
+<ul class="nav">
+<li><a href="index.html">Introduction</a></li>
+<li><a href="testing.html">Testing</a></li>
+</ul>
+</nav>
+</header>
+
+<main>
+
+<h3>Landscape Evolution Model</h3>
+
+<h5>Abstract</h5>
+<p>
+A dynamic, process-based landscape evolution model using simulated erosion and deposition to generate a timeseries of digital elevation models in GRASS GIS.
+</p>
+
+<h5></h5>
+<p>
+This is a simple, fine-scale, short term landscape evolution model using a path sampling method to solve water and sediment flow continuity equations and model mass flows over complex topographies based on topographic, land cover, soil, and rainfall parameters. 
+This either steady state or dynamic model can simulate landscape evolution for a range of hydrologic soil erosion regimes. 
+The GRASS modules 
+<a href="https://grass.osgeo.org/grass70/manuals/r.sim.water.html">r.sim.water</a> 
+and 
+<a href="https://grass.osgeo.org/grass70/manuals/r.sim.sediment.html">r.sim.sediment</a> 
+are used to simulate erosion and deposition.
+The change in elevation is a function of time, net erosion-deposition, and sediment mass density.
+</p>
+
+<h5>Equation</h5>
+<p>change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) / sediment mass density (kg/m^3)</p>
+
+<figure>
+<img src="images/dem.png" width=350px>&nbsp;
+<img src="images/evolved_dem.png" width=350px>
+<figcaption>Gully evolution based a detachment limited soil erosion regime</figcaption>
+</figure>
+
+
+<h5>Code</h5>
+<p>
+This set of python scripts is available on Github at 
+<a href="https://github.com/baharmon/landscape_evolution">https://github.com/baharmon/landscape_evolution</a>
+released under the GNU General Public License version 2. 
+These scripts are meant to be run inside of GRASS GIS using the GRASS Python Scripting Library.
+GRASS GIS is an open source project released under the GNU General Public License version 2. 
+GRASS GIS is available at 
+<a href="https://grass.osgeo.org/">https://grass.osgeo.org/</a>.
+</p>
+
+<h5>Future work</h5>
+<p>
+<ol>
+<li>Test the model on historical data</li>
+<li>Test the model with field data</li>
+<li>Empirically calibrate the parameters</li>
+<li>Refactor code</li>
+<li>Develop a GRASS GIS addon</li>
+<li>Implement as a <a href="https://geospatial.ncsu.edu/osgeorel/tangible-landscape.html">Tangible Landscape</a> analysis</li>
+</ol>
+</p>
+
+<br/>
+</main>
+
+<footer>
+<nav>
+<ul>
+<li>
+<a href="https://github.com/baharmon/landscape_evolution" title="Fork on GitHub">
+<img src="images/github_logo.png" alt="GitHub Octocat logo">
+</a>
+</li>
+<li title="Copyright and license (not applicable to linked materials)">
+&copy; 2015
+<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a>
+<a href="http://geospatial.ncsu.edu/osgeorel/">NCSU OSGeoREL</a>
+</li>
+</ul>
+</nav>
+</footer>
+</body>
+</html>
