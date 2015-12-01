@@ -24,21 +24,107 @@
 
 <main>
 
-<h3>Testing</h3>
+<h1>Detachment limited gully evolution</h1>
 
-<!--
-
-<h5></h5>
-<p>
+<h3>Sediment flux pattern</h3>
+<figure>
+<img src="images/dsm.png" width=350px>&nbsp;
+<img src="images/flux_process_50mm_10min.png" width=350px>
+</figure>
+<p style="text-align:center">
+<b>a) </b>Digital surface model. 
+</p>
+<p style="text-align:center">
+<b>b </b>Steady state evolution based on flux with 50 mm/hr rainfall intensity for 10 minutes.
 </p>
 
 <figure>
-<img src="images/dem.png" width=350px>&nbsp;
-<img src="images/evolved_dem.png" width=350px>
-<figcaption>Gully evolution based a detachment limited soil erosion regime</figcaption>
+<img src="images/flux_process_155mm_10min.png" width=350px>&nbsp;
+<img src="images/flux_155mm_10min.png" width=350px>
 </figure>
+<p style="text-align:center">
+<b>a) </b>>Steady state evolution based on flux with 155 mm/hr rainfall intensity for 10 minutes.
+</p>
+<p style="text-align:center">
+<b>b </b>Steady state sediment flux with 155 mm/hr rainfall intensity for 10 minutes.
+</p>
 
--->
+
+<h3>Comparison of steady state and dynamic evolution with a detachment limited erosion regime</h3>
+
+<figure>
+<img src="images/dsm.png" width=350px>&nbsp;
+<img src="images/flux_process_50mm_10min.png" width=350px>
+</figure>
+<p style="text-align:center">
+<b>a) </b>Digital surface model. 
+</p>
+<p style="text-align:center">
+<b>b </b>Steady state evolution based on flux with 50 mm/hr rainfall intensity for 10 minutes.
+</p>
+
+<figure>
+<img src="images/flux_series_50mm_6hr.png" width=350px>&nbsp;
+<img src="images/series_50mm_6hr.png" width=350px>
+</figure>
+<p style="text-align:center">
+<b>a) </b>Dynamic evolution based on flux with temporally variable rainfall intensity averaging 8 mm/hr over 6 hours.
+</p>
+<p style="text-align:center">
+<b>b </b>Dynamic evolution based on erosion-depositionwith temporally variable rainfall intensity averaging 8 mm/hr over 6 hours.
+</p>
+
+<h3>Erosion-deposition pattern</h3>
+
+<img src="images/process_erdep_155mm_10min.png" width=760px>
+<p style="text-align:center">
+Steady state erosion-deposition with 155 mm/hr rainfall intensity for 10 minutes.
+</p>
+
+<p>
+With <a href="https://grass.osgeo.org/grass70/manuals/r.sim.sediment.html">r.sim.sediment</a> sediment tends to be deposited on the banks of a channel, eroded in the channel, and deposited along the center of the channel. In the current implementation of this model this pattern of erosion and deposition causes ridges to develop along the banks of emerging gullies. This pattern also causes islands to form in gullies particular at bends. 
+</p>
+
+<img src="images/detail.png" width=760px>
+<img src="images/detail_2015_10_06_00_10_00.png" width=760px>
+<p style="text-align:center">
+...
+</p>
+
+<p>
+With the current default paramters the ridges and islands formed by deposition continue to accumulate sediment and grow. Tuning the parameters may improve the behavior of the model by limiting the growth and development of these features. Further changes, however, may be necessary. 
+Ideas for improving the model include: 
+<ol>
+<li>Parameter tuning</li>
+<li>Slope instability and avalanching</li>
+<li>Give deposited sediment higher erodibility</li>
+</ol>
+</p>
+
+<h3>Comparison of steady state and dynamic evolution</h3>
+
+<img src="images/elevation_3d_grey.png" width=760px>
+<p style="text-align:center">
+Digital surface model interpolated from UAV photogrammetry.
+</p>
+
+<img src="images/process_155mm_10min_grey.png" width=760px>
+<p style="text-align:center">
+Steady state landscape evolution with 155 mm/hr rainfall intensity for 10 minutes.
+</p>
+
+<img src="images/series_3hr_150mm_grey.png" width=760px>
+<p style="text-align:center">
+Dynamic landscape evolution with temporally variable rainfall intensity averaging 50 mm/hr over 3 hours.
+</p>
+
+<img src="images/series_6hr_50mm_grey.png" width=760px>
+<p style="text-align:center">
+Dynamic landscape evolution with temporally variable rainfall intensity averaging 8 mm/hr over 6 hours.
+</p>
+
+
+
 
 <br/>
 </main>
