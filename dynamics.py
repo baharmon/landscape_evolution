@@ -10,14 +10,12 @@ This program is free software under the GNU General Public License
 """
 
 # TO DO:
-#
 # allow choice of maps or constants as inputs
-# rain as list, inputs, or maps
-# time as list or inputs
+# rain as list, input parameters, or maps
+# time as list or input parameters
 # convert both maps and constants' units
 # option to compute mannings from difference between dem and dsm
 # test with rain data
-# write another module to run this class and create a timeseries of storms
 # set min and max for erdep
 
 import os
@@ -147,7 +145,8 @@ class DynamicEvolution:
                 evol.dem=evolved_dem
 
                 # run model
-                evolved_dem, time = evol.erosion_deposition()
+                #evolved_dem, time = evol.erosion_deposition()
+                evolved_dem, time = evol.flux()
 
                 # register the evolved digital elevation model
                 gscript.run_command('t.register', type=raster, input=self.strds, maps=evolved_dem, start=evol.start, increment=increment, flags='i', overwrite=True)
@@ -156,7 +155,7 @@ class DynamicEvolution:
 if __name__ == '__main__':
 
     # set input digital elevation model
-    dem='dem'
+    dem='elevation'
 
     # set search size
     search_size=3
@@ -174,7 +173,7 @@ if __name__ == '__main__':
     strds='dynamics'
     title="dynamics"
     description="timeseries of digital elevation models simulated using a dynamic, process-based landscape evolution model of a single rainfall event"
-    start="2010-01-01 00:00:00"
+    start="2015-10-06 00:00:00"
 
     # set model parameters
     walkers=10000  # max walkers = 7000000
@@ -193,8 +192,8 @@ if __name__ == '__main__':
     mass=116 # mass of sediment per unit area in kg/m^2
 
     # set minimum and maximum values for erosion-deposition
-    erdepmin=-3 # kg/m^2s
-    erdepmax=3 # kg/m^2s
+    erdepmin=-1 # kg/m^2s
+    erdepmax=1 # kg/m^2s
 
     # set minimum and maximum values for sediment flux
     fluxmin=-3 # kg/ms
