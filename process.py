@@ -271,7 +271,7 @@ if __name__ == '__main__':
     evol = Evolution(dem=dem, search_size=search_size, precipitation=precipitation, start=start, rain_intensity=rain_intensity, rain_interval=rain_interval, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
 
     # run model
-    #evol.erosion_deposition()
+#    evol.erosion_deposition()
 
     # run detachment limited model
     evol.flux()

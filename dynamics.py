@@ -85,7 +85,8 @@ class DynamicEvolution:
             print evol.start
 
             # run model
-            evolved_dem, time = evol.erosion_deposition()
+#            evolved_dem, time = evol.erosion_deposition()
+            evolved_dem, time = evol.flux()
 
             # register the evolved digital elevation model
             gscript.run_command('t.register', type=raster, input=self.strds, maps=evolved_dem, start=evol.start, increment=increment, flags='i', overwrite=True)
@@ -145,7 +146,7 @@ class DynamicEvolution:
                 evol.dem=evolved_dem
 
                 # run model
-                #evolved_dem, time = evol.erosion_deposition()
+#                evolved_dem, time = evol.erosion_deposition()
                 evolved_dem, time = evol.flux()
 
                 # register the evolved digital elevation model
@@ -203,5 +204,5 @@ if __name__ == '__main__':
     event = DynamicEvolution(dem=dem, search_size=search_size, precipitation=precipitation, rain_intensity=rain_intensity, rain_duration=rain_duration, rain_interval=rain_interval, temporaltype=temporaltype, strds=strds, title=title, description=description, start=start, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
 
     # run model
-#    dem = event.rainfall_event()
-    dem = event.rainfall_series()
+    dem = event.rainfall_event()
+#    dem = event.rainfall_series()
