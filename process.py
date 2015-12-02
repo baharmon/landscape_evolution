@@ -13,9 +13,8 @@ import grass.script as gscript
 import datetime
 
 class Evolution:
-    def __init__(self, dem, search_size, precipitation, start, rain_intensity, rain_interval, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
+    def __init__(self, dem, precipitation, start, rain_intensity, rain_interval, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
         self.dem = dem
-        self.search_size = search_size
         self.precipitation = precipitation
         self.start = start
         self.rain_intensity = rain_intensity
@@ -70,24 +69,26 @@ class Evolution:
 
         # set temporary region
         gscript.use_temp_region()
+
+        # compute slope, aspect, and partial derivatives
+        gscript.run_command('r.slope.aspect', elevation=self.dem, slope=slope, aspect=aspect, dx=dx, dy=dy, overwrite=True)
+
+#        # comute the slope and aspect
+#        gscript.run_command('r.param.scale', input=self.dem, output=slope, size=search_size, method="slope", overwrite=True)
+#        gscript.run_command('r.param.scale', input=self.dem, output=aspect, size=search_size, method="aspect", overwrite=True)
+
+#        # comute the partial derivatives from the slope and aspect
+#        # dz/dy = tan(slope)*sin(aspect)
+#        gscript.run_command('r.mapcalc', expression="{dx} = tan({slope}* 0.01745)*cos((({aspect}*(-1))+450)*0.01745)".format(aspect=aspect, slope=slope, dx=dx), overwrite=True)       
+#        # dz/dy = tan(slope)*sin(aspect)
+#        gscript.run_command('r.mapcalc', expression="{dy} = tan({slope}* 0.01745)*sin((({aspect}*(-1))+450)*0.01745)".format(aspect=aspect, slope=slope, dy=dy), overwrite=True)
+
+        # crop temporary region to trim edge effects of moving window computations
         info=gscript.parse_command('g.region', flags='g')
-        n=float(info.n)
-        s=float(info.s)
-        e=float(info.e)
-        w=float(info.w)
-        gscript.run_command('g.region', n=n, s=s, e=e, w=w)
-
-        # compute slope
-        gscript.run_command('r.param.scale', input=self.dem, output=slope, size=self.search_size, method="slope", overwrite=True)
-        gscript.run_command('r.param.scale', input=self.dem, output=aspect, size=self.search_size, method="aspect", overwrite=True)
-        gscript.run_command('r.slope.aspect', elevation=self.dem, dx=dx, dy=dy, overwrite=True)        
-        #gscript.run_command('r.slope.aspect', elevation=self.dem, slope=slope, aspect=aspect, dx=dx, dy=dy, overwrite=True)
-
-        # crop temporary region by search size to trim edge effects
-        n=float(info.n)-self.search_size
-        s=float(info.s)+self.search_size
-        e=float(info.e)-self.search_size
-        w=float(info.w)+self.search_size
+        n=float(info.n)-float(info.nsres)
+        s=float(info.s)+float(info.nsres)
+        e=float(info.e)-float(info.ewres)
+        w=float(info.w)+float(info.ewres)
         gscript.run_command('g.region', n=n, s=s, e=e, w=w)
 
         # hyrdology parameters
@@ -165,24 +166,16 @@ class Evolution:
 
         # set temporary region
         gscript.use_temp_region()
+
+        # compute slope, aspect, and partial derivatives
+        gscript.run_command('r.slope.aspect', elevation=self.dem, slope=slope, aspect=aspect, dx=dx, dy=dy, overwrite=True)
+
+        # crop temporary region to trim edge effects of moving window computations
         info=gscript.parse_command('g.region', flags='g')
-        n=float(info.n)
-        s=float(info.s)
-        e=float(info.e)
-        w=float(info.w)
-        gscript.run_command('g.region', n=n, s=s, e=e, w=w)
-
-        # compute slope
-        gscript.run_command('r.param.scale', input=self.dem, output=slope, size=self.search_size, method="slope", overwrite=True)
-        gscript.run_command('r.param.scale', input=self.dem, output=aspect, size=self.search_size, method="aspect", overwrite=True)
-        gscript.run_command('r.slope.aspect', elevation=self.dem, dx=dx, dy=dy, overwrite=True)        
-        #gscript.run_command('r.slope.aspect', elevation=self.dem, slope=slope, aspect=aspect, dx=dx, dy=dy, overwrite=True)
-
-        # crop temporary region by search size to trim edge effects
-        n=float(info.n)-self.search_size
-        s=float(info.s)+self.search_size
-        e=float(info.e)-self.search_size
-        w=float(info.w)+self.search_size
+        n=float(info.n)-float(info.nsres)
+        s=float(info.s)+float(info.nsres)
+        e=float(info.e)-float(info.ewres)
+        w=float(info.w)+float(info.ewres)
         gscript.run_command('g.region', n=n, s=s, e=e, w=w)
 
         # hyrdology parameters
@@ -230,9 +223,6 @@ if __name__ == '__main__':
     # set input digital elevation model
     dem='elevation'
 
-    # set search size
-    search_size=3
-
     # set precipitation filepath
     precipitation="C://Users//Brendan//landscape_evolution//precipitation.txt"
     
@@ -248,12 +238,12 @@ if __name__ == '__main__':
 
     # set landscape parameters
     runoff=0.25 # runoff coefficient
-    mannings=0.1 # manning's roughness coefficient
+    mannings=0.04 # manning's roughness coefficient
     # 0.03 for bare earth
     # 0.04 for grass or crops
     # 0.06 for shrubs and trees
     # 0.1 for forest
-    detachment=0.001 # detachment coefficient
+    detachment=0.01 # detachment coefficient
     transport=0.01 # transport coefficient
     shearstress=0 # shear stress coefficient
     density=1.4 # sediment mass density in g/cm^3
@@ -268,10 +258,10 @@ if __name__ == '__main__':
     fluxmax=3 # kg/ms
 
     # create evolution object
-    evol = Evolution(dem=dem, search_size=search_size, precipitation=precipitation, start=start, rain_intensity=rain_intensity, rain_interval=rain_interval, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
+    evol = Evolution(dem=dem, precipitation=precipitation, start=start, rain_intensity=rain_intensity, rain_interval=rain_interval, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
 
     # run model
-#    evol.erosion_deposition()
+    evol.erosion_deposition()
 
     # run detachment limited model
-    evol.flux()
+#    evol.flux()

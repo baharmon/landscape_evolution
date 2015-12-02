@@ -27,9 +27,8 @@ import grass.script as gscript
 import process
 
 class DynamicEvolution:
-    def __init__(self, dem, search_size, precipitation, rain_intensity, rain_duration, rain_interval, temporaltype, strds, title, description, start, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
+    def __init__(self, dem, precipitation, rain_intensity, rain_duration, rain_interval, temporaltype, strds, title, description, start, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
         self.dem = dem
-        self.search_size = search_size
         self.precipitation = precipitation
         self.start = start
         self.rain_intensity = rain_intensity
@@ -69,7 +68,7 @@ class DynamicEvolution:
         gscript.run_command('t.register', type=raster, input=self.strds, maps=self.dem, start=self.start, increment=increment, flags='i', overwrite=True)
 
         # create evolution object
-        evol = process.Evolution(dem=self.dem, search_size=self.search_size, precipitation=self.precipitation, start=self.start, rain_intensity=self.rain_intensity, rain_interval=self.rain_interval, walkers=self.walkers, runoff=self.runoff, mannings=self.mannings, detachment=self.detachment, transport=self.transport, shearstress=self.shearstress, density=self.density, mass=self.mass, erdepmin=self.erdepmin, erdepmax=self.erdepmax, fluxmin=self.fluxmin, fluxmax=self.fluxmax)
+        evol = process.Evolution(dem=self.dem, precipitation=self.precipitation, start=self.start, rain_intensity=self.rain_intensity, rain_interval=self.rain_interval, walkers=self.walkers, runoff=self.runoff, mannings=self.mannings, detachment=self.detachment, transport=self.transport, shearstress=self.shearstress, density=self.density, mass=self.mass, erdepmin=self.erdepmin, erdepmax=self.erdepmax, fluxmin=self.fluxmin, fluxmax=self.fluxmax)
 
         # run model
         evolved_dem, time = evol.erosion_deposition()
@@ -85,8 +84,8 @@ class DynamicEvolution:
             print evol.start
 
             # run model
-#            evolved_dem, time = evol.erosion_deposition()
-            evolved_dem, time = evol.flux()
+            evolved_dem, time = evol.erosion_deposition()
+#            evolved_dem, time = evol.flux()
 
             # register the evolved digital elevation model
             gscript.run_command('t.register', type=raster, input=self.strds, maps=evolved_dem, start=evol.start, increment=increment, flags='i', overwrite=True)
@@ -109,7 +108,7 @@ class DynamicEvolution:
         gscript.run_command('t.register', type=raster, input=self.strds, maps=self.dem, start=self.start, increment=increment, flags='i', overwrite=True)
 
         # create evolution object
-        evol = process.Evolution(dem=self.dem, search_size=self.search_size, precipitation=self.precipitation, start=self.start, rain_intensity=self.rain_intensity, rain_interval=self.rain_interval, walkers=self.walkers, runoff=self.runoff, mannings=self.mannings, detachment=self.detachment, transport=self.transport, shearstress=self.shearstress, density=self.density, mass=self.mass, erdepmin=self.erdepmin, erdepmax=self.erdepmax, fluxmin=self.fluxmin, fluxmax=self.fluxmax)
+        evol = process.Evolution(dem=self.dem, precipitation=self.precipitation, start=self.start, rain_intensity=self.rain_intensity, rain_interval=self.rain_interval, walkers=self.walkers, runoff=self.runoff, mannings=self.mannings, detachment=self.detachment, transport=self.transport, shearstress=self.shearstress, density=self.density, mass=self.mass, erdepmin=self.erdepmin, erdepmax=self.erdepmax, fluxmin=self.fluxmin, fluxmax=self.fluxmax)
 
         # open txt file with precipitation data
         with open(precipitation) as csvfile:
@@ -146,8 +145,8 @@ class DynamicEvolution:
                 evol.dem=evolved_dem
 
                 # run model
-#                evolved_dem, time = evol.erosion_deposition()
-                evolved_dem, time = evol.flux()
+                evolved_dem, time = evol.erosion_deposition()
+#                evolved_dem, time = evol.flux()
 
                 # register the evolved digital elevation model
                 gscript.run_command('t.register', type=raster, input=self.strds, maps=evolved_dem, start=evol.start, increment=increment, flags='i', overwrite=True)
@@ -157,9 +156,6 @@ if __name__ == '__main__':
 
     # set input digital elevation model
     dem='elevation'
-
-    # set search size
-    search_size=3
 
     # set precipitation filepath
     precipitation=os.path.abspath("C://Users//Brendan//landscape_evolution//precipitation.txt")
@@ -181,12 +177,12 @@ if __name__ == '__main__':
 
     # set landscape parameters
     runoff=0.25 # runoff coefficient
-    mannings=0.1 # manning's roughness coefficient
+    mannings=0.04 # manning's roughness coefficient
     # 0.03 for bare earth
     # 0.04 for grass or crops
     # 0.06 for shrubs and trees
     # 0.1 for forest
-    detachment=0.001 # detachment coefficient
+    detachment=0.01 # detachment coefficient
     transport=0.01 # transport coefficient
     shearstress=0 # shear stress coefficient
     density=1.4 # sediment mass density in g/cm^3
@@ -201,7 +197,7 @@ if __name__ == '__main__':
     fluxmax=3 # kg/ms
 
     # create dynamic_evolution object
-    event = DynamicEvolution(dem=dem, search_size=search_size, precipitation=precipitation, rain_intensity=rain_intensity, rain_duration=rain_duration, rain_interval=rain_interval, temporaltype=temporaltype, strds=strds, title=title, description=description, start=start, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
+    event = DynamicEvolution(dem=dem, precipitation=precipitation, rain_intensity=rain_intensity, rain_duration=rain_duration, rain_interval=rain_interval, temporaltype=temporaltype, strds=strds, title=title, description=description, start=start, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
 
     # run model
     dem = event.rainfall_event()
