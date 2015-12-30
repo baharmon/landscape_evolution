@@ -10,20 +10,29 @@ This program is free software under the GNU General Public License
 """
 
 # TO DO:
+# return depth, erdep, and difference
+# register depth, erdep, difference, and flux in temporal framwork
+# refactor code as one script
+# create new functions for rainfall_flux and series_flux
+# prepare as grass add-on
+# optional outputs: depth, erdep, flux, difference, net_difference
 # allow choice of maps or constants as inputs
 # rain as list, input parameters, or maps
 # time as list or input parameters
 # convert both maps and constants' units
 # option to compute mannings from difference between dem and dsm
-# test with rain data
-# set min and max for erdep
+# test by experimenting with diferent dems and parameters
+# test with uav timeseries
+# test with field data
+# empirically calibrate parameters
+# create documentation
 
 import os
-
+import sys
+import atexit
 import csv
-
 import grass.script as gscript
-
+from grass.exceptions import CalledModuleError
 import process
 
 class DynamicEvolution:
@@ -56,10 +65,12 @@ class DynamicEvolution:
         """a dynamic, process-based landscape evolution model of a single rainfall event that generates a timeseries of digital elevation models"""
 
         # assign local temporal variables
-        datatype='strds'
-        increment=str(self.rain_interval)+" minutes"
-        raster='raster'
-        iterations=self.rain_duration/self.rain_interval  
+        datatype = 'strds'
+        increment = str(self.rain_interval)+" minutes"
+        raster = 'raster'
+        iterations = self.rain_duration/self.rain_interval
+        rain_excess = 'rain_excess'
+        net_difference = 'net_difference'
 
         # create a raster space time dataset
         gscript.run_command('t.create', type=datatype, temporaltype=self.temporaltype, output=self.strds, title=self.title, description=self.description, overwrite=True)
@@ -71,35 +82,52 @@ class DynamicEvolution:
         evol = process.Evolution(dem=self.dem, precipitation=self.precipitation, start=self.start, rain_intensity=self.rain_intensity, rain_interval=self.rain_interval, walkers=self.walkers, runoff=self.runoff, mannings=self.mannings, detachment=self.detachment, transport=self.transport, shearstress=self.shearstress, density=self.density, mass=self.mass, erdepmin=self.erdepmin, erdepmax=self.erdepmax, fluxmin=self.fluxmin, fluxmax=self.fluxmax)
 
         # run model
-        evolved_dem, time = evol.erosion_deposition()
+        evolved_dem, time, depth = evol.erosion_deposition()
 
         # run the landscape evolution model as a series of rainfall intervals in a rainfall event
         i=1
         while i <= iterations:
 
-            # update the elevation and time
-            evol.dem=evolved_dem
+            # update the elevation
+            evol.dem = evolved_dem
             print evol.dem
-            evol.start=time
+
+            # update time
+            evol.start = time
             print evol.start
 
+            # derive excess water (mm/hr) from rain intensity (mm/hr) plus the product of depth (m) and the rainfall interval (min)      
+            gscript.run_command('r.mapcalc', expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rain_intensity=self.rain_intensity, depth=depth, rain_interval=self.rain_interval), overwrite=True)
+            
+            # update excess rainfall
+            evol.rain_intensity = rain_excess
+
             # run model
-            evolved_dem, time = evol.erosion_deposition()
-#            evolved_dem, time = evol.flux()
+            evolved_dem, time, depth = evol.erosion_deposition()
+#            evolved_dem, time, depth = evol.flux()
 
             # register the evolved digital elevation model
             gscript.run_command('t.register', type=raster, input=self.strds, maps=evolved_dem, start=evol.start, increment=increment, flags='i', overwrite=True)
-            
+
+            # remove temporary maps
+            gscript.run_command('g.remove', type='raster', name=['rain_excess'], flags='f')
+
             i=i+1
+
+        # compute net elevation change
+        gscript.run_command('r.mapcalc', expression="{net_difference} = {dem}-{evolved_dem}".format(net_difference=net_difference, dem=self.dem, evolved_dem=evol.dem), overwrite=True)
+        gscript.run_command('r.colors', map=net_difference, color='differences')
 
     def rainfall_series(self):
         """a dynamic, process-based landscape evolution model for a series of rainfall events that generates a timeseries of digital elevation models"""
 
         # assign local temporal variables
-        datatype='strds'
-        increment=str(self.rain_interval)+" minutes"
-        raster='raster'
-        #iterations=sum(1 for row in precip)
+        datatype = 'strds'
+        increment = str(self.rain_interval)+" minutes"
+        raster = 'raster'
+        rain_excess = 'rain_excess'
+        net_difference = 'net_difference'
+        #iterations = sum(1 for row in precip)
 
         # create a raster space time dataset
         gscript.run_command('t.create', type=datatype, temporaltype=self.temporaltype, output=self.strds, title=self.title, description=self.description, overwrite=True)
@@ -130,32 +158,49 @@ class DynamicEvolution:
             initial=next(precip)
             evol.start=initial[0]
             evol.rain_intensity=float(initial[1]) # mm/hr
-            evolved_dem, time = evol.erosion_deposition()      
+            evolved_dem, time, depth = evol.erosion_deposition()      
             
             # run the landscape evolution model for each rainfall record
             for row in precip:
-                
-                # update time
-                evol.start=row[0]
-                
-                # update rainfall intensity
-                evol.rain_intensity=float(row[1])
-                
+
                 # update the elevation
                 evol.dem=evolved_dem
 
+                # update time
+                evol.start=row[0]
+
+                # derive excess water (mm/hr) from rain intensity (mm/hr) plus the product of depth (m) and the rainfall interval (min)      
+                gscript.run_command('r.mapcalc', expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rain_intensity=float(row[1]), depth=depth, rain_interval=self.rain_interval), overwrite=True)
+
+                # update excess rainfall
+                evol.rain_intensity = rain_excess
+
                 # run model
-                evolved_dem, time = evol.erosion_deposition()
-#                evolved_dem, time = evol.flux()
+                evolved_dem, time, depth = evol.erosion_deposition()
+#                evolved_dem, time, depth = evol.flux()
 
                 # register the evolved digital elevation model
                 gscript.run_command('t.register', type=raster, input=self.strds, maps=evolved_dem, start=evol.start, increment=increment, flags='i', overwrite=True)
-    
-    
+
+                # remove temporary maps
+                gscript.run_command('g.remove', type='raster', name=['rain_excess'], flags='f')
+
+            # compute net elevation change
+            gscript.run_command('r.mapcalc', expression="{net_difference} = {dem}-{evolved_dem}".format(net_difference=net_difference, dem=self.dem, evolved_dem=evol.dem), overwrite=True)
+            gscript.run_command('r.colors', map=net_difference, color='differences')
+
+def cleanup():
+    try:    
+        # remove temporary maps
+        gscript.run_command('g.remove', type='raster', name=['rain_excess', 'rain', 'evolving_dem', 'dc', 'tc', 'tau', 'rho', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'], flags='f')
+
+    except CalledModuleError:
+        pass
+
 if __name__ == '__main__':
 
     # set input digital elevation model
-    dem='elevation'
+    dem='dem'
 
     # set precipitation filepath
     precipitation=os.path.abspath("C://Users//Brendan//landscape_evolution//precipitation.txt")
@@ -163,7 +208,7 @@ if __name__ == '__main__':
     # set rainfall parameter
     rain_intensity=155 # mm/hr
     rain_duration=60 # total duration of the storm event in minutes
-    rain_interval=10 # time interval in minutes
+    rain_interval=1 # time interval in minutes
 
     # set temporal parameters
     temporaltype='absolute'
@@ -177,11 +222,17 @@ if __name__ == '__main__':
 
     # set landscape parameters
     runoff=0.25 # runoff coefficient
+    # 0.6 for bare earth
+    # 0.35 for grass or crops
+    # 0.5 for shrubs and trees
+    # 0.25 for forest
+    # 0.95 for roads
     mannings=0.04 # manning's roughness coefficient
     # 0.03 for bare earth
     # 0.04 for grass or crops
     # 0.06 for shrubs and trees
     # 0.1 for forest
+    # 0.015 for roads
     detachment=0.01 # detachment coefficient
     transport=0.01 # transport coefficient
     shearstress=0 # shear stress coefficient
@@ -201,4 +252,7 @@ if __name__ == '__main__':
 
     # run model
     dem = event.rainfall_event()
-#    dem = event.rainfall_series()
+    dem = event.rainfall_series()
+
+    atexit.register(cleanup)
+    sys.exit(0)
