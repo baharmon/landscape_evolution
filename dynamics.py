@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -96,9 +97,9 @@ class DynamicEvolution:
             evol.start = time
             print evol.start
 
-            # derive excess water (mm/hr) from rain intensity (mm/hr) plus the product of depth (m) and the rainfall interval (min)      
+            # derive excess water (mm/hr) from rain intensity (mm/hr) plus the product of depth (m) and the rainfall interval (min)
             gscript.run_command('r.mapcalc', expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rain_intensity=self.rain_intensity, depth=depth, rain_interval=self.rain_interval), overwrite=True)
-            
+
             # update excess rainfall
             evol.rain_intensity = rain_excess
 
@@ -152,14 +153,14 @@ class DynamicEvolution:
                 next(csvfile)
 
             # parse time and precipitation
-            precip = csv.reader(csvfile, delimiter=',', skipinitialspace=True) 
+            precip = csv.reader(csvfile, delimiter=',', skipinitialspace=True)
 
             # initial run
             initial=next(precip)
             evol.start=initial[0]
             evol.rain_intensity=float(initial[1]) # mm/hr
-            evolved_dem, time, depth = evol.erosion_deposition()      
-            
+            evolved_dem, time, depth = evol.erosion_deposition()
+
             # run the landscape evolution model for each rainfall record
             for row in precip:
 
@@ -169,7 +170,7 @@ class DynamicEvolution:
                 # update time
                 evol.start=row[0]
 
-                # derive excess water (mm/hr) from rain intensity (mm/hr) plus the product of depth (m) and the rainfall interval (min)      
+                # derive excess water (mm/hr) from rain intensity (mm/hr) plus the product of depth (m) and the rainfall interval (min)
                 gscript.run_command('r.mapcalc', expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rain_intensity=float(row[1]), depth=depth, rain_interval=self.rain_interval), overwrite=True)
 
                 # update excess rainfall
@@ -190,7 +191,7 @@ class DynamicEvolution:
             gscript.run_command('r.colors', map=net_difference, color='differences')
 
 def cleanup():
-    try:    
+    try:
         # remove temporary maps
         gscript.run_command('g.remove', type='raster', name=['rain_excess', 'rain', 'evolving_dem', 'dc', 'tc', 'tau', 'rho', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'], flags='f')
 
@@ -204,7 +205,7 @@ if __name__ == '__main__':
 
     # set precipitation filepath
     precipitation=os.path.abspath("C://Users//Brendan//landscape_evolution//precipitation.txt")
-    
+
     # set rainfall parameter
     rain_intensity=155 # mm/hr
     rain_duration=60 # total duration of the storm event in minutes

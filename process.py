@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -64,7 +65,7 @@ class Evolution:
         minutes = int(self.start[14:16])
         seconds = int(self.start[17:19])
         time = datetime.datetime(year,month,day,hours,minutes,seconds)
-        
+
         # advance time
         time = time + datetime.timedelta(minutes = self.rain_interval)
         time = time.isoformat(" ")
@@ -95,7 +96,7 @@ class Evolution:
 
 #        # comute the partial derivatives from the slope and aspect
 #        # dz/dy = tan(slope)*sin(aspect)
-#        gscript.run_command('r.mapcalc', expression="{dx} = tan({slope}* 0.01745)*cos((({aspect}*(-1))+450)*0.01745)".format(aspect=aspect, slope=slope, dx=dx), overwrite=True)       
+#        gscript.run_command('r.mapcalc', expression="{dx} = tan({slope}* 0.01745)*cos((({aspect}*(-1))+450)*0.01745)".format(aspect=aspect, slope=slope, dx=dx), overwrite=True)
 #        # dz/dy = tan(slope)*sin(aspect)
 #        gscript.run_command('r.mapcalc', expression="{dy} = tan({slope}* 0.01745)*sin((({aspect}*(-1))+450)*0.01745)".format(aspect=aspect, slope=slope, dy=dy), overwrite=True)
 
@@ -157,7 +158,7 @@ class Evolution:
         minutes = int(self.start[14:16])
         seconds = int(self.start[17:19])
         time = datetime.datetime(year,month,day,hours,minutes,seconds)
-        
+
         # advance time
         time = time + datetime.timedelta(minutes = self.rain_interval)
         time = time.isoformat(" ")
@@ -212,7 +213,7 @@ class Evolution:
         return evolved_dem, time, depth
 
 def cleanup():
-    try:    
+    try:
         # remove temporary maps
         gscript.run_command('g.remove', type='raster', name=['rain', 'evolving_dem', 'dc', 'tc', 'tau', 'rho', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'], flags='f')
 
@@ -226,7 +227,7 @@ if __name__ == '__main__':
 
     # set precipitation filepath
     precipitation="C://Users//Brendan//landscape_evolution//precipitation.txt"
-    
+
     # set temporal parameters
     start="2015-10-06 00:00:00"
 
