@@ -76,7 +76,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% key: title
 #% key_desc: value
 #% type: string
-#% description: Title of the output space time raster dataset	
+#% description: Title of the output space time raster dataset
 #% answer: 'dynamics'
 #% multiple: no
 #% required: yes
@@ -86,14 +86,14 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% key: description
 #% key_desc: value
 #% type: string
-#% description: Description of the output space time raster dataset	
+#% description: Description of the output space time raster dataset
 #% answer: `timeseries of evolved digital elevation models'
 #% multiple: no
 #% required: yes
 #%end
 
 #%option
-#% key: description
+#% key: start
 #% key_desc: value
 #% type: string
 #% description: Start time in year-month-day hour:minute:second format
@@ -118,43 +118,124 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% type: float
 #% description: Runoff coefficient (0.6 for bare earth, 0.35 for grass or crops, 0.5 for shrubs and trees, 0.25 for forest, 0.95 for roads)
 #% label: Runoff coefficient
-#% answer: 0.25
+#% answer: 0.35
 #% multiple: no
 #% required: yes
 #%end
 
+#%option
+#% key: mannings
+#% key_desc: value
+#% type: float
+#% description: Manning's roughness coefficient (0.03 for bare earth, 0.04 for grass or crops, 0.06 for shrubs and trees, 0.1 for forest, 0.015 for roads)
+#% label: Manning's roughness coefficient
+#% answer: 0.04
+#% multiple: no
+#% required: yes
+#%end
 
+#%option
+#% key: detachment
+#% key_desc: value
+#% type: float
+#% description: Detachment coefficient
+#% label: Detachment coefficient
+#% answer: 0.01
+#% multiple: no
+#% required: yes
+#%end
 
+#%option
+#% key: transport
+#% key_desc: value
+#% type: float
+#% description: Transport coefficient
+#% label: Transport coefficient
+#% answer: 0.01
+#% multiple: no
+#% required: yes
+#%end
 
-"""
-#% guisection: Input
+#%option
+#% key: shearstress
+#% key_desc: value
+#% type: float
+#% description: Shear stree coefficient
+#% label: Shear stress coefficient
+#% answer: 0.0
+#% multiple: no
+#% required: yes
+#%end
 
-runoff=0.25 # runoff coefficient
-# 0.6 for bare earth
-# 0.35 for grass or crops
-# 0.5 for shrubs and trees
-# 0.25 for forest
-# 0.95 for roads
-mannings=0.04 # manning's roughness coefficient
-# 0.03 for bare earth
-# 0.04 for grass or crops
-# 0.06 for shrubs and trees
-# 0.1 for forest
-# 0.015 for roads
-detachment=0.01 # detachment coefficient
-transport=0.01 # transport coefficient
-shearstress=0 # shear stress coefficient
-density=1.4 # sediment mass density in g/cm^3
-mass=116 # mass of sediment per unit area in kg/m^2
+#%option
+#% key: density
+#% key_desc: value
+#% type: float
+#% description: Sediment mass density in g/cm^3
+#% label: Sediment mass density
+#% answer: 1.4
+#% multiple: no
+#% required: yes
+#%end
 
-# set minimum and maximum values for erosion-deposition
-erdepmin=-1 # kg/m^2s
-erdepmax=1 # kg/m^2s
+#%option
+#% key: mass
+#% key_desc: value
+#% type: float
+#% description: Mass of sediment per unit area in kg/m^2
+#% label: Mass of sediment per unit area
+#% answer: 116
+#% multiple: no
+#% required: yes
+#%end
 
-# set minimum and maximum values for sediment flux
-fluxmin=-3 # kg/ms
-fluxmax=3 # kg/ms
-"""
+#%option
+#% key: erdepmin
+#% key_desc: value
+#% type: float
+#% description: Minimum values for erosion-deposition in kg/m^2s
+#% label: Minimum values for erosion-deposition
+#% answer: -1.0
+#% multiple: no
+#% required: erdepmin,erdepmax,fluxmin,fluxmax
+#% collective: erdepmin,erdepmax
+#%end
+
+#%option
+#% key: erdepmax
+#% key_desc: value
+#% type: float
+#% description: Maximum values for erosion-deposition in kg/m^2s
+#% label: Maximum values for erosion-deposition
+#% answer: 1.0
+#% multiple: no
+#% required: erdepmin,erdepmax,fluxmin,fluxmax
+#% collective: erdepmin,erdepmax
+#%end
+
+#%option
+#% key: fluxmin
+#% key_desc: value
+#% type: float
+#% description: Minimum values for sediment flux in kg/ms
+#% label: Minimum values for sediment flux
+#% answer: -3.0
+#% multiple: no
+#% required: erdepmin,erdepmax,fluxmin,fluxmax
+#% collective: fluxmin,fluxmax
+#%end
+
+#%option
+#% key: fluxmax
+#% key_desc: value
+#% type: float
+#% description: Maximum values for sediment flux in kg/ms
+#% label: Maximum values for sediment flux
+#% answer: 3.0
+#% multiple: no
+#% required: erdepmin,erdepmax,fluxmin,fluxmax
+#% collective: fluxmin,fluxmax
+#%end
 
 import os
 import sys
@@ -167,6 +248,28 @@ from grass.exceptions import CalledModuleError
 def main():
     options, flags = gscript.parser()
     elevation = options['elevation']
+    precipitation = options['precipitation']
+    start = options['start']
+    rain_intensity = options['rain_intensity']
+    rain_duration = options['rain_duration']
+    rain_interval = options['rain_interval']
+    temporaltype = options['temporaltype']
+    strds = options['strds']
+    title = options['title']
+    description = options['description']
+    walkers = options['walkers']
+    runoff = options['runoff']
+    mannings = options['mannings']
+    detachment = options['detachment']
+    transport = options['transport']
+    shearstress = options['shearstress']
+    density = options['density']
+    mass = options['mass']
+    erdepmin = options['erdepmin']
+    erdepmax = options['erdepmax']
+    fluxmin = options['fluxmin']
+    fluxmax = options['fluxmax']
+
 
     # create dynamic_evolution object
     event = DynamicEvolution(elevation=elevation, precipitation=precipitation, rain_intensity=rain_intensity, rain_duration=rain_duration, rain_interval=rain_interval, temporaltype=temporaltype, strds=strds, title=title, description=description, start=start, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
@@ -206,10 +309,10 @@ class Evolution:
         aspect = 'aspect'
         dx = 'dx'
         dy = 'dy'
-        grow_slope='grow_slope'
-        grow_aspect='grow_aspect'
-        grow_dx='grow_dx'
-        grow_dy='grow_dy'
+        grow_slope = 'grow_slope'
+        grow_aspect = 'grow_aspect'
+        grow_dx = 'grow_dx'
+        grow_dy = 'grow_dy'
         rain = 'rain' # mm/hr
         dc = 'dc'
         tc = 'tc'
@@ -229,12 +332,12 @@ class Evolution:
         time = datetime.datetime(year,month,day,hours,minutes,seconds)
 
         # advance time
-        time = time + datetime.timedelta(minutes = self.rain_interval)
+        time = time + datetime.timedelta(minutes=self.rain_interval)
         time = time.isoformat(" ")
 
         # timestamp
-        evolved_elevation = 'elevation_'+time.replace(" ","_").replace("-","_").replace(":","_")
-        depth = 'depth_'+time.replace(" ","_").replace("-","_").replace(":","_")
+        evolved_elevation = 'elevation_'+time.replace(" ", "_").replace("-", "_").replace(":", "_")
+        depth = 'depth_'+time.replace(" ", "_").replace("-", "_").replace(":", "_")
 
         # set temporary region
         gscript.use_temp_region()
@@ -263,7 +366,7 @@ class Evolution:
 #        gscript.run_command('r.mapcalc', expression="{dy} = tan({slope}* 0.01745)*sin((({aspect}*(-1))+450)*0.01745)".format(aspect=aspect, slope=slope, dy=dy), overwrite=True)
 
         # hyrdology parameters
-        gscript.run_command('r.mapcalc', expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain, rain_intensity=self.rain_intensity,runoff=self.runoff), overwrite=True)
+        gscript.run_command('r.mapcalc', expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain, rain_intensity=self.rain_intensity, runoff=self.runoff), overwrite=True)
 
         # hydrologic simulation
         gscript.run_command('r.sim.water', elevation=self.elevation, dx=dx, dy=dy, rain=rain, man_value=self.mannings, depth=depth, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
@@ -295,21 +398,21 @@ class Evolution:
         """a detachment limited gully evolution model using simulated sediment flux to carve a digital elevation model"""
 
         # assign variables
-        slope='slope'
-        aspect='aspect'
-        dx='dx'
-        dy='dy'
-        grow_slope='grow_slope'
-        grow_aspect='grow_aspect'
-        grow_dx='grow_dx'
-        grow_dy='grow_dy'
-        rain='rain'
-        dc='dc'
-        tc='tc'
-        tau='tau'
-        rho='rho'
-        flux='flux'
-        sedflux='sedflux'
+        slope = 'slope'
+        aspect = 'aspect'
+        dx = 'dx'
+        dy = 'dy'
+        grow_slope = 'grow_slope'
+        grow_aspect  = 'grow_aspect'
+        grow_dx = 'grow_dx'
+        grow_dy = 'grow_dy'
+        rain = 'rain'
+        dc = 'dc'
+        tc = 'tc'
+        tau = 'tau'
+        rho = 'rho'
+        flux = 'flux'
+        sedflux = 'sedflux'
 
         # parse time
         # parse time
@@ -319,15 +422,15 @@ class Evolution:
         hours = int(self.start[11:13])
         minutes = int(self.start[14:16])
         seconds = int(self.start[17:19])
-        time = datetime.datetime(year,month,day,hours,minutes,seconds)
+        time = datetime.datetime(year, month, day, hours, minutes, seconds)
 
         # advance time
-        time = time + datetime.timedelta(minutes = self.rain_interval)
+        time = time + datetime.timedelta(minutes=self.rain_interval)
         time = time.isoformat(" ")
 
         # timestamp
-        evolved_elevation = 'elevation_'+time.replace(" ","_").replace("-","_").replace(":","_")
-        depth = 'depth_'+time.replace(" ","_").replace("-","_").replace(":","_")
+        evolved_elevation = 'elevation_'+time.replace(" ", "_").replace("-", "_").replace(":", "_")
+        depth = 'depth_'+time.replace(" ", "_").replace("-", "_").replace(":", "_")
 
         # set temporary region
         gscript.use_temp_region()
@@ -346,7 +449,7 @@ class Evolution:
         dy = grow_dy
 
         # hyrdology parameters
-        gscript.run_command('r.mapcalc', expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain, rain_intensity=self.rain_intensity,runoff=self.runoff), overwrite=True)
+        gscript.run_command('r.mapcalc', expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain, rain_intensity=self.rain_intensity, runoff=self.runoff), overwrite=True)
 
         # hydrologic simulation
         gscript.run_command('r.sim.water', elevation=self.elevation, dx=dx, dy=dy, rain=rain, man_value=self.mannings, depth=depth, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
@@ -386,7 +489,6 @@ class DynamicEvolution:
         self.strds = strds
         self.title = title
         self.description = description
-        self.start = start
         self.walkers = walkers
         self.runoff = runoff
         self.mannings = mannings
@@ -424,7 +526,7 @@ class DynamicEvolution:
         evolved_elevation, time, depth = evol.erosion_deposition()
 
         # run the landscape evolution model as a series of rainfall intervals in a rainfall event
-        i=1
+        i = 1
         while i <= iterations:
 
             # update the elevation
@@ -451,7 +553,7 @@ class DynamicEvolution:
             # remove temporary maps
             gscript.run_command('g.remove', type='raster', name=['rain_excess'], flags='f')
 
-            i=i+1
+            i = i+1
 
         # compute net elevation change
         gscript.run_command('r.mapcalc', expression="{net_difference} = {elevation}-{evolved_elevation}".format(net_difference=net_difference, elevation=self.elevation, evolved_elevation=evol.elevation), overwrite=True)
@@ -478,7 +580,7 @@ class DynamicEvolution:
         evol = Evolution(elevation=self.elevation, precipitation=self.precipitation, start=self.start, rain_intensity=self.rain_intensity, rain_interval=self.rain_interval, walkers=self.walkers, runoff=self.runoff, mannings=self.mannings, detachment=self.detachment, transport=self.transport, shearstress=self.shearstress, density=self.density, mass=self.mass, erdepmin=self.erdepmin, erdepmax=self.erdepmax, fluxmin=self.fluxmin, fluxmax=self.fluxmax)
 
         # open txt file with precipitation data
-        with open(precipitation) as csvfile:
+        with open(evol.precipitation) as csvfile:
 
             # check for header
             has_header = csv.Sniffer().has_header(csvfile.read(1024))
@@ -494,9 +596,9 @@ class DynamicEvolution:
             precip = csv.reader(csvfile, delimiter=',', skipinitialspace=True)
 
             # initial run
-            initial=next(precip)
-            evol.start=initial[0]
-            evol.rain_intensity=float(initial[1]) # mm/hr
+            initial = next(precip)
+            evol.start = initial[0]
+            evol.rain_intensity = float(initial[1]) # mm/hr
             evolved_elevation, time, depth = evol.erosion_deposition()
 
             # run the landscape evolution model for each rainfall record
