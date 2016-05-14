@@ -1,7 +1,7 @@
 # r.evolution
 A short term landscape evolution using a path sampling method to solve water and sediment flow continuity equations and model mass flows over complex topographies.
 
-#TODO
+##TODO
 * Develop as grass add-on module
 * Return depth, erdep, and difference
 * Register depth, erdep, difference, and flux in temporal framework
@@ -19,7 +19,7 @@ A short term landscape evolution using a path sampling method to solve water and
 * Create documentation
 * Write an article
 
-#ADD-ON TODO
+##ADD-ON TODO
 * Use r.sim.water as a guide for g.parser parameters
 * Run r.sim.water --script in the command line to show parameters
 * Manual page for g.parser: https://grass.osgeo.org/grass70/manuals/g.parser.html
@@ -36,7 +36,7 @@ A short term landscape evolution using a path sampling method to solve water and
 - Standard input
 - Text files
 
-#CLEANUP TODO
+##CLEANUP TODO
 * Remove process.py
 * Remove dynamics.py
 * Keep evolution.py for running as script
