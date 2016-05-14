@@ -1,4 +1,3 @@
-%%file Makefile
 MODULE_TOPDIR = ../..
 
 PGM = r.evolution
