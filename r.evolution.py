@@ -34,7 +34,6 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: rain_intensity
-#% key_desc: value
 #% type: integer
 #% description: Rainfall intensity in mm/hr
 #% answer: 155
@@ -44,7 +43,6 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: rain_duration
-#% key_desc: value
 #% type: integer
 #% description: Total duration of storm event in minutes
 #% answer: 60
@@ -54,7 +52,6 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: rain_interval
-#% key_desc: value
 #% type: integer
 #% description: Time interval between evolution events in minutes
 #% answer: 1
@@ -74,7 +71,6 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: title
-#% key_desc: value
 #% type: string
 #% description: Title of the output space time raster dataset
 #% answer: 'dynamics'
@@ -84,7 +80,6 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: description
-#% key_desc: value
 #% type: string
 #% description: Description of the output space time raster dataset
 #% answer: `timeseries of evolved digital elevation models'
@@ -94,7 +89,6 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: start
-#% key_desc: value
 #% type: string
 #% description: Start time in year-month-day hour:minute:second format
 #% answer: '2015-10-06 00:00:00'
@@ -104,7 +98,6 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: walkers
-#% key_desc: value
 #% type: integer
 #% description: Number of walkers (max = 7000000)
 #% answer: 10000
@@ -114,8 +107,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: runoff
-#% key_desc: value
-#% type: float
+#% type: double
 #% description: Runoff coefficient (0.6 for bare earth, 0.35 for grass or crops, 0.5 for shrubs and trees, 0.25 for forest, 0.95 for roads)
 #% label: Runoff coefficient
 #% answer: 0.35
@@ -125,8 +117,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: mannings
-#% key_desc: value
-#% type: float
+#% type: double
 #% description: Manning's roughness coefficient (0.03 for bare earth, 0.04 for grass or crops, 0.06 for shrubs and trees, 0.1 for forest, 0.015 for roads)
 #% label: Manning's roughness coefficient
 #% answer: 0.04
@@ -136,8 +127,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: detachment
-#% key_desc: value
-#% type: float
+#% type: double
 #% description: Detachment coefficient
 #% label: Detachment coefficient
 #% answer: 0.01
@@ -147,8 +137,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: transport
-#% key_desc: value
-#% type: float
+#% type: double
 #% description: Transport coefficient
 #% label: Transport coefficient
 #% answer: 0.01
@@ -158,8 +147,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: shearstress
-#% key_desc: value
-#% type: float
+#% type: double
 #% description: Shear stree coefficient
 #% label: Shear stress coefficient
 #% answer: 0.0
@@ -169,8 +157,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: density
-#% key_desc: value
-#% type: float
+#% type: double
 #% description: Sediment mass density in g/cm^3
 #% label: Sediment mass density
 #% answer: 1.4
@@ -180,8 +167,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: mass
-#% key_desc: value
-#% type: float
+#% type: double
 #% description: Mass of sediment per unit area in kg/m^2
 #% label: Mass of sediment per unit area
 #% answer: 116
@@ -191,50 +177,48 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option
 #% key: erdepmin
-#% key_desc: value
-#% type: float
+#% type: double
 #% description: Minimum values for erosion-deposition in kg/m^2s
 #% label: Minimum values for erosion-deposition
 #% answer: -1.0
 #% multiple: no
-#% required: erdepmin,erdepmax,fluxmin,fluxmax
-#% collective: erdepmin,erdepmax
+#% required: no
 #%end
 
 #%option
 #% key: erdepmax
-#% key_desc: value
-#% type: float
+#% type: double
 #% description: Maximum values for erosion-deposition in kg/m^2s
 #% label: Maximum values for erosion-deposition
 #% answer: 1.0
 #% multiple: no
-#% required: erdepmin,erdepmax,fluxmin,fluxmax
-#% collective: erdepmin,erdepmax
+#% required: no
 #%end
 
 #%option
 #% key: fluxmin
-#% key_desc: value
-#% type: float
+#% type: double
 #% description: Minimum values for sediment flux in kg/ms
 #% label: Minimum values for sediment flux
 #% answer: -3.0
 #% multiple: no
-#% required: erdepmin,erdepmax,fluxmin,fluxmax
-#% collective: fluxmin,fluxmax
+#% required: no
 #%end
 
 #%option
 #% key: fluxmax
-#% key_desc: value
-#% type: float
+#% type: double
 #% description: Maximum values for sediment flux in kg/ms
 #% label: Maximum values for sediment flux
 #% answer: 3.0
 #% multiple: no
+#% required: no
+#%end
+
+#%rules
 #% required: erdepmin,erdepmax,fluxmin,fluxmax
 #% collective: fluxmin,fluxmax
+#% collective: erdepmin,erdepmax
 #%end
 
 import os
@@ -640,4 +624,3 @@ def cleanup():
 
 if __name__ == '__main__':
     main()
-

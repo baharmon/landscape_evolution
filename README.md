@@ -35,8 +35,3 @@ A short term landscape evolution using a path sampling method to solve water and
 * Alternative input types
 - Standard input
 - Text files
-
-##CLEANUP TODO
-* Remove process.py
-* Remove dynamics.py
-* Keep evolution.py for running as script
