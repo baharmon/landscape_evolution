@@ -30,7 +30,7 @@ A short term landscape evolution using a path sampling method to solve water and
 * Guide: https://github.com/wenzeslaus/python-grass-addon/blob/master/04_script_to_grass_module.ipynb
 * Documentation (html)
 * Compile (makefile)
-- install with 'g.extension r.evolution.py url=github.com/baharmon/landscape_evolution'
+- install with 'g.extension r.evolution url=github.com/baharmon/landscape_evolution'
 * Style (PEP8)
 * Alternative input types
 - Standard input
