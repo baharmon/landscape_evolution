@@ -62,6 +62,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #%option G_OPT_T_TYPE
 #% key: temporaltype
 #% answer: 'absolute'
+#% required: yes
 #%end
 
 #%option G_OPT_STRDS_OUTPUT
@@ -115,38 +116,66 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% required: yes
 #%end
 
-#%option
+#%option G_OPT_R_INPUT
 #% key: mannings
+#% description: Manning's roughness coefficient (0.03 for bare earth, 0.04 for grass or crops, 0.06 for shrubs and trees, 0.1 for forest, 0.015 for roads)
+#% label: Manning's roughness coefficient
+#% guisection: Input
+#%end
+
+#%option
+#% key: mannings_value
 #% type: double
 #% description: Manning's roughness coefficient (0.03 for bare earth, 0.04 for grass or crops, 0.06 for shrubs and trees, 0.1 for forest, 0.015 for roads)
 #% label: Manning's roughness coefficient
 #% answer: 0.04
 #% multiple: no
-#% required: yes
+#% guisection: Input
+#%end
+
+#%option G_OPT_R_INPUT
+#% key: detachment
+#% description: Detachment coefficient
+#% label: Detachment coefficient
+#% guisection: Input
 #%end
 
 #%option
-#% key: detachment
+#% key: detachment_value
 #% type: double
 #% description: Detachment coefficient
 #% label: Detachment coefficient
 #% answer: 0.01
 #% multiple: no
-#% required: yes
+#% guisection: Input
+#%end
+
+#%option G_OPT_R_INPUT
+#% key: transport
+#% description: Transport coefficient
+#% label: Transport coefficient
+#% guisection: Input
 #%end
 
 #%option
-#% key: transport
+#% key: transport_value
 #% type: double
 #% description: Transport coefficient
 #% label: Transport coefficient
 #% answer: 0.01
 #% multiple: no
-#% required: yes
+#% guisection: Input
+#%end
+
+#%option G_OPT_R_INPUT
+#% key: shearstress
+#% description: Shear stree coefficient
+#% label: Shear stress coefficient
+#% guisection: Input
 #%end
 
 #%option
-#% key: shearstress
+#% key: shearstress_value
 #% type: double
 #% description: Shear stree coefficient
 #% label: Shear stress coefficient
@@ -155,8 +184,15 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% required: yes
 #%end
 
-#%option
+#%option G_OPT_R_INPUT
 #% key: density
+#% description: Sediment mass density in g/cm^3
+#% label: Sediment mass density
+#% guisection: Input
+#%end
+
+#%option
+#% key: density_value
 #% type: double
 #% description: Sediment mass density in g/cm^3
 #% label: Sediment mass density
@@ -165,8 +201,15 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% required: yes
 #%end
 
-#%option
+#%option G_OPT_R_INPUT
 #% key: mass
+#% description: Mass of sediment per unit area in kg/m^2
+#% label: Mass of sediment per unit area
+#% guisection: Input
+#%end
+
+#%option
+#% key: mass_value
 #% type: double
 #% description: Mass of sediment per unit area in kg/m^2
 #% label: Mass of sediment per unit area
@@ -216,9 +259,16 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #%end
 
 #%rules
-#% required: erdepmin,erdepmax,fluxmin,fluxmax
+#% required: erdepmin,erdepmax,fluxmin,fluxmax,mannings,mannings_value,detachment,detachment_value,transport,mass,density
 #% collective: fluxmin,fluxmax
 #% collective: erdepmin,erdepmax
+#% collective: mannings,mannings_value
+#% collective: detachment,detachment_value
+#% collective: transport,transport_value
+#% collective: shearstress,shearstress_value
+#% collective: mass,mass_value
+#% collective: density,density_value
+#% collective: mass,density
 #%end
 
 import os
@@ -244,16 +294,45 @@ def main():
     walkers = options['walkers']
     runoff = options['runoff']
     mannings = options['mannings']
+    mannings_value = options['mannings_value']
     detachment = options['detachment']
+    detachment_value = options['detachment_value']
     transport = options['transport']
+    transport_value = options['transport_value']
     shearstress = options['shearstress']
-    density = options['density']
+    shearstress_value = options['shearstress_value']
+    density_raster = options['density']
+    density_value = options['density_value']
+    density = None
     mass = options['mass']
+    mass_value = options['mass_value']
     erdepmin = options['erdepmin']
     erdepmax = options['erdepmax']
     fluxmin = options['fluxmin']
     fluxmax = options['fluxmax']
 
+    # check for alternative input parameters
+    if not mannings:
+        gscript.run_command('r.mapcalc', expression="mannings = mannings_value", overwrite=True)
+
+    if not detachment:
+        gscript.run_command('r.mapcalc', expression="detachment = detachment_value", overwrite=True)
+
+    if not transport:
+        gscript.run_command('r.mapcalc', expression="transport = transport_value", overwrite=True)
+
+    if not shearstress:
+        gscript.run_command('r.mapcalc', expression="shearstress = shearstress_value", overwrite=True)
+
+    if not mass:
+        gscript.run_command('r.mapcalc', expression="mass = mass_value", overwrite=True)
+
+    if density_raster:
+        # convert g/cm^3 to kg/m^3
+        gscript.run_command('r.mapcalc', expression="density = density_raster * 1000", overwrite=True)
+    else:
+        # convert g/cm^3 to kg/m^3
+        gscript.run_command('r.mapcalc', expression="density = density_value * 1000", overwrite=True)
 
     # create dynamic_evolution object
     event = DynamicEvolution(elevation=elevation, precipitation=precipitation, rain_intensity=rain_intensity, rain_duration=rain_duration, rain_interval=rain_interval, temporaltype=temporaltype, strds=strds, title=title, description=description, start=start, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
@@ -298,10 +377,6 @@ class Evolution:
         grow_dx = 'grow_dx'
         grow_dy = 'grow_dy'
         rain = 'rain' # mm/hr
-        dc = 'dc'
-        tc = 'tc'
-        tau = 'tau'
-        rho = 'rho'
         erdep = 'erdep' # kg/m^2s
         flux = 'flux' # kg/ms
         erosion_deposition = 'erosion_deposition'
@@ -329,7 +404,7 @@ class Evolution:
         # compute slope, aspect, and partial derivatives
         gscript.run_command('r.slope.aspect', elevation=self.elevation, slope=slope, aspect=aspect, dx=dx, dy=dy, overwrite=True)
 
-        # grow border fix edge effects of moving window computations
+        # grow border to fix edge effects of moving window computations
         gscript.run_command('r.grow.distance', input=slope, value=grow_slope, overwrite=True)
         slope = grow_slope
         gscript.run_command('r.grow.distance', input=aspect, value=grow_aspect, overwrite=True)
@@ -353,16 +428,10 @@ class Evolution:
         gscript.run_command('r.mapcalc', expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain, rain_intensity=self.rain_intensity, runoff=self.runoff), overwrite=True)
 
         # hydrologic simulation
-        gscript.run_command('r.sim.water', elevation=self.elevation, dx=dx, dy=dy, rain=rain, man_value=self.mannings, depth=depth, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
-
-        # erosion parameters
-        gscript.run_command('r.mapcalc', expression="{dc} = {detachment}".format(dc=dc, detachment=self.detachment), overwrite=True)
-        gscript.run_command('r.mapcalc', expression="{tc} = {transport}".format(tc=tc, transport=self.transport), overwrite=True)
-        gscript.run_command('r.mapcalc', expression="{tau} = {shearstress}".format(tau=tau, shearstress=self.shearstress), overwrite=True)
-        gscript.run_command('r.mapcalc', expression="{rho} = {density}*1000".format(rho=rho, density=self.density), overwrite=True) # convert g/cm^3 to kg/m^3
+        gscript.run_command('r.sim.water', elevation=self.elevation, dx=dx, dy=dy, rain=rain, man=self.mannings, depth=depth, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
 
         # erosion-deposition simulation
-        gscript.run_command('r.sim.sediment', elevation=self.elevation, water_depth=depth, dx=dx, dy=dy, detachment_coeff=dc, transport_coeff=tc, shear_stress=tau, man_value=self.mannings, erosion_deposition=erdep, sediment_flux=flux, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
+        gscript.run_command('r.sim.sediment', elevation=self.elevation, water_depth=depth, dx=dx, dy=dy, detachment_coeff=self.detachment, transport_coeff=self.transport, shear_stress=self.shearstress, man=self.mannings, erosion_deposition=erdep, sediment_flux=flux, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
 
         # filter outliers
         gscript.run_command('r.mapcalc', expression="{erosion_deposition} = if({erdep}<{erdepmin},{erdepmin},if({erdep}>{erdepmax},{erdepmax},{erdep}))".format(erosion_deposition=erosion_deposition, erdep=erdep, erdepmin=self.erdepmin, erdepmax=self.erdepmax), overwrite=True)
@@ -374,7 +443,7 @@ class Evolution:
         gscript.run_command('r.colors', map=evolved_elevation, color='elevation')
 
         # remove temporary maps
-        gscript.run_command('g.remove', type='raster', name=['rain', 'evolving_elevation', 'dc', 'tc', 'tau', 'rho', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'], flags='f')
+        gscript.run_command('g.remove', type='raster', name=['rain', 'evolving_elevation', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'], flags='f')
 
         return evolved_elevation, time, depth
 
@@ -391,10 +460,6 @@ class Evolution:
         grow_dx = 'grow_dx'
         grow_dy = 'grow_dy'
         rain = 'rain'
-        dc = 'dc'
-        tc = 'tc'
-        tau = 'tau'
-        rho = 'rho'
         flux = 'flux'
         sedflux = 'sedflux'
 
@@ -436,16 +501,10 @@ class Evolution:
         gscript.run_command('r.mapcalc', expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain, rain_intensity=self.rain_intensity, runoff=self.runoff), overwrite=True)
 
         # hydrologic simulation
-        gscript.run_command('r.sim.water', elevation=self.elevation, dx=dx, dy=dy, rain=rain, man_value=self.mannings, depth=depth, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
-
-        # erosion parameters
-        gscript.run_command('r.mapcalc', expression="{dc} = {detachment}".format(dc=dc, detachment=self.detachment), overwrite=True)
-        gscript.run_command('r.mapcalc', expression="{tc} = {transport}".format(tc=tc, transport=self.transport), overwrite=True)
-        gscript.run_command('r.mapcalc', expression="{tau} = {shearstress}".format(tau=tau, shearstress=self.shearstress), overwrite=True)
-        gscript.run_command('r.mapcalc', expression="{rho} = {mass}".format(rho=rho, mass=self.mass), overwrite=True)
+        gscript.run_command('r.sim.water', elevation=self.elevation, dx=dx, dy=dy, rain=rain, man=self.mannings, depth=depth, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
 
         # erosion-deposition simulation
-        gscript.run_command('r.sim.sediment', elevation=self.elevation, water_depth=depth, dx=dx, dy=dy, detachment_coeff=dc, transport_coeff=tc, shear_stress=tau, man_value=self.mannings, sediment_flux=flux, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
+        gscript.run_command('r.sim.sediment', elevation=self.elevation, water_depth=depth, dx=dx, dy=dy, detachment_coeff=self.detachment, transport_coeff=self.transport, shear_stress=self.shearstress, man=self.mannings, sediment_flux=flux, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
 
         # filter outliers
         gscript.run_command('r.mapcalc', expression="{sedflux} = if({flux}<{fluxmin},{fluxmin},if({flux}>{fluxmax},{fluxmax},{flux}))".format(sedflux=sedflux, flux=flux, fluxmin=self.fluxmin, fluxmax=self.fluxmax), overwrite=True)
@@ -457,7 +516,7 @@ class Evolution:
         gscript.run_command('r.colors', map=evolved_elevation, color='elevation')
 
         # remove temporary maps
-        gscript.run_command('g.remove', type='raster', name=['rain', 'evolving_elevation', 'dc', 'tc', 'tau', 'rho', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'], flags='f')
+        gscript.run_command('g.remove', type='raster', name=['rain', 'evolving_elevation', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'], flags='f')
 
         return evolved_elevation, time, depth
 
@@ -617,7 +676,7 @@ class DynamicEvolution:
 def cleanup():
     try:
         # remove temporary maps
-        gscript.run_command('g.remove', type='raster', name=['rain_excess', 'rain', 'evolving_elevation', 'dc', 'tc', 'tau', 'rho', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'], flags='f')
+        gscript.run_command('g.remove', type='raster', name=['rain_excess', 'rain', 'evolving_elevation', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'], flags='f')
 
     except CalledModuleError:
         pass
