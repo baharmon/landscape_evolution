@@ -181,7 +181,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% label: Shear stress coefficient
 #% answer: 0.0
 #% multiple: no
-#% required: yes
+#% guisection: Input
 #%end
 
 #%option G_OPT_R_INPUT
@@ -198,7 +198,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% label: Sediment mass density
 #% answer: 1.4
 #% multiple: no
-#% required: yes
+#% guisection: Input
 #%end
 
 #%option G_OPT_R_INPUT
@@ -215,7 +215,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% label: Mass of sediment per unit area
 #% answer: 116
 #% multiple: no
-#% required: yes
+#% guisection: Input
 #%end
 
 #%option
@@ -225,7 +225,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% label: Minimum values for erosion-deposition
 #% answer: -1.0
 #% multiple: no
-#% required: no
+#% guisection: Input
 #%end
 
 #%option
@@ -235,7 +235,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% label: Maximum values for erosion-deposition
 #% answer: 1.0
 #% multiple: no
-#% required: no
+#% guisection: Input
 #%end
 
 #%option
@@ -245,7 +245,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% label: Minimum values for sediment flux
 #% answer: -3.0
 #% multiple: no
-#% required: no
+#% guisection: Input
 #%end
 
 #%option
@@ -255,11 +255,11 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% label: Maximum values for sediment flux
 #% answer: 3.0
 #% multiple: no
-#% required: no
+#% guisection: Input
 #%end
 
 #%rules
-#% required: erdepmin,erdepmax,fluxmin,fluxmax,mannings,mannings_value,detachment,detachment_value,transport,mass,density
+#% required: erdepmin,erdepmax,fluxmin,fluxmax,mannings,mannings_value,detachment,detachment_value,transport,transport_value,shearstress,shearstress_value,mass,mass_value,density,density_value
 #% collective: fluxmin,fluxmax
 #% collective: erdepmin,erdepmax
 #% collective: mannings,mannings_value

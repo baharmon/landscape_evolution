@@ -4,11 +4,12 @@ Implemented as an add-on for [GRASS GIS](https://grass.osgeo.org/), a free open 
 
 ## Installation
 * Launch GRASS GIS
-* Install using the GRASS Console / Command Line Interface with 'g.extension r.evolution.py url=github.com/baharmon/landscape_evolution'
+* Install using the GRASS Console / Command Line Interface with 'g.extension r.evolution url=github.com/baharmon/landscape_evolution'
 * Or install using the GRASS GUI with the module g.extension under Settings/Addons Extensions/Install extension from addons
 - extension = r.evolution.py
 - operation = add
 - url = github.com/baharmon/landscape_evolution
+* Restart GRASS GIS
 
 # Future work
 ##TODO
