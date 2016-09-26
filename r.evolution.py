@@ -350,38 +350,87 @@ def main():
     # check for alternative input parameters
     if not runoff:
         runoff = 'runoff'
-        gscript.run_command('r.mapcalc', expression="runoff = {runoff_value}".format(**locals()), overwrite=True)
+        gscript.run_command('r.mapcalc',
+            expression="runoff = {runoff_value}".format(**locals()),
+            overwrite=True)
 
     if not mannings:
         mannings = 'mannings'
-        gscript.run_command('r.mapcalc', expression="mannings = {mannings_value}".format(**locals()), overwrite=True)
+        gscript.run_command('r.mapcalc',
+            expression="mannings = {mannings_value}".format(**locals()),
+            overwrite=True)
 
     if not detachment:
         detachment = 'detachment'
-        gscript.run_command('r.mapcalc', expression="detachment = {detachment_value}".format(**locals()), overwrite=True)
+        gscript.run_command('r.mapcalc',
+            expression="detachment = {detachment_value}".format(**locals()),
+            overwrite=True)
 
     if not transport:
         transport = 'transport'
-        gscript.run_command('r.mapcalc', expression="transport = {transport_value}".format(**locals()), overwrite=True)
+        gscript.run_command('r.mapcalc',
+            expression="transport = {transport_value}".format(**locals()),
+            overwrite=True)
 
     if not shearstress:
         shearstress = 'shearstress'
-        gscript.run_command('r.mapcalc', expression="shearstress = {shearstress_value}".format(**locals()), overwrite=True)
+        gscript.run_command('r.mapcalc',
+            expression="shearstress = {shearstress_value}".format(**locals()),
+            overwrite=True)
 
     if not mass:
         mass = 'mass'
-        gscript.run_command('r.mapcalc', expression="mass = {mass_value}".format(**locals()), overwrite=True)
+        gscript.run_command('r.mapcalc',
+            expression="mass = {mass_value}".format(**locals()),
+            overwrite=True)
 
     density = 'density'
     if density_raster:
         # convert g/cm^3 to kg/m^3
-        gscript.run_command('r.mapcalc', expression="density = {density_raster} * 1000".format(**locals()), overwrite=True)
+        gscript.run_command('r.mapcalc',
+            expression="density = {density_raster} * 1000".format(**locals()),
+            overwrite=True)
     else:
         # convert g/cm^3 to kg/m^3
-        gscript.run_command('r.mapcalc', expression="density = {density_value} * 1000".format(**locals()), overwrite=True)
+        gscript.run_command('r.mapcalc',
+            expression="density = {density_value} * 1000".format(**locals()),
+            overwrite=True)
 
     # create dynamic_evolution object
-    event = DynamicEvolution(elevation=elevation, precipitation=precipitation, rain_intensity=rain_intensity, rain_duration=rain_duration, rain_interval=rain_interval, temporaltype=temporaltype, elevation_timeseries=elevation_timeseries, elevation_title=elevation_title, elevation_description=elevation_description, depth_timeseries=depth_timeseries, depth_title=depth_title, depth_description=depth_description, erdep_timeseries=erdep_timeseries, erdep_title=erdep_title, erdep_description=erdep_description, flux_timeseries=flux_timeseries, flux_title=flux_title, flux_description=flux_description, difference_timeseries=difference_timeseries, difference_title=difference_title, difference_description=difference_description, start=start, walkers=walkers, runoff=runoff, mannings=mannings, detachment=detachment, transport=transport, shearstress=shearstress, density=density, mass=mass, erdepmin=erdepmin, erdepmax=erdepmax, fluxmin=fluxmin, fluxmax=fluxmax)
+    event = DynamicEvolution(elevation=elevation,
+        precipitation=precipitation,
+        rain_intensity=rain_intensity,
+        rain_duration=rain_duration,
+        rain_interval=rain_interval,
+        temporaltype=temporaltype,
+        elevation_timeseries=elevation_timeseries,
+        elevation_title=elevation_title,
+        elevation_description=elevation_description,
+        depth_timeseries=depth_timeseries,
+        depth_title=depth_title,
+        depth_description=depth_description,
+        erdep_timeseries=erdep_timeseries,
+        erdep_title=erdep_title,
+        erdep_description=erdep_description,
+        flux_timeseries=flux_timeseries,
+        flux_title=flux_title,
+        flux_description=flux_description,
+        difference_timeseries=difference_timeseries,
+        difference_title=difference_title,
+        difference_description=difference_description,
+        start=start,
+        walkers=walkers,
+        runoff=runoff,
+        mannings=mannings,
+        detachment=detachment,
+        transport=transport,
+        shearstress=shearstress,
+        density=density,
+        mass=mass,
+        erdepmin=erdepmin,
+        erdepmax=erdepmax,
+        fluxmin=fluxmin,
+        fluxmax=fluxmax)
 
     # run model
     # elevation = event.rainfall_event()
@@ -391,7 +440,9 @@ def main():
     sys.exit(0)
 
 class Evolution:
-    def __init__(self, elevation, precipitation, start, rain_intensity, rain_interval, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
+    def __init__(self, elevation, precipitation, start, rain_intensity,
+        rain_interval, walkers, runoff, mannings, detachment, transport,
+        shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
         self.elevation = elevation
         self.precipitation = precipitation
         self.start = start
@@ -411,7 +462,9 @@ class Evolution:
         self.fluxmax = fluxmax
 
     def erosion_deposition(self):
-        """a small-scale, process-based landscape evolution model using simulated net erosion and deposition to carve a digital elevation model"""
+        """a small-scale, process-based landscape evolution model
+        using simulated net erosion and deposition
+        to carve a digital elevation model"""
 
         # assign variables
         slope = 'slope'
@@ -450,16 +503,34 @@ class Evolution:
         gscript.use_temp_region()
 
         # compute slope, aspect, and partial derivatives
-        gscript.run_command('r.slope.aspect', elevation=self.elevation, slope=slope, aspect=aspect, dx=dx, dy=dy, overwrite=True)
+        gscript.run_command('r.slope.aspect',
+            elevation=self.elevation,
+            slope=slope,
+            aspect=aspect,
+            dx=dx,
+            dy=dy,
+            overwrite=True)
 
         # grow border to fix edge effects of moving window computations
-        gscript.run_command('r.grow.distance', input=slope, value=grow_slope, overwrite=True)
+        gscript.run_command('r.grow.distance',
+            input=slope,
+            value=grow_slope,
+            overwrite=True)
         slope = grow_slope
-        gscript.run_command('r.grow.distance', input=aspect, value=grow_aspect, overwrite=True)
+        gscript.run_command('r.grow.distance',
+            input=aspect,
+            value=grow_aspect,
+            overwrite=True)
         aspect = grow_aspect
-        gscript.run_command('r.grow.distance', input=dx, value=grow_dx, overwrite=True)
+        gscript.run_command('r.grow.distance',
+            input=dx,
+            value=grow_dx,
+            overwrite=True)
         dx = grow_dx
-        gscript.run_command('r.grow.distance', input=dy, value=grow_dy, overwrite=True)
+        gscript.run_command('r.grow.distance',
+            input=dy,
+            value=grow_dy,
+            overwrite=True)
         dy = grow_dy
 
 #        # comute the slope and aspect
@@ -473,13 +544,39 @@ class Evolution:
 #        gscript.run_command('r.mapcalc', expression="{dy} = tan({slope}* 0.01745)*sin((({aspect}*(-1))+450)*0.01745)".format(aspect=aspect, slope=slope, dy=dy), overwrite=True)
 
         # hyrdology parameters
-        gscript.run_command('r.mapcalc', expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain, rain_intensity=self.rain_intensity, runoff=self.runoff), overwrite=True)
+        gscript.run_command('r.mapcalc',
+            expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain,
+                rain_intensity=self.rain_intensity,
+                runoff=self.runoff),
+            overwrite=True)
 
         # hydrologic simulation
-        gscript.run_command('r.sim.water', elevation=self.elevation, dx=dx, dy=dy, rain=rain, man=self.mannings, depth=depth, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
+        gscript.run_command('r.sim.water',
+            elevation=self.elevation,
+            dx=dx,
+            dy=dy,
+            rain=rain,
+            man=self.mannings,
+            depth=depth,
+            niterations=self.rain_interval,
+            nwalkers=self.walkers,
+            overwrite=True)
 
         # erosion-deposition simulation
-        gscript.run_command('r.sim.sediment', elevation=self.elevation, water_depth=depth, dx=dx, dy=dy, detachment_coeff=self.detachment, transport_coeff=self.transport, shear_stress=self.shearstress, man=self.mannings, erosion_deposition=erdep, sediment_flux=sedflux, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
+        gscript.run_command('r.sim.sediment',
+            elevation=self.elevation,
+            water_depth=depth,
+            dx=dx,
+            dy=dy,
+            detachment_coeff=self.detachment,
+            transport_coeff=self.transport,
+            shear_stress=self.shearstress,
+            man=self.mannings,
+            erosion_deposition=erdep,
+            sediment_flux=sedflux,
+            niterations=self.rain_interval,
+            nwalkers=self.walkers,
+            overwrite=True)
 
         # filter outliers
         gscript.run_command('r.mapcalc', expression="{erosion_deposition} = if({erdep}<{erdepmin},{erdepmin},if({erdep}>{erdepmax},{erdepmax},{erdep}))".format(erosion_deposition=erosion_deposition, erdep=erdep, erdepmin=self.erdepmin, erdepmax=self.erdepmax), overwrite=True)
@@ -634,11 +731,41 @@ class DynamicEvolution:
         net_difference = 'net_difference'
 
         # create raster space time datasets
-        gscript.run_command('t.create', type=datatype, temporaltype=self.temporaltype, output=self.elevation_timeseries, title=self.elevation_title, description=self.elevation_description, overwrite=True)
-        gscript.run_command('t.create', type=datatype, temporaltype=self.temporaltype, output=self.depth_timeseries, title=self.depth_title, description=self.depth_description, overwrite=True)
-        gscript.run_command('t.create', type=datatype, temporaltype=self.temporaltype, output=self.erdep_timeseries, title=self.erdep_title, description=self.erdep_description, overwrite=True)
-        gscript.run_command('t.create', type=datatype, temporaltype=self.temporaltype, output=self.flux_timeseries, title=self.flux_title, description=self.flux_description, overwrite=True)
-        gscript.run_command('t.create', type=datatype, temporaltype=self.temporaltype, output=self.difference_timeseries, title=self.difference_title, description=self.difference_description, overwrite=True)
+        gscript.run_command('t.create',
+            type=datatype,
+            temporaltype=self.temporaltype,
+            output=self.elevation_timeseries,
+            title=self.elevation_title,
+            description=self.elevation_description,
+            overwrite=True)
+        gscript.run_command('t.create',
+            type=datatype,
+            temporaltype=self.temporaltype,
+            output=self.depth_timeseries,
+            title=self.depth_title,
+            description=self.depth_description,
+            overwrite=True)
+        gscript.run_command('t.create',
+            type=datatype,
+            temporaltype=self.temporaltype,
+            output=self.erdep_timeseries,
+            title=self.erdep_title,
+            description=self.erdep_description,
+            overwrite=True)
+        gscript.run_command('t.create',
+            type=datatype,
+            temporaltype=self.temporaltype,
+            output=self.flux_timeseries,
+            title=self.flux_title,
+            description=self.flux_description,
+            overwrite=True)
+        gscript.run_command('t.create',
+            type=datatype,
+            temporaltype=self.temporaltype,
+            output=self.difference_timeseries,
+            title=self.difference_title,
+            description=self.difference_description,
+            overwrite=True)
 
         # register the initial digital elevation model
         gscript.run_command('t.register', type=raster, input=self.elevation_timeseries, maps=self.elevation, start=self.start, increment=increment, flags='i', overwrite=True)
@@ -693,9 +820,29 @@ class DynamicEvolution:
             #     increment=increment,
             #     flags='i',
             #     overwrite=True)
-            # gscript.run_command('t.register', type=raster, input=self.erdep_timeseries, maps=erosion_deposition, start=evol.start, increment=increment, flags='i', overwrite=True)
-            # gscript.run_command('t.register', type=raster, input=self.flux_timeseries, maps=sediment_flux, start=evol.start, increment=increment, flags='i', overwrite=True)
-            # gscript.run_command('t.register', type=raster, input=self.difference_timeseries, maps=difference, start=evol.start, increment=increment, flags='i', overwrite=True)
+            # gscript.run_command('t.register',
+            #     type=raster,
+            #     input=self.erdep_timeseries,
+            #     maps=erosion_deposition,
+            #     start=evol.start,
+            #     increment=increment,
+            #     flags='i',
+            #     overwrite=True)
+            # gscript.run_command('t.register',
+            #     type=raster,
+            #     input=self.flux_timeseries,
+            #     maps=sediment_flux,
+            #     start=evol.start,
+            #     increment=increment,
+            #     flags='i', overwrite=True)
+            # gscript.run_command('t.register',
+            #     type=raster,
+            #     input=self.difference_timeseries,
+            #     maps=difference,
+            #     start=evol.start,
+            #     increment=increment,
+            #     flags='i',
+            #     overwrite=True)
 
             # remove temporary maps
             gscript.run_command('g.remove', type='raster', name=['rain_excess'], flags='f')
@@ -756,7 +903,7 @@ class DynamicEvolution:
             for row in precip:
 
                 # update the elevation
-                evol.elevation=evolved_elevation
+                evol.elevation=evolved_elevation # WHY NOT UPDATE ALL RETURNS
 
                 # update time
                 evol.start=row[0]
