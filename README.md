@@ -2,50 +2,40 @@
 A short term landscape evolution using a path sampling method to solve water and sediment flow continuity equations to model mass flows over complex topographies.
 Implemented as an add-on for [GRASS GIS](https://grass.osgeo.org/), a free open source GIS.
 
+## About
+A dynamic, process-based landscape evolution model using simulated erosion and deposition to generate a timeseries of digital elevation models in GRASS GIS. This is a simple, fine-scale, short term landscape evolution model using a path sampling method to solve water and sediment flow continuity equations and model mass flows over complex topographies based on topographic, land cover, soil, and rainfall parameters. This either steady state or dynamic model can simulate landscape evolution for a range of hydrologic soil erosion regimes. The GRASS modules [r.sim.water](https://grass.osgeo.org/grass73/manuals/r.sim.water.html) and [r.sim.sediment](https://grass.osgeo.org/grass73/manuals/r.sim.sediment.html) are used to simulate erosion and deposition. The change in elevation is a function of time, net erosion-deposition, and sediment mass density.
+
+change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) / sediment mass density (kg/m^3)
+
 ## Installation
 * Launch GRASS GIS
-* Install using the GRASS Console / Command Line Interface with 'g.extension r.evolution url=github.com/baharmon/landscape_evolution'
-* Or install using the GRASS GUI with the module g.extension under Settings/Addons Extensions/Install extension from addons
-- extension = r.evolution.py
-- operation = add
-- url = github.com/baharmon/landscape_evolution
+* Install using the GRASS Console / Command Line Interface (CLI) with *g.extension r.evolution url=github.com/baharmon/landscape_evolution*
 * Restart GRASS GIS
+* Launch from the CLI with *r.evolution*
 
-# Future work
+## License
+GNU General Public License >= version 2
+
+# Development
+
 ##TODO
-* Develop as grass add-on module
-* Return depth, erdep, and difference
-* Create elevation, depth, erdep, and difference strds with temporal framework
-* Register depth, erdep, difference, and flux in temporal framework
-* Optional outputs: depth, erdep, flux, difference, net_difference
+* Documentation
+* PEP8 style
+* Multiple outputs
+- Return depth, erdep, and difference
+- Create elevation, depth, erdep, flux, and difference strds with temporal framework
+- Register depth, erdep, flux, difference, and flux in temporal framework
+- Optional outputs: depth, erdep, flux, difference, net_difference
 - G_OPT_R_OUTPUT
 * Create new functions for rainfall_flux and series_flux
-* Allow choice of maps or constants as inputs
 * Rain as list, input parameters, or maps
 * Time as list or input parameters
 * Convert both maps and constants' units
 * Reverse landscape evolution
+- Toggle plus / minus operator
+- Set start / stop time
 * Subsurface soil moisture
 * Test by experimenting with different dems and parameters
 * Test with uav timeseries
 * Test with field data
 * Empirically calibrate parameters
-* Create documentation
-* Write an article
-
-##ADD-ON TODO
-* Use r.sim.water as a guide for g.parser parameters
-* Run r.sim.water --script in the command line to show parameters
-* Manual page for g.parser: https://grass.osgeo.org/grass70/manuals/g.parser.html
-* Parser standard options: https://grass.osgeo.org/grass71/manuals/parser_standard_options.html
-* Guidelines for add-ons: https://trac.osgeo.org/grass/wiki/Submitting/Python
-* Create tabs in gui with #% guisection: Input
-* Set alternative requirements with  #%rules #% required: key_1, key_2 #%end
-* Guide: https://github.com/wenzeslaus/python-grass-addon/blob/master/04_script_to_grass_module.ipynb
-* Documentation (html)
-* Compile (makefile)
-- install with 'g.extension r.evolution url=github.com/baharmon/landscape_evolution'
-* Style (PEP8)
-* Alternative input types
-- Standard input
-- Text files
