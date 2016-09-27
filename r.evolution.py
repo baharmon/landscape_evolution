@@ -28,10 +28,34 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% required: yes
 #%end
 
+#%option
+#% key: model
+#% type: string
+#% required: yes
+#% multiple: no
+#% answer: dynamic
+#% options: steady_state,dynamic
+#% description: Steady state or dynamic model
+#% descriptions: steady_state;steady-state model;dynamic;dynamic model
+#%end
+
+#%option
+#% key: mode
+#% type: string
+#% required: yes
+#% multiple: no
+#% answer: erosion_deposition_mode
+#% options: erosion_deposition_mode,flux_mode
+#% description: Erosion deposition or detachment limited mode
+#% descriptions: erosion_deposition_mode;erosion-deposition mode;flux_mode;detachment limited mode
+#%end
+
 #%option G_OPT_F_INPUT
 #% key: precipitation
 #% description: Name of input precipitation file
-#% required: yes
+#% label: Precipitation file
+#% required: no
+#% guisection: Dynamic
 #%end
 
 #%option G_OPT_R_INPUT
