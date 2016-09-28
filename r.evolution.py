@@ -686,7 +686,7 @@ class Evolution:
         gscript.run_command('r.sim.water', elevation=self.elevation, dx=dx, dy=dy, rain=rain, man=self.mannings, depth=depth, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
 
         # erosion-deposition simulation
-        gscript.run_command('r.sim.sediment', elevation=self.elevation, water_depth=depth, dx=dx, dy=dy, detachment_coeff=self.detachment, transport_coeff=self.transport, shear_stress=self.shearstress, man=self.mannings, sediment_flux=flux, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
+        gscript.run_command('r.sim.sediment', elevation=self.elevation, water_depth=depth, dx=dx, dy=dy, detachment_coeff=self.detachment, transport_coeff=self.transport, shear_stress=self.shearstress, man=self.mannings, sediment_flux=sediment_flux, niterations=self.rain_interval, nwalkers=self.walkers, overwrite=True)
 
         # filter outliers
         gscript.run_command('r.mapcalc', expression="{erosion_deposition} = if({erdep}<{erdepmin},{erdepmin},if({erdep}>{erdepmax},{erdepmax},{erdep}))".format(erosion_deposition=erosion_deposition, erdep=erdep, erdepmin=self.erdepmin, erdepmax=self.erdepmax), overwrite=True)
