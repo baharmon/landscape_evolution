@@ -8,3 +8,7 @@ r.evolution elevation=elevation@landscape_evolution precipitation=/Users/Brendan
 
 
 """ DEBUGGING """
+
+
+""" TODO """
+rainfall_event input parameters
