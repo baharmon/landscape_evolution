@@ -198,7 +198,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% key: walkers
 #% type: integer
 #% description: Number of walkers (max = 7000000)
-#% answer: 10000
+#% answer: 1000000
 #% multiple: no
 #% required: yes
 #% guisection: Parameters
@@ -210,8 +210,8 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% description: Rainfall intensity in mm/hr
 #% answer: 155
 #% multiple: no
-#% required: yes
-#% guisection: Parameters
+#% required: no
+#% guisection: Steady state
 #%end
 
 #%option
@@ -220,8 +220,8 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% description: Total duration of storm event in minutes
 #% answer: 60
 #% multiple: no
-#% required: yes
-#% guisection: Parameters
+#% required: no
+#% guisection: Steady state
 #%end
 
 #%option
