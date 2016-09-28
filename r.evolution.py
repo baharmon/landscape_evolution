@@ -58,6 +58,26 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% guisection: Dynamic
 #%end
 
+#%option
+#% key: rain_intensity
+#% type: integer
+#% description: Rainfall intensity in mm/hr
+#% answer: 155
+#% multiple: no
+#% required: no
+#% guisection: Steady state
+#%end
+
+#%option
+#% key: rain_duration
+#% type: integer
+#% description: Total duration of storm event in minutes
+#% answer: 60
+#% multiple: no
+#% required: no
+#% guisection: Steady state
+#%end
+
 #%option G_OPT_R_INPUT
 #% key: runoff
 #% description: Runoff coefficient (0.6 for bare earth, 0.35 for grass or crops, 0.5 for shrubs and trees, 0.25 for forest, 0.95 for roads)
@@ -202,26 +222,6 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% multiple: no
 #% required: yes
 #% guisection: Parameters
-#%end
-
-#%option
-#% key: rain_intensity
-#% type: integer
-#% description: Rainfall intensity in mm/hr
-#% answer: 155
-#% multiple: no
-#% required: no
-#% guisection: Steady state
-#%end
-
-#%option
-#% key: rain_duration
-#% type: integer
-#% description: Total duration of storm event in minutes
-#% answer: 60
-#% multiple: no
-#% required: no
-#% guisection: Steady state
 #%end
 
 #%option
@@ -458,10 +458,10 @@ def main():
         fluxmax=fluxmax)
 
     # determine type of model and run
-    if model = "dynamic":
+    if model == "dynamic":
         elevation = event.rainfall_series()
 
-    if model = "steady_state":
+    if model == "steady_state":
         elevation = event.rainfall_event()
 
     atexit.register(cleanup)
@@ -711,7 +711,7 @@ class Evolution:
         return evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference
 
 class DynamicEvolution:
-    def __init__(self, elevation, model, mode, precipitation, rain_intensity, rain_duration, rain_interval, temporaltype, elevation_timeseries, elevation_title, elevation_description, depth_timeseries, depth_title, depth_description, erdep_timeseries, erdep_title, erdep_description, flux_timeseries, flux_title, flux_description, difference_timeseries, difference_title, difference_description, start, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
+    def __init__(self, elevation, mode, precipitation, rain_intensity, rain_duration, rain_interval, temporaltype, elevation_timeseries, elevation_title, elevation_description, depth_timeseries, depth_title, depth_description, erdep_timeseries, erdep_title, erdep_description, flux_timeseries, flux_title, flux_description, difference_timeseries, difference_title, difference_description, start, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
         self.elevation = elevation
         self.mode = mode
         self.precipitation = precipitation
@@ -812,10 +812,10 @@ class DynamicEvolution:
         evol = Evolution(elevation=self.elevation, precipitation=self.precipitation, start=self.start, rain_intensity=self.rain_intensity, rain_interval=self.rain_interval, walkers=self.walkers, runoff=self.runoff, mannings=self.mannings, detachment=self.detachment, transport=self.transport, shearstress=self.shearstress, density=self.density, mass=self.mass, erdepmin=self.erdepmin, erdepmax=self.erdepmax, fluxmin=self.fluxmin, fluxmax=self.fluxmax)
 
         # determine mode and run model
-        if self.mode = "erosion_deposition_mode":
+        if self.mode == "erosion_deposition_mode":
             evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.erosion_deposition()
 
-        if self.mode = "flux_mode":
+        if self.mode == "flux_mode":
             evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
 
         # remove relative timestamps from r.sim.water and r.sim.sediment
@@ -891,10 +891,10 @@ class DynamicEvolution:
             evol.rain_intensity = rain_excess
 
             # determine mode and run model
-            if self.mode = "erosion_deposition_mode":
+            if self.mode == "erosion_deposition_mode":
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.erosion_deposition()
 
-            if self.mode = "flux_mode":
+            if self.mode == "flux_mode":
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
 
             # remove relative timestamps from r.sim.water and r.sim.sediment
@@ -1050,10 +1050,10 @@ class DynamicEvolution:
             evol.rain_intensity = float(initial[1]) # mm/hr
 
             # determine mode and run model
-            if self.mode = "erosion_deposition_mode":
+            if self.mode == "erosion_deposition_mode":
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.erosion_deposition()
 
-            if self.mode = "flux_mode":
+            if self.mode == "flux_mode":
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
 
             # remove relative timestamps from r.sim.water and r.sim.sediment
@@ -1127,10 +1127,10 @@ class DynamicEvolution:
                 evol.rain_intensity = rain_excess
 
                 # determine mode and run model
-                if self.mode = "erosion_deposition_mode":
+                if self.mode == "erosion_deposition_mode":
                     evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.erosion_deposition()
 
-                if self.mode = "flux_mode":
+                if self.mode == "flux_mode":
                     evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
 
                 # remove relative timestamps from r.sim.water and r.sim.sediment
