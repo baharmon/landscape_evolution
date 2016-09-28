@@ -29,14 +29,14 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #%end
 
 #%option
-#% key: model
+#% key: runs
 #% type: string
 #% required: yes
 #% multiple: no
-#% answer: dynamic
-#% options: steady_state,dynamic
-#% description: Steady state or dynamic model
-#% descriptions: steady_state;steady-state model;dynamic;dynamic model
+#% answer: series
+#% options: event,series
+#% description: Run for a single rainfall event or a series of events
+#% descriptions: event;single rainfall event;series;series of rainfall events
 #%end
 
 #%option
@@ -327,7 +327,7 @@ from grass.exceptions import CalledModuleError
 def main():
     options, flags = gscript.parser()
     elevation = options['elevation']
-    model = options['model']
+    runs = options['runs']
     mode = options['mode']
     precipitation = options['precipitation']
     start = options['start']
@@ -458,10 +458,10 @@ def main():
         fluxmax=fluxmax)
 
     # determine type of model and run
-    if model == "dynamic":
+    if runs == "series":
         elevation = event.rainfall_series()
 
-    if model == "steady_state":
+    if runs == "event":
         elevation = event.rainfall_event()
 
     atexit.register(cleanup)
