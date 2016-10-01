@@ -45,9 +45,9 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% required: yes
 #% multiple: no
 #% answer: erosion_deposition_mode
-#% options: erosion_deposition_mode,flux_mode
-#% description: Erosion deposition or detachment limited mode
-#% descriptions: erosion_deposition_mode;erosion-deposition mode;flux_mode;detachment limited mode
+#% options: erosion_deposition_mode,flux_mode,usped_mode
+#% description: Erosion deposition, detachment limited, or transport limited mode
+#% descriptions: erosion_deposition_mode;erosion-deposition mode;flux_mode;detachment limited mode;usped_mode;transport limited mode
 #%end
 
 #%option G_OPT_F_INPUT
@@ -781,6 +781,12 @@ class Evolution:
             flags='f')
 
         return evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference
+
+    def usped(self):
+        """a transport limited landscape evolution model
+        using simulated sediment flux to carve
+        a digital elevation model"""
+
 
 class DynamicEvolution:
     def __init__(self, elevation, mode, precipitation, rain_intensity, rain_duration, rain_interval, temporaltype, elevation_timeseries, elevation_title, elevation_description, depth_timeseries, depth_title, depth_description, erdep_timeseries, erdep_title, erdep_description, flux_timeseries, flux_title, flux_description, difference_timeseries, difference_title, difference_description, start, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
