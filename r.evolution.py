@@ -50,14 +50,6 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% descriptions: erosion_deposition_mode;erosion-deposition mode;flux_mode;detachment limited mode;usped_mode;transport limited mode
 #%end
 
-#%option G_OPT_F_INPUT
-#% key: precipitation
-#% description: Name of input precipitation file
-#% label: Precipitation file
-#% required: no
-#% guisection: Dynamic
-#%end
-
 #%option
 #% key: rain_intensity
 #% type: integer
@@ -65,7 +57,31 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% answer: 155
 #% multiple: no
 #% required: no
-#% guisection: Steady state
+#% guisection: Event
+#%end
+
+#%option G_OPT_F_INPUT
+#% key: precipitation
+#% description: Name of input precipitation file
+#% label: Precipitation file
+#% required: no
+#% guisection: Series
+#%end
+
+#%option G_OPT_R_INPUT
+#% key: k_factor
+#% description: Soil erodibility factor
+#% label: K factor
+#% required: no
+#% guisection: Transport limited
+#%end
+
+#%option G_OPT_R_INPUT
+#% key: c_factor
+#% description: Land cover factor
+#% label: C factor
+#% required: no
+#% guisection: Transport limited
 #%end
 
 #%option
@@ -75,7 +91,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% answer: 60
 #% multiple: no
 #% required: no
-#% guisection: Steady state
+#% guisection: Event
 #%end
 
 #%option G_OPT_R_INPUT
@@ -370,6 +386,8 @@ def main():
     erdepmax = options['erdepmax']
     fluxmin = options['fluxmin']
     fluxmax = options['fluxmax']
+    k_factor = options['k_factor']
+    c_factor = options['c_factor']
 
     # check for alternative input parameters
     if not runoff:
@@ -455,7 +473,9 @@ def main():
         erdepmin=erdepmin,
         erdepmax=erdepmax,
         fluxmin=fluxmin,
-        fluxmax=fluxmax)
+        fluxmax=fluxmax,
+        k_factor=k_factor,
+        c_factor=c_factor)
 
     # determine type of model and run
     if runs == "series":
@@ -470,7 +490,8 @@ def main():
 class Evolution:
     def __init__(self, elevation, precipitation, start, rain_intensity,
         rain_interval, walkers, runoff, mannings, detachment, transport,
-        shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
+        shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax,
+        k_factor, c_factor):
         self.elevation = elevation
         self.precipitation = precipitation
         self.start = start
@@ -488,6 +509,8 @@ class Evolution:
         self.erdepmax = erdepmax
         self.fluxmin = fluxmin
         self.fluxmax = fluxmax
+        self.k_factor = k_factor
+        self.c_factor = c_factor
 
     def erosion_deposition(self):
         """a small-scale, process-based landscape evolution model
@@ -784,12 +807,158 @@ class Evolution:
 
     def usped(self):
         """a transport limited landscape evolution model
-        using simulated sediment flux to carve
+        using the USPED (Unit Stream Power Based Model) model to evolve
         a digital elevation model"""
+
+        # assign variables
+        slope = 'slope'
+        aspect = 'aspect'
+        qsx = 'qsx'
+        qsxdx = 'qsxdx'
+        qsy = 'qsy'
+        qsydy = 'qsydy'
+
+        # parse time
+        year = int(self.start[:4])
+        month = int(self.start[5:7])
+        day = int(self.start[8:10])
+        hours = int(self.start[11:13])
+        minutes = int(self.start[14:16])
+        seconds = int(self.start[17:19])
+        time = datetime.datetime(year, month, day, hours, minutes, seconds)
+
+        # advance time
+        time = time + datetime.timedelta(minutes=self.rain_interval)
+        time = time.isoformat(" ")
+
+        # timestamp
+        evolved_elevation = 'elevation_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+        depth = 'depth_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+        sediment_flux = 'flux_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/ms
+        erosion_deposition = 'erosion_deposition_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/m2s
+        difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+
+        # set temporary region
+        gscript.use_temp_region()
+
+        # compute slope and aspect
+        gscript.run_command('r.slope.aspect',
+            elevation=self.elevation,
+            slope=slope,
+            aspect=aspect,
+            overwrite=True)
+
+        # grow border to fix edge effects of moving window computations
+        gscript.run_command('r.grow.distance',
+            input=slope,
+            value=grow_slope,
+            overwrite=True)
+        slope = grow_slope
+        gscript.run_command('r.grow.distance',
+            input=aspect,
+            value=grow_aspect,
+            overwrite=True)
+        aspect = grow_aspect
+
+        # compute flow accumulation
+        gscript.run_command('r.flow',
+            elevation=self.elevation,
+            aspect=aspect,
+            flowaccumulation=depth,
+            overwrite=True)
+
+        # compute sediment flow at sediment transport capacity
+        gscript.run_command('r.mapcalc',
+            expression="{sedflux} = 270. * {k_factor} * {c_factor} * {flowacc} * sin({slope})".format(c_factor=self.c_factor,
+                k_factor=self.k_factor,
+                slope=slope,
+                flowacc=depth,
+                sedflow=sediment_flux),
+            overwrite=True)
+
+        # compute sediment flow rate in x direction (m^2/s)
+        gscript.run_command('r.mapcalc',
+            expression="{qsx} = {sedflow} * cos({aspect})".format(sedflow=sediment_flux,
+                aspect=aspect, qsx=qsx),
+            overwrite=True)
+
+        # compute sediment flow rate in y direction (m^2/s)
+        gscript.run_command('r.mapcalc',
+            expression="{qsy} = {sedflow} * sin({aspect})".format(sedflow=sediment_flux,
+                aspect=aspect,
+                qsy=qsy),
+            overwrite=True)
+
+        # compute change in sediment flow in x direction as partial derivative of sediment flow field
+        gscript.run_command('r.slope.aspect',
+            elevation=qsx,
+            dx=qsxdx,
+            overwrite=True)
+
+        # compute change in sediment flow in y direction as partial derivative of sediment flow field
+        gscript.run_command('r.slope.aspect',
+            elevation=qsy,
+            dy=qsydy,
+            overwrite=True)
+
+        # grow border to fix edge effects of moving window computations
+        gscript.run_command('r.grow.distance',
+            input=qsydy,
+            value=grow_qsydy,
+            overwrite=True)
+        qsydy = grow_qsydy
+        gscript.run_command('r.grow.distance',
+            input=qsxdx,
+            value=grow_qsxdx,
+            overwrite=True)
+        qsxdx = grow_qsxdx
+
+        # compute net erosion-deposition (kg/m^2s) as divergence of sediment flow
+        gscript.run_command('r.mapcalc',
+            expression="{erdep} = {qsxdx} + {qsydy}".format(erdep=erosion_deposition,
+                qsxdx=qsxdx,
+                qsydy=qsydy),
+            overwrite=True)
+        gscript.write_command('r.colors',
+            map=erosion_deposition,
+            rules='-',
+            stdin='-15000 100 0 100\n-100 magenta\n-10 red\n-1 orange\n-0.1 yellow\n0 200 255 200\n0.1 cyan\n1 aqua\n10 blue\n100 0 0 100\n18000 black')
+
+        # evolve landscape
+        """change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) / sediment mass density (kg/m^3)"""
+        gscript.run_command('r.mapcalc',
+            expression="{evolved_elevation} = {elevation}-({rain_interval}*60*{erosion_deposition}/{density})".format(evolved_elevation=evolved_elevation, elevation=self.elevation, rain_interval=self.rain_interval, erosion_deposition=erosion_deposition, density=self.density),
+            overwrite=True)
+        gscript.run_command('r.colors',
+            map=evolved_elevation,
+            color='elevation')
+
+        # compute elevation change
+        gscript.run_command('r.mapcalc',
+            expression="{difference} = {elevation}-{evolved_elevation}".format(difference=difference, elevation=self.elevation, evolved_elevation=evolved_elevation),
+            overwrite=True)
+        gscript.run_command('r.colors',
+            map=difference,
+            color='differences')
+
+        # remove temporary maps
+        gscript.run_command('g.remove',
+            type='raster',
+            name=['slope', 'aspect', 'grow_slope', 'grow_aspect', 'qsx', 'qsy', 'qsxdx', 'qsydy', 'grow_qsxdx', 'grow_qsydy'],
+            flags='f')
+
+        return evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference
 
 
 class DynamicEvolution:
-    def __init__(self, elevation, mode, precipitation, rain_intensity, rain_duration, rain_interval, temporaltype, elevation_timeseries, elevation_title, elevation_description, depth_timeseries, depth_title, depth_description, erdep_timeseries, erdep_title, erdep_description, flux_timeseries, flux_title, flux_description, difference_timeseries, difference_title, difference_description, start, walkers, runoff, mannings, detachment, transport, shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax):
+    def __init__(self, elevation, mode, precipitation, rain_intensity,
+        rain_duration, rain_interval, temporaltype, elevation_timeseries,
+        elevation_title, elevation_description, depth_timeseries, depth_title,
+        depth_description, erdep_timeseries, erdep_title, erdep_description,
+        flux_timeseries, flux_title, flux_description, difference_timeseries,
+        difference_title, difference_description, start, walkers, runoff,
+        mannings, detachment, transport, shearstress, density, mass,
+        erdepmin, erdepmax, fluxmin, fluxmax, k_factor, c_factor):
         self.elevation = elevation
         self.mode = mode
         self.precipitation = precipitation
@@ -825,6 +994,8 @@ class DynamicEvolution:
         self.erdepmax = erdepmax
         self.fluxmin = fluxmin
         self.fluxmax = fluxmax
+        self.k_factor = k_factor
+        self.c_factor = c_factor
 
     def rainfall_event(self):
         """a dynamic, process-based landscape evolution model
@@ -887,7 +1058,25 @@ class DynamicEvolution:
             overwrite=True)
 
         # create evolution object
-        evol = Evolution(elevation=self.elevation, precipitation=self.precipitation, start=self.start, rain_intensity=self.rain_intensity, rain_interval=self.rain_interval, walkers=self.walkers, runoff=self.runoff, mannings=self.mannings, detachment=self.detachment, transport=self.transport, shearstress=self.shearstress, density=self.density, mass=self.mass, erdepmin=self.erdepmin, erdepmax=self.erdepmax, fluxmin=self.fluxmin, fluxmax=self.fluxmax)
+        evol = Evolution(elevation=self.elevation,
+            precipitation=self.precipitation,
+            start=self.start,
+            rain_intensity=self.rain_intensity,
+            rain_interval=self.rain_interval,
+            walkers=self.walkers,
+            runoff=self.runoff,
+            mannings=self.mannings,
+            detachment=self.detachment,
+            transport=self.transport,
+            shearstress=self.shearstress,
+            density=self.density,
+            mass=self.mass,
+            erdepmin=self.erdepmin,
+            erdepmax=self.erdepmax,
+            fluxmin=self.fluxmin,
+            fluxmax=self.fluxmax,
+            k_factor=self.k_factor,
+            c_factor=self.c_factor)
 
         # determine mode and run model
         if self.mode == "erosion_deposition_mode":
@@ -895,6 +1084,9 @@ class DynamicEvolution:
 
         if self.mode == "flux_mode":
             evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
+
+        if self.mode == "usped_mode":
+            evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.usped()
 
         # remove relative timestamps from r.sim.water and r.sim.sediment
         gscript.run_command('r.timestamp',
@@ -1104,7 +1296,25 @@ class DynamicEvolution:
             overwrite=True)
 
         # create evolution object
-        evol = Evolution(elevation=self.elevation, precipitation=self.precipitation, start=self.start, rain_intensity=self.rain_intensity, rain_interval=self.rain_interval, walkers=self.walkers, runoff=self.runoff, mannings=self.mannings, detachment=self.detachment, transport=self.transport, shearstress=self.shearstress, density=self.density, mass=self.mass, erdepmin=self.erdepmin, erdepmax=self.erdepmax, fluxmin=self.fluxmin, fluxmax=self.fluxmax)
+        evol = Evolution(elevation=self.elevation,
+            precipitation=self.precipitation,
+            start=self.start,
+            rain_intensity=self.rain_intensity,
+            rain_interval=self.rain_interval,
+            walkers=self.walkers,
+            runoff=self.runoff,
+            mannings=self.mannings,
+            detachment=self.detachment,
+            transport=self.transport,
+            shearstress=self.shearstress,
+            density=self.density,
+            mass=self.mass,
+            erdepmin=self.erdepmin,
+            erdepmax=self.erdepmax,
+            fluxmin=self.fluxmin,
+            fluxmax=self.fluxmax,
+            k_factor=self.k_factor,
+            c_factor=self.c_factor)
 
         # open txt file with precipitation data
         with open(evol.precipitation) as csvfile:
