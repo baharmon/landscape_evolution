@@ -54,7 +54,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% key: rain_intensity
 #% type: integer
 #% description: Rainfall intensity in mm/hr
-#% answer: 155
+#% answer: 150
 #% multiple: no
 #% required: no
 #% guisection: Event
@@ -264,7 +264,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% key: rain_interval
 #% type: integer
 #% description: Time interval between evolution events in minutes
-#% answer: 1
+#% answer: 10
 #% multiple: no
 #% required: yes
 #% guisection: Parameters
@@ -413,37 +413,37 @@ def main():
 
     # check for alternative input parameters
     if not runoff:
-        runoff = 'runoff'
+        runoff = 'runoff_constant'
         gscript.run_command('r.mapcalc',
             expression="runoff = {runoff_value}".format(**locals()),
             overwrite=True)
 
     if not mannings:
-        mannings = 'mannings'
+        mannings = 'mannings_constant'
         gscript.run_command('r.mapcalc',
             expression="mannings = {mannings_value}".format(**locals()),
             overwrite=True)
 
     if not detachment:
-        detachment = 'detachment'
+        detachment = 'detachment_constant'
         gscript.run_command('r.mapcalc',
             expression="detachment = {detachment_value}".format(**locals()),
             overwrite=True)
 
     if not transport:
-        transport = 'transport'
+        transport = 'transport_constant'
         gscript.run_command('r.mapcalc',
             expression="transport = {transport_value}".format(**locals()),
             overwrite=True)
 
     if not shearstress:
-        shearstress = 'shearstress'
+        shearstress = 'shearstress_constant'
         gscript.run_command('r.mapcalc',
             expression="shearstress = {shearstress_value}".format(**locals()),
             overwrite=True)
 
     if not mass:
-        mass = 'mass'
+        mass = 'mass_constant'
         gscript.run_command('r.mapcalc',
             expression="mass = {mass_value}".format(**locals()),
             overwrite=True)
@@ -461,13 +461,13 @@ def main():
             overwrite=True)
 
     if not c_factor:
-        c_factor = 'c_factor'
+        c_factor = 'c_factor_constant'
         gscript.run_command('r.mapcalc',
             expression="c_factor = {c_factor_value}".format(**locals()),
             overwrite=True)
 
     if not k_factor:
-        k_factor = 'k_factor'
+        k_factor = 'k_factor_constant'
         gscript.run_command('r.mapcalc',
             expression="k_factor = {k_factor_value}".format(**locals()),
             overwrite=True)
@@ -689,7 +689,14 @@ class Evolution:
         # remove temporary maps
         gscript.run_command('g.remove',
             type='raster',
-            name=['rain', 'evolving_elevation', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'],
+            name=['rain',
+                'evolving_elevation',
+                'dx',
+                'dy',
+                'grow_slope',
+                'grow_aspect',
+                'grow_dx',
+                'grow_dy'],
             flags='f')
 
         return evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference
@@ -836,7 +843,14 @@ class Evolution:
         # remove temporary maps
         gscript.run_command('g.remove',
             type='raster',
-            name=['rain', 'evolving_elevation', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'],
+            name=['rain',
+                'evolving_elevation',
+                'dx',
+                'dy',
+                'grow_slope',
+                'grow_aspect',
+                'grow_dx',
+                'grow_dy'],
             flags='f')
 
         return evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference
@@ -986,7 +1000,16 @@ class Evolution:
         # remove temporary maps
         gscript.run_command('g.remove',
             type='raster',
-            name=['slope', 'aspect', 'grow_slope', 'grow_aspect', 'qsx', 'qsy', 'qsxdx', 'qsydy', 'grow_qsxdx', 'grow_qsydy'],
+            name=['slope',
+                'aspect',
+                'grow_slope',
+                'grow_aspect',
+                'qsx',
+                'qsy',
+                'qsxdx',
+                'qsydy',
+                'grow_qsxdx',
+                'grow_qsydy'],
             flags='f')
 
         return evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference
@@ -1548,7 +1571,29 @@ def cleanup():
         # remove temporary maps
         gscript.run_command('g.remove',
             type='raster',
-            name=['rain_excess', 'rain', 'evolving_elevation', 'dx', 'dy', 'grow_slope', 'grow_aspect', 'grow_dx', 'grow_dy'],
+            name=['rain_excess',
+                'rain',
+                'evolving_elevation',
+                'dx',
+                'dy',
+                'grow_slope',
+                'grow_aspect',
+                'grow_dx',
+                'grow_dy',
+                'qsx',
+                'qsy',
+                'qsxdx',
+                'qsydy',
+                'grow_qsxdx',
+                'grow_qsydy'
+                'runoff_constant',
+                'mannings_constant',
+                'detachment_constant',
+                'transport_constant',
+                'shearstress_constant',
+                'mass_constant',
+                'c_factor_constant',
+                'k_factor_constant'],
             flags='f')
 
     except CalledModuleError:
