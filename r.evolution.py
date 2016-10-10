@@ -681,9 +681,10 @@ class Evolution:
         gscript.run_command('r.mapcalc',
             expression="{difference} = {elevation}-{evolved_elevation}".format(difference=difference, elevation=self.elevation, evolved_elevation=evolved_elevation),
             overwrite=True)
-        gscript.run_command('r.colors',
+        gscript.write_command('r.colors',
             map=difference,
-            color='differences')
+            rules='-',
+            stdin='-15000 100 0 100\n-100 magenta\n-10 red\n-1 orange\n-0.1 yellow\n0 200 255 200\n0.1 cyan\n1 aqua\n10 blue\n100 0 0 100\n18000 black')
 
         # remove temporary maps
         gscript.run_command('g.remove',
@@ -827,9 +828,10 @@ class Evolution:
         gscript.run_command('r.mapcalc',
             expression="{difference} = {elevation}-{evolved_elevation}".format(difference=difference, elevation=self.elevation, evolved_elevation=evolved_elevation),
             overwrite=True)
-        gscript.run_command('r.colors',
+        gscript.write_command('r.colors',
             map=difference,
-            color='differences')
+            rules='-',
+            stdin='-15000 100 0 100\n-100 magenta\n-10 red\n-1 orange\n-0.1 yellow\n0 200 255 200\n0.1 cyan\n1 aqua\n10 blue\n100 0 0 100\n18000 black')
 
         # remove temporary maps
         gscript.run_command('g.remove',
@@ -976,9 +978,10 @@ class Evolution:
         gscript.run_command('r.mapcalc',
             expression="{difference} = {elevation}-{evolved_elevation}".format(difference=difference, elevation=self.elevation, evolved_elevation=evolved_elevation),
             overwrite=True)
-        gscript.run_command('r.colors',
+        gscript.write_command('r.colors',
             map=difference,
-            color='differences')
+            rules='-',
+            stdin='-15000 100 0 100\n-100 magenta\n-10 red\n-1 orange\n-0.1 yellow\n0 200 255 200\n0.1 cyan\n1 aqua\n10 blue\n100 0 0 100\n18000 black')
 
         # remove temporary maps
         gscript.run_command('g.remove',
@@ -1273,9 +1276,11 @@ class DynamicEvolution:
         gscript.run_command('r.mapcalc',
             expression="{net_difference} = {elevation}-{evolved_elevation}".format(net_difference=net_difference, elevation=self.elevation, evolved_elevation=evol.elevation),
             overwrite=True)
-        gscript.run_command('r.colors',
+        gscript.write_command('r.colors',
             map=net_difference,
-            color='differences')
+            rules='-',
+            stdin='-15000 100 0 100\n-100 magenta\n-10 red\n-1 orange\n-0.1 yellow\n0 200 255 200\n0.1 cyan\n1 aqua\n10 blue\n100 0 0 100\n18000 black')
+
 
     def rainfall_series(self):
         """a dynamic, process-based landscape evolution model
@@ -1532,9 +1537,6 @@ class DynamicEvolution:
             gscript.run_command('r.mapcalc',
                 expression="{net_difference} = {elevation}-{evolved_elevation}".format(net_difference=net_difference, elevation=self.elevation, evolved_elevation=evol.elevation),
                 overwrite=True)
-            # gscript.run_command('r.colors',
-            #     map=net_difference,
-            #     color='differences')
             gscript.write_command('r.colors',
                 map=net_difference,
                 rules='-',
