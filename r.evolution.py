@@ -1532,9 +1532,14 @@ class DynamicEvolution:
             gscript.run_command('r.mapcalc',
                 expression="{net_difference} = {elevation}-{evolved_elevation}".format(net_difference=net_difference, elevation=self.elevation, evolved_elevation=evol.elevation),
                 overwrite=True)
-            gscript.run_command('r.colors',
-                map=net_difference,
-                color='differences')
+            # gscript.run_command('r.colors',
+            #     map=net_difference,
+            #     color='differences')
+            gscript.write_command('r.colors',
+                map=erdep,
+                rules='-',
+                stdin='-15000 100 0 100\n-100 magenta\n-10 red\n-1 orange\n-0.1 yellow\n0 200 255 200\n0.1 cyan\n1 aqua\n10 blue\n100 0 0 100\n18000 black')
+
 
 def cleanup():
     try:
