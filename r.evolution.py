@@ -813,10 +813,14 @@ class Evolution:
         # assign variables
         slope = 'slope'
         aspect = 'aspect'
+        grow_slope = 'grow_slope'
+        grow_aspect  = 'grow_aspect'
         qsx = 'qsx'
         qsxdx = 'qsxdx'
         qsy = 'qsy'
         qsydy = 'qsydy'
+        grow_qsxdx = 'grow_qsxdx'
+        grow_qsydy = 'grow_qsydy'
 
         # parse time
         year = int(self.start[:4])
