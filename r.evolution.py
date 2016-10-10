@@ -1167,6 +1167,9 @@ class DynamicEvolution:
             if self.mode == "flux_mode":
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
 
+            if self.mode == "usped_mode":
+                evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.usped()
+
             # remove relative timestamps from r.sim.water and r.sim.sediment
             gscript.run_command('r.timestamp',
                 map=depth,
@@ -1344,6 +1347,9 @@ class DynamicEvolution:
             if self.mode == "flux_mode":
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
 
+            if self.mode == "usped_mode":
+                evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.usped()
+
             # remove relative timestamps from r.sim.water and r.sim.sediment
             gscript.run_command('r.timestamp',
                 map=depth,
@@ -1420,6 +1426,9 @@ class DynamicEvolution:
 
                 if self.mode == "flux_mode":
                     evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
+
+                if self.mode == "usped_mode":
+                    evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.usped()
 
                 # remove relative timestamps from r.sim.water and r.sim.sediment
                 gscript.run_command('r.timestamp',
