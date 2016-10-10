@@ -873,7 +873,7 @@ class Evolution:
 
         # compute sediment flow at sediment transport capacity
         gscript.run_command('r.mapcalc',
-            expression="{sedflux} = 270. * {k_factor} * {c_factor} * {flowacc} * sin({slope})".format(c_factor=self.c_factor,
+            expression="{sedflow} = 270. * {k_factor} * {c_factor} * {flowacc} * sin({slope})".format(c_factor=self.c_factor,
                 k_factor=self.k_factor,
                 slope=slope,
                 flowacc=depth,
