@@ -76,11 +76,31 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% guisection: Transport limited
 #%end
 
+#%option
+#% key: k_factor_value
+#% type: double
+#% description: Soil erodibility constant
+#% label: K factor constant
+#% answer: 0.25
+#% multiple: no
+#% guisection: Transport limited
+#%end
+
 #%option G_OPT_R_INPUT
 #% key: c_factor
 #% description: Land cover factor
 #% label: C factor
 #% required: no
+#% guisection: Transport limited
+#%end
+
+#%option
+#% key: c_factor_value
+#% type: double
+#% description: Land cover constant
+#% label: C factor constant
+#% answer: 0.1
+#% multiple: no
 #% guisection: Transport limited
 #%end
 
@@ -388,6 +408,8 @@ def main():
     fluxmax = options['fluxmax']
     k_factor = options['k_factor']
     c_factor = options['c_factor']
+    k_factor_value = options['k_factor_value']
+    c_factor_value = options['c_factor_value']
 
     # check for alternative input parameters
     if not runoff:
@@ -436,6 +458,18 @@ def main():
         # convert g/cm^3 to kg/m^3
         gscript.run_command('r.mapcalc',
             expression="density = {density_value} * 1000".format(**locals()),
+            overwrite=True)
+
+    if not c_factor:
+        c_factor = 'c_factor'
+        gscript.run_command('r.mapcalc',
+            expression="c_factor = {c_factor_value}".format(**locals()),
+            overwrite=True)
+
+    if not k_factor:
+        k_factor = 'k_factor'
+        gscript.run_command('r.mapcalc',
+            expression="k_factor = {k_factor_value}".format(**locals()),
             overwrite=True)
 
     # create dynamic_evolution object
