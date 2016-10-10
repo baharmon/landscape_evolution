@@ -935,7 +935,8 @@ class Evolution:
             overwrite=True)
         gscript.run_command('r.colors',
             map=evolved_elevation,
-            color='elevation')
+            color='elevation',
+            flags='e')
 
         # compute elevation change
         gscript.run_command('r.mapcalc',
