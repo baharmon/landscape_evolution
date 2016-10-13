@@ -26,6 +26,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #%option G_OPT_R_ELEV
 #% key: elevation
 #% required: yes
+#% guisection: Basic
 #%end
 
 #%option
@@ -37,6 +38,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% options: event,series
 #% description: Run for a single rainfall event or a series of events
 #% descriptions: event;single rainfall event;series;series of rainfall events
+#% guisection: Basic
 #%end
 
 #%option
@@ -48,13 +50,24 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% options: erosion_deposition_mode,flux_mode,usped_mode
 #% description: Erosion deposition, detachment limited, or transport limited mode
 #% descriptions: erosion_deposition_mode;erosion-deposition mode;flux_mode;detachment limited mode;usped_mode;transport limited mode
+#% guisection: Basic
 #%end
 
 #%option
-#% key: rain
+#% key: rainfall_rate
 #% type: integer
 #% description: Rainfall in mm/hr
 #% answer: 150
+#% multiple: no
+#% required: no
+#% guisection: Event
+#%end
+
+#%option
+#% key: rain_duration
+#% type: integer
+#% description: Total duration of storm event in minutes
+#% answer: 60
 #% multiple: no
 #% required: no
 #% guisection: Event
@@ -105,29 +118,29 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #%end
 
 #%option
-#% key: rain_duration
+#% key: walkers
 #% type: integer
-#% description: Total duration of storm event in minutes
-#% answer: 60
+#% description: Number of walkers (max = 7000000)
+#% answer: 1000000
 #% multiple: no
-#% required: no
-#% guisection: Event
+#% required: yes
+#% guisection: Input
 #%end
 
 #%option G_OPT_R_INPUT
-#% key: infiltration
-#% description: Infiltration rate in mm/hr
-#% label: Infiltration rate
+#% key: runoff
+#% description: Runoff coefficient (0.6 for bare earth, 0.35 for grass or crops, 0.5 for shrubs and trees, 0.25 for forest, 0.95 for roads)
+#% label: Runoff coefficient
 #% required: no
 #% guisection: Input
 #%end
 
 #%option
-#% key: infiltration_value
+#% key: runoff_value
 #% type: double
-#% description: Infiltration rate in mm/hr
-#% label: Infiltration rate
-#% answer: 0
+#% description: Runoff coefficient (0.6 for bare earth, 0.35 for grass or crops, 0.5 for shrubs and trees, 0.25 for forest, 0.95 for roads)
+#% label: Runoff coefficient
+#% answer: 0.35
 #% multiple: no
 #% guisection: Input
 #%end
@@ -241,50 +254,13 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #%end
 
 #%option
-#% key: start
-#% type: string
-#% description: Start time in year-month-day hour:minute:second format
-#% answer: 2015-10-06 00:00:00
-#% multiple: no
-#% required: yes
-#% guisection: Parameters
-#%end
-
-#%option
-#% key: walkers
-#% type: integer
-#% description: Number of walkers (max = 7000000)
-#% answer: 1000000
-#% multiple: no
-#% required: yes
-#% guisection: Parameters
-#%end
-
-#%option
-#% key: rain_interval
-#% type: integer
-#% description: Time interval between evolution events in minutes
-#% answer: 10
-#% multiple: no
-#% required: yes
-#% guisection: Parameters
-#%end
-
-#%option G_OPT_T_TYPE
-#% key: temporaltype
-#% answer: absolute
-#% required: yes
-#% guisection: Parameters
-#%end
-
-#%option
 #% key: erdepmin
 #% type: double
 #% description: Minimum values for erosion-deposition in kg/m^2s
 #% label: Minimum values for erosion-deposition
 #% answer: -1.0
 #% multiple: no
-#% guisection: Parameters
+#% guisection: Input
 #%end
 
 #%option
@@ -294,17 +270,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% label: Maximum values for erosion-deposition
 #% answer: 1.0
 #% multiple: no
-#% guisection: Parameters
-#%end
-
-#%option
-#% key: fluxmin
-#% type: double
-#% description: Minimum values for sediment flux in kg/ms
-#% label: Minimum values for sediment flux
-#% answer: -3.0
-#% multiple: no
-#% guisection: Parameters
+#% guisection: Input
 #%end
 
 #%option
@@ -314,7 +280,34 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% label: Maximum values for sediment flux
 #% answer: 3.0
 #% multiple: no
-#% guisection: Parameters
+#% guisection: Input
+#%end
+
+#%option
+#% key: start
+#% type: string
+#% description: Start time in year-month-day hour:minute:second format
+#% answer: 2015-10-06 00:00:00
+#% multiple: no
+#% required: yes
+#% guisection: Temporal
+#%end
+
+#%option
+#% key: rain_interval
+#% type: integer
+#% description: Time interval between evolution events in minutes
+#% answer: 10
+#% multiple: no
+#% required: yes
+#% guisection: Temporal
+#%end
+
+#%option G_OPT_T_TYPE
+#% key: temporaltype
+#% answer: absolute
+#% required: yes
+#% guisection: Temporal
 #%end
 
 #%option G_OPT_STRDS_OUTPUT
@@ -367,7 +360,7 @@ def main():
     mode = options['mode']
     precipitation = options['precipitation']
     start = options['start']
-    rain = options['rain']
+    rainfall_rate = options['rainfall_rate']
     rain_duration = options['rain_duration']
     rain_interval = options['rain_interval']
     temporaltype = options['temporaltype']
@@ -387,8 +380,8 @@ def main():
     difference_title = 'Evolved difference'
     difference_description = 'Time-series of evolved difference in elevation'
     walkers = options['walkers']
-    infiltration = options['infiltration']
-    infiltration_value = options['infiltration_value']
+    runoff = options['runoff']
+    runoff_value = options['runoff_value']
     mannings = options['mannings']
     mannings_value = options['mannings_value']
     detachment = options['detachment']
@@ -404,7 +397,6 @@ def main():
     mass_value = options['mass_value']
     erdepmin = options['erdepmin']
     erdepmax = options['erdepmax']
-    fluxmin = options['fluxmin']
     fluxmax = options['fluxmax']
     k_factor = options['k_factor']
     c_factor = options['c_factor']
@@ -412,10 +404,10 @@ def main():
     c_factor_value = options['c_factor_value']
 
     # check for alternative input parameters
-    if not infiltration:
-        infiltration = 'infiltration_constant'
+    if not runoff:
+        runoff = 'runoff_constant'
         gscript.run_command('r.mapcalc',
-            expression="infiltration = {infiltration_value}".format(**locals()),
+            expression="runoff = {runoff_value}".format(**locals()),
             overwrite=True)
 
     if not mannings:
@@ -476,7 +468,7 @@ def main():
     event = DynamicEvolution(elevation=elevation,
         mode=mode,
         precipitation=precipitation,
-        rain=rain,
+        rainfall_rate=rainfall_rate,
         rain_duration=rain_duration,
         rain_interval=rain_interval,
         temporaltype=temporaltype,
@@ -497,7 +489,7 @@ def main():
         difference_description=difference_description,
         start=start,
         walkers=walkers,
-        infiltration=infiltration,
+        runoff=runoff,
         mannings=mannings,
         detachment=detachment,
         transport=transport,
@@ -506,7 +498,6 @@ def main():
         mass=mass,
         erdepmin=erdepmin,
         erdepmax=erdepmax,
-        fluxmin=fluxmin,
         fluxmax=fluxmax,
         k_factor=k_factor,
         c_factor=c_factor)
@@ -522,17 +513,17 @@ def main():
     sys.exit(0)
 
 class Evolution:
-    def __init__(self, elevation, precipitation, start, rain,
-        rain_interval, walkers, infiltration, mannings, detachment, transport,
-        shearstress, density, mass, erdepmin, erdepmax, fluxmin, fluxmax,
+    def __init__(self, elevation, precipitation, start, rainfall_rate,
+        rain_interval, walkers, runoff, mannings, detachment, transport,
+        shearstress, density, mass, erdepmin, erdepmax, fluxmax,
         k_factor, c_factor):
         self.elevation = elevation
         self.precipitation = precipitation
         self.start = start
-        self.rain = int(rain)
+        self.rainfall_rate = int(rainfall_rate)
         self.rain_interval = int(rain_interval)
         self.walkers = walkers
-        self.infiltration = infiltration
+        self.runoff = runoff
         self.mannings = mannings
         self.detachment = detachment
         self.transport = transport
@@ -541,7 +532,6 @@ class Evolution:
         self.mass = mass
         self.erdepmin = erdepmin
         self.erdepmax = erdepmax
-        self.fluxmin = fluxmin
         self.fluxmax = fluxmax
         self.k_factor = k_factor
         self.c_factor = c_factor
@@ -617,13 +607,20 @@ class Evolution:
             overwrite=True)
         dy = grow_dy
 
+        # hyrdology parameters
+        gscript.run_command('r.mapcalc',
+            expression="{rain} = {rainfall_rate}*{runoff}".format(rain=rain,
+                rainfall_rate=self.rainfall_rate,
+                runoff=self.runoff),
+            overwrite=True)
+
         # hydrologic simulation
         gscript.run_command('r.sim.water',
             elevation=self.elevation,
             dx=dx,
             dy=dy,
             rain=rain,
-            infil=self.infiltration,
+            runoff=self.runoff,
             man=self.mannings,
             depth=depth,
             niterations=self.rain_interval,
@@ -655,7 +652,7 @@ class Evolution:
             raster=erdep)
 
         gscript.run_command('r.mapcalc',
-            expression="{sediment_flux} = if({sedflux}<{fluxmin},{fluxmin},if({sedflux}>{fluxmax},{fluxmax},{sedflux}))".format(sediment_flux=sediment_flux, sedflux=sedflux, fluxmin=self.fluxmin, fluxmax=self.fluxmax),
+            expression="{sediment_flux} = if({sedflux}>{fluxmax},{fluxmax},{sedflux})".format(sediment_flux=sediment_flux, sedflux=sedflux, fluxmax=self.fluxmax),
             overwrite=True)
         gscript.run_command('r.colors',
             map=sediment_flux,
@@ -765,13 +762,19 @@ class Evolution:
             overwrite=True)
         dy = grow_dy
 
+        # hyrdology parameters
+        gscript.run_command('r.mapcalc',
+            expression="{rain} = {rainfall_rate}*{runoff}".format(rain=rain,
+                rainfall_rate=self.rainfall_rate,
+                runoff=self.runoff),
+            overwrite=True)
+
         # hydrologic simulation
         gscript.run_command('r.sim.water',
             elevation=self.elevation,
             dx=dx,
             dy=dy,
             rain=rain,
-            infil=infiltration,
             man=self.mannings,
             depth=depth,
             niterations=self.rain_interval,
@@ -804,7 +807,7 @@ class Evolution:
 
         # filter outliers
         gscript.run_command('r.mapcalc',
-            expression="{sediment_flux} = if({sedflux}<{fluxmin},{fluxmin},if({sedflux}>{fluxmax},{fluxmax},{sedflux}))".format(sediment_flux=sediment_flux, sedflux=sedflux, fluxmin=self.fluxmin, fluxmax=self.fluxmax),
+            expression="{sediment_flux} = if({sedflux}>{fluxmax},{fluxmax},{sedflux})".format(sediment_flux=sediment_flux, sedflux=sedflux, fluxmax=self.fluxmax),
             overwrite=True)
         gscript.run_command('r.colors',
             map=sediment_flux,
@@ -859,6 +862,7 @@ class Evolution:
         qsydy = 'qsydy'
         grow_qsxdx = 'grow_qsxdx'
         grow_qsydy = 'grow_qsydy'
+        erdep = 'erdep' # kg/m^2s
 
         # parse time
         year = int(self.start[:4])
@@ -879,6 +883,9 @@ class Evolution:
         sediment_flux = 'flux_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/ms
         erosion_deposition = 'erosion_deposition_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/m2s
         difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+
+        # compute R factor
+        r_factor = '270.'
 
         # set temporary region
         gscript.use_temp_region()
@@ -911,7 +918,8 @@ class Evolution:
 
         # compute sediment flow at sediment transport capacity
         gscript.run_command('r.mapcalc',
-            expression="{sedflow} = 270. * {k_factor} * {c_factor} * {flowacc} * sin({slope})".format(c_factor=self.c_factor,
+            expression="{sedflow} = {r_factor} * {k_factor} * {c_factor} * {flowacc} * sin({slope})".format(r_factor=r_factor,
+                c_factor=self.c_factor,
                 k_factor=self.k_factor,
                 slope=slope,
                 flowacc=depth,
@@ -957,10 +965,17 @@ class Evolution:
 
         # compute net erosion-deposition (kg/m^2s) as divergence of sediment flow
         gscript.run_command('r.mapcalc',
-            expression="{erdep} = {qsxdx} + {qsydy}".format(erdep=erosion_deposition,
+            expression="{erdep} = {qsxdx} + {qsydy}".format(erdep=erdep,
                 qsxdx=qsxdx,
                 qsydy=qsydy),
             overwrite=True)
+
+        # filter outliers
+        gscript.run_command('r.mapcalc',
+            expression="{erosion_deposition} = if({erdep}<{erdepmin},{erdepmin},if({erdep}>{erdepmax},{erdepmax},{erdep}))".format(erosion_deposition=erosion_deposition, erdep=erdep, erdepmin=self.erdepmin, erdepmax=self.erdepmax),
+            overwrite=True)
+
+        # set color table
         gscript.write_command('r.colors',
             map=erosion_deposition,
             rules='-',
@@ -973,8 +988,7 @@ class Evolution:
             overwrite=True)
         gscript.run_command('r.colors',
             map=evolved_elevation,
-            color='elevation',
-            flags='e')
+            color='elevation')
 
         # compute elevation change
         gscript.run_command('r.mapcalc',
@@ -997,26 +1011,27 @@ class Evolution:
                 'qsxdx',
                 'qsydy',
                 'grow_qsxdx',
-                'grow_qsydy'],
+                'grow_qsydy',
+                'erdep'],
             flags='f')
 
         return evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference
 
 
 class DynamicEvolution:
-    def __init__(self, elevation, mode, precipitation, rain,
+    def __init__(self, elevation, mode, precipitation, rainfall_rate,
         rain_duration, rain_interval, temporaltype, elevation_timeseries,
         elevation_title, elevation_description, depth_timeseries, depth_title,
         depth_description, erdep_timeseries, erdep_title, erdep_description,
         flux_timeseries, flux_title, flux_description, difference_timeseries,
-        difference_title, difference_description, start, walkers, infiltration,
+        difference_title, difference_description, start, walkers, runoff,
         mannings, detachment, transport, shearstress, density, mass,
-        erdepmin, erdepmax, fluxmin, fluxmax, k_factor, c_factor):
+        erdepmin, erdepmax, fluxmax, k_factor, c_factor):
         self.elevation = elevation
         self.mode = mode
         self.precipitation = precipitation
         self.start = start
-        self.rain = rain
+        self.rainfall_rate = rainfall_rate
         self.rain_duration = rain_duration
         self.rain_interval = rain_interval
         self.temporaltype = temporaltype
@@ -1036,7 +1051,7 @@ class DynamicEvolution:
         self.difference_title=difference_title
         self.difference_description=difference_description
         self.walkers = walkers
-        self.infiltration = infiltration
+        self.runoff = runoff
         self.mannings = mannings
         self.detachment = detachment
         self.transport = transport
@@ -1045,7 +1060,6 @@ class DynamicEvolution:
         self.mass = mass
         self.erdepmin = erdepmin
         self.erdepmax = erdepmax
-        self.fluxmin = fluxmin
         self.fluxmax = fluxmax
         self.k_factor = k_factor
         self.c_factor = c_factor
@@ -1114,10 +1128,10 @@ class DynamicEvolution:
         evol = Evolution(elevation=self.elevation,
             precipitation=self.precipitation,
             start=self.start,
-            rain=self.rain,
+            rainfall_rate=self.rainfall_rate,
             rain_interval=self.rain_interval,
             walkers=self.walkers,
-            infiltration=self.infiltration,
+            runoff=self.runoff,
             mannings=self.mannings,
             detachment=self.detachment,
             transport=self.transport,
@@ -1126,7 +1140,6 @@ class DynamicEvolution:
             mass=self.mass,
             erdepmin=self.erdepmin,
             erdepmax=self.erdepmax,
-            fluxmin=self.fluxmin,
             fluxmax=self.fluxmax,
             k_factor=self.k_factor,
             c_factor=self.c_factor)
@@ -1205,9 +1218,9 @@ class DynamicEvolution:
             evol.start = time
             print evol.start
 
-            # derive excess water (mm/hr) from rain intensity (mm/hr) plus the product of depth (m) and the rainfall interval (min)
+            # derive excess water (mm/hr) from rainfall rate (mm/hr) plus the product of depth (m) and the rainfall interval (min)
             gscript.run_command('r.mapcalc',
-                expression="{rain_excess} = {rain}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rain=self.rain, depth=depth, rain_interval=self.rain_interval),
+                expression="{rain_excess} = {rainfall_rate}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rainfall_rate=self.rainfall_rate, depth=depth, rain_interval=self.rain_interval),
                 overwrite=True)
 
             # update excess rainfall
@@ -1357,10 +1370,10 @@ class DynamicEvolution:
         evol = Evolution(elevation=self.elevation,
             precipitation=self.precipitation,
             start=self.start,
-            rain=self.rain,
+            rainfall_rate=self.rainfall_rate,
             rain_interval=self.rain_interval,
             walkers=self.walkers,
-            infiltration=self.infiltration,
+            runoff=self.runoff,
             mannings=self.mannings,
             detachment=self.detachment,
             transport=self.transport,
@@ -1369,7 +1382,6 @@ class DynamicEvolution:
             mass=self.mass,
             erdepmin=self.erdepmin,
             erdepmax=self.erdepmax,
-            fluxmin=self.fluxmin,
             fluxmax=self.fluxmax,
             k_factor=self.k_factor,
             c_factor=self.c_factor)
@@ -1393,7 +1405,7 @@ class DynamicEvolution:
             # initial run
             initial = next(precip)
             evol.start = initial[0]
-            evol.rain = float(initial[1]) # mm/hr
+            evol.rainfall_rate = float(initial[1]) # mm/hr
 
             # determine mode and run model
             if self.mode == "erosion_deposition_mode":
@@ -1467,13 +1479,13 @@ class DynamicEvolution:
                 # update time
                 evol.start=row[0]
 
-                # derive excess water (mm/hr) from rain intensity (mm/hr) plus the product of depth (m) and the rainfall interval (min)
+                # derive excess water (mm/hr) from rainfall rate (mm/hr) plus the product of depth (m) and the rainfall interval (min)
                 gscript.run_command('r.mapcalc',
-                    expression="{rain_excess} = {rain}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rain=float(row[1]), depth=depth, rain_interval=self.rain_interval),
+                    expression="{rain_excess} = {rainfall_rate}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rainfall_rate=float(row[1]), depth=depth, rain_interval=self.rain_interval),
                     overwrite=True)
 
                 # update excess rainfall
-                evol.rain = rain_excess
+                evol.rainfall_rate = rain_excess
 
                 # determine mode and run model
                 if self.mode == "erosion_deposition_mode":
@@ -1574,7 +1586,7 @@ def cleanup():
                 'qsydy',
                 'grow_qsxdx',
                 'grow_qsydy'
-                'infiltration_constant',
+                'runoff_constant',
                 'mannings_constant',
                 'detachment_constant',
                 'transport_constant',
