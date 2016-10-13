@@ -405,7 +405,7 @@ def main():
 
     # check for alternative input parameters
     if not runoff:
-        runoff = 'runoff_constant'
+        runoff = 'runoff'
         gscript.run_command('r.mapcalc',
             expression="runoff = {runoff_value}".format(**locals()),
             overwrite=True)
