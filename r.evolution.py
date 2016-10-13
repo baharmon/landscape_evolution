@@ -411,31 +411,31 @@ def main():
             overwrite=True)
 
     if not mannings:
-        mannings = 'mannings_constant'
+        mannings = 'mannings'
         gscript.run_command('r.mapcalc',
             expression="mannings = {mannings_value}".format(**locals()),
             overwrite=True)
 
     if not detachment:
-        detachment = 'detachment_constant'
+        detachment = 'detachment'
         gscript.run_command('r.mapcalc',
             expression="detachment = {detachment_value}".format(**locals()),
             overwrite=True)
 
     if not transport:
-        transport = 'transport_constant'
+        transport = 'transport'
         gscript.run_command('r.mapcalc',
             expression="transport = {transport_value}".format(**locals()),
             overwrite=True)
 
     if not shearstress:
-        shearstress = 'shearstress_constant'
+        shearstress = 'shearstress'
         gscript.run_command('r.mapcalc',
             expression="shearstress = {shearstress_value}".format(**locals()),
             overwrite=True)
 
     if not mass:
-        mass = 'mass_constant'
+        mass = 'mass'
         gscript.run_command('r.mapcalc',
             expression="mass = {mass_value}".format(**locals()),
             overwrite=True)
@@ -453,13 +453,13 @@ def main():
             overwrite=True)
 
     if not c_factor:
-        c_factor = 'c_factor_constant'
+        c_factor = 'c_factor'
         gscript.run_command('r.mapcalc',
             expression="c_factor = {c_factor_value}".format(**locals()),
             overwrite=True)
 
     if not k_factor:
-        k_factor = 'k_factor_constant'
+        k_factor = 'k_factor'
         gscript.run_command('r.mapcalc',
             expression="k_factor = {k_factor_value}".format(**locals()),
             overwrite=True)
@@ -1586,15 +1586,7 @@ def cleanup():
                 'qsxdx',
                 'qsydy',
                 'grow_qsxdx',
-                'grow_qsydy'
-                'runoff_constant',
-                'mannings_constant',
-                'detachment_constant',
-                'transport_constant',
-                'shearstress_constant',
-                'mass_constant',
-                'c_factor_constant',
-                'k_factor_constant'],
+                'grow_qsydy'],
             flags='f')
 
     except CalledModuleError:
