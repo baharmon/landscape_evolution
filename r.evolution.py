@@ -405,7 +405,7 @@ def main():
 
     # check for alternative input parameters
     if not runoff:
-        runoff = 'runoff'
+        runoff = 'runoff_constant'
         gscript.run_command('r.mapcalc',
             expression="runoff = {runoff_value}".format(**locals()),
             overwrite=True)
@@ -621,7 +621,6 @@ class Evolution:
             dx=dx,
             dy=dy,
             rain=rain,
-            runoff=self.runoff,
             man=self.mannings,
             depth=depth,
             niterations=self.rain_interval,
