@@ -550,6 +550,7 @@ class Evolution:
         grow_aspect = 'grow_aspect'
         grow_dx = 'grow_dx'
         grow_dy = 'grow_dy'
+        rain = 'rain'
         erdep = 'erdep' # kg/m^2s
         sedflux = 'flux' # kg/ms
 
@@ -705,6 +706,7 @@ class Evolution:
         grow_aspect  = 'grow_aspect'
         grow_dx = 'grow_dx'
         grow_dy = 'grow_dy'
+        rain = 'rain'
         erdep = 'erdep' # kg/m^2s
         sedflux = 'flux' # kg/ms
 
@@ -1224,7 +1226,7 @@ class DynamicEvolution:
                 overwrite=True)
 
             # update excess rainfall
-            evol.rain = rain_excess
+            evol.rainfall_rate = rain_excess
 
             # determine mode and run model
             if self.mode == "erosion_deposition_mode":
