@@ -1181,7 +1181,7 @@ class Evolution:
             input=evolved_elevation,
             output=smoothed_elevation,
             method='average',
-            size=self.smooth
+            size=self.smoothing,
             overwrite=True)
         # update elevation
         evolved_elevation = smoothed_elevation
