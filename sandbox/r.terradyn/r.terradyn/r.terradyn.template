@@ -1,0 +1,48 @@
+# r.terradyn shell script (see rte.sh for comments)
+# C.S. Thaxton, NCSU
+#
+# There are may versions of this script based on i/o
+#
+echo " "
+echo "r.terradyn - GRASS GIS shell script"
+echo "C.S. Thaxton"
+echo "NC State University"
+echo "csthaxto@unity.ncsu.edu"
+echo " "
+echo "*** your region is defined as:"
+echo " "
+g.region -p
+echo " "
+echo "*** HIT <CNTL-C> if region is not correct."
+echo " "
+echo "*** Initializing input rasters..."
+echo " "
+r.mapcalc elin="1.0*elev.6t70"
+r.mapcalc dxin="1.0*dx.6t70"
+r.mapcalc dyin="1.0*dy.6t70"
+r.mapcalc rainin="1.0*rain01"
+r.mapcalc infilin="1.0*infil0"
+r.mapcalc manin="1.0*man05"
+r.mapcalc detin="1.0*det001"
+r.mapcalc tranin="1.0*tran001"
+r.mapcalc tauin="1.0*tau01"
+echo " "
+echo "*** Initializing rte.sh variables..."
+echo " "
+r.mapcalc el.initial="1.0*elin"
+r.mapcalc dx.initial="1.0*dx.6t70"
+r.mapcalc dy.initial="1.0*dy.6t70"
+r.mapcalc tran.initial="1.0*tranin"
+for (( i = 1; i <= 10; i++ ))
+do
+   echo " "
+   echo "Evolving terrain - iteration #$i..."
+   echo " "
+#  inputs are as:
+#         NAME  IT# DZT S DTp  GDf HTh TMod niter
+   rte.sh c0124z $i 1.0 3 0.25 2.0 0.1 100 10
+#         see rte.sh file for comments and details
+done
+echo " "
+echo "*** r.terradyn script is complete."
+echo "Time series outputs are stamped by iteration number in local mapset"

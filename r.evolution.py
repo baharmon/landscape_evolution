@@ -1036,9 +1036,7 @@ class Evolution:
         difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
 
         # compute R factor
-        r_factor = '0.04'
-        ## annual R factor
-        #r_factor = '270.'
+        r_factor = '0.04' # annual R factor = '270.'
 
         # set temporary region
         gscript.use_temp_region()
@@ -1126,7 +1124,10 @@ class Evolution:
 
         # filter outliers
         gscript.run_command('r.mapcalc',
-            expression="{erosion_deposition} = if({erdep}<{erdepmin},{erdepmin},if({erdep}>{erdepmax},{erdepmax},{erdep}))".format(erosion_deposition=erosion_deposition, erdep=erdep, erdepmin=self.erdepmin, erdepmax=self.erdepmax),
+            expression="{erosion_deposition} = if({erdep}<{erdepmin},{erdepmin},if({erdep}>{erdepmax},{erdepmax},{erdep}))".format(erosion_deposition=erosion_deposition,
+                erdep=erdep,
+                erdepmin=self.erdepmin,
+                erdepmax=self.erdepmax),
             overwrite=True)
 
         # set color table
@@ -1138,8 +1139,63 @@ class Evolution:
         # evolve landscape
         """change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) / sediment mass density (kg/m^3)"""
         gscript.run_command('r.mapcalc',
-            expression="{evolved_elevation} = {elevation}-({rain_interval}*60*{erosion_deposition}/{density})".format(evolved_elevation=evolved_elevation, elevation=self.elevation, rain_interval=self.rain_interval, erosion_deposition=erosion_deposition, density=self.density),
+            expression="{evolved_elevation} = {elevation}-({rain_interval}*60*{erosion_deposition}/{density})".format(evolved_elevation=evolved_elevation,
+                elevation=self.elevation,
+                rain_interval=self.rain_interval,
+                erosion_deposition=erosion_deposition,
+                density=self.density),
             overwrite=True)
+
+        # smooth evolved elevation
+        gscript.run_command('r.neighbors',
+            input=evolved_elevation,
+            output=smoothed_elevation,
+            method='average',
+            size=3, # res*3
+            overwrite=True)
+        # update elevation
+        evolved_elevation = smoothed_elevation
+
+        # compute second order partial derivatives of evolved elevation
+        gscript.run_command('r.slope.aspect',
+            elevation=evolved_elevation,
+            dxx=dxx,
+            dyy=dyy,
+            overwrite=True)
+
+        # grow border to fix edge effects of moving window computations
+        gscript.run_command('r.grow.distance',
+            input=dxx,
+            value=grow_dxx,
+            overwrite=True)
+        dxx = grow_dxx
+        gscript.run_command('r.grow.distance',
+            input=dyy,
+            value=grow_dyy,
+            overwrite=True)
+        dyy = grow_dyy
+
+        # compute divergence
+        # from the sum of the second order derivatives of elevation
+        gscript.run_command('r.mapcalc',
+            expression="{divergence} = {dxx}+{dyy}".format(divergence=divergence,
+                dxx=dxx,
+                dyy=dyy),
+            overwrite=True)
+
+        # compute settling caused by gravitational diffusion
+        """change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))"""
+        gscript.run_command('r.mapcalc',
+            expression="{settled_elevation} = {evolved_elevation}-({rain_interval}*60/{density}*{grav_diffusion}*{divergence})".format(settled_elevation=settled_elevation,
+                evolved_elevation=evolved_elevation,
+                density=self.density,
+                grav_diffusion=grav_diffusion,
+                rain_interval=self.rain_interval,
+                divergence=divergence),
+            overwrite=True)
+
+        # update elevation
+        evolved_elevation = settled_elevation
         gscript.run_command('r.colors',
             map=evolved_elevation,
             color='elevation')
@@ -1158,15 +1214,22 @@ class Evolution:
             type='raster',
             name=['slope',
                 'aspect',
-                'grow_slope',
-                'grow_aspect',
                 'qsx',
                 'qsy',
                 'qsxdx',
                 'qsydy',
+                'dxx',
+                'dyy',
+                'grow_slope',
+                'grow_aspect',
                 'grow_qsxdx',
                 'grow_qsydy',
-                'erdep'],
+                'grow_dxx',
+                'grow_dyy',
+                'erdep',
+                'smoothed_elevation',
+                'settled_elevation',
+                'divergence'],
             flags='f')
 
         return evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference
