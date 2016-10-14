@@ -1,30 +1,45 @@
-# assign variables
-echo " "
-echo "*** Applying band-pass filter"
-echo " "
-echo "--span of averaging   = $7"
-echo "--alpha(attentuation) = $8"
-echo "--sigma(threshold)    = $9"
-#
-r.neighbors input=temp.elev output=ave.elev method=average size=$7
-r.mapcalc osc.elev="temp.elev-ave.elev"
-r.mapcalc osc.sign="if(osc.elev>0,1,-1)"
-r.mapcalc mod.elev="ave.elev+$8*osc.elev+(1-$8)*osc.sign*$9"
-echo " "
-echo "*** Computing change in elevation..."
-echo " "
-r.mapcalc $1_$2.elev="elin+temp.elev"
 
+""" band pass filter """
+
+# assign variables
+average_elevation = 'average_elevation'
+oscillation = 'oscillation'
+sign = 'sign'
+averaging_span = 3
+attenuation = 0.5
+threshold = 0.01
+filtered_elevation = 'filtered_elevation' # temporary
 
 # compute average elevation
 gscript.run_command('r.neighbors',
     input=evolved_elevation,
-    output=smoothed_elevation,
+    output=average_elevation,
     method='average',
-    size=3,
+    size=averaging_span,
     overwrite=True)
 
-#
+# compute the difference between the evolved elevation and average elevation
 gscript.run_command('r.mapcalc',
-    expression="{} = {evolved_elevation}-{smoothed_elevation}".format(),
+    expression="{oscillation} = {evolved_elevation}-{average_elevation}".format(oscillation=oscillation,
+        evolved_elevation=evolved_elevation,
+        average_elevation=average_elevation),
     overwrite=True)
+
+# determine if the oscillation is positive or negative
+gscript.run_command('r.mapcalc',
+    expression="{sign} = if({oscillation}>0,1,-1)".format(sign=sign,
+        oscillation=oscillation),
+    overwrite=True)
+
+# determine if the oscillation is positive or negative
+gscript.run_command('r.mapcalc',
+    expression="{filtered_elevation} = {average_elevation}+{attenuation}*{oscillation}+(1-{attenuation})*{sign}*threshold".format(filtered_elevation=filtered_elevation,
+        average_elevation=average_elevation,
+        attenuation=attenuation,
+        oscillation=oscillation,
+        sign=sign,
+        threshold=threshold),
+    overwrite=True)
+
+r.mapcalc mod.elev="ave.elev+$8*osc.elev+(1-$8)*osc.sign*$9"
+r.mapcalc $1_$2.elev="elin+temp.elev"

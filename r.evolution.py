@@ -559,6 +559,7 @@ class Evolution:
         grow_dxx = 'grow_dxx'
         grow_dyy = 'grow_dyy'
         divergence = 'divergence'
+        smoothed_elevation = 'smoothed_elevation'
         settled_elevation = 'settled_elevation'
 
         # parse time
@@ -670,9 +671,16 @@ class Evolution:
         gscript.run_command('r.mapcalc',
             expression="{evolved_elevation} = {elevation}-({rain_interval}*60*{erosion_deposition}/{density})".format(evolved_elevation=evolved_elevation, elevation=self.elevation, rain_interval=self.rain_interval, erosion_deposition=erosion_deposition, density=self.density),
             overwrite=True)
-        gscript.run_command('r.colors',
-            map=evolved_elevation,
-            color='elevation')
+
+        # smooth evolved elevation
+        gscript.run_command('r.neighbors',
+            input=evolved_elevation,
+            output=smoothed_elevation,
+            method='average',
+            size=3, # res*3
+            overwrite=True)
+        # update elevation
+        evolved_elevation = smoothed_elevation
 
         # compute second order partial derivatives of evolved elevation
         gscript.run_command('r.slope.aspect',
@@ -714,12 +722,11 @@ class Evolution:
 
         # update elevation
         evolved_elevation = settled_elevation
+
+        # assign color table
         gscript.run_command('r.colors',
                     map=evolved_elevation,
                     color='elevation')
-
-        # band pass filter
-
 
         # compute elevation change
         gscript.run_command('r.mapcalc',
@@ -737,17 +744,16 @@ class Evolution:
                 'evolving_elevation',
                 'dx',
                 'dy',
+                'dxx',
+                'dyy',
                 'grow_slope',
                 'grow_aspect',
                 'grow_dx',
                 'grow_dy',
-                'dxx',
-                'dyy',
                 'grow_dxx',
-                'grow_dyy',
-                'divergence'],
+                'grow_dyy'],
             flags='f')
-            # 'settled_elevation','grav_diffusion'
+            # 'divergence','smoothed_elevation','settled_elevation','grav_diffusion'
 
         return evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference
 
@@ -1646,17 +1652,22 @@ def cleanup():
                 'evolving_elevation',
                 'dx',
                 'dy',
-                'grow_slope',
-                'grow_aspect',
-                'grow_dx',
-                'grow_dy',
+                'dxx',
+                'dyy',
                 'qsx',
                 'qsy',
                 'qsxdx',
                 'qsydy',
+                'grow_slope',
+                'grow_aspect',
+                'grow_dx',
+                'grow_dy',
+                'grow_dxx',
+                'grow_dyy',
                 'grow_qsxdx',
                 'grow_qsydy'],
             flags='f')
+            # 'divergence','smoothed_elevation','settled_elevation','grav_diffusion'
 
     except CalledModuleError:
         pass
