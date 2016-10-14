@@ -1036,7 +1036,7 @@ class Evolution:
         difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
 
         # compute R factor
-        r_factor = '10.'
+        r_factor = '0.04'
         ## annual R factor
         #r_factor = '270.'
 
