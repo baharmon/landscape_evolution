@@ -702,9 +702,9 @@ class Evolution:
             overwrite=True)
 
         # compute settling caused by gravitational diffusion
-        """change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3)) * gravitational diffusion coefficient (m^2/s) * divergence"""
+        """change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))"""
         gscript.run_command('r.mapcalc',
-            expression="{settled_elevation} = {evolved_elevation}-(({rain_interval}*60)/{density})*{grav_diffusion}*{divergence}".format(settled_elevation=settled_elevation,
+            expression="{settled_elevation} = {evolved_elevation}-({rain_interval}*60/{density}*{grav_diffusion}*{divergence})".format(settled_elevation=settled_elevation,
                 evolved_elevation=evolved_elevation,
                 density=self.density,
                 grav_diffusion=grav_diffusion,
