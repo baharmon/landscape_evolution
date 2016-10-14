@@ -44,7 +44,7 @@ gscript.run_command('r.mapcalc',
         evolved_elevation=evolved_elevation,
         density=self.density,
         grav_diffusion=grav_diffusion,
-        rain_interval=rain_interval,
+        rain_interval=self.rain_interval,
         divergence=divergence),
     overwrite=True)
 
