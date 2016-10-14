@@ -1070,7 +1070,7 @@ class Evolution:
         # compute flow accumulation
         gscript.run_command('r.watershed',
             elevation=self.elevation,
-            flow=depth,
+            accumulation=depth,
             overwrite=True)
 
         # add depression parameter to r.watershed
