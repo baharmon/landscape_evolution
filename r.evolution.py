@@ -1036,7 +1036,9 @@ class Evolution:
         difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
 
         # compute R factor
-        r_factor = '270.'
+        r_factor = '10.'
+        ## annual R factor
+        #r_factor = '270.'
 
         # set temporary region
         gscript.use_temp_region()
@@ -1060,19 +1062,11 @@ class Evolution:
             overwrite=True)
         aspect = grow_aspect
 
-        # # compute flow accumulation
-        # gscript.run_command('r.flow',
-        #     elevation=self.elevation,
-        #     aspect=aspect,
-        #     flowaccumulation=depth,
-        #     overwrite=True)
-
         # compute flow accumulation
         gscript.run_command('r.watershed',
             elevation=self.elevation,
             accumulation=depth,
             overwrite=True)
-
         # add depression parameter to r.watershed
         # derive from landcover class
 
