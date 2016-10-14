@@ -696,13 +696,13 @@ class Evolution:
         # compute divergence
         # from the sum of the second order derivatives of elevation
         gscript.run_command('r.mapcalc',
-            expression="{divergence} = {dxx}+{dyy}}".format(divergence=divergence,
+            expression="{divergence} = {dxx}+{dyy}".format(divergence=divergence,
                 dxx=dxx,
                 dyy=dyy),
             overwrite=True)
 
         # compute settling caused by gravitational diffusion
-        """change in elevation (m) = elevation (m) - sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * time interval * divergence"""
+        """change in elevation (m) = elevation (m) - sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * change in time * divergence"""
         gscript.run_command('r.mapcalc',
             expression="{settled_elevation} = {evolved_elevation}-{density}*{grav_diffusion}*{rain_interval}*60*{divergence}".format(settled_elevation=settled_elevation,
                 evolved_elevation=evolved_elevation,

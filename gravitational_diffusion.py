@@ -32,7 +32,7 @@ dyy = grow_dyy
 
 # compute divergence from the sum of the second order derivatives of elevation
 gscript.run_command('r.mapcalc',
-    expression="{divergence} = {dxx}+{dyy}}".format(divergence=divergence,
+    expression="{divergence} = {dxx}+{dyy}".format(divergence=divergence,
         dxx=dxx,
         dyy=dyy),
     overwrite=True)
