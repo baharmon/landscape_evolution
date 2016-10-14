@@ -248,7 +248,27 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% type: double
 #% description: Mass of sediment per unit area in kg/m^2
 #% label: Mass of sediment per unit area
-#% answer: 116
+#% answer: 116.
+#% multiple: no
+#% guisection: Input
+#%end
+
+#%option
+#% key: grav_diffusion
+#% type: double
+#% description: Gravitational diffusion coefficient in m^2/s
+#% label: Gravitational diffusion coefficient
+#% answer: 0.2
+#% multiple: no
+#% guisection: Input
+#%end
+
+#%option
+#% key: smoothing
+#% type: double
+#% description: Neighborhood size for smoothing
+#% label: Neighborhood size for smoothing
+#% answer: 3
 #% multiple: no
 #% guisection: Input
 #%end
@@ -395,6 +415,8 @@ def main():
     density_value = options['density_value']
     mass = options['mass']
     mass_value = options['mass_value']
+    grav_diffusion = options['grav_diffusion']
+    smoothing = options['smoothing']
     erdepmin = options['erdepmin']
     erdepmax = options['erdepmax']
     fluxmax = options['fluxmax']
@@ -496,6 +518,8 @@ def main():
         shearstress=shearstress,
         density=density,
         mass=mass,
+        grav_diffusion=grav_diffusion,
+        smoothing=smoothing,
         erdepmin=erdepmin,
         erdepmax=erdepmax,
         fluxmax=fluxmax,
@@ -515,8 +539,8 @@ def main():
 class Evolution:
     def __init__(self, elevation, precipitation, start, rainfall_rate,
         rain_interval, walkers, runoff, mannings, detachment, transport,
-        shearstress, density, mass, erdepmin, erdepmax, fluxmax,
-        k_factor, c_factor):
+        shearstress, density, mass, grav_diffusion, smoothing,
+        erdepmin, erdepmax, fluxmax, k_factor, c_factor):
         self.elevation = elevation
         self.precipitation = precipitation
         self.start = start
@@ -530,6 +554,8 @@ class Evolution:
         self.shearstress = shearstress
         self.density = density
         self.mass = mass
+        self.grav_diffusion = grav_diffusion
+        self.smoothing = smoothing
         self.erdepmin = erdepmin
         self.erdepmax = erdepmax
         self.fluxmax = fluxmax
@@ -553,7 +579,6 @@ class Evolution:
         rain = 'rain'
         erdep = 'erdep' # kg/m^2s
         sedflux = 'flux' # kg/ms
-        grav_diffusion = 0.2 # m^2/s
         dxx = 'dxx'
         dyy = 'dyy'
         grow_dxx = 'grow_dxx'
@@ -686,7 +711,7 @@ class Evolution:
             input=evolved_elevation,
             output=smoothed_elevation,
             method='average',
-            size=3, # res*3
+            size=self.smoothing
             overwrite=True)
         # update elevation
         evolved_elevation = smoothed_elevation
@@ -724,7 +749,7 @@ class Evolution:
             expression="{settled_elevation} = {evolved_elevation}-({rain_interval}*60/{density}*{grav_diffusion}*{divergence})".format(settled_elevation=settled_elevation,
                 evolved_elevation=evolved_elevation,
                 density=self.density,
-                grav_diffusion=grav_diffusion,
+                grav_diffusion=self.grav_diffusion,
                 rain_interval=self.rain_interval,
                 divergence=divergence),
             overwrite=True)
@@ -783,7 +808,6 @@ class Evolution:
         rain = 'rain'
         erdep = 'erdep' # kg/m^2s
         sedflux = 'flux' # kg/ms
-        grav_diffusion = 0.2 # m^2/s
         dxx = 'dxx'
         dyy = 'dyy'
         grow_dxx = 'grow_dxx'
@@ -917,7 +941,7 @@ class Evolution:
             input=evolved_elevation,
             output=smoothed_elevation,
             method='average',
-            size=3, # res*3
+            size=self.smoothing
             overwrite=True)
         # update elevation
         evolved_elevation = smoothed_elevation
@@ -955,7 +979,7 @@ class Evolution:
             expression="{settled_elevation} = {evolved_elevation}-({rain_interval}*60/{density}*{grav_diffusion}*{divergence})".format(settled_elevation=settled_elevation,
                 evolved_elevation=evolved_elevation,
                 density=self.density,
-                grav_diffusion=grav_diffusion,
+                grav_diffusion=self.grav_diffusion,
                 rain_interval=self.rain_interval,
                 divergence=divergence),
             overwrite=True)
@@ -1005,15 +1029,21 @@ class Evolution:
         # assign variables
         slope = 'slope'
         aspect = 'aspect'
-        grow_slope = 'grow_slope'
-        grow_aspect  = 'grow_aspect'
         qsx = 'qsx'
         qsxdx = 'qsxdx'
         qsy = 'qsy'
         qsydy = 'qsydy'
+        dxx = 'dxx'
+        dyy = 'dyy'
+        grow_slope = 'grow_slope'
+        grow_aspect  = 'grow_aspect'
         grow_qsxdx = 'grow_qsxdx'
         grow_qsydy = 'grow_qsydy'
+        grow_dxx = 'grow_dxx'
+        grow_dyy = 'grow_dyy'
         erdep = 'erdep' # kg/m^2s
+        divergence = 'divergence'
+        settled_elevation = 'settled_elevation'
 
         # parse time
         year = int(self.start[:4])
@@ -1151,7 +1181,7 @@ class Evolution:
             input=evolved_elevation,
             output=smoothed_elevation,
             method='average',
-            size=3, # res*3
+            size=self.smooth
             overwrite=True)
         # update elevation
         evolved_elevation = smoothed_elevation
@@ -1189,7 +1219,7 @@ class Evolution:
             expression="{settled_elevation} = {evolved_elevation}-({rain_interval}*60/{density}*{grav_diffusion}*{divergence})".format(settled_elevation=settled_elevation,
                 evolved_elevation=evolved_elevation,
                 density=self.density,
-                grav_diffusion=grav_diffusion,
+                grav_diffusion=self.grav_diffusion,
                 rain_interval=self.rain_interval,
                 divergence=divergence),
             overwrite=True)
@@ -1243,7 +1273,8 @@ class DynamicEvolution:
         flux_timeseries, flux_title, flux_description, difference_timeseries,
         difference_title, difference_description, start, walkers, runoff,
         mannings, detachment, transport, shearstress, density, mass,
-        erdepmin, erdepmax, fluxmax, k_factor, c_factor):
+        grav_diffusion, smoothing, erdepmin, erdepmax, fluxmax,
+        k_factor, c_factor):
         self.elevation = elevation
         self.mode = mode
         self.precipitation = precipitation
@@ -1275,6 +1306,8 @@ class DynamicEvolution:
         self.shearstress = shearstress
         self.density = density
         self.mass = mass
+        self.grav_diffusion = grav_diffusion
+        self.smoothing = smoothing
         self.erdepmin = erdepmin
         self.erdepmax = erdepmax
         self.fluxmax = fluxmax
@@ -1355,6 +1388,8 @@ class DynamicEvolution:
             shearstress=self.shearstress,
             density=self.density,
             mass=self.mass,
+            grav_diffusion=self.grav_diffusion,
+            smoothing=self.smoothing,
             erdepmin=self.erdepmin,
             erdepmax=self.erdepmax,
             fluxmax=self.fluxmax,
@@ -1597,6 +1632,8 @@ class DynamicEvolution:
             shearstress=self.shearstress,
             density=self.density,
             mass=self.mass,
+            grav_diffusion=self.grav_diffusion,
+            smoothing=self.smoothing,
             erdepmin=self.erdepmin,
             erdepmax=self.erdepmax,
             fluxmax=self.fluxmax,
