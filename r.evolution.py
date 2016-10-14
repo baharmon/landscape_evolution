@@ -558,6 +558,7 @@ class Evolution:
         dyy = 'dyy'
         grow_dxx = 'grow_dxx'
         grow_dyy = 'grow_dyy'
+        divergence = 'divergence'
         settled_elevation = 'settled_elevation'
 
         # parse time
@@ -701,12 +702,13 @@ class Evolution:
             overwrite=True)
 
         # compute settling caused by gravitational diffusion
-        """change in elevation (m) = elevation (m) - sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * 0.5 * divergence"""
+        """change in elevation (m) = elevation (m) - sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * time interval * divergence"""
         gscript.run_command('r.mapcalc',
-            expression="{settled_elevation} = {evolved_elevation}-{density}*{grav_diffusion}*0.5*{divergence}".format(settled_elevation=settled_elevation,
+            expression="{settled_elevation} = {evolved_elevation}-{density}*{grav_diffusion}*{rain_interval}*60*{divergence}".format(settled_elevation=settled_elevation,
                 evolved_elevation=evolved_elevation,
                 density=self.density,
                 grav_diffusion=grav_diffusion,
+                rain_interval=rain_interval,
                 divergence=divergence),
             overwrite=True)
 
@@ -742,7 +744,8 @@ class Evolution:
                 'dxx',
                 'dyy',
                 'grow_dxx',
-                'grow_dyy'],
+                'grow_dyy',
+                'divergence'],
             flags='f')
             # 'settled_elevation','grav_diffusion'
 
@@ -967,12 +970,21 @@ class Evolution:
             overwrite=True)
         aspect = grow_aspect
 
+        # # compute flow accumulation
+        # gscript.run_command('r.flow',
+        #     elevation=self.elevation,
+        #     aspect=aspect,
+        #     flowaccumulation=depth,
+        #     overwrite=True)
+
         # compute flow accumulation
-        gscript.run_command('r.flow',
+        gscript.run_command('r.watershed',
             elevation=self.elevation,
-            aspect=aspect,
-            flowaccumulation=depth,
+            flow=depth,
             overwrite=True)
+
+        # add depression parameter to r.watershed
+        # derive from landcover class
 
         # compute sediment flow at sediment transport capacity
         gscript.run_command('r.mapcalc',

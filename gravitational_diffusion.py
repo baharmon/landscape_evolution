@@ -8,6 +8,7 @@ dxx = 'dxx'
 dyy = 'dyy'
 grow_dxx = 'grow_dxx'
 grow_dyy = 'grow_dyy'
+divergence = 'divergence'
 settled_elevation = 'settled_elevation'
 
 # compute second order partial derivatives
@@ -37,12 +38,13 @@ gscript.run_command('r.mapcalc',
     overwrite=True)
 
 # compute settling caused by gravitational diffusion
-"""change in elevation (m) = elevation (m) - sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * 0.5 * divergence"""
+"""change in elevation (m) = elevation (m) - sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * time interval (s) * divergence"""
 gscript.run_command('r.mapcalc',
-    expression="{settled_elevation} = {evolved_elevation}-{density}*{grav_diffusion}*0.5*{divergence}".format(settled_elevation=settled_elevation,
+    expression="{settled_elevation} = {evolved_elevation}-{density}*{grav_diffusion}*{rain_interval}*60*{divergence}".format(settled_elevation=settled_elevation,
         evolved_elevation=evolved_elevation,
         density=self.density,
         grav_diffusion=grav_diffusion,
+        rain_interval=rain_interval,
         divergence=divergence),
     overwrite=True)
 
@@ -54,4 +56,4 @@ gscript.run_command('r.colors',
 
 # remove temporary maps
 
-#dxx,dyy,grow_dxx,grow_dyy,settled_elevation
+#dxx,dyy,grow_dxx,grow_dyy,divergence,settled_elevation
