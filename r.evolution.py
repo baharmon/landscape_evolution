@@ -54,9 +54,9 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #%end
 
 #%option
-#% key: rainfall_rate
+#% key: rain_intensity
 #% type: integer
-#% description: Rainfall in mm/hr
+#% description: Rainfall intensity in mm/hr
 #% answer: 150
 #% multiple: no
 #% required: no
@@ -370,6 +370,7 @@ import sys
 import atexit
 import csv
 import datetime
+from math import exp
 import grass.script as gscript
 from grass.exceptions import CalledModuleError
 
@@ -380,7 +381,7 @@ def main():
     mode = options['mode']
     precipitation = options['precipitation']
     start = options['start']
-    rainfall_rate = options['rainfall_rate']
+    rain_intensity = options['rain_intensity']
     rain_duration = options['rain_duration']
     rain_interval = options['rain_interval']
     temporaltype = options['temporaltype']
@@ -490,7 +491,7 @@ def main():
     event = DynamicEvolution(elevation=elevation,
         mode=mode,
         precipitation=precipitation,
-        rainfall_rate=rainfall_rate,
+        rain_intensity=rain_intensity,
         rain_duration=rain_duration,
         rain_interval=rain_interval,
         temporaltype=temporaltype,
@@ -537,14 +538,14 @@ def main():
     sys.exit(0)
 
 class Evolution:
-    def __init__(self, elevation, precipitation, start, rainfall_rate,
+    def __init__(self, elevation, precipitation, start, rain_intensity,
         rain_interval, walkers, runoff, mannings, detachment, transport,
         shearstress, density, mass, grav_diffusion, smoothing,
         erdepmin, erdepmax, fluxmax, k_factor, c_factor):
         self.elevation = elevation
         self.precipitation = precipitation
         self.start = start
-        self.rainfall_rate = int(rainfall_rate)
+        self.rain_intensity = int(rain_intensity)
         self.rain_interval = int(rain_interval)
         self.walkers = walkers
         self.runoff = runoff
@@ -643,8 +644,8 @@ class Evolution:
 
         # hyrdology parameters
         gscript.run_command('r.mapcalc',
-            expression="{rain} = {rainfall_rate}*{runoff}".format(rain=rain,
-                rainfall_rate=self.rainfall_rate,
+            expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain,
+                rain_intensity=self.rain_intensity,
                 runoff=self.runoff),
             overwrite=True)
 
@@ -872,8 +873,8 @@ class Evolution:
 
         # hyrdology parameters
         gscript.run_command('r.mapcalc',
-            expression="{rain} = {rainfall_rate}*{runoff}".format(rain=rain,
-                rainfall_rate=self.rainfall_rate,
+            expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain,
+                rain_intensity=self.rain_intensity,
                 runoff=self.runoff),
             overwrite=True)
 
@@ -1065,8 +1066,19 @@ class Evolution:
         erosion_deposition = 'erosion_deposition_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/m2s
         difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
 
-        # compute R factor
-        r_factor = '0.04' # annual R factor = '270.'
+        # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
+
+        # derive rainfall energy (MJ ha^-1 mm^-1)
+        rain_energy = 0.29*(1-(0.72*exp(-0.05*rain_intensity)))
+
+        # derive rainfall volume (mm) = rainfall intensity (mm/hr) * (rainfall interval (min) * (1 hr / 60 min))
+        rain_volume = rain_intensity*(rain_interval/60.)
+
+        # derive event erosivity index (MJ mm ha^-1 hr^-1)
+        erosivity = (rain_energy*rain_volume)*rain_intensity*1.
+
+        # multiply by rainfall interval in seconds (MJ mm ha^-1 hr^-1 s^-1)
+        r_factor = erosivity/(rain_interval*60.)
 
         # set temporary region
         gscript.use_temp_region()
@@ -1107,6 +1119,8 @@ class Evolution:
                 flowacc=depth,
                 sedflow=sediment_flux),
             overwrite=True)
+
+        # convert sediment flow from tons/ha to kg/ms
 
         # compute sediment flow rate in x direction (m^2/s)
         gscript.run_command('r.mapcalc',
@@ -1266,7 +1280,7 @@ class Evolution:
 
 
 class DynamicEvolution:
-    def __init__(self, elevation, mode, precipitation, rainfall_rate,
+    def __init__(self, elevation, mode, precipitation, rain_intensity,
         rain_duration, rain_interval, temporaltype, elevation_timeseries,
         elevation_title, elevation_description, depth_timeseries, depth_title,
         depth_description, erdep_timeseries, erdep_title, erdep_description,
@@ -1279,7 +1293,7 @@ class DynamicEvolution:
         self.mode = mode
         self.precipitation = precipitation
         self.start = start
-        self.rainfall_rate = rainfall_rate
+        self.rain_intensity = rain_intensity
         self.rain_duration = rain_duration
         self.rain_interval = rain_interval
         self.temporaltype = temporaltype
@@ -1378,7 +1392,7 @@ class DynamicEvolution:
         evol = Evolution(elevation=self.elevation,
             precipitation=self.precipitation,
             start=self.start,
-            rainfall_rate=self.rainfall_rate,
+            rain_intensity=self.rain_intensity,
             rain_interval=self.rain_interval,
             walkers=self.walkers,
             runoff=self.runoff,
@@ -1472,11 +1486,11 @@ class DynamicEvolution:
 
             # derive excess water (mm/hr) from rainfall rate (mm/hr) plus the product of depth (m) and the rainfall interval (min)
             gscript.run_command('r.mapcalc',
-                expression="{rain_excess} = {rainfall_rate}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rainfall_rate=self.rainfall_rate, depth=depth, rain_interval=self.rain_interval),
+                expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rain_intensity=self.rain_intensity, depth=depth, rain_interval=self.rain_interval),
                 overwrite=True)
 
             # update excess rainfall
-            evol.rainfall_rate = rain_excess
+            evol.rain_intensity = rain_excess
 
             # determine mode and run model
             if self.mode == "erosion_deposition_mode":
@@ -1622,7 +1636,7 @@ class DynamicEvolution:
         evol = Evolution(elevation=self.elevation,
             precipitation=self.precipitation,
             start=self.start,
-            rainfall_rate=self.rainfall_rate,
+            rain_intensity=self.rain_intensity,
             rain_interval=self.rain_interval,
             walkers=self.walkers,
             runoff=self.runoff,
@@ -1659,7 +1673,7 @@ class DynamicEvolution:
             # initial run
             initial = next(precip)
             evol.start = initial[0]
-            evol.rainfall_rate = float(initial[1]) # mm/hr
+            evol.rain_intensity = float(initial[1]) # mm/hr
 
             # determine mode and run model
             if self.mode == "erosion_deposition_mode":
@@ -1735,11 +1749,11 @@ class DynamicEvolution:
 
                 # derive excess water (mm/hr) from rainfall rate (mm/hr) plus the product of depth (m) and the rainfall interval (min)
                 gscript.run_command('r.mapcalc',
-                    expression="{rain_excess} = {rainfall_rate}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rainfall_rate=float(row[1]), depth=depth, rain_interval=self.rain_interval),
+                    expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rain_intensity=float(row[1]), depth=depth, rain_interval=self.rain_interval),
                     overwrite=True)
 
                 # update excess rainfall
-                evol.rainfall_rate = rain_excess
+                evol.rain_intensity = rain_excess
 
                 # determine mode and run model
                 if self.mode == "erosion_deposition_mode":

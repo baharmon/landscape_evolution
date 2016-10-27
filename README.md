@@ -10,8 +10,6 @@ change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) 
 ## Installation
 * Launch GRASS GIS
 * Install using the GRASS Console / Command Line Interface (CLI) with *g.extension r.evolution url=github.com/baharmon/landscape_evolution*
-* Or install the USPED branch using the GRASS Console / Command Line Interface (CLI) with *g.extension r.evolution url=https://github.com/baharmon/landscape_evolution/archive/usped.zip*
-* Restart GRASS GIS
 * Launch from the CLI with *r.evolution*
 
 ## License
