@@ -1704,7 +1704,11 @@ class DynamicEvolution:
             # initial run
             initial = next(precip)
             evol.start = initial[0]
-            evol.rain_intensity = float(initial[1]) # mm/hr
+            #evol.rain_intensity = float(initial[1]) # mm/hr
+            gscript.run_command('r.mapcalc',
+                expression="{rain_intensity} = {initial}".format(rain_intensity=evol.rain_intensity,
+                    initial=float(initial[1])),
+                overwrite=True)
 
             # determine mode and run model
             if self.mode == "erosion_deposition_mode":
