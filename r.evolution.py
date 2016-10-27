@@ -1083,7 +1083,7 @@ class Evolution:
         # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
 
         # derive rainfall energy (MJ ha^-1 mm^-1)
-        rain_energy = 0.29*(1-(0.72*exp(-0.05*self.rain_intensity)))
+        rain_energy = 0.29*(1.-(0.72*exp(-0.05*self.rain_intensity)))
 
         # derive rainfall volume (mm) = rainfall intensity (mm/hr) * (rainfall interval (min) * (1 hr / 60 min))
         rain_volume = self.rain_intensity*(self.rain_interval/60.)
