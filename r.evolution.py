@@ -1366,6 +1366,7 @@ class DynamicEvolution:
         increment = str(self.rain_interval)+" minutes"
         raster = 'raster'
         iterations = int(self.rain_duration)/int(self.rain_interval)
+        rain_excess = 'rain_excess'
         net_difference = 'net_difference'
 
         # create raster space time datasets
@@ -1513,10 +1514,13 @@ class DynamicEvolution:
 
             # derive excess water (mm/hr) from rainfall rate (mm/hr) plus the product of depth (m) and the rainfall interval (min)
             gscript.run_command('r.mapcalc',
-                expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=evol.rain_intensity,
-                    rain_intensity=float(row[1]),
-                    depth=depth,
-                    rain_interval=self.rain_interval),
+                expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess, rain_intensity=self.rain_intensity, depth=depth, rain_interval=self.rain_interval),
+                overwrite=True)
+
+            # update excess rainfall
+            gscript.run_command('r.mapcalc',
+                expression="{rain_intensity} = {rain_excess}".format(rain_intensity=evol.rain_intensity,
+                    rain_excess=rain_excess),
                 overwrite=True)
 
             # determine mode and run model
@@ -1581,6 +1585,12 @@ class DynamicEvolution:
                 flags='i',
                 overwrite=True)
 
+            # remove temporary maps
+            gscript.run_command('g.remove',
+                type='raster',
+                name=['rain_excess'],
+                flags='f')
+
             i = i+1
 
         # compute net elevation change
@@ -1602,6 +1612,7 @@ class DynamicEvolution:
         datatype = 'strds'
         increment = str(self.rain_interval)+" minutes"
         raster = 'raster'
+        rain_excess = 'rain_excess'
         net_difference = 'net_difference'
         #iterations = sum(1 for row in precip)
 
@@ -1769,10 +1780,16 @@ class DynamicEvolution:
 
                 # derive excess water (mm/hr) from rainfall rate (mm/hr) plus the product of depth (m) and the rainfall interval (min)
                 gscript.run_command('r.mapcalc',
-                    expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=evol.rain_intensity,
+                    expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess,
                         rain_intensity=float(row[1]),
                         depth=depth,
                         rain_interval=self.rain_interval),
+                    overwrite=True)
+
+                # update excess rainfall
+                gscript.run_command('r.mapcalc',
+                    expression="{rain_intensity} = {rain_excess}".format(rain_intensity=evol.rain_intensity,
+                        rain_excess=rain_excess),
                     overwrite=True)
 
                 # determine mode and run model
@@ -1838,6 +1855,12 @@ class DynamicEvolution:
                     flags='i',
                     overwrite=True)
 
+                # remove temporary maps
+                gscript.run_command('g.remove',
+                    type='raster',
+                    name=['rain_excess'],
+                    flags='f')
+
             # compute net elevation change
             gscript.run_command('r.mapcalc',
                 expression="{net_difference} = {elevation}-{evolved_elevation}".format(net_difference=net_difference, elevation=self.elevation, evolved_elevation=evol.elevation),
@@ -1853,7 +1876,8 @@ def cleanup():
         # remove temporary maps
         gscript.run_command('g.remove',
             type='raster',
-            name=['rain',
+            name=['rain_excess',
+                'rain',
                 'sedflow',
                 'evolving_elevation',
                 'smoothed_elevation',
