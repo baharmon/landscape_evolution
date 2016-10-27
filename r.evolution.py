@@ -1101,8 +1101,9 @@ class Evolution:
         #erosivity = (rain_energy*rain_volume)*self.rain_intensity*1.
         gscript.run_command('r.mapcalc',
             expression="{erosivity} = ({rain_energy}*{rain_volume})*{rain_intensity}*1.".format(erosivity='erosivity',
-                rain_energy=self.rain_energy,
-                rain_volume=self.rain_volume),
+                rain_energy=rain_energy,
+                rain_volume=rain_volume,
+                rain_intensity=self.rain_intensity),
             overwrite=True)
 
         # multiply by rainfall interval in seconds (MJ mm ha^-1 hr^-1 s^-1)
