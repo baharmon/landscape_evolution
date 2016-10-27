@@ -756,7 +756,10 @@ class Evolution:
             overwrite=True)
 
         # update elevation
-        evolved_elevation = settled_elevation
+        gscript.run_command('r.mapcalc',
+            expression="{evolved_elevation} = {settled_elevation}".format(evolved_elevation=evolved_elevation,
+                settled_elevation=settled_elevation),
+            overwrite=True)
         gscript.run_command('r.colors',
             map=evolved_elevation,
             color='elevation')
@@ -986,7 +989,10 @@ class Evolution:
             overwrite=True)
 
         # update elevation
-        evolved_elevation = settled_elevation
+        gscript.run_command('r.mapcalc',
+            expression="{evolved_elevation} = {settled_elevation}".format(evolved_elevation=evolved_elevation,
+                settled_elevation=settled_elevation),
+            overwrite=True)
         gscript.run_command('r.colors',
             map=evolved_elevation,
             color='elevation')
@@ -1247,7 +1253,11 @@ class Evolution:
             overwrite=True)
 
         # update elevation
-        evolved_elevation = settled_elevation
+        gscript.run_command('r.mapcalc',
+            expression="{evolved_elevation} = {settled_elevation}".format(evolved_elevation=evolved_elevation,
+                settled_elevation=settled_elevation),
+            overwrite=True)
+
         gscript.run_command('r.colors',
             map=evolved_elevation,
             color='elevation')
