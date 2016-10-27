@@ -1705,6 +1705,12 @@ class DynamicEvolution:
             initial = next(precip)
             evol.start = initial[0]
             #evol.rain_intensity = float(initial[1]) # mm/hr
+            initial_rain = 'initial_rain'
+            gscript.run_command('r.mapcalc',
+                expression="{initial_rain} = {initial}".format(initial_rain=initial_rain,
+                    initial=float(initial[1])),
+                overwrite=True)
+
             gscript.run_command('r.mapcalc',
                 expression="{rain_intensity} = {initial}".format(rain_intensity=evol.rain_intensity,
                     initial=float(initial[1])),
@@ -1784,17 +1790,17 @@ class DynamicEvolution:
 
                 # derive excess water (mm/hr) from rainfall rate (mm/hr) plus the product of depth (m) and the rainfall interval (min)
                 gscript.run_command('r.mapcalc',
-                    expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=evol.rain_intensity,
+                    expression="{rain_excess} = {rain_intensity}+(({depth}*(1/1000))*({rain_interval}*(1/60)))".format(rain_excess=rain_excess,
                         rain_intensity=float(row[1]),
                         depth=depth,
                         rain_interval=self.rain_interval),
                     overwrite=True)
 
                 # update excess rainfall
-                # gscript.run_command('r.mapcalc',
-                #     expression="{rain_intensity} = {rain_excess}".format(rain_intensity=evol.rain_intensity,
-                #         rain_excess=rain_excess),
-                #     overwrite=True)
+                gscript.run_command('r.mapcalc',
+                    expression="{rain_intensity} = {rain_excess}".format(rain_intensity=evol.rain_intensity,
+                        rain_excess=rain_excess),
+                    overwrite=True)
 
                 # determine mode and run model
                 if self.mode == "erosion_deposition_mode":
