@@ -545,7 +545,7 @@ class Evolution:
         self.elevation = elevation
         self.precipitation = precipitation
         self.start = start
-        self.rain_intensity = int(rain_intensity)
+        self.rain_intensity = float(rain_intensity)
         self.rain_interval = int(rain_interval)
         self.walkers = walkers
         self.runoff = runoff
@@ -1040,6 +1040,10 @@ class Evolution:
         a digital elevation model"""
 
         # assign variables
+        rain_energy = 'rain_energy'
+        rain_volume = 'rain_volume'
+        erosivity = 'erosivity'
+        r_factor = 'r_factor'
         slope = 'slope'
         aspect = 'aspect'
         qsx = 'qsx'
@@ -1081,20 +1085,14 @@ class Evolution:
         difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
 
         # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
-        rain_energy = 'rain_energy'
-        rain_volume = 'rain_volume'
-        erosivity = 'erosivity'
-        r_factor = 'r_factor'
 
         # derive rainfall energy (MJ ha^-1 mm^-1)
-        #rain_energy = 0.29*(1.-(0.72*exp(-0.05*self.rain_intensity)))
         gscript.run_command('r.mapcalc',
             expression="{rain_energy} = 0.29*(1.-(0.72*exp(-0.05*{rain_intensity})))".format(rain_energy=rain_energy,
                 rain_intensity=self.rain_intensity),
             overwrite=True)
 
         # derive rainfall volume (mm) = rainfall intensity (mm/hr) * (rainfall interval (min) * (1 hr / 60 min))
-        #rain_volume = self.rain_intensity*(self.rain_interval/60.)
         gscript.run_command('r.mapcalc',
             expression="{rain_volume} = {rain_intensity}*({rain_interval}/60.)".format(rain_volume=rain_volume,
                 rain_intensity=self.rain_intensity,
@@ -1102,7 +1100,6 @@ class Evolution:
             overwrite=True)
 
         # derive event erosivity index (MJ mm ha^-1 hr^-1)
-        #erosivity = (rain_energy*rain_volume)*self.rain_intensity*1.
         gscript.run_command('r.mapcalc',
             expression="{erosivity} = ({rain_energy}*{rain_volume})*{rain_intensity}*1.".format(erosivity=erosivity,
                 rain_energy=rain_energy,
@@ -1111,7 +1108,6 @@ class Evolution:
             overwrite=True)
 
         # multiply by rainfall interval in seconds (MJ mm ha^-1 hr^-1 s^-1)
-        #r_factor = erosivity/(self.rain_interval*60.)
         gscript.run_command('r.mapcalc',
             expression="{r_factor} = {erosivity}/({rain_interval}*60.)".format(r_factor=r_factor,
                 erosivity=erosivity,
@@ -1234,18 +1230,18 @@ class Evolution:
                 density=self.density),
             overwrite=True)
 
-        # smooth evolved elevation
-        gscript.run_command('r.neighbors',
-            input=evolved_elevation,
-            output=smoothed_elevation,
-            method='average',
-            size=self.smoothing,
-            overwrite=True)
-        # update elevation
-        gscript.run_command('r.mapcalc',
-            expression="{evolved_elevation} = {smoothed_elevation}".format(evolved_elevation=evolved_elevation,
-                smoothed_elevation=smoothed_elevation),
-            overwrite=True)
+        # # smooth evolved elevation
+        # gscript.run_command('r.neighbors',
+        #     input=evolved_elevation,
+        #     output=smoothed_elevation,
+        #     method='average',
+        #     size=self.smoothing,
+        #     overwrite=True)
+        # # update elevation
+        # gscript.run_command('r.mapcalc',
+        #     expression="{evolved_elevation} = {smoothed_elevation}".format(evolved_elevation=evolved_elevation,
+        #         smoothed_elevation=smoothed_elevation),
+        #     overwrite=True)
 
         # compute second order partial derivatives of evolved elevation
         gscript.run_command('r.slope.aspect',
