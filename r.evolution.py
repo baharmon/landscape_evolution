@@ -1046,7 +1046,7 @@ class Evolution:
         divergence = 'divergence'
         settled_elevation = 'settled_elevation'
         smoothed_elevation = 'smoothed_elevation'
-        converted_flux = 'converted_flux'
+        sedflow = 'sedflow'
 
         # parse time
         year = int(self.start[:4])
@@ -1119,17 +1119,16 @@ class Evolution:
                 c_factor=self.c_factor,
                 slope=slope,
                 flowacc=depth,
-                sedflow=sediment_flux),
+                sedflow=sedflow),
             overwrite=True)
 
         # convert sediment flow from tons/ha to kg/ms
         gscript.run_command('r.mapcalc',
-            expression="{converted_sedflow} = {sedflow} * {ton_to_kg} / {ha_to_m2}".format(converted_sedflow=converted_flux,
-                sedflow=sediment_flux,
+            expression="{converted_sedflow} = {sedflow} * {ton_to_kg} / {ha_to_m2}".format(converted_sedflow=sediment_flux,
+                sedflow=sedflow,
                 ton_to_kg=1000.,
                 ha_to_m2=10000.),
             overwrite=True)
-        sediment_flux = converted_flux
 
         # compute sediment flow rate in x direction (m^2/s)
         gscript.run_command('r.mapcalc',
@@ -1281,7 +1280,7 @@ class Evolution:
                 'grow_dyy',
                 'erdep',
                 'smoothed_elevation',
-                'converted_flux',
+                'sedflow',
                 'settled_elevation',
                 'divergence'],
             flags='f')
@@ -1851,6 +1850,7 @@ def cleanup():
             type='raster',
             name=['rain_excess',
                 'rain',
+                'sedflow',
                 'evolving_elevation',
                 'smoothed_elevation',
                 'settled_elevation',
