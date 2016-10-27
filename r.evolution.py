@@ -1705,6 +1705,7 @@ class DynamicEvolution:
             initial = next(precip)
             evol.start = initial[0]
             #evol.rain_intensity = float(initial[1]) # mm/hr
+            evol.rain_intensity = 'rain_intensity'
             initial_rain = 'initial_rain'
             gscript.run_command('r.mapcalc',
                 expression="{initial_rain} = {initial}".format(initial_rain=initial_rain,
