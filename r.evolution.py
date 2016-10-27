@@ -1045,6 +1045,7 @@ class Evolution:
         erdep = 'erdep' # kg/m^2s
         divergence = 'divergence'
         settled_elevation = 'settled_elevation'
+        smoothed_elevation = 'smoothed_elevation'
 
         # parse time
         year = int(self.start[:4])
@@ -1121,6 +1122,7 @@ class Evolution:
             overwrite=True)
 
         # convert sediment flow from tons/ha to kg/ms
+        sediment_flux = sediment_flux*1000/10000
 
         # compute sediment flow rate in x direction (m^2/s)
         gscript.run_command('r.mapcalc',
