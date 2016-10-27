@@ -1851,7 +1851,6 @@ def cleanup():
             type='raster',
             name=['rain_excess',
                 'rain',
-                'converted_flux',
                 'evolving_elevation',
                 'smoothed_elevation',
                 'settled_elevation',
