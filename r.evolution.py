@@ -1125,7 +1125,7 @@ class Evolution:
         # convert sediment flow from tons/ha to kg/ms
         gscript.run_command('r.mapcalc',
             expression="{converted_sedflow} = {sedflow} * {ton_to_kg} / {ha_to_m2}".format(converted_sedflow=converted_flux,
-                sedflow=sedflow,
+                sedflow=sediment_flux,
                 ton_to_kg=1000.,
                 ha_to_m2=10000.),
             overwrite=True)
