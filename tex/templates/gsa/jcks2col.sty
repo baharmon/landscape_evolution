@@ -1,0 +1,177 @@
+\ProvidesPackage{jcks2col}
+% JCKS Latex Style File Version 2.0
+%
+% LaTeX style file for American Meteorological Society publications.
+%
+%************************************************************************
+%********************** DO NOT MODIFY THIS FILE!!! **********************
+%************************************************************************
+%* ANY CHANGES MADE WILL BE LOST UPON UPLOADING YOUR MANUSCRIPT.        *
+%* THIS STYLE FILE IS KEPT ON THE UPLOAD SYSTEM AND IS USED TO          *
+%* CREATE YOUR MANUSCRIPT.  ANY STYLE FILE YOU UPLOAD WILL NOT BE USED  *
+%************************************************************************
+%
+% Developed by Malcolm Field - National Speleological Society
+%
+% Based on the AMS formatting style and that of Brian Papa.
+%
+% Questions/feedback should be addressed to field.malcolm@epa.gov
+
+%
+% Ensure proper graphics control
+\RequirePackage{graphicx}
+
+%
+% Setup the page layout using the geometry package
+\RequirePackage[dvips,letterpaper,textwidth=18.5cm,textheight=22.9cm]{geometry}
+
+% jcks1col.bst is built on top of natbib
+\RequirePackage{natbib}
+
+% Use courier font in URLs
+\RequirePackage{url}
+
+% Define a light gray color for use in the title page header
+\RequirePackage{xcolor}
+\definecolor{lightgray}{gray}{0.75}
+
+% Allow for fancy headings
+\RequirePackage{fancyhdr}
+
+% Allow for improved figure and table captions
+\RequirePackage{ccaption}
+
+% Allow for proper horizontal lines (rules) in tables
+\RequirePackage{booktabs}
+
+% Allow addition of footnotes to tables
+\RequirePackage{threeparttable}
+
+% Provide for decimal alignment in tables
+\RequirePackage{warpcol}
+
+% Allow for proper comma spacing in math mode
+\RequirePackage{icomma}
+
+% Provide the amsmath, fonts, symbol, and boldface math packages for use
+\RequirePackage{amsmath,amsfonts,amssymb,bm}
+
+% Use the indent first package to ensure the first paragraph after each section is indented
+\RequirePackage{indentfirst}
+
+% Setup for line numbering
+\RequirePackage{lineno}
+
+% If then options
+\RequirePackage{ifthen}
+\newboolean{dc}
+\setboolean{dc}{true}
+
+%Ensure both text and captions are double spaced following JCKS requirements
+\ifthenelse{\boolean{dc}}
+{}
+{\renewcommand{\baselinestretch}{2.0}}
+
+% Improved justification control
+\RequirePackage{ragged2e}
+% Custom definitions to ensure proper line, paragraph, and page spacing
+\pretolerance=500 \tolerance=600 \sloppy
+
+% Used to set headings correctly
+\RequirePackage[rm,bf,raggedright]{titlesec}% Used to set headings correctly
+
+% Page numbering
+\pagestyle{plain}
+
+%
+% Section form control (REQUIRED)
+\titlelabel{}
+\titleformat*{\section}{\large\scshape\Centering}
+\titleformat*{\subsection}{\scshape}
+\titleformat*{\subsubsection}{\itshape}
+
+%
+% Remove colon in \caption, JCKS style is to have a period after the figure number and make caption boldface
+\captiondelim{. }%
+\captionstyle{\raggedright}%
+\captionnamefont{\bfseries}%
+\captiontitlefont{\bfseries}%
+
+%
+% Prepare file for abstract
+\renewcommand{\abstractname}{\bfseries{Abstract: }}%
+\renewenvironment{abstract}{
+\normalfont\small% Used under normal template conditions
+%\begin{center}
+{\abstractname}%
+%\end{center}
+}
+
+%
+% Prepare file for keywords
+\newcommand{\keywordsname}{\noindent\bfseries{Keywords:}}%
+\newenvironment{keywords}{
+\normalfont\small% Used under normal template conditions
+{\keywordsname\vspace{-.5em}\vspace{\z@}}%
+}
+
+%
+% Define the jckstitle
+\newcommand{\jckstitle}{
+   \date{}                  % No date
+   \maketitle               % Make the title
+   \thispagestyle{fancy}    % Title page doesn't have a page number
+   \lhead{\textcolor{lightgray}{\small{Generated using version 2.0 of the official JCKS
+   \LaTeX\ template---preprint NOT FOR SUBMISSION!}}}
+   \rhead{\textcolor{lightgray}{\small{\date{\today}}}}
+   \pagenumbering{arabic}   % Start pagination from this point
+}
+%
+% Citations should be of the form ``author, year''
+% \bibpunct{(}{)}{;}{a}{}{,}
+%
+% Adjust the spacing for two column papers
+\ifthenelse{\boolean{dc}}
+{\setlength{\columnsep}{0.25in}}
+{}
+
+% Center the References section title
+\renewcommand{\refname}{\begin{center}\vspace{-0.3in}\scshape{References}\vspace{-0.3in}\end{center}}
+
+%
+% Changing description environment (use for Figure captions listing)
+\renewcommand\descriptionlabel[1]%
+{\hspace{\labelsep}\textrm{#1}}
+%
+% Create a phantom character for single space (slash zero [\0] will provide one blank space)
+\newdimen\biblioindent
+\biblioindent=20pt
+\newcommand{\bibentry}{\hangindent=\biblioindent \noindent}
+\newcommand{\0}{\phantom{0}}
+%
+% Define commands for adjusting math symbols as needed
+\newcommand{\D}{\displaystyle}
+\newcommand{\T}{\textstyle}
+\newcommand{\SC}{\scriptstyle}
+\newcommand{\SSC}{\scriptscriptstyle}
+%
+% Define command for the Notations Section (REQUIRED IF NOTATIONS SECTION TO BE SUPPLIED)
+\newenvironment{notation}[1]%
+  {\ifx#1\item\ClassError{article}{%
+    The notation environment MUST have an argument:\MessageBreak
+    the longest symbol to appear in the listing}%
+    {Stop and add an argument to \protect\begin{notation}{sym}}\fi
+   \section*{\sc Notation}\begin{list}{}{%
+     \renewcommand\makelabel[1]{\hfill##1}%
+     \settowidth{\labelwidth}{#1}%
+%     \setlength{\itemsep}{\z@}\setlength{\parsep}{\z@}%
+     \setlength{\itemsep}{0.0in}\setlength{\parsep}{0.0in}%
+     \setlength{\leftmargin}{\labelwidth}%
+     \setlength{\labelsep}{1em}%
+     \addtolength{\leftmargin}{\labelsep}}}{\end{list}}
+%
+% Define command to center cdots in tables (REQUIRED FOR MISSING DATA;
+% TYPE \nodata for missing data to get proper listing)
+\def\nodata{\multicolumn{1}{c}{$\cdots$}}
+%%
+%% End of file

@@ -1,0 +1,1589 @@
+%% Edited Book Template file, EdbkTmpl.tex, 
+%% LaTeX2e 
+%% Uncomment documentclass, 
+%\documentclass{KapEdbk} % Computer Modern font calls
+\documentclass{kapedbk} % Computer Modern font calls
+
+%% If you use a font encoding package, please enter it here, i.e.,
+%  \usepackage{T1enc}
+\usepackage{epsfig}
+
+% PostScript font calls
+% If you use the EdbkPs PS font file, you may need to edit it
+% to make sure the font names match those on your system. See
+% the top of the EdbkPs.sty file for more info.
+% \usepackage{EdbkPs} 
+
+%% How many levels of section head would you like numbered?
+%% 0= no section numbers, 1= section, 2= subsection, 3= subsubsection
+%%==>>
+\setcounter{secnumdepth}{3}
+%\setcounter{secnumdepth}{1}
+\setcounter{chapter}{10}
+\pagenumbering{arabic}
+\setcounter{page}{41}
+\setcounter{figure}{0}
+%\turnoff
+\font\ninerm=cmr9
+
+
+%% How many levels of section head would you like to appear in the
+%% Table of Contents?
+%% 0= chapter titles, 1= section titles, 2= subsection titles, 
+%% 3= subsubsection titles.
+%%==>>
+\setcounter{tocdepth}{3}
+
+%%% Uncomment one of the Following:
+\kluwerbib
+%\normallatexbib
+
+%%%%%%% Author and Topic Indices
+%% If you want to have both an author and a topic index, uncomment this:
+%\startauthorindex
+
+%%%% <<==  End Formatting Commands You Can Set or Change %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+\articletitle{MULTISCALE SOIL EROSION SIMULATIONS FOR LAND USE MANAGEMENT}
+
+%% optional, to supply a shorter version of the title for the running head:
+\chaptitlerunninghead{\bf Multiscale Soil Erosion Simulations}
+
+\author{Helena Mitasova$^1$ and Lubos Mitas$^2$}
+\affil{$^1$ University of Illinois at Urbana-Champaign;
+$^2$ North Carolina State University}
+
+%------------ body of article ------------------->>
+\bigskip
+\bigskip
+\bigskip
+\noindent
+\section{INTRODUCTION}
+
+Increasing pressures on the land and an improved understanding of human
+impacts on the environment are leading to profound changes in land management,
+with emphasis on integration of local actions with watershed-scale approaches.
+This trend has a significant impact on the development of supporting {\sl GIS}
+and modeling tools. Complex, distributed, physics-based models
+are needed to improve understanding and prediction of landscape
+processes at any point in space and time. At the
+same time, land owners and managers working in the watersheds and
+fields need fast and easy to use models for which the input data are readily available.
+
+Recent advances in Geographic Information Systems ({\sl GIS}) technology and
+linkage of numerous models with {\sl GIS} (e.g., Wilson and Lorang, 1999;
+Moore et al., 1993; Doe et al., 1996; Saghafian, 1996;
+Srinivasan and Arnold, 1994; Vieux et al., 1996; Johnston and Srivastava, 1999)
+have created a potential to develop an environment
+for coordination of conservation efforts at different management
+levels.
+% by providing tools to design and evaluate the impact of land
+%use alternatives at both local and watershed levels for a given
+%time horizon. 
+These advances facilitate evaluation of prevention practices
+based not only on the type of the prevention measure, but also on their
+location within the watershed. Spatial analysis and simulation can also
+provide supporting information for allocation of resources to those areas
+and those types of practices which will provide the most effective protection.
+
+To reflect the need for modeling at different levels of
+complexity, from fast, approximate estimates for risk assessment
+to more detailed simulations for predictions and
+land use design, a set of models with increasing complexity was developed
+(Mitas and Mitasova, 1998; Mitasova et al., 1999).
+The simple models {\sl RUSLE3D} 
+(Revised Universal Soil Loss Equation for Complex Terrain)
+ and {\sl USPED} (Unit Stream Power-based Erosion Deposition) are based on
+modifications of well established equations representing
+special cases of erosion regimes. The basic empirical parameters for these models
+are available, however their applicability to a wide
+range of conditions is limited. The new distributed,
+process-based model {\sl SIMWE} (SIMulated Water Erosion)
+provides capabilities to simulate more complex effects, however
+both the experimental and theoretical research are still very active
+and underlying equations, as well as the input parameters,
+are under continuing development.
+
+This chapter presents theoretical basis for the distributed, process-based
+{\sl SIMWE} model, describes the relation between the processes modeled by
+ {\sl SIMWE} and the {\sl RUSLE3D} and {\sl USPED} models and
+illustrates the use of the presented models
+for evaluation and design of different conservation measures.
+
+\bigskip
+\noindent
+\section{METHODS}
+
+To model spatio-temporal distribution of sediment transport and 
+erosion/deposition at any point and time, 
+a complex system of interacting processes has
+to be simulated, including rainfall events, vegetation growth,
+surface, subsurface and ground water flow, soil detachment, transport
+and deposition. Excellent examples of continuous time
+simulation systems, which integrate a wide range of interacting
+processes important for land use management
+ are {\sl WEPP} (Flanagan et al., this volume), {\sl LISEM} 
+(Jetten and de Roo, this volume) or
+ {\sl SWAT} (Srinivasan and Arnold, 1994).
+Spatial components of these systems are usually based
+on 1D routing of water and sediment through
+homogeneous hydrologic units (e.g., hillslope segments, subwatersheds),
+limiting the range of spatial effects that can be simulated.
+To more accurately capture the impacts of spatially
+variable conditions a new generation of hydrologic and sediment 
+transport models introduced 2D flow routing capabilities  
+({\sl SIBERIA}: Willgoose and Gyasi-Agyei, 1995; 
+{\sl CASC2d}: Julien et al., 1995; Ogden and Heilig, this volume;
+{\sl CHILD}: Tucker et al., this volume; 
+{\sl SIMWE}: Mitas and Mitasova, 1998).
+{\sl SIMWE} uses spatially continuous approach to
+modeling of erosion and deposition 
+with the modeled phenomena represented
+by {\sl multivariate functions} and the
+flow of water and sediment described as {\sl multivariate vector fields} rather
+than systems of 1D flows.  The model was developed for
+subsystems describing overland water and sediment flow with focus on
+simulations of phenomena important for land use management.
+The concept can be extended to other processes, including the 3D subsurface
+flows.
+
+\bigskip \medskip \noindent
+%{\bf 2.1 Process-based Overland Water and Sediment Flow Model}
+\subsection{Process-based Overland Water and Sediment Flow Model}
+
+\medskip
+The spatially continuous approach uses a bivariate form of continuity
+equations to describe water flow and sediment transport over a complex
+terrain with spatially variable rainfall excess, land cover and soil
+properties during a rainfall event.
+
+\medskip
+\noindent
+%{\bf 2.1.1 Shallow overland flow}
+\subsubsection{Shallow overland flow}
+
+\quad
+
+\medskip
+Shallow overland water flow is described by the bivariate form of the St Venant
+ equations  (e.g., Julien et al., 1995).  The continuity relation is given by:
+\leftequation
+{\partial h({\bf r},t) \over \partial t} =
+ i_e({\bf r},t) - \nabla \cdot {\bf q}({\bf r},t)
+%\eqno (1)
+\endleftequation
+
+\noindent
+while the momentum conservation in the diffusive wave approximation
+has the form:
+
+\leftequation
+{\bf s_f}({\bf r},t)={\bf s}({\bf r})-\nabla h({\bf r},t)
+%\eqno (2)
+\endleftequation
+
+\noindent
+ where ${\bf r}=(x,y)$ in $m$ is the position,
+$t$ in $s$ is the time,
+$h({\bf r},t)$ in $m$ is the depth of overland flow,
+$i_e({\bf r},t)$ in $m/s$ is the
+rainfall excess = rainfall $-$ infiltration,
+${\bf q}({\bf r},t)$ in $m^2/s$ is the unit flow discharge
+(water flow per unit width),
+${\bf s}({\bf r})= - \nabla z({\bf r})$ is the negative elevation
+gradient,
+$z({\bf r})$ in $m$ is the elevation,
+and ${\bf s_f}({\bf r},t)$ is the negative gradient of
+overland flow surface (friction slope).
+
+For a shallow water
+overland flow, with the hydraulic radius approximated
+by the normal flow depth $h({\bf r},t)$ (Moore and Foster, 1990),
+the unit discharge is given by:
+
+\leftequation
+{\bf q}({\bf r},t)={\bf v}({\bf r},t) h({\bf r},t)
+%\alpha h^m {{\nabla z({\bf r})} \over {|\nabla z({\bf r})|}}
+%\eqno(3)
+\endleftequation
+
+\noindent
+where ${\bf v}({\bf r},t)$  in $m/s$ is the flow velocity.
+The system of equations (1-3) is closed
+using the Manning's relation between $h({\bf r},t)$ and
+ ${\bf v}({\bf r},t)$
+
+\leftequation
+{\bf v}({\bf r},t)=
+{C\over n({\bf r})} h({\bf r},t)^{2/3}
+|{\bf s_f}({\bf r})|^{1/2} {\bf s_{f0}({\bf r})}
+%\eqno(4)
+\endleftequation
+
+\noindent
+where $n({\bf r}) $ is the dimensionless Manning's coefficient, $C=1$
+is the corresponding dimension constant  in $m^{1/3}/s$ (Dingman, 1984),
+and ${\bf s_{f0}}({\bf r})={\bf s_f}({\bf r})/|{\bf s_f}({\bf r})|$
+is the unit vector in the friction slope direction.
+ To account for spatially variable cover necessary for
+land use management, we consider $n({\bf r})$
+as  explicitly location dependent.
+
+In this chapter, the solution of continuity and
+momentum equations for a steady state $\partial h({\bf r},t)/\partial t =0$,
+is considered to be an adequate estimate of overland flow
+for the land management applications (Flanagan and Nearing, 1995).
+In addition, the flow is considered to be close to the
+kinematic wave approximation
+ for which ${\bf s_f}({\bf r},t) \approx {\bf s}({\bf r})$ and after
+ using Equation (3), the Equation (1) is given by:
+
+\leftequation
+\nabla \cdot [ h({\bf r}){\bf v}({\bf r})] = i_e({\bf r})
+%\eqno(5)
+\endleftequation
+
+\noindent
+In order to incorporate the diffusive wave effects at least in an approximate way, 
+Mitas and Mitasova (1998) incorporate a diffusion-like term
+$ \propto \nabla^2 [h^{5/3}({\bf r})]$ into Equation (5):
+
+\leftequation
+-{\varepsilon({\bf r})\over 2 }\nabla^2 [h^{5/3}({\bf r})]
++\nabla \cdot [ h({\bf r}){\bf v}({\bf r})] = i_e({\bf r})
+%\eqno (6)
+\endleftequation
+
+\noindent
+ where $\varepsilon({\bf r})$ is a spatially variable diffusion coefficient.
+Such an incorporation of diffusion in the water flow simulation is not new
+ and a similar term has been obtained in derivations of diffusion-advection 
+equations for overland flow, e.g.,  by Dingman, (1984) and Lettenmeier and Wood, (1992).
+The diffusion term, which depends on $h^{5/3}({\bf r})$ instead of
+ $h({\bf r})$, makes Equation (6)  {\sl linear}
+ in the function $h^{5/3}({\bf r})$ which enables it to be 
+ solved using the path sampling method.
+
+
+\medskip
+\noindent
+\subsubsection{Erosion and sediment transport by overland flow}
+
+\quad
+
+\medskip
+The basic relationship describing sediment transport by overland flow
+is the sediment continuity equation,
+which relates the change in sediment storage over time, and the change
+in sediment flow rate along the hillslope to effective sources and sinks
+(e.g., Haan et al., 1994; Govindaraju and Kavvas, 1991;
+Foster and Meyer, 1972; Bennet, 1974).
+The bivariate form of the continuity of sediment mass equation is
+(e.g., Hong and Mostaghimi, 1995):
+\leftequation
+{\partial [\rho_sc({\bf r},t)h({\bf r},t)] \over \partial t} +
+\nabla\cdot {\bf q_s}({\bf r},t) = {\rm sources - sinks}=
+D({\bf r},t)
+%\eqno(7)
+\endleftequation
+
+\noindent
+where
+${\bf q_s}({\bf r},t)$ in $kg/(ms)$ is the sediment flow rate per unit width,
+$c({\bf r},t)$  in $ particle/m^3$ is sediment concentration,
+$\rho_s$ in $kg/particle$ is mass per sediment particle,
+$\rho_s c({\bf r},t)$ in $kg/m^3$ is sediment mass density,
+and $D({\bf r},t)$ in $kg/(m^2s)$ is the net erosion or deposition rate.
+The sediment flow rate ${\bf q_s}({\bf r},t) $ is a function of
+water flow and sediment concentration:
+
+\leftequation
+  {\bf q_s}({\bf r},t) = \rho_sc({\bf r},t){\bf q}({\bf r},t)
+%\eqno (8)
+\endleftequation
+
+\noindent
+Again, we assume a steady state form of
+%For shallow, gradually varied flow the storage term can be
+%neglected leading to a steady state form of
+the continuity equation:
+\leftequation
+{\partial [\rho_sc({\bf r},t)h({\bf r},t)] \over \partial t}=0
+\quad
+\longrightarrow \quad
+\nabla\cdot {\bf q_s}({\bf r}) = D({\bf r}) .
+%\eqno(9)
+\endleftequation
+\noindent
+%where $D({\bf r})\; [kg/(m^2s)]$ is the net erosion/deposition rate.
+The sources and sinks term is derived from the assumption that
+the detachment and deposition rates are proportional to the difference between
+the sediment transport capacity and the actual
+sediment flow rate (Foster and Meyer, 1972):
+
+\leftequation
+D({\bf r})
+=\sigma({\bf r}) \bigl[ T({\bf r})- |{\bf q_s}({\bf r})|\bigr]
+%\eqno(10)
+\endleftequation
+
+\noindent
+where $T({\bf r})$ in $kg/(ms)$ is the sediment transport capacity,
+$\sigma({\bf r})$ in $m^{-1}$ is the first order reaction term
+ dependent on soil and cover properties.
+ The expression for $\sigma({\bf r})=D_c({\bf r})/T({\bf r})$
+is obtained from the following relationship (Foster and Meyer, 1972):
+
+\leftequation
+D({\bf r})/D_c({\bf r}) + |{\bf q_s}({\bf r})|/T({\bf r}) = 1
+%\eqno(11)
+\endleftequation
+
+\noindent
+ which states that the ratio of the erosion rate to the detachment
+ capacity $D_c ({\bf r})$ in $kg/(m^2s)$ %(entrainment)
+ plus the ratio of the sediment flow to the sediment transport capacity is
+ a conserved quantity (unity). To keep the model simple, $\sigma({\bf r})$
+is applied for both net erosion and deposition.
+%Adding a different equation for deposition 
+%is necessary for accurate simulations of sedimentation in ponds,
+%streams and other 3D water bodies 
+%which are not currently included in the model and which
+%will require simulation of 3D flow.
+Equation (11), proposed by Foster and Meyer (1972),
+is based on the observed relationship between soil detachment and transport
+described e.g., by Meyer and Wischmeier
+(1969). This concept is used in several erosion models including {\sl WEPP}
+(Haan et al., 1994; Flanagan and Nearing, 1995).
+The qualitative arguments, experimental observations and values for
+ $\sigma({\bf r})$   are discussed by Foster and Meyer, (1972)
+and Foster (1982). While it is possible to use other frameworks
+for estimation of  $\sigma({\bf r})$, we have chosen the Foster and
+Meyer concept because of its simplicity and widespread use.
+
+The sediment transport capacity $T({\bf r})$ and detachment capacity
+$D_c({\bf r})$ represent the maximum potential
+sediment flow rate and the maximum potential detachment rate, respectively,
+%by overland flow
+and there are numerous simplified equations representing these rates under
+different conditions. In the {\sl WEPP} model they are expressed as functions
+of a shear stress (Foster and Meyer, 1972):
+
+\leftequation
+T({\bf r})=K_t({\bf r}) \bigl[\tau({\bf r})\bigr]^p
+%=K_t({\bf r}) \bigl[\rho_w\, g h({\bf r}) \sin \beta ({\bf r}) \bigr]^p
+%\eqno(12)
+\endleftequation
+\leftequation
+D_c({\bf r})=K_d({\bf r}) \bigl[\tau({\bf r}) - \tau_{cr}({\bf r})\bigr]^q
+%=K_d({\bf r}) \bigl[\rho_w\, g h({\bf r}) \sin \beta({\bf r}) -\tau_{cr}({\bf r})\bigr]^q
+%\eqno (13)
+\endleftequation
+
+\smallskip
+\noindent
+where $\tau({\bf r})=\rho_w\, g h({\bf r}) \sin \beta({\bf r})$ in
+$Pa$ is the shear stress,
+$ \beta$ in $deg$ is the slope angle,
+$p$ and $q$ are exponents,
+$ K_t({\bf r})$ in $s$ is the effective transport capacity coefficient,
+%($[s]$ for $p=1$),
+$K_d({\bf r})$ in $s/m$ is the effective erodibility
+(detachment capacity coefficient),
+%($[s/m]$ for $p=1$),
+$\rho_w\, g$  is the hydrostatic pressure
+of water with the unit height,
+$ g=9.81$ in $m/s^2$ is the gravitational acceleration,
+$\rho_w=10^3$ in $kg/m^3$ is the  mass density of water,
+and
+$\tau_{cr}({\bf r})$ in $Pa$ is the critical shear stress.
+The parameters and adjustment factors for the estimation of
+$D_c ({\bf r})$ in $T({\bf r})$
+are functions of soil and cover properties, and their values
+for a wide range of soils, cover, agricultural and 
+erosion prevention practices
+were developed within the {\sl WEPP} model (Flanagan and Nearing, 1995).
+
+The exponents $p, q$ substantially influence model behavior.
+The {\sl WEPP} model uses $q=1$ and $p=1.5$ which means that with increasing
+water flow, transport capacity increases faster than detachment.
+The comparison with the spatial extent of colluvial deposits
+in our previous study (Mitas and Mitasova, 1998)
+indicates that over long term period (decades) 
+the pattern of erosion/deposition
+is closer to the results obtained with a lower value of $p$.
+This is in agreement with several studies
+which indicate that for the landscape scale modeling
+the Equations (12) and (13) are not general enough for different
+types of flow and sediment transport processes
+present in complex landscapes
+(Willgoose et al., 1989; Kirkby, 1987; Willgoose and
+Gyasi-Agyei, 1995; Mitas and Mitasova, 1998).
+
+%Nearing et al. (1997) proposed a transport capacity equation as a
+%function of stream power. The equation was re-arranged (Mitas and
+%Mitasova, 1997) and implemented within the presented model.
+%Its advantage is that it
+%better reflects the influence of change in flow velocity
+%on the net erosion/deposition.
+%However, for the practical use in land management the values of coefficients
+%used in this equation should be calibrated for different soil and
+%land cover conditions. 
+
+Similar to the water flow equation, the steady
+state sediment flow equation (Equation 9) can be rewritten to include a 
+diffusion term. First, a function representing the mass of water-carried 
+sediment per unit area $\varrho({\bf r})$ in $kg/m^2$ 
+is defined as:
+
+\leftequation
+\varrho({\bf r})= \rho_s c({\bf r})h({\bf r})
+%\eqno(14)
+\endleftequation
+
+\noindent
+and after introducing a small diffusion term $\propto \nabla^2 \varrho({\bf r})$,
+the continuity equation is rewritten as:
+\leftequation
+-{\omega \over 2}\nabla^2 \varrho({\bf r})
++ \nabla\cdot [\varrho({\bf r}){\bf v}({\bf r})]
+ + \varrho({\bf r}) \sigma({\bf r}) |{\bf v}({\bf r})|
+= \sigma({\bf r}) T({\bf r})
+%\eqno(15)
+\endleftequation
+
+\noindent
+where  $\omega$  in $m^2/s$ is the diffusion constant.
+ On the left hand side of Equation (15) the first term
+ describes local diffusion,
+ the second term is a drift driven by the water flow
+ while the third term represents a velocity dependent
+'potential' acting on $\varrho({\bf r})$. The size of the diffusion
+ constant is about one order of magnitude smaller than the
+ reciprocal Manning's constant so that the impact of the diffusion term
+is relatively small. It represents local dispersion processes
+of the suspended flow (Bennet, 1974), caused by microtopography
+which is not captured by the {\sl DEM}.  
+The diffusion term can be modified to reflect impact of various processes.
+
+The water and sediment flow described by Equations (6) and (15)
+can be solved by the path sampling stochastic approach described in the following
+section.
+
+\bigskip \medskip \noindent
+\subsection{Path Sampling  Solution  Method}
+
+\medskip
+Equations (6) and (15) have a similar form in which
+ a linear differential operator $\cal O$ acts on a nonnegative
+unknown function
+ $\gamma({\bf r})$ (either $h({\bf r})$ or $\varrho ({\bf r})$),
+  while on the right hand side, there is a
+given source term ${\cal S}({\bf r})$ (either $i_e({\bf r})$ or
+$\sigma({\bf r})T({\bf r})$):
+
+\leftequation
+{\cal O} \gamma({\bf r})= {\cal S}({\bf r})
+%\eqno(16)
+\endleftequation
+
+\noindent
+Denoting ${\cal O}^{-1}$ the inverse operator to ${\cal O}$,
+ the solution can be symbolically written as:
+\leftequation
+\gamma({\bf r})=  {\cal O}^{-1} {\cal S}({\bf r})
+%\eqno(17)
+\endleftequation
+
+\noindent
+or explicitly, using the Green's function:
+\leftequation
+\gamma({\bf r})=
+\int_0^{\infty}\int
+G({\bf r},{\bf r'},p)
+ {\cal S}({\bf r'})
+d{\bf r'}dp
+%\eqno(18)
+\endleftequation
+
+\noindent
+The Green's functions are often used for expressing
+the solutions of linear differential equations in
+physical or mathematical applications. For the theory see, e.g.,
+ Karlin and Taylor, (1981); Glimm and Jaffe, (1972);
+Stakgold, (1979); Carslaw and Jaeger, (1947).
+$G({\bf r},{\bf r'},p)$
+is given by the following equation and an initial condition:
+
+\leftequation
+{\partial G({\bf r},{\bf r'},p)
+\over \partial p} =-{\cal O} G({\bf r},{\bf r'},p)\, ;
+\;\; G({\bf r},{\bf r'},0) =\delta ({\bf r}-{\bf r'})
+%\eqno(19)
+\endleftequation
+
+\noindent
+ where ${\bf r},{\bf r'}$ are locations,
+$p$ is time and $\delta$ is the Dirac function. In addition,
+ we assume that the spatial region
+ is a delineated watershed with zero boundary condition which is
+ fulfilled by $G({\bf r},{\bf r'},p)$. The corresponding equations
+ can be solved, e.g., by projection methods (Rouhi and Wright, 1995).
+ Another equivalent
+ alternative is to interpret Equations (6),(15) and (16) as describing
+ stochastic processes with diffusion and drift components
+  (Fokker-Planck equations)
+ and carry out the actual simulation of the underlying process
+  using a path sampling method (Gardiner, 1985).
+
+The method is based on duality between the particle and field 
+representation of spatially distributed phenomena.Within this concept,
+ density of particles in
+space defines a field and vice versa, field is represented by
+particles with corresponding spatial distribution of their densities. Using
+this duality, processes can be modeled as evolution of fields or evolution 
+of spatially distributed particles (Figure 1), 
+with the solution obtained as follows.  
+
+\begin{figure}[h]
+\centerline{\epsfig{file=llefig1.eps,width=1.\textwidth,clip= }}
+\caption{Path sampling solution of the continuity equation for water 
+depth $h({\bf r})$ using duality between particle and field representation:
+a) water depth at 1 minute, b) water depth after 24 minutes. The grid
+is 416x430 cells at 10m resolution. See the {\sl CDROM} for animation.}
+\end{figure}
+
+ First a selected number of particles, also called walkers or sampling points,
+is distributed according to the source 
+$ {\cal S}({\bf r'})$. These walkers are then propagated
+ according to the function $G({\bf r},{\bf r'},p)$, generating a number
+of sampling paths. Averaging of these path samples provides
+ an estimation of the actual solution $ \gamma ({\bf r})$ 
+ with statistical accuracy proportional to $1/\sqrt{M}$ where $M$ 
+is the number of walkers (Figure 2). The solution is not restricted to the 
+steady state and the state of the modeled quantity at any given time
+$p$ can be obtained by averaging the path samples at a given time $p$.   
+
+\begin{figure}[h]
+\centerline{ \epsfig{file=llefig2.eps,width=1.\textwidth,clip= } }
+\caption{Path sampling solution of the continuity equation for sediment
+flow and net erosion/deposition:
+a) results for 7000 walkers, b) results for 50 million walkers.
+ The grid is 280x250(70,000 cells) at 2m resolution. See the {\sl CDROM} 
+for animation.}
+\medskip
+\end{figure}
+
+The path sampling technique has several unique advantages which
+are becoming even more important due to new developments in
+computer technology. Perhaps one of its most significant
+ properties is robustness which makes it possible to solve the equations
+ for complex cases, such as discontinuities in
+ the coefficients of differential operators (in our case, abrupt
+ slope or cover changes, etc). In addition, the independence of sampling points
+makes the stochastic methods perfectly suited to
+the new generation of computers as they provide scalability from
+a single workstation to large parallel
+ machines and computers distributed over different types of networks.
+
+\bigskip
+\noindent
+\section{SIMPLIFIED SPECIAL CASES AND MODEL EXTENSIONS}
+
+Land use management poses specific challenges for hydrologic and erosion
+simulations because of the necessity to capture the spatial aspects
+of the modeled processes.
+In the following sections some of the issues
+important from the point of view of landuse design
+are addressed, in particular the
+simplified erosion and deposition models,
+simulation of water flow in flat areas and depressions,
+and modeling with spatially variable resolution.
+
+\bigskip \medskip \noindent
+\subsection{Simple Erosion and Deposition Models }
+
+\medskip
+To satisfy the need for models which are easy to implement, 
+simple to compute, and for which the data a readily available,
+it is useful to derive the models  for special cases
+of sediment transport regimes.
+There are two limiting cases of erosion and sediment transport
+(Foster and Meyer, 1972; Hairsine and Rose, 1992; Tucker et al., this volume):
+(i) {\sl detachment limited},
+and (ii) {\sl sediment transport capacity limited}.
+
+\medskip
+\noindent
+\subsubsection{The detachment limited case} 
+
+\quad 
+
+\medskip
+This case is represented by $\sigma \to 0$, which,
+after substituting into Equations (9)-(10) results in the net erosion
+equal to the detachment capacity 
+$ D({\bf r})=D_c({\bf r})$.
+%= K_d({\bf r}) \bigl[\rho_w\, g h({\bf r}) \sin \beta({\bf r})
+%-\tau_{cr}({\bf r})\bigr]^q
+It can be directly computed from Equation (13) using an estimate of
+water depth $ h({\bf r})$ computed, for example, by the {\sl SIMWE}
+ water flow module. 
+%or  using the upslope contributing area per unit width
+%$A({\bf r})$ as $h({\bf r}) = 
+%[n({\bf r}).A({\bf r}).i_e({\bf r})]^0.6/[\sin \beta({\bf r})]^0.3$.
+%Monthly/annual average detachment limited erosion can 
+%then be computed as a summ of $D({\bf r})$ for all events in a month/year,
+% averaged over a number of years.
+ For this case, transport capacity exceeds
+detachment capacity everywhere, erosion and sediment transport is detachment
+capacity limited and therefore no deposition occurs.
+
+The most common erosion model which represents this case is
+{\sl USLE} and its revised version {\sl RUSLE} (Lane et al., this volume).
+If we assume that $\tau_{cr}({\bf r})=0$
+and that the spatial distribution of steady state water flow 
+is adequately represented by a function of
+upslope contributing area per unit width (e.g., Moore et al., 1993) 
+the detachment limited erosion can be approximated by
+{\sl RUSLE3D}, which for a point on a hillslope
+has the form (Moore et al., 1993; Mitasova et al., 1999; 
+see also Desmet and Govers, 1996 for hillslope segment based equation):
+\smallskip
+\leftequation
+D({\bf r})=R({\bf r}) K({\bf r}) C({\bf r}) P({\bf r})
+(m+1) [A({\bf r}) / 22.13]^m [sin \beta({\bf r}) / 0.09]^n
+%\eqno(20)
+\endleftequation
+\smallskip
+\noindent
+where
+$D({\bf r})$ in $ton/(acre.year)=0.2242kg/(m^2.year)$ 
+ is the average annual soil detachment (soil loss) rate,
+$A({\bf r})$ in $m^2/m$ is the upslope contributing area per unit width,
+$22.13m$ is the length and $0.09$ is the slope of the standard
+USLE plot, $R({\bf r})$ in $(hundreds\,of\,ft-tonf.in)/(acre.hr.year)$
+$=17.02 \; MJ.mm/(ha.hr.year)$ is the rainfall energy factor, 
+$K({\bf r})$ in
+$ton.acre.hr/$$(hundreds\,of\,acre ft-tonf.in)=0.1317\,
+t.ha.hr/$$(ha.MJ.mm)$ is
+soil erodibility, $C({\bf r})$ [dimensionless] is the cover factor and
+$P({\bf r})$ [dimensionless] is the prevention measures factor 
+(Haan et al., 1994; Lane et al., this volume). Single storm and
+monthly $R({\bf r})$ is also available, making Equation (20) suitable for
+estimation of $D({\bf r})$ for single storms and for modeling of
+monthly soil loss distribution over a year (Haan et al., 1994). 
+Exponents $m,n$ depend on the prevailing type of
+erosion (sheet, rill) and the typical values are $m=0.4-0.6$ and $n=1-1.3$.
+Replacement of slope length used in the original formulation of 
+{\sl USLE/RUSLE} by the upslope area provides a better spatial description
+of increased erosion due to the concentrated flow without the need
+to {\sl a priori} define these locations as inputs for the model.
+
+\medskip
+\noindent
+\subsubsection {Transport capacity limited erosion} 
+
+\quad
+
+\medskip
+For this case $\sigma \to \infty$,
+which, after substituting into Equation (10), leads to 
+$|{\bf q}_s({\bf r})| \approx T({\bf r})$ and
+net erosion/deposition can be computed directly as a divergence of
+the sediment transport capacity:
+\leftequation
+D({\bf r})=\nabla\cdot {\bf q}_s({\bf r})=
+\nabla\cdot \bigl[T({\bf r}){\bf s_0}({\bf r})\bigr]
+%\eqno(21)
+\endleftequation
+
+\noindent where
+${\bf s_0}({\bf r})={\bf s}({\bf r})/|{\bf s}({\bf r})|$ is the
+unit vector in the steepest slope direction.
+Mitas and Mitasova (1998) have shown that the results obtained for
+this case were close to the observed distribution of colluvial deposits
+in their study area, suggesting the prevailing influence
+of the transport capacity limited case on a long term
+pattern of deposition. Equation (21) was also used to demonstrate
+the impact of both tangential and profile curvatures 
+and the importance of 2D flow routing
+for predicting net erosion/deposition pattern (Mitas and Mitasova, 1998).  
+
+The Unit Stream Power Based Erosion/Deposition model ({\sl USPED})
+estimates the transport capacity limited case of erosion/deposition
+using the idea originally proposed by Moore and Burch (1986).
+It combines the {\sl USLE/RUSLE} parameters and 
+ upslope contributing area per unit width $A({\bf r})$
+to estimate the sediment flow at sediment transport capacity: 
+\leftequation
+q_s({\bf r}) = T({\bf r}) \approx R({\bf r}) K({\bf r})C({\bf r}) P({\bf r})
+[A({\bf r})]^m [sin \beta({\bf r})]^n
+%\eqno (22)
+\endleftequation
+
+\noindent
+%ROZVED?The upslope area and slope are not normalized, because Equation (22) is
+%here an estimate of sediment flow $[kg/(ms)]$ rather than soil detachment
+%$[kg/(m^2s)$ (see the discussion about the use of RUSLE parameters below). 
+The net erosion/deposition $D({\bf r})$ is then estimated using Equation (21) as:
+
+\leftequation
+D({\bf r})=\nabla\cdot \bigl[T({\bf r}){\bf s_0}({\bf r})\bigr]
+= {d [T({\bf r}) cos \alpha({\bf r})] \over {dx}} +
+{d [T({\bf r}) sin \alpha({\bf r})) \over {dy}}
+%\eqno (23)
+\endleftequation
+
+\noindent
+where $\alpha({\bf r})$ in $deg$
+is the aspect of the terrain surface (direction of flow).
+The exponents $m,n$
+control the relative influence of water and slope terms and reflect
+the impact of different types of flow.
+The exponents leading to values of erosion rates on hillslopes
+consistent with the values from {\sl RUSLE} are $m=1.6, n=1.3$
+and they seem to reflect the pattern for prevailing rill erosion
+with erosion sharply increasing with the amount of water. The observed
+extent of colluvial deposits in our previous study (Mitas and Mitasova, 1998)
+ indicated that a lower exponent $m=1$ better reflects the pattern of compounded,
+long term impact of both rill and sheet erosion and averaging over a long
+term sequence of large and small events.
+
+Models representing limiting cases of erosion are simple to compute
+in GIS by combining the flow-tracing and topographic analysis functions with
+map algebra. They can be applied to a single storm, monthly
+and annual estimates of soil detachment and net erosion/deposition.
+ Caution should be used when interpreting the results from both 
+{\sl RUSLE3D and USPED} because the {\sl USLE/RUSLE}
+parameters were developed for simple plane fields and detachment limited
+erosion. Therefore, to obtain accurate quantitative predictions for
+complex terrain and land cover conditions
+they need to be re-calibrated, especially in areas of concentrated flow
+ (Foster, 1990; Mitasova et al., 1997 reply).
+While the capabilities of both {\sl RUSLE3D and USPED}
+to accurately predict the rates of
+erosion and deposition at any point in the complex landscape are limited (fact
+which is true about almost any erosion model),
+they are useful tools for land management.
+Both models use readily available parameters and
+can provide valuable spatial information about: (i) the location of areas
+with high erosion risk from both shallow overland and concentrated flow,
+(ii) location of areas with deposition, and
+(iii) relative estimates of erosion and deposition rates
+for different land use alternatives and conservation strategies.
+Locations identified as high risk from both {\sl RUSLE3D and USPED}
+should be primary targets for field erosion inventory
+(to validate the risk) and implementation of prevention/mitigation measures
+(if the high risk is confirmed in the field). Computation of net erosion
+and deposition is also useful for evaluation of the landscape's capacity
+to deposit the eroded material before it can reach the streams.
+%Combined application of {\sl USLE3D and USPED} provides information about the
+%erosion patterns for limiting cases of erosion regimes
+%It is interesting to note that
+%prevailing long term pattern indicates transport capacity limited case -
+%{\bf trimble wisconsin !!!!!.....} Address the concentrated flow uncertainty
+
+\bigskip \medskip \noindent 
+\subsection{Water Depth in Flat Areas and Depressions}
+
+\medskip
+While flat areas and depressions are not high erosion risk locations,
+they play an important role within watersheds by holding water
+and reducing water flow to neighboring steeper slopes or into the streams.
+Modeling water flow over terrain surfaces with $\nabla z>0$ can be
+successfully performed using kinematic wave approximation. However,
+flat areas and bottoms of depressions where $\nabla z \to 0$
+pose a problem because the water flow direction becomes undefined.
+Incorporation of the spatially variable diffusion term $\varepsilon({\bf r})$
+in the SIMWE model provides capabilities to approximately simulate water depth
+in these locations. By defining the diffusion term $\varepsilon({\bf r})$
+as a function of water depth and the 
+
+\begin{figure}[h]
+\centerline{\epsfig{file=llefig3.eps,width=1.\textwidth,clip= }}
+\caption{Simulation of water flow through existing shallow depressions:
+a) 2D kinematic wave flow, b) approximate 2D diffusive wave flow
+with variable $\varepsilon({\bf r})$ and flow momentum,
+c) approximate 2D diffusive wave flow with a shallow, 1 degree slope
+channel running through the depressions. Simulation was performed
+by the {\sl SIMWE} model using a 10m resolution {\sl DEM}, 100x170 cells.
+See the {\sl CDROM} for animation.}
+\end{figure}
+
+\noindent
+velocity of flow as a function of an approximate water flow momentum,
+the  water fills the depressions or spreads in the flat area
+and flows out in the prevailing flow direction (Figure 3b).
+
+For the situations when the flat areas or depressions are drained by natural
+or man-made swales and channels, the water flow
+can be simulated by combining the gradient field derived from the {\sl DEM} with
+ the gradient of the drainage (Figure 3c). The input vector field
+${\bf s(r)}$ representing
+the flow direction is then defined as:
+
+\leftequation 
+{\bf s}({\bf r})=
+(1-\delta_{ij}){\bf s_e}({\bf r}) + \delta_{ij} {\bf s_d}({\bf r})
+%\eqno (24)
+\endleftequation
+
+\noindent
+where ${\bf s_e(r)}$ is the vector in the steepest slope direction derived
+from a {\sl DEM} and ${\bf s_d(r)}$ is the vector representing the
+flow through the surface drainage which can be estimated, for example, 
+from drainage line data using GIS tools and/or from field measurements.
+
+\bigskip \medskip \noindent
+\subsection{Multiscale Water and Sediment Flow Simulation}
+
+\medskip
+Because the spatial unit modeled at the site
+level is part of a larger watershed, the evaluation of the impact of
+numerous, locally implemented conservation practices across the entire watershed
+requires multiscale approach. This approach links the high resolution, local level
+simulation with low resolution/regional simulation and is being implemented
+for the {\sl SIMWE} model. It supports simulations with spatially
+variable resolution which can include the following cases:
+(i) study area is represented by several data sets with
+different resolutions and levels of accuracy, and
+the best available data are used for each subregion;
+(ii) study area is large, with spatially variable complexity
+and it is sufficient to run the more homogeneous areas at lower resolution
+while running the more complex areas or areas experiencing land use
+change at high resolution.
+
+\noindent
+Both {\it spatially variable accuracy} and {\it resolution} can be
+implemented by reformulating the  solution through the Green's function
+given by Equation (18).
+The integral Equation (18) can be multiplied by a {\it reweighting }
+ function  $W({\bf r})$:
+
+\leftequation
+W({\bf r})\gamma({\bf r})= \int_0^{\infty}\int W({\bf r})G({\bf r},{\bf r'},p)
+ {\cal S}({\bf r'})  d{\bf r'}dp =
+\endleftequation
+\leftequation
+= \int_0^{\infty}\int G^*({\bf r},{\bf r'},p)
+ {\cal S}({\bf r'})  d{\bf r'}dp
+%\eqno(25)
+\endleftequation
+
+\noindent
+ which is equal to the appropriate increase in accuracy ($W({\bf r})>1$) in the 
+
+\begin{figure}[h]
+\centerline{\epsfig{file=llefig4.eps,width=1.\textwidth,clip= }}
+\caption{Simulation of water depth at spatially variable
+resolution 10m and 2m: a) initial particle representation,
+ b) detail of resulting water depth at 10m resolution
+c) detail at 2m resolution. See the {\sl CDROM} for animation} 
+\end{figure}
+
+\noindent
+%The low and high resolution areas are 416x430 and 660x375 respectively.
+regions of interest while it is unity elsewhere. The function $W({\bf r})$ can 
+change (abruptly or smoothly) between regions with unequal
+ resolutions  and in fact, can be optimally adapted to the quality of
+ input data (terrain, soils, etc) so that the more accurate solution
+ is calculated only in the regions with correspondingly accurate inputs.
+
+ The reweighted Green's function $G^*({\bf r},{\bf r'},p)$, in effect,
+  introduces a higher density of sampling points in the region with
+ large $W({\bf r})$. The statistical noise will be spatially
+ variable as $\approx 1/[W({\bf r})\sqrt{M}]$, where $M$ is the average number
+ of samples  resulting in the accuracy increase for the areas
+with $W({\bf r}) > 1$.
+
+This approach provides an alternative to
+the finite element methods (see e.g. Tucker et al., this volume)
+ because it uses
+multiple standard 
+grids with the given resolutions
+instead of finite element meshes, which often
+ lack adequate {\sl GIS} support.
+The implementation is based on the multipass simulation.
+First, the entire area is simulated at lower resolution, and the walkers
+entering the high resolution area(s) are saved.
+The saved walkers are resampled according to the Equation (25) by
+spliting each walker into a number of "smaller" walkers which are
+randomly distributed in the neighborhood of the original walker.
+The model is then run at high resolution only for the given subarea,
+with the resampled walkers used as inputs (Figure 4). 
+If several different land use alternatives are considered
+for the given subarea, this approach can be used to perform
+simulations for each alternative only within the high resolution subarea.
+The approach also provides useful spatial information
+about the locations where water flows into the given subarea
+and where it flows out (Figure 4c).
+
+
+\bigskip \noindent
+\section{LANDSCAPE SCALE EROSION PREVENTION PLANNING AND DESIGN}
+
+Interactions between different land covers and topography
+significantly influence the spatial distribution of surface water depth,
+sediment flow and net erosion/deposition. The capabilities to
+simulate these interactions at both watershed and field scale
+can support the design of sustainable, cost effective
+conservation strategies and erosion prevention measures.
+Mitasova and Mitas (1998) have demonstrated the use of {\sl SIMWE}
+and {\sl GIS} for finding an effective spatial distribution of
+protective grass cover for a small agricultural watershed.
+The following sections provide examples of
+a wide range of applications where simulations of water flow,
+sediment transport and erosion/deposition are used
+to support land use management at different scales
+and levels of complexity.
+
+\bigskip \medskip \noindent
+\subsection{ Watershed Scale Erosion Risk Assesment and Evaluation of 
+Conservation Strategies with Simple Distributed Models}
+
+\medskip
+A large number of watershed associations are being organized 
+({\sl EPA}, 2000)
+with the goal of improving the management of
+America's watersheds. The basis for this work are
+watershed management plans which identify the problems and
+set priorities in funding and implementation of conservation measures.
+{\sl GIS} combined with simple erosion models and free spatial data
+available through the National Spatial Data Clearinghouse ({\sl NSDI}, 2000)
+provide a cost effective way to assess
+the current state of watersheds, as well as evaluate the impact and
+prioritize various conservation strategies.
+The simplified models {\sl RUSLE3D and USPED}
+were applied to the Court Creek watershed which
+serves as a pilot area for the Illinois Department of Natural
+Resources ({\sl IDNR}) program aimed at demonstration of
+community based watershed management with strong scientific support.
+First, the current erosion risk areas were identified and their pattern
+was analyzed using {\sl RUSLE3D} and {\sl GIS} tools (Figure 5b).
+The analysis shows a favorable land use pattern
+with protective forested buffers along the bigger streams and
+on steep slopes. However, the analysis also indicates that
+headwater areas and areas with lower values of slope and convergent water
+flow are not sufficiently protected. These sensitive areas are relatively
+small and scattered, and the results from {\sl RUSLE3D}
+indicate that only 16 percent area (10,000 acres) produces
+87 percent of total detached soil available for transport.
+
+The impact of several conservation strategies was then evaluated,
+with the following two alternatives presented here:
+(i) 30m protective buffers along the bigger streams with rest of the
+watershed in agriculture;
+(ii) critical area planting of conservation areas based on the erosion risk map.
+The comparison of the strategies in terms of gain or loss of
+agricultural land and reduction of erosion for a high risk Court Creek 
+subwatershed is presented in Figure 5. The analysis demonstrates that a 30m
+buffer along the main stream does not provide adequate erosion
+protection. While it would make 94 percent of the area available to
+agriculture, it would also lead to a three fold increase in 
+average annual soil loss.
+Elimination of high erosion potential would require reduction
+of agricultural land by only 5 percent and extension of the criteria
+currently used for the conservation program by including the
+headwater areas and areas with convergent water flow.
+
+The results obtained from the {\sl USPED} model 
+indicate that a substantial portion of the eroded soil moves
+only for a short distance and there is enough concave areas
+to deposit the sediment before it can enter the 
+
+\begin{figure}[h]
+\centerline{\epsfig{file=llefig5.eps,width=1.\textwidth,clip= }}
+\caption{Court Creek subwatershed soil detachment
+for different land use alternatives estimated by {\sl RUSLE3D}:
+a) 30m buffers along the streams, 94 percent row crops, soil loss 27t/(ac.yr),
+b) current land use, 63 percent row crops/grains, soil loss 8t/(ac.yr),
+c) grass cover in areas with soil detachment>10 t/(acre.yr), 58 percent
+ row crops, soil loss 1 t/(acre.yr).
+The area is 3.6x4.6km modeled at 10m resolution.
+(see also http://www2.gis.uiuc.edu:2280/modviz/courtcreek/cc.html)}
+\end{figure}
+
+\noindent
+streams.
+
+These results support some recent observations and
+hypotheses (Roseboom and Mollahan, 1999; Trimble, 1999)
+that in the Midwestern watersheds most of the sediment observed in the streams
+originates within the streams and from erosion by concentrated flow
+rather than from hillslope erosion by shallow overland flow.
+
+This application demonstrates that the simple models used with
+widely available data can be useful for preliminary assessment
+of erosion and sedimentation risk, identification of "hot spots"
+in the watersheds and approximate evaluation of different
+conservation strategies.
+%Design and implementation of best management practices with reduced maintenance cost
+%and increased effectiveness requires high resolution data
+%and process based modeling.
+%Application of {\sl SIMWE} to different land use design
+%tasks illustrates the type of problems that the simulations
+%can help to understand and solve.
+
+\bigskip \medskip \noindent
+\subsection{Wetlands and Drainage}
+
+\medskip
+\noindent
+\subsubsection {Topographic potential for wetlands}
+
+\quad
+
+\medskip
+Preservation and restoration of wetlands is among the most
+important and popular best management practices. Their success
+depends on many factors, including
+a sufficient supply of water.
+The {\sl SIMWE} hydrologic submodel was used to identify
+the locations  within the Court Creek Pilot Watershed which have
+topographic conditions favorable for 
+\begin{figure}[h]
+\centerline{\epsfig{file=llefig6.eps,width=1.\textwidth,clip= }}
+\caption{ Map of topographic potential for wetlands.
+Existing wetlands are displayed as polygons and cover 1\% of the subwatershed
+while the model identifies 6\% area as suitable for
+wetlands. The area is 4x6km, simulated at 10m
+resolution (resampled from 30m resolution {\sl DEM})}.
+\end{figure}
+
+\noindent
+wetlands.
+Several simulations were performed for various rainfall intensities,
+uniform land cover and saturated soil conditions, assuming that the flow
+velocity is controlled only by the terrain gradient - the existing drainage
+and channels were not considered.
+Comparison of the simulated water depth with existing
+wetland areas shows that these areas are characterized by 
+steady state water depth from one event of
+at least 0.3m. Using this threshold,
+a map for topographic potential for wetlands was
+computed using map algebra (Figure 6). While the simulation was very simplified,
+the map can serve as a useful starting point for
+identification of land owners with suitable land for wetlands
+and for evaluation of the proposals for wetland locations.
+
+
+\medskip\noindent
+\subsubsection{Drainage location design}
+
+\quad
+
+\medskip
+Simulation of spatial distribution of water depth provides valuable
+information also for an "opposite" task - identification of locations which
+require drainage to prevent negative impact of standing water on yields.
+Using a high accuracy {\sl DEM}
+( 6m resolution, 0.05m vertical accuracy) interpolated from
+rapid kinematic survey data by the {\sl RST} method (Mitas and Mitasova, 1999),
+the water depth distribution was simulated for a typical
+rainfall for Midwestern agricultural fields (9mm/hr)
+under saturated conditions. The resulting water depth map
+was used to evaluate suitability of the locations of current drainage
+and to plan the location
+of new drainage network in the negatively affected field (Figure 7).
+While the model was very useful for evaluating and planning
+a suitable spatial pattern of the drainage network,
+detailed soil data and
+more complex dynamic simulations are needed to design the size, depth
+and other parameters of the drainage.
+
+\begin{figure}[h]
+\centerline{\epsfig{file=llefig7.eps,width=1.\textwidth,clip= }}
+\caption{ Simulated spatial distribution of water depth
+for agricultural fields (2.5x4.5km) draped
+as color over the {\sl DEM} (6m resolution,
+30-times vertical exaggeration), with the existing drainage drawn as lines.}
+\end{figure}
+
+\bigskip \medskip \noindent
+\subsection{Concentrated Flow Erosion and Grassed Waterways}
+
+\medskip
+The suitability of the {\sl SIMWE} model
+for spatial design of vegetation based best management practices
+was evaluated by application to small experimental watersheds
+with planned or installed erosion prevention measures.
+
+\medskip\noindent
+\subsubsection{Concentrated flow erosion} 
+
+\quad
+
+\medskip
+Development of high erosion
+in areas of concentrated flow was studied
+by performing simulations of water flow and net erosion deposition
+for an experimental field with uniform land cover
+(350x270m, modeled at 2m resolution; Zhang, 1999).
+For a short rainfall event ending before the flow has reached
+steady state, the maximum erosion rate was on the
+upper convex part of the hillslope and there was only
+deposition in the center of the valley (Figure 8a).
+As the duration of the rainfall increased,
+water depth in the center of the valley has grown
+rapidly until it reached
+a threshold when linear features with very high erosion rates
+ developed within the depositional area,
+indicating potential for gully formation (Figure 8b).
+This effect is modeled by both USPED (Mitasova et al., 1996, 1999)
+and SIMWE (Mitas and Mitasova, 1998), however, a smooth, high resolution 
+DEM without artifacts is needed to realistically capture
+this commonly observed phenomenon (see Figure 2c in Mitas and Mitasova, 1999).
+% Increase in the roughness (Mannings
+%n) in the field "delays" the onset of erosion in the center
+%of the valley by making the water flow ridge wider and lower????
+%(for n=0.01 the erosion occurs for XX rainfall intensity,
+%for n=0.1 the erosion in the valley starts for XX rainfall)
+This example also demonstrates that for a dynamic event modeling
+incorporation of re-entrainment process is important and should be
+incorporated into the {\sl SIMWE} model (Hairsine and Rose, 1992).
+
+\begin{figure}[h]
+\centerline{\epsfig{file=llefig8.eps,width=1.\textwidth,clip= }}
+\caption{  Water depth and net erosion/deposition pattern for
+18mm/hr rainfall excess for a) short event, with only deposition
+in the valley center, b) long event leading to steady state flow, with
+both high erosion and deposition in the valley center,
+indicating a potential for gully formation.
+The 350x270m field is modeled at 2m resolution. See animation 
+on {\sl CDROM}.}
+\end{figure}
+
+\medskip\noindent
+\subsubsection {Grassed waterways} 
+
+\quad
+
+\medskip
+The common practice for prevention of erosion by
+concentrated flow are grassed waterways. Their design is guided by the topographic
+conditions and roughness within the grassed area, represented
+by Mannings coefficient ({\sl SCS}, 1988). To investigate the impact
+of a grassed waterway, the water and sediment flow as well as net
+erosion/deposition pattern were simulated for a field within
+the Scheyern experimental farm (Auerswald et al., 1996; Mitas and Mitasova, 1998)
+for the bare soil conditions and after the installation
+of grassed waterway with different values of roughness in the field.
+For the bare field, there is a potential for gully formation
+ (Figure 9a). After the installation
+of grassed waterway the center of the valley
+becomes a depositional area. However, if the roughness in the
+field is several times smaller than in the grassed area, high
+erosion develops around the waterway, potentially replacing one big
+gully with two smaller ones. This "double
+channeling" problem can substantially increase the cost of the waterway
+ maintenance (Figure 9b). Increasing the roughness in the field
+reduces the risk of double channeling and the transition
+from erosion in the field to deposition in the grassed area is
+relatively smooth (Figure 9c). An alternative solution combines contour
+filter strip on the upper convex part of the hillslope with grassed
+waterway (Mitas and Mitasova, 1998).
+
+\begin{figure}[h]
+\centerline{\epsfig{file=llefig9.eps,width=1.\textwidth,clip= }}
+\caption{Impact of grassed waterway and differences in roughness
+on sediment flow: a) bare field with gully potential in the center,
+b) grassed waterway (light grey, n=0.1) and the bare field ( dark grey, n=0.01) 
+with sediment flow along the grassed waterway (double channeling), 
+c) grassed waterway (n=0.1) and the field with increased roughness
+(n=0.05) without increase in sediment flow along the waterway
+and smooth transition from erosion to deposition. See erosion/deposition 
+in color on {\sl CDROM}.}
+\end{figure}
+
+
+\bigskip \noindent
+\section{CONCLUSIONS}
+
+This chapter is focused on methodology and applications of simulation
+methods for prediction and solution of
+ land management problems related to overland flow erosion.
+The presented approach aims at
+keeping the models, and particularly the number of required
+input parameters, as simple as possible
+while capturing the effects important for sustainable
+land use design.
+The applications demonstrate the need for a set of modeling
+tools with different levels of complexity to support land use management
+from strategic planning to design and implementation.
+To satisfy this need three interrelated models were presented.
+
+The first model {\sl SIMWE} is based on generalization of
+hillslope erosion model used in {\sl WEPP} (Flanagan and Nearing, 1995).
+It models erosion regimes from detachment to transport capacity limiting 
+cases, includes approximate diffusive wave effect and  
+it supports multiscale modeling which can be further
+extended to incorporate multiscale-multiprocess simulations. 
+
+{\sl RUSLE3D/USPED} differ from {\sl SIMWE} in that they model only the limited 
+cases of erosion and sediment transport, however they use readily available
+parameters and therefore are easy to implement and use
+(see on-line tutorials for {\sl GRASS5} and {\sl ArcView} by 
+Mitasova and Mitas, 1999a,b).
+All of the presented models can be
+used for single storms as well as for long term averages.
+
+The applications of spatially continuous simulations
+revealed gaps in the theory of erosion processes in complex landscapes,
+especially in the mathematical description of
+transport capacity suitable for complex landscapes.
+Spatially distributed field experiments based on new technologies for field
+data collection, monitoring and remote sensing
+closely coupled with modeling are needed to improve our understanding
+of complex interactions involved in erosion processes and bring the quantitative
+accuracy of predictions (which is currently at about 50-150\%) to acceptable
+and useful levels.
+
+The report "New Strategies for
+America's Watersheds" (Committee on Watershed Management, National Research
+Council 1999) identifies simulation modeling
+as one area of special promise for watershed management.
+At the same time,
+this report analyzes the current status in watershed modeling for decision
+making and concludes that the available models and methods are outdated
+and "a major modeling effort is needed to develop and implement state-of-the-art
+models for watershed evaluations"(pp.160-161).
+The presented approach along with other models presented in several 
+chapters in this book,
+are a step towards the development and implementation of such tools.
+
+
+\bigskip
+\noindent
+{\bf ACKNOWLEDGMENTS}
+
+\medskip
+We would like to acknowledge the long term support for this research
+from Geographic Modeling Systems Laboratory
+director Douglas M. Johnston as well as {\sl GIS} assistance by William
+M. Brown. The funding was provided by the {\sl USArmy CERL},
+Strategic Environmental Research and Development Program - {\sl SERDP},
+Illinois Council on Food and Agricultural Research - {\sl CFAR}
+ and Illinois Department of Natural Resources.
+We greatly appreciate the sharing of data by K. Auerswald, S. Warren,
+K. Drackett, Zhang Yusheng, and D. Timlin.
+Our special thanks goes to two reviewers for their thorough review of the paper,
+as well as for their stimulating questions and comments which 
+significantly helped to improve the revised version of this chapter.
+
+
+
+%or 
+%\begin{chapthebibliography}{<widest bib entry>}
+%\bibitem[optional]{symbolic name}
+%Text of bib item...
+%\end{chapthebibliography}
+
+
+%%%%%%%
+% \kluwerbib will produce this kind of bibliography entry:
+%
+% Anderson, Terry L.,...
+%   More bib entry here...
+%
+% \cite{xxx} will print without brackets around the citation.
+%
+% \bibitem with square bracket argument should be used, i.e.,
+%    \bibitem[Anderson, 1999]{xxx}Bibliography entry...
+%  Whatever is in square brackets will be printed when you use
+%  \cite
+
+\bigskip
+\begin{chapthebibliography}{1}
+
+\bibitem{}
+{\ninerm
+Auerswald, K., A. Eicher, J. Filser, A. Kammerer, M. Kainz, R. Rackwitz, 
+J. Schulein, H. Wommer, S. Weigland, and K. Weinfurtner, 1996,
+ Development and 
+implementation of soil conservation strategies for sustainable land use 
+- the Scheyern project of the FAM, in: {\it Development and Implementation of 
+Soil Conservation Strategies for Sustainable Land Use}, 
+edited by H. Stanjek, Int. Congress of ESSC, Tour Guide, II, pp. 25-68, 
+Technische Universitaet Muenchen, Freising-Weihenstephan, Germany.
+
+\bibitem{}
+Bennet, J. P., 1974, Concepts of Mathematical Modeling of Sediment Yield, 
+{\it Water Resources Research}, 10, 485-496. 
+
+\bibitem{} Carslaw, H. S., and J.C. Jaeger, 1947, {\it Conduction of Heat in Solids},
+Oxford University, London.
+
+
+\bibitem{}
+Desmet, P. J. J., and G. Govers, 1996, A GIS procedure for automatically 
+calculating the USLE LS factor on topographically complex landscape units, 
+{\it J. Soil and Water Cons.}, 51(5), 427-433.
+
+%\bibitem{}
+%Desmet, P. J. J., and G. Govers, GIS-based simulation of erosion 
+%and deposition patterns in an agricultural landscape: a comparison 
+%of model results with soil map information, {\it Catena}, 25, 389-401, 1995.
+
+\bibitem{}
+Dingman, S. L., 1984, {\it Fluvial hydrology}, Freeman, New York.
+
+\bibitem{}
+Doe, W.W., B. Saghafian, and P.Y. Julien, 1996, 
+Land Use Impact on Watershed Response: 
+The Integration of Two-dimensional Hydrological 
+Modeling and Geographical Information Systems. 
+{\it Hydrological Processes}, 10, 1503-1511.
+
+\bibitem{}
+EPA, 2000, Surf your watershed; http://www.epa.org.surf2/
+
+\bibitem{}
+Flanagan, D. C., and M. A. Nearing (eds.), 1995,
+USDA-Water Erosion Prediction Project, 
+{\it NSERL}, report no. 10, pp. 1.1- A.1, National Soil Erosion Lab., 
+USDA ARS, Laffayette, IN.
+
+\bibitem{}
+Foster, G. R., 1982, 
+Modeling the erosion processes, in: {\it Hydrologic modeling of small watersheds},
+edited by C. T. Haan, H. D. Johnson, and D. L. Brakensiek, ASAE Monograph No. 5,
+ASAE, St. Joseph, MI, pp. 197-380.
+
+\bibitem{}
+Foster, G. R., and L. D. Meyer, 1972, A closed-form erosion equation 
+for upland areas, in: {\it Sedimentation: Symposium to Honor Prof. H.A. Einstein}, 
+edited by H. W. Shen, pp. 12.1-12.19, Colorado State University, Ft. Collins, CO.
+
+\bibitem{}
+Foster, G. R., 1990, Process-based modelling of soil erosion by water on 
+agricultural land, in: {\it Soil Erosion on Agricultural Land}, 
+edited by J. Boardman, I. D. L. Foster and J. A. Dearing, 
+John Wiley and Sons Ltd, pp. 429-445.
+
+%\bibitem{}
+%Foster, G. R., and W. H. Wischmeier, 1974) Evaluating irregular 
+%slopes for soil loss prediction, {\it Trans. of ASAE}, 17, 305-309.
+
+\bibitem{}
+Gardiner, C. W., 1985,  {\it Handbook of Stochastic Methods for Physics, 
+Chemistry, and the Natural Sciences}, Springer, Berlin.
+
+\bibitem{} 
+Glimm J., and A. Jaffe, 1972, {\it Quantum Physics. A Functional Integral Point
+ of View}, Springer, Berlin.
+
+\bibitem{}
+Govindaraju, R. S., and M. L. Kavvas, 1991, Modeling the erosion process 
+over steep slopes: approximate analytical solutions, 
+{\it Journal of Hydrology}, 127, 279-305.
+
+%\bibitem{}
+%Govers, G., 1991)
+% Rill erosion on arable land in central Belgium: rates, controls and predictability, {\it Catena}, 18, 133-155.
+
+\bibitem{}
+Haan, C. T., B. J. Barfield, and J. C. Hayes, 1994,
+{\it Design Hydrology and Sedimentology for Small Catchments}, 
+pp. 242-243, Academic Press.
+
+\bibitem{}
+Hairsine,  P. B., and C. W. Rose, 1992,  Modeling water erosion due to overland 
+flow using physical principles 1. Sheet flow, 
+{\it Water Resources Research}, 28(1), 237-243.
+
+\bibitem{}
+Hong, S., and S. Mostaghimi, 1995, Evaluation of selected management practices 
+for nonpoint source pollution control using a two-dimensional simulation model, 
+{\it ASAE}, paper no. 952700. Summer meeting of the ASAE, Chicago, IL.
+
+\bibitem{}
+Johnston, D.M. and A. Srivastava, 1999, Decision Support Systems for Design 
+and Planning: The Development of HydroPEDDS (Hydrologic Performance 
+Evaluation and Design Decision Support) System for Urban Watershed Planning, 
+in: {\sl 6th International Conference on Computers in Urban Planning 
+and Urban Management (CUPUMS'99)}, Venice, Italy (CDROM).
+
+%\bibitem{}
+%Julien, P. Y., and D. B. Simons, 1985)
+%Sediment transport capacity of overland flow, {\it Transactions of the ASAE}, 28, 755-762, 1985.
+
+\bibitem{}
+Julien, P. Y., B. Saghafian, and F. L. Ogden, 1995, Raster-based hydrologic modeling of spatially
+varied surface runoff, {\it Water Resources Bulletin}, 31(3), 523-536.
+
+
+\bibitem{} Karlin, S., and H. M.  Taylor, 1981, {\it A Second Course in Stochastic Processes},
+Academic Press, New York.
+
+\bibitem{}
+Kirkby, M. J., 1987, Modelling some influences of soil erosion, landslides and valley gradient
+on drainage density and hollow development. {\sl Catena Supplement}, 10, 1-14.
+
+%\bibitem{}
+%Kuhnle, R. A., R. L. Bingner, G. R. Foster, and E. H. Grissinger, 1996)
+%Effect of land use changes on sediment transport in Goodwin Creek, 
+%{\it Water Resources Research}, 32(10), 3189-3196.
+
+\bibitem{}
+Lettenmaier, D. P., and E. F. Wood, 1992, Hydrologic forecasting, 
+in {\it Handbook of Hydrology}, edited by D. R. Maidment, pp. 26.1-26.30, 
+McGraw-Hill, Inc., New York.
+
+\bibitem{}
+Meyer, L.D., and W. H. Wischmeier, W.H., 1969, Mathematical simulation
+of the process of soil erosion by water. {\it Transactions of the ASAE},
+12, 754-758.
+
+%\bibitem{}
+%Mitas, L., Electronic structure by Quantum Monte Carlo: 
+%atoms, molecules and solids, {\it Computer Physics Communications}, 97, 107-117, 1996.
+
+\bibitem{}
+     Mitas, L., and H. Mitasova, 1999, Spatial Interpolation. in:
+     {\sl Geographical Information Systems: Principles, Techniques,
+     Management and Applications}, edited by P.Longley, M.F. Goodchild, 
+     D.J. Maguire, D.W.Rhind, John Wiley, 481-492.
+
+\bibitem{}
+     Mitas, L., and H. Mitasova, 1998, Distributed erosion modeling for
+     effective erosion prevention. {\it Water Resources Research}, 34(3),
+     505-516.
+
+\bibitem{}
+Mitasova, H., and L. Mitas, 1999a, Modeling soil detachment by RUSLE 3d using
+GIS. \\
+http://www2.gis.uiuc.edu:2280/modviz/erosion/usle.html
+
+\bibitem{}
+Mitasova, H., and L. Mitas, 1999b, Erosion/deposition modeling with USPED 
+using GIS. \\
+http://www2.gis.uiuc.edu:2280/modviz/erosion/usped.html
+
+\bibitem{}
+Mitasova, H., Mitas, L., Brown, W. M., and Johnston, D., 1999, 
+{\it Terrain modeling and Soil
+Erosion Simulations for Fort Hood and Fort Polk test areas}. Report for USA CERL.
+University of Illinois, Urbana-Champaign, IL; \\
+http://www2.gis.uiuc.edu:2280/modviz/reports/cerl99/rep99.html
+
+\bibitem{} 
+Mitasova, H., J. Hofierka, M. Zlocha, and L.R. Iverson, 1997,
+     Modeling topographic potential for erosion and deposition using
+     GIS. Reply to a comment.
+   {\it  Int. Journal of Geographical Information Science}, 11(6), 611-618. 
+
+\bibitem{}
+Mitasova, H., J. Hofierka, M. Zlocha, and L.R. Iverson, 1996, Modeling 
+    topographic potential for erosion and deposition using GIS. 
+{\it Int. Journal of Geographical Information Science}, 10(5),
+      629-641. 
+
+\bibitem{}
+Moore I.D., and Burch G.J., 1986, Modeling erosion and deposition: Topographic effects.
+      {\it Transactions ASAE}, 29, 1624-1640. 
+
+\bibitem{}
+Moore, I. D., and G. R. Foster, 1990, Hydraulics and overland flow, 
+in {\it Process Studies in Hillslope Hydrology}, 
+edited by M. G. Anderson and T. P. Burt, John Wiley, 215-54.
+
+\bibitem{}
+Moore, I. D.,  A. K. Turner, J. P. Wilson, S. K. Jensen, and L. E. Band, 1993, 
+GIS and land surface-subsurface process modeling, 
+in: {\it Geographic Information Systems and Environmental Modeling}, 
+edited by M. F Goodchild, L. T. Steyaert, and B. O. Parks, 
+Oxford University Press, New York, 196-230.
+
+\bibitem{}
+National Research Council, 1999, {\it New Strategies for America's Watersheds}, 
+Washington DC, National Academy Press.
+
+\bibitem{}
+NSDI, 2000, {\it National Spatial Data Infrastructure}. http://www.nsdi.org/
+
+%\bibitem{}
+%Nearing M.A., Norton L.D., Bulgakov D.A., Larionov G.A., West L.T., Dontsova K.M.,
+%1997, Hydraulics and Erosion in eroding rills. Water Resources Research, 33, 865-876.
+
+%Renard, G. K., G. R. Foster, G. A. Weesies, and J. P. Porter, RUSLE - Revised universal soil loss equation, {\it Journal of  Soil and Water Conservation}, 46, 30-33, 1991.
+
+\bibitem{}
+Roseboom, D. and Mollahan, R., 1999, Lake Pittsfield National Monitoring Project. 
+Report for Illinosi State Water Survey and Illinois Environmental Protection
+Agency, Peoria, Il.  
+
+\bibitem{} 
+Rouhi A., and J. Wright, 1995, Spectral implementation of a new operator splitting
+method for solving partial differential equations, {\it Computers in Physics}, 9(5), 
+554-563.
+
+\bibitem{}
+Saghafian, B., 1996, Implementation of a Distributed Hydrologic Model within GRASS, 
+in {\it GIS and Environmental Modeling: Progress and Research Issues}, 
+edited by M. F Goodchild, L. T. Steyaert, and B. O. Parks, GIS World, Inc., pp. 205-208.
+
+\bibitem{}
+SCS, 1988, {\it Manual for design of conservation measures}. Soil Conservation Service.
+
+%\bibitem{}
+%Srinivasan, R. and  B. A. Engel, 1991) A knowledge based approach
+%to extract input data from GIS, ASAE Paper No. 91-7045, American Society
+%of Agricultural Engineers, St.Joseph, Missouri, 1-8.
+
+\bibitem{}
+Srinivasan, R., and J. G. Arnold, 1994, Integration of a basin scale water quality model with GIS, 
+{\it Water Resources Bulletin}, 30(3), 453-462.
+
+\bibitem{} Stakgold, I., 1979, {\it Green's Functions and Boundary Value Problems},
+John Wiley, New York.
+
+\bibitem{}
+Trimble, S.W., 1999, Decreased rates of alluvial sediment storage in
+the Coon Creek basin, Wisconsin. {\it Science} 285(8), 1244-1246. 
+
+\bibitem{}
+Vieux, B. E., N. S. Farajalla, and N. Gaur, 1996,
+ Integrated GIS and distributed storm 
+water runoff modeling, in: {\it GIS and Environmental Modeling: 
+Progress and Research Issues}, edited by M. F. Goodchild, L. T. Steyaert, 
+and B. O. Parks, GIS World, Inc., pp. 199-205.
+
+%\bibitem{}
+%Warren, S. D., V. E. Diersing, P. J. Thompson, and  W. D. Goran,  An erosion-based land classification system for military installations, {\it Environmental Management}, 13, 251-257, 1989.
+
+
+\bibitem{}
+Willgoose, G. R., and Y. Gyasi-Agyei, 1995, New technology in hydrology and erosion 
+assessment for mine rehabilitations, {\it Proceedings of the APCOM XXV Conference}, 
+Brisbane, pp. 555-562.
+
+\bibitem{}
+Willgoose, G. R., R. L. Bras, and I. Rodriguez-Iturbe, 1989,
+{\it A physically based channel network and catchment
+evolution model}, technical report no. 322, Ralph Parsons Lab., MIT, Cambridge,
+Mass., USA.
+
+\bibitem{}
+Wilson, J.P. and M.S. Lorang, 1999, Spatial Models of Soil Erosion and GIS. 
+In Wegener M. and A.S. Fotheringham (Eds.), Spatial Models and GIS: 
+New Potential and New Models (London: Taylor and Francis), 83-108.
+
+\bibitem{}
+Zhang Yusheng, 1999, GIS, Erosion and Deposition Modelling, 
+and Caesium Technique.
+http://www.ex.ac.uk/~yszhang/welcome.htm
+
+\bibitem{} 
+%Wischmeier, W. H., and D. D. Smith,  Predicting  rainfall erosion losses, a guide to conservation planning, {\it Agriculture Handbook},  no. 537,  US Department of Agriculture, Washington D. C., 1978.
+
+}
+\end{chapthebibliography}
+
+\end{document}
+
+
+
