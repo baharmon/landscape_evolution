@@ -20,11 +20,6 @@ GNU General Public License >= version 2
 ##TODO
 * Documentation
 * PEP8 style
-* Multiple outputs
-- Return depth, erdep, and difference
-- Create elevation, depth, erdep, flux, and difference strds with temporal framework
-- Register depth, erdep, flux, difference, and flux in temporal framework
-- Optional outputs: depth, erdep, flux, difference, net_difference
 - G_OPT_R_OUTPUT
 * Create new functions for rainfall_flux and series_flux
 * Rain as list, input parameters, or maps
@@ -34,7 +29,6 @@ GNU General Public License >= version 2
 - Toggle plus / minus operator
 - Set start / stop time
 * Subsurface soil moisture
-* Test by experimenting with different dems and parameters
-* Test with uav timeseries
-* Test with field data
+* Test by experimenting with different DEMs and parameters
+* Test with lidar / uav / orthoimagery timeseries
 * Empirically calibrate parameters
