@@ -18,17 +18,20 @@ GNU General Public License >= version 2
 # Development
 
 ##TODO
-* Documentation
-* PEP8 style
-- G_OPT_R_OUTPUT
-* Create new functions for rainfall_flux and series_flux
-* Rain as list, input parameters, or maps
-* Time as list or input parameters
-* Convert both maps and constants' units
+* Compute R factor for USPED from rain intensity
+* Run as steady state or dynamic model
+- Create steady state class
+* Derive parameters from landcover, soil, and rain maps
+- Create recode tables
+* Create temporal function
+* Testing
+- Run each mode for SECREF
+- Compare with results of r.landevol and r.terradyn
+* Draw conceptual model
+* Documentation (html)
+* Style (PEP8)
 * Reverse landscape evolution
 - Toggle plus / minus operator
 - Set start / stop time
-* Subsurface soil moisture
-* Test by experimenting with different DEMs and parameters
-* Test with lidar / uav / orthoimagery timeseries
-* Empirically calibrate parameters
+* Subsurface groundwater flow
+- https://grass.osgeo.org/grass73/manuals/r3.gwflow.html
