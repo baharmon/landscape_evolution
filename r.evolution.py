@@ -1751,6 +1751,9 @@ class DynamicEvolution:
         if self.mode == "usped_mode":
             evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.usped()
 
+        if self.mode == "rusle_mode":
+            evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.rusle()
+
         # remove relative timestamps from r.sim.water and r.sim.sediment
         gscript.run_command('r.timestamp',
             map=depth,
