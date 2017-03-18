@@ -1165,7 +1165,7 @@ class Evolution:
             expression="{sedflow} = {r_factor} * {k_factor} * {c_factor} * {ls_factor}".format(r_factor=r_factor,
                 k_factor=self.k_factor,
                 c_factor=self.c_factor,
-                ls_factor=ls_factor
+                ls_factor=ls_factor,
                 sedflow=sedflow),
             overwrite=True)
 
@@ -1426,7 +1426,7 @@ class Evolution:
             expression="{sedflow} = {r_factor} * {k_factor} * {c_factor} * {ls_factor}".format(r_factor=r_factor,
                 k_factor=self.k_factor,
                 c_factor=self.c_factor,
-                ls_factor=ls_factor
+                ls_factor=ls_factor,
                 sedflow=sedflow),
             overwrite=True)
 
