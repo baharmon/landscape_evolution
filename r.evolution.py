@@ -1737,7 +1737,9 @@ class DynamicEvolution:
             erdepmax=self.erdepmax,
             fluxmax=self.fluxmax,
             k_factor=self.k_factor,
-            c_factor=self.c_factor)
+            c_factor=self.c_factor,
+            m = self.m,
+            n = self.n)
 
         # determine mode and run model
         if self.mode == "erosion_deposition_mode":
@@ -1987,7 +1989,8 @@ class DynamicEvolution:
             erdepmax=self.erdepmax,
             fluxmax=self.fluxmax,
             k_factor=self.k_factor,
-            c_factor=self.c_factor)
+            m = self.m,
+            n = self.n)
 
         # open txt file with precipitation data
         with open(evol.precipitation) as csvfile:
