@@ -547,7 +547,9 @@ def main():
         erdepmax=erdepmax,
         fluxmax=fluxmax,
         k_factor=k_factor,
-        c_factor=c_factor)
+        c_factor=c_factor,
+        m=m,
+        n=n)
 
     # determine type of model and run
     if runs == "series":
@@ -1108,17 +1110,6 @@ class Evolution:
         erosion_deposition = 'erosion_deposition_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/m2s
         difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
 
-        # advance time
-        time = time + datetime.timedelta(minutes=self.rain_interval)
-        time = time.isoformat(" ")
-
-        # timestamp
-        evolved_elevation = 'elevation_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
-        depth = 'depth_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
-        sediment_flux = 'flux_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/ms
-        erosion_deposition = 'erosion_deposition_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/m2s
-        difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
-
         # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
 
         # derive rainfall energy (MJ ha^-1 mm^-1)
@@ -1619,7 +1610,7 @@ class DynamicEvolution:
         difference_title, difference_description, start, walkers, runoff,
         mannings, detachment, transport, shearstress, density, mass,
         grav_diffusion, smoothing, erdepmin, erdepmax, fluxmax,
-        k_factor, c_factor, n, n):
+        k_factor, c_factor, m, n):
         self.elevation = elevation
         self.mode = mode
         self.precipitation = precipitation
@@ -1666,7 +1657,7 @@ class DynamicEvolution:
         of a single rainfall event that generates a timeseries
         of digital elevation models"""
 
-        # assign local temporal variables
+        # assign local variables
         datatype = 'strds'
         increment = str(self.rain_interval)+" minutes"
         raster = 'raster'
@@ -1831,10 +1822,12 @@ class DynamicEvolution:
                 overwrite=True)
 
             # update excess rainfall
+            rain_intensity = 'rain_intensity'
             gscript.run_command('r.mapcalc',
-                expression="{rain_intensity} = {rain_excess}".format(rain_intensity=evol.rain_intensity,
+                expression="{rain_intensity} = {rain_excess}".format(rain_intensity='rain_intensity',
                     rain_excess=rain_excess),
                 overwrite=True)
+            evol.rain_intensity = rain_intensity
 
             # determine mode and run model
             if self.mode == "erosion_deposition_mode":
@@ -2108,10 +2101,12 @@ class DynamicEvolution:
                     overwrite=True)
 
                 # update excess rainfall
+                rain_intensity = 'rain_intensity'
                 gscript.run_command('r.mapcalc',
-                    expression="{rain_intensity} = {rain_excess}".format(rain_intensity=evol.rain_intensity,
+                    expression="{rain_intensity} = {rain_excess}".format(rain_intensity='rain_intensity',
                         rain_excess=rain_excess),
                     overwrite=True)
+                evol.rain_intensity = rain_intensity
 
                 # determine mode and run model
                 if self.mode == "erosion_deposition_mode":
