@@ -47,9 +47,9 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% required: yes
 #% multiple: no
 #% answer: erosion_deposition_mode
-#% options: erosion_deposition_mode,flux_mode,usped_mode
-#% description: Erosion deposition, detachment limited, or transport limited mode
-#% descriptions: erosion_deposition_mode;erosion-deposition mode;flux_mode;detachment limited mode;usped_mode;transport limited mode
+#% options: erosion_deposition_mode,flux_mode,usped_mode,rusle_mode
+#% description: Erosion deposition, flux, transport limited, or detachment limited mode
+#% descriptions: erosion_deposition_mode;erosion-deposition mode;flux_mode;flux mode;usped_mode;transport limited mode;rusle_mode;detachment limited mode
 #% guisection: Basic
 #%end
 
@@ -113,6 +113,26 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% description: Land cover constant
 #% label: C factor constant
 #% answer: 0.1
+#% multiple: no
+#% guisection: Transport limited
+#%end
+
+#%option
+#% key: m
+#% type: double
+#% description: Water flow exponent
+#% label: Water flow exponent
+#% answer: 1.0
+#% multiple: no
+#% guisection: Transport limited
+#%end
+
+#%option
+#% key: n
+#% type: double
+#% description: Slope exponent
+#% label: Slope exponent
+#% answer: 1.0
 #% multiple: no
 #% guisection: Transport limited
 #%end
@@ -201,7 +221,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 
 #%option G_OPT_R_INPUT
 #% key: shearstress
-#% description: Shear stree coefficient
+#% description: Shear stress coefficient
 #% label: Shear stress coefficient
 #% required: no
 #% guisection: Input
@@ -210,7 +230,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #%option
 #% key: shearstress_value
 #% type: double
-#% description: Shear stree coefficient
+#% description: Shear stress coefficient
 #% label: Shear stress coefficient
 #% answer: 0.0
 #% multiple: no
@@ -425,6 +445,8 @@ def main():
     c_factor = options['c_factor']
     k_factor_value = options['k_factor_value']
     c_factor_value = options['c_factor_value']
+    m = options['m']
+    n = options['n']
 
     # check for alternative input parameters
     if not runoff:
@@ -534,6 +556,10 @@ def main():
     if runs == "event":
         elevation = event.rainfall_event()
 
+    # determine whether using simwe or usped/rusle
+
+    # determine whether transport limited or detachment limited
+
     atexit.register(cleanup)
     sys.exit(0)
 
@@ -541,7 +567,7 @@ class Evolution:
     def __init__(self, elevation, precipitation, start, rain_intensity,
         rain_interval, walkers, runoff, mannings, detachment, transport,
         shearstress, density, mass, grav_diffusion, smoothing,
-        erdepmin, erdepmax, fluxmax, k_factor, c_factor):
+        erdepmin, erdepmax, fluxmax, k_factor, c_factor, m, n):
         self.elevation = elevation
         self.precipitation = precipitation
         self.start = start
@@ -1041,6 +1067,7 @@ class Evolution:
         rain_volume = 'rain_volume'
         erosivity = 'erosivity'
         r_factor = 'r_factor'
+        ls_factor = 'ls_factor'
         slope = 'slope'
         aspect = 'aspect'
         qsx = 'qsx'
@@ -1273,7 +1300,8 @@ class Evolution:
                 'rain_energy',
                 'rain_volume',
                 'erosivity',
-                'r_factor'],
+                'r_factor',
+                'ls_factor'],
             flags='f')
 
         return evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference
@@ -1383,6 +1411,15 @@ class Evolution:
             overwrite=True)
         # add depression parameter to r.watershed
         # derive from landcover class
+
+        # compute dimensionless topographic factor
+        gscript.run_command('r.mapcalc',
+            expression="{ls_factor} = ({m} + 1.0) * (({flowacc} / 22.1)^ {m}) * ((sin({slope}) / 0.09)^{n})".format(ls_factor=ls_factor,
+                m=self.m,
+                flowacc=depth,
+                slope=slope,
+                n=self.n),
+            overwrite=True)
 
         # compute sediment flow at sediment transport capacity
         gscript.run_command('r.mapcalc',
@@ -1566,7 +1603,8 @@ class Evolution:
                 'rain_energy',
                 'rain_volume',
                 'erosivity',
-                'r_factor'],
+                'r_factor',
+                'ls_factor'],
             flags='f')
 
         return evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference
@@ -1581,7 +1619,7 @@ class DynamicEvolution:
         difference_title, difference_description, start, walkers, runoff,
         mannings, detachment, transport, shearstress, density, mass,
         grav_diffusion, smoothing, erdepmin, erdepmax, fluxmax,
-        k_factor, c_factor):
+        k_factor, c_factor, n, n):
         self.elevation = elevation
         self.mode = mode
         self.precipitation = precipitation
@@ -1620,6 +1658,8 @@ class DynamicEvolution:
         self.fluxmax = fluxmax
         self.k_factor = k_factor
         self.c_factor = c_factor
+        self.m = m
+        self.n = n
 
     def rainfall_event(self):
         """a dynamic, process-based landscape evolution model
@@ -2171,6 +2211,7 @@ def cleanup():
                 'rain_volume',
                 'erosivity',
                 'r_factor',
+                'ls_factor',
                 'dx',
                 'dy',
                 'dxx',
