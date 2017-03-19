@@ -509,8 +509,6 @@ def main():
             expression="k_factor = {k_factor_value}".format(**locals()),
             overwrite=True)
 
-    r_factor = 'r_factor'
-
     # create dynamic_evolution object
     event = DynamicEvolution(elevation=elevation,
         mode=mode,
@@ -550,7 +548,6 @@ def main():
         fluxmax=fluxmax,
         k_factor=k_factor,
         c_factor=c_factor,
-        r_factor=r_factor,
         m=m,
         n=n)
 
@@ -572,7 +569,7 @@ class Evolution:
     def __init__(self, elevation, precipitation, start, rain_intensity,
         rain_interval, walkers, runoff, mannings, detachment, transport,
         shearstress, density, mass, grav_diffusion, smoothing,
-        erdepmin, erdepmax, fluxmax, k_factor, c_factor, r_factor, m, n):
+        erdepmin, erdepmax, fluxmax, k_factor, c_factor, m, n):
         self.elevation = elevation
         self.precipitation = precipitation
         self.start = start
@@ -593,78 +590,8 @@ class Evolution:
         self.fluxmax = fluxmax
         self.k_factor = k_factor
         self.c_factor = c_factor
-        self.r_factor = r_factor
         self.m = m
         self.n = n
-
-    def advance_time(self):
-        """parse, advance, and save time"""
-
-        # parse time
-        year = int(self.start[:4])
-        month = int(self.start[5:7])
-        day = int(self.start[8:10])
-        hours = int(self.start[11:13])
-        minutes = int(self.start[14:16])
-        seconds = int(self.start[17:19])
-        time = datetime.datetime(year, month, day, hours, minutes, seconds)
-
-        # advance time
-        time = time + datetime.timedelta(minutes=self.rain_interval)
-        time = time.isoformat(" ")
-
-        # timestamp
-        evolved_elevation = 'elevation_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
-        depth = 'depth_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
-        sediment_flux = 'flux_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/ms
-        erosion_deposition = 'erosion_deposition_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/m2s
-        difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
-
-    def compute_r_factor(self):
-        """compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)"""
-
-        # assign variables
-        rain_energy = 'rain_energy'
-        rain_volume = 'rain_volume'
-        erosivity = 'erosivity'
-
-        # derive rainfall energy (MJ ha^-1 mm^-1)
-        gscript.run_command('r.mapcalc',
-            expression="{rain_energy} = 0.29*(1.-(0.72*exp(-0.05*{rain_intensity})))".format(rain_energy=rain_energy,
-                rain_intensity=self.rain_intensity),
-            overwrite=True)
-
-        # derive rainfall volume (mm) = rainfall intensity (mm/hr) * (rainfall interval (min) * (1 hr / 60 min))
-        gscript.run_command('r.mapcalc',
-            expression="{rain_volume} = {rain_intensity}*({rain_interval}/60.)".format(rain_volume=rain_volume,
-                rain_intensity=self.rain_intensity,
-                rain_interval=self.rain_interval),
-            overwrite=True)
-
-        # derive event erosivity index (MJ mm ha^-1 hr^-1)
-        gscript.run_command('r.mapcalc',
-            expression="{erosivity} = ({rain_energy}*{rain_volume})*{rain_intensity}*1.".format(erosivity=erosivity,
-                rain_energy=rain_energy,
-                rain_volume=rain_volume,
-                rain_intensity=self.rain_intensity),
-            overwrite=True)
-
-        # multiply by rainfall interval in seconds (MJ mm ha^-1 hr^-1 s^-1)
-        gscript.run_command('r.mapcalc',
-            expression="{r_factor} = {erosivity}/({rain_interval}*60.)".format(r_factor=self.r_factor,
-                erosivity=erosivity,
-                rain_interval=self.rain_interval),
-            overwrite=True)
-
-        # remove temporary maps
-        gscript.run_command('g.remove',
-            type='raster',
-            name=['rain_energy',
-                'rain_volume',
-                'erosivity'],
-            flags='f')
-
-        return self.r_factor
 
     def erosion_deposition(self):
         """a small-scale, process-based landscape evolution model
@@ -690,6 +617,26 @@ class Evolution:
         divergence = 'divergence'
         smoothed_elevation = 'smoothed_elevation'
         settled_elevation = 'settled_elevation'
+
+        # parse time
+        year = int(self.start[:4])
+        month = int(self.start[5:7])
+        day = int(self.start[8:10])
+        hours = int(self.start[11:13])
+        minutes = int(self.start[14:16])
+        seconds = int(self.start[17:19])
+        time = datetime.datetime(year, month, day, hours, minutes, seconds)
+
+        # advance time
+        time = time + datetime.timedelta(minutes=self.rain_interval)
+        time = time.isoformat(" ")
+
+        # timestamp
+        evolved_elevation = 'elevation_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+        depth = 'depth_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+        sediment_flux = 'flux_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/ms
+        erosion_deposition = 'erosion_deposition_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/m2s
+        difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
 
         # compute slope, aspect, and partial derivatives
         gscript.run_command('r.slope.aspect',
@@ -903,6 +850,26 @@ class Evolution:
         smoothed_elevation = 'smoothed_elevation'
         settled_elevation = 'settled_elevation'
 
+        # parse time
+        year = int(self.start[:4])
+        month = int(self.start[5:7])
+        day = int(self.start[8:10])
+        hours = int(self.start[11:13])
+        minutes = int(self.start[14:16])
+        seconds = int(self.start[17:19])
+        time = datetime.datetime(year, month, day, hours, minutes, seconds)
+
+        # advance time
+        time = time + datetime.timedelta(minutes=self.rain_interval)
+        time = time.isoformat(" ")
+
+        # timestamp
+        evolved_elevation = 'elevation_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+        depth = 'depth_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+        sediment_flux = 'flux_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/ms
+        erosion_deposition = 'erosion_deposition_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/m2s
+        difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+
         # compute slope, aspect, and partial derivatives
         gscript.run_command('r.slope.aspect',
             elevation=self.elevation,
@@ -1097,6 +1064,10 @@ class Evolution:
         a digital elevation model"""
 
         # assign variables
+        rain_energy = 'rain_energy'
+        rain_volume = 'rain_volume'
+        erosivity = 'erosivity'
+        r_factor = 'r_factor'
         ls_factor = 'ls_factor'
         slope = 'slope'
         aspect = 'aspect'
@@ -1117,6 +1088,54 @@ class Evolution:
         settled_elevation = 'settled_elevation'
         smoothed_elevation = 'smoothed_elevation'
         sedflow = 'sedflow'
+
+        # parse time
+        year = int(self.start[:4])
+        month = int(self.start[5:7])
+        day = int(self.start[8:10])
+        hours = int(self.start[11:13])
+        minutes = int(self.start[14:16])
+        seconds = int(self.start[17:19])
+        time = datetime.datetime(year, month, day, hours, minutes, seconds)
+
+        # advance time
+        time = time + datetime.timedelta(minutes=self.rain_interval)
+        time = time.isoformat(" ")
+
+        # timestamp
+        evolved_elevation = 'elevation_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+        depth = 'depth_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+        sediment_flux = 'flux_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/ms
+        erosion_deposition = 'erosion_deposition_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/m2s
+        difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+
+        # derive rainfall energy (MJ ha^-1 mm^-1)
+        gscript.run_command('r.mapcalc',
+            expression="{rain_energy} = 0.29*(1.-(0.72*exp(-0.05*{rain_intensity})))".format(rain_energy=rain_energy,
+                rain_intensity=self.rain_intensity),
+            overwrite=True)
+
+        # derive rainfall volume (mm) = rainfall intensity (mm/hr) * (rainfall interval (min) * (1 hr / 60 min))
+        gscript.run_command('r.mapcalc',
+            expression="{rain_volume} = {rain_intensity}*({rain_interval}/60.)".format(rain_volume=rain_volume,
+                rain_intensity=self.rain_intensity,
+                rain_interval=self.rain_interval),
+            overwrite=True)
+
+        # derive event erosivity index (MJ mm ha^-1 hr^-1)
+        gscript.run_command('r.mapcalc',
+            expression="{erosivity} = ({rain_energy}*{rain_volume})*{rain_intensity}*1.".format(erosivity=erosivity,
+                rain_energy=rain_energy,
+                rain_volume=rain_volume,
+                rain_intensity=self.rain_intensity),
+            overwrite=True)
+
+        # multiply by rainfall interval in seconds (MJ mm ha^-1 hr^-1 s^-1)
+        gscript.run_command('r.mapcalc',
+            expression="{r_factor} = {erosivity}/({rain_interval}*60.)".format(r_factor=r_factor,
+                erosivity=erosivity,
+                rain_interval=self.rain_interval),
+            overwrite=True)
 
         # compute slope and aspect
         gscript.run_command('r.slope.aspect',
@@ -1331,6 +1350,9 @@ class Evolution:
                 'sedflow',
                 'settled_elevation',
                 'divergence',
+                'rain_energy',
+                'rain_volume',
+                'erosivity',
                 'r_factor'],
             flags='f')
 
@@ -1342,6 +1364,10 @@ class Evolution:
         to evolve a digital elevation model"""
 
         # assign variables
+        rain_energy = 'rain_energy'
+        rain_volume = 'rain_volume'
+        erosivity = 'erosivity'
+        r_factor = 'r_factor'
         ls_factor = 'ls_factor'
         slope = 'slope'
         aspect = 'aspect'
@@ -1362,6 +1388,54 @@ class Evolution:
         settled_elevation = 'settled_elevation'
         smoothed_elevation = 'smoothed_elevation'
         sedflow = 'sedflow'
+
+        # parse time
+        year = int(self.start[:4])
+        month = int(self.start[5:7])
+        day = int(self.start[8:10])
+        hours = int(self.start[11:13])
+        minutes = int(self.start[14:16])
+        seconds = int(self.start[17:19])
+        time = datetime.datetime(year, month, day, hours, minutes, seconds)
+
+        # advance time
+        time = time + datetime.timedelta(minutes=self.rain_interval)
+        time = time.isoformat(" ")
+
+        # timestamp
+        evolved_elevation = 'elevation_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+        depth = 'depth_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+        sediment_flux = 'flux_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/ms
+        erosion_deposition = 'erosion_deposition_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # kg/m2s
+        difference = 'difference_' + time.replace(" ", "_").replace("-", "_").replace(":", "_") # m
+
+        # derive rainfall energy (MJ ha^-1 mm^-1)
+        gscript.run_command('r.mapcalc',
+            expression="{rain_energy} = 0.29*(1.-(0.72*exp(-0.05*{rain_intensity})))".format(rain_energy=rain_energy,
+                rain_intensity=self.rain_intensity),
+            overwrite=True)
+
+        # derive rainfall volume (mm) = rainfall intensity (mm/hr) * (rainfall interval (min) * (1 hr / 60 min))
+        gscript.run_command('r.mapcalc',
+            expression="{rain_volume} = {rain_intensity}*({rain_interval}/60.)".format(rain_volume=rain_volume,
+                rain_intensity=self.rain_intensity,
+                rain_interval=self.rain_interval),
+            overwrite=True)
+
+        # derive event erosivity index (MJ mm ha^-1 hr^-1)
+        gscript.run_command('r.mapcalc',
+            expression="{erosivity} = ({rain_energy}*{rain_volume})*{rain_intensity}*1.".format(erosivity=erosivity,
+                rain_energy=rain_energy,
+                rain_volume=rain_volume,
+                rain_intensity=self.rain_intensity),
+            overwrite=True)
+
+        # multiply by rainfall interval in seconds (MJ mm ha^-1 hr^-1 s^-1)
+        gscript.run_command('r.mapcalc',
+            expression="{r_factor} = {erosivity}/({rain_interval}*60.)".format(r_factor=r_factor,
+                erosivity=erosivity,
+                rain_interval=self.rain_interval),
+            overwrite=True)
 
         # compute slope and aspect
         gscript.run_command('r.slope.aspect',
@@ -1576,6 +1650,9 @@ class Evolution:
                 'sedflow',
                 'settled_elevation',
                 'divergence',
+                'rain_energy',
+                'rain_volume',
+                'erosivity',
                 'r_factor'],
             flags='f')
 
@@ -1590,7 +1667,7 @@ class DynamicEvolution:
         difference_title, difference_description, start, walkers, runoff,
         mannings, detachment, transport, shearstress, density, mass,
         grav_diffusion, smoothing, erdepmin, erdepmax, fluxmax,
-        k_factor, c_factor, r_factor, m, n):
+        k_factor, c_factor, m, n):
         self.elevation = elevation
         self.mode = mode
         self.precipitation = precipitation
@@ -1629,7 +1706,6 @@ class DynamicEvolution:
         self.fluxmax = fluxmax
         self.k_factor = k_factor
         self.c_factor = c_factor
-        self.r_factor = r_factor
         self.m = m
         self.n = n
 
@@ -1714,15 +1790,11 @@ class DynamicEvolution:
             fluxmax=self.fluxmax,
             k_factor=self.k_factor,
             c_factor=self.c_factor,
-            r_factor=self.r_factor,
             m = self.m,
             n = self.n)
 
         # set temporary region
         gscript.use_temp_region()
-
-        # parse, advance, and save time
-        evol.advance_time()
 
         # determine mode and run model
         if self.mode == "erosion_deposition_mode":
@@ -1732,11 +1804,9 @@ class DynamicEvolution:
             evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
 
         if self.mode == "usped_mode":
-            self.r_factor = evol.compute_r_factor()
             evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.usped()
 
         if self.mode == "rusle_mode":
-            self.r_factor = evol.compute_r_factor()
             evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.rusle()
 
         # remove relative timestamps from r.sim.water and r.sim.sediment
@@ -1814,9 +1884,6 @@ class DynamicEvolution:
                     rain_excess=rain_excess),
                 overwrite=True)
 
-            # parse, advance, and save time
-            evol.advance_time()
-
             # determine mode and run model
             if self.mode == "erosion_deposition_mode":
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.erosion_deposition()
@@ -1825,11 +1892,9 @@ class DynamicEvolution:
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
 
             if self.mode == "usped_mode":
-                self.r_factor = evol.compute_r_factor()
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.usped()
 
             if self.mode == "rusle_mode":
-                self.r_factor = evol.compute_r_factor()
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.rusle()
 
             # remove relative timestamps from r.sim.water and r.sim.sediment
@@ -2013,9 +2078,6 @@ class DynamicEvolution:
                     initial=float(initial[1])),
                 overwrite=True)
 
-            # parse, advance, and save time
-            evol.advance_time()
-
             # determine mode and run model
             if self.mode == "erosion_deposition_mode":
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.erosion_deposition()
@@ -2024,11 +2086,9 @@ class DynamicEvolution:
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
 
             if self.mode == "usped_mode":
-                self.r_factor = evol.compute_r_factor()
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.usped()
 
             if self.mode == "rusle_mode":
-                self.r_factor = evol.compute_r_factor()
                 evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.rusle()
 
             # remove relative timestamps from r.sim.water and r.sim.sediment
@@ -2107,9 +2167,6 @@ class DynamicEvolution:
                         rain_excess=rain_excess),
                     overwrite=True)
 
-                # parse, advance, and save time
-                evol.advance_time()
-
                 # determine mode and run model
                 if self.mode == "erosion_deposition_mode":
                     evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.erosion_deposition()
@@ -2118,11 +2175,9 @@ class DynamicEvolution:
                     evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
 
                 if self.mode == "usped_mode":
-                    self.r_factor = evol.compute_r_factor()
                     evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.usped()
 
                 if self.mode == "rusle_mode":
-                    self.r_factor = evol.compute_r_factor()
                     evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.rusle()
 
                 # remove relative timestamps from r.sim.water and r.sim.sediment
