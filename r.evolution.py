@@ -625,8 +625,7 @@ class Evolution:
         hours = int(self.start[11:13])
         minutes = int(self.start[14:16])
         seconds = int(self.start[17:19])
-
-        time = datetime.datetime(year,month,day,hours,minutes,seconds)
+        time = datetime.datetime(year, month, day, hours, minutes, seconds)
 
         # advance time
         time = time + datetime.timedelta(minutes=self.rain_interval)
@@ -1261,6 +1260,71 @@ class Evolution:
                 density=self.density),
             overwrite=True)
 
+        # smooth evolved elevation
+        gscript.run_command('r.neighbors',
+            input=evolved_elevation,
+            output=smoothed_elevation,
+            method='average',
+            size=self.smoothing,
+            overwrite=True)
+        # update elevation
+        gscript.run_command('r.mapcalc',
+            expression="{evolved_elevation} = {smoothed_elevation}".format(evolved_elevation=evolved_elevation,
+                smoothed_elevation=smoothed_elevation),
+            overwrite=True)
+
+        # compute second order partial derivatives of evolved elevation
+        gscript.run_command('r.slope.aspect',
+            elevation=evolved_elevation,
+            dxx=dxx,
+            dyy=dyy,
+            overwrite=True)
+
+        # grow border to fix edge effects of moving window computations
+        gscript.run_command('r.grow.distance',
+            input=dxx,
+            value=grow_dxx,
+            overwrite=True)
+        dxx = grow_dxx
+        gscript.run_command('r.grow.distance',
+            input=dyy,
+            value=grow_dyy,
+            overwrite=True)
+        dyy = grow_dyy
+
+        # compute divergence
+        # from the sum of the second order derivatives of elevation
+        gscript.run_command('r.mapcalc',
+            expression="{divergence} = {dxx}+{dyy}".format(divergence=divergence,
+                dxx=dxx,
+                dyy=dyy),
+            overwrite=True)
+
+        # compute settling caused by gravitational diffusion
+        """change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))"""
+        gscript.run_command('r.mapcalc',
+            expression="{settled_elevation} = {evolved_elevation}-({rain_interval}*60/{density}*{grav_diffusion}*{divergence})".format(settled_elevation=settled_elevation,
+                evolved_elevation=evolved_elevation,
+                density=self.density,
+                grav_diffusion=self.grav_diffusion,
+                rain_interval=self.rain_interval,
+                divergence=divergence),
+            overwrite=True)
+
+        # update elevation
+        gscript.run_command('r.mapcalc',
+            expression="{evolved_elevation} = {settled_elevation}".format(evolved_elevation=evolved_elevation,
+                settled_elevation=settled_elevation),
+            overwrite=True)
+
+        gscript.run_command('r.colors',
+            map=evolved_elevation,
+            color='elevation')
+
+        # compute elevation change
+        gscript.run_command('r.mapcalc',
+            expression="{difference} = {elevation}-{evolved_elevation}".format(difference=difference, elevation=self.elevation, evolved_elevation=evolved_elevation),
+            overwrite=True)
         gscript.write_command('r.colors',
             map=difference,
             rules='-',
