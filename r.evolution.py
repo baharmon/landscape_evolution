@@ -1176,6 +1176,16 @@ class Evolution:
             overwrite=True)
 
         # compute sediment flow at sediment transport capacity
+        """
+        T = R * K * C * P * LST
+        where
+        E is average annual soil loss
+        R is rainfall factor
+        K is soil erodibility factor
+        C is a dimensionless land cover factor
+        P is a dimensionless prevention measures factor
+        LST is the topographic component of sediment transport capacity of overland flow
+        """
         gscript.run_command('r.mapcalc',
             expression="{sedflow} = {r_factor} * {k_factor} * {c_factor} * {ls_factor}".format(r_factor=r_factor,
                 k_factor=self.k_factor,
@@ -1465,7 +1475,7 @@ class Evolution:
             accumulation=depth,
             # length_slope=ls_factor
             overwrite=True)
-        # use length_slope output from r.watershed for LS  
+        # use length_slope output from r.watershed for LS
         # add depression parameter to r.watershed
         # derive from landcover class
 
@@ -1479,8 +1489,17 @@ class Evolution:
             overwrite=True)
 
         # compute sediment flow at sediment transport capacity
+        """E = R * K * LS * C * P
+        where
+        E is average annual soil loss
+        R is rainfall factor
+        K is soil erodibility factor
+        LS is a dimensionless topographic (length-slope) factor
+        C is a dimensionless land cover factor
+        P is a dimensionless prevention measures factor
+        """
         gscript.run_command('r.mapcalc',
-            expression="{sedflow} = {r_factor} * {k_factor} * {c_factor} * {flowacc} * sin({slope})".format(r_factor=r_factor,
+            expression="{sedflow} = {r_factor} * {k_factor} * {ls_factor} * {c_factor}".format(r_factor=r_factor,
                 k_factor=self.k_factor,
                 c_factor=self.c_factor,
                 ls_factor=ls_factor,
