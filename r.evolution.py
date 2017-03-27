@@ -1463,7 +1463,9 @@ class Evolution:
         gscript.run_command('r.watershed',
             elevation=self.elevation,
             accumulation=depth,
+            # length_slope=ls_factor
             overwrite=True)
+        # use length_slope output from r.watershed for LS  
         # add depression parameter to r.watershed
         # derive from landcover class
 
