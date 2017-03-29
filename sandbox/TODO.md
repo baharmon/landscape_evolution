@@ -25,14 +25,16 @@
 - rusle3d m = 0.2-0.6, n = 1-1.3
 - upsed m = 1-1.6, n = 1-1.3
 
-# switch
+# input params
 
-sheer = (double)(cmul2 * gama[k][l] * sinsl);       /* shear stress */
-/* if critical shear stress >= shear then all zero */
-if ((sheer <= tau[k][l]) || (ct[k][l] == 0.)) {
-si[k][l] = 0.;
-sigma[k][l] = 0.;
-}
-else {
-si[k][l] = (double)(dc[k][l] * (sheer - tau[k][l]));
-sigma[k][l] = (double)(dc[k][l] / ct[k][l]) * (sheer - tau[k][l]) / (pow(sheer, 1.5));  /* rill erosion=1.5, sheet = 1.1 */
+#%option
+#% key: mode
+#% type: string
+#% required: yes
+#% multiple: no
+#% answer: simwe_mode
+#% options: simwe_mode,usped_mode,rusle_mode
+#% description: Erosion deposition, transport limited, or detachment limited mode
+#% descriptions: simwe_mode;erosion-deposition mode;usped_mode;transport limited mode;rusle_mode;detachment limited mode
+#% guisection: Basic
+#%end

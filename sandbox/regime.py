@@ -8,6 +8,7 @@ if mode == "simwe_mode":
 def erosion_regime(elevation, rain_intensity, runoff, rain_interval, mannings, walkers, shearstress, detachment, transport):
     """determine whether transport limited or detachment limited regime"""
 
+    # assign local variables
     rhow = 1000. # ?
     gravity = 9.81 # gravitational acceleration (m/s^2)
     critical_shearstress = 'critical_shearstress'
