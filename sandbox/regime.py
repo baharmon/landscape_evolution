@@ -9,8 +9,10 @@ def erosion_regime(elevation, rain_intensity, runoff, rain_interval, mannings, w
     """determine whether transport limited or detachment limited regime"""
 
     # assign local variables
-    rhow = 1000. # ?
+    rho = 1000. # mass density of water (kg * m^-3)
     gravity = 9.81 # gravitational acceleration (m/s^2)
+    # hydrostatic pressure with unit height
+    # shearstress_exponent = 1.5
     critical_shearstress = 'critical_shearstress'
     sigma = 'sigma' # first order reaction term dependent on soil and cover properties (m^−1)
 
@@ -22,7 +24,7 @@ def erosion_regime(elevation, rain_intensity, runoff, rain_interval, mannings, w
         dy=dy,
         overwrite=True)
 
-    # hyrdology parameters <----------------- SERIES needs rain int from list...
+    # hyrdology parameters
     gscript.run_command('r.mapcalc',
         expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain,
             rain_intensity=rain_intensity,
@@ -42,7 +44,7 @@ def erosion_regime(elevation, rain_intensity, runoff, rain_interval, mannings, w
         overwrite=True)
 
     gscript.run_command('r.mapcalc',
-        expression="critical_shearstress = ({rhow} * {gravity}) * {depth} * sin({slope})".format(rhow=rhow,
+        expression="critical_shearstress = ({rho} * {gravity}) * {depth} * sin({slope})".format(rho=rho,
             gravity=gravity,
             depth=depth,
             slope=slope),
@@ -57,12 +59,13 @@ def erosion_regime(elevation, rain_intensity, runoff, rain_interval, mannings, w
 
     # detachment capacity = sigma * transport capacity
     # transport capacity >> detachment capacity when sigma -> 0
+    # r.info -r
     univar = gscript.parse_command('r.univar',
         map=elevation,
         separator='newline',
         flags='g')
     mean_sigma = float(univar['mean'])
-    if mean_sigma > 0.:
+    if mean_sigma >= 0.001:
         regime = "detachment limited"
     else:
         regime = "transport limited"
@@ -110,13 +113,7 @@ if self.mode == "simwe_mode":
 
                 if self.mode == "flux_mode":
                     evolved_elevation, time, depth, erosion_deposition, sediment_flux, difference = evol.flux()
-"""
 
-# rill erosion=1.5, sheet = 1.1
-#sigma[k][l] = (double)(dc[k][l] / ct[k][l]) * (sheer - tau[k][l]) / (pow(sheer, 1.5));
-"""
-do I need rill vs sheet toggle?
-"""
 
 7	    int k, l;
 378	    double zx, zy, zd2, zd4, sinsl;
@@ -135,14 +132,14 @@ do I need rill vs sheet toggle?
 391	    double infmax = -1.e12;
 392	    double sigmax = -1.e12;
 393	    double cchezmax = -1.e12;
-394	    double rhow = 1000.;
+394	    double rho = 1000.;
 395	    double gravity= 9.81;
 396	    double hh = 1.;
 397	    double deltaw = 1.e12;
 398
 399	    sisum = 0.;
 400	    infsum = 0.;
-401	    cmul2 = rhow * gacc;
+401	    cmul2 = rho * gacc;
 
     for (k = 0; k < my; k++) {
 404	        for (l = 0; l < mx; l++) {

@@ -288,7 +288,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% type: double
 #% description: Neighborhood size for smoothing
 #% label: Neighborhood size for smoothing
-#% answer: 3
+#% answer: 9
 #% multiple: no
 #% guisection: Input
 #%end
