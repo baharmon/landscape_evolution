@@ -2333,15 +2333,24 @@ class DynamicEvolution:
             evolved_elevation, time, depth, erosion_deposition, difference = evol.rusle_2d()
 
         # remove relative timestamps from r.sim.water and r.sim.sediment
-        gscript.run_command('r.timestamp',
-            map=depth,
-            date='none')
-        gscript.run_command('r.timestamp',
-            map=erosion_deposition,
-            date='none')
-        gscript.run_command('r.timestamp',
-            map=sediment_flux,
-            date='none')
+        try:
+            gscript.run_command('r.timestamp',
+                map=depth,
+                date='none')
+        except CalledModuleError:
+            pass
+        try:
+            gscript.run_command('r.timestamp',
+                map=erosion_deposition,
+                date='none')
+        except CalledModuleError:
+            pass
+        try:
+            gscript.run_command('r.timestamp',
+                map=sediment_flux,
+                date='none')
+        except CalledModuleError:
+            pass
 
         # register the evolved maps
         gscript.run_command('t.register',
@@ -2434,15 +2443,24 @@ class DynamicEvolution:
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.rusle_2d()
 
             # remove relative timestamps from r.sim.water and r.sim.sediment
-            gscript.run_command('r.timestamp',
-                map=depth,
-                date='none')
-            gscript.run_command('r.timestamp',
-                map=erosion_deposition,
-                date='none')
-            gscript.run_command('r.timestamp',
-                map=sediment_flux,
-                date='none')
+            try:
+                gscript.run_command('r.timestamp',
+                    map=depth,
+                    date='none')
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('r.timestamp',
+                    map=erosion_deposition,
+                    date='none')
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('r.timestamp',
+                    map=sediment_flux,
+                    date='none')
+            except CalledModuleError:
+                pass
 
             # register the evolved maps
             gscript.run_command('t.register',
@@ -2639,15 +2657,24 @@ class DynamicEvolution:
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.rusle_2d()
 
             # remove relative timestamps from r.sim.water and r.sim.sediment
-            gscript.run_command('r.timestamp',
-                map=depth,
-                date='none')
-            gscript.run_command('r.timestamp',
-                map=erosion_deposition,
-                date='none')
-            gscript.run_command('r.timestamp',
-                map=sediment_flux,
-                date='none')
+            try:
+                gscript.run_command('r.timestamp',
+                    map=depth,
+                    date='none')
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('r.timestamp',
+                    map=erosion_deposition,
+                    date='none')
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('r.timestamp',
+                    map=sediment_flux,
+                    date='none')
+            except CalledModuleError:
+                pass
 
             # register the evolved digital elevation model
             gscript.run_command('t.register',
@@ -2741,15 +2768,24 @@ class DynamicEvolution:
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.rusle_2d()
 
                 # remove relative timestamps from r.sim.water and r.sim.sediment
-                gscript.run_command('r.timestamp',
-                    map=depth,
-                    date='none')
-                gscript.run_command('r.timestamp',
-                    map=erosion_deposition,
-                    date='none')
-                gscript.run_command('r.timestamp',
-                    map=sediment_flux,
-                    date='none')
+                try:
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                except CalledModuleError:
+                    pass
+                try:
+                    gscript.run_command('r.timestamp',
+                        map=erosion_deposition,
+                        date='none')
+                except CalledModuleError:
+                    pass
+                try:
+                    gscript.run_command('r.timestamp',
+                        map=sediment_flux,
+                        date='none')
+                except CalledModuleError:
+                    pass
 
                 # register the evolved digital elevation model
                 gscript.run_command('t.register',
