@@ -2150,8 +2150,6 @@ class Evolution:
             flags='r')
         min_sigma = float(info['min'])
         max_sigma = float(info['max'])
-        print min_sigma
-        print max_sigma
 
         # determine regime
         if min_sigma <= 0.001 and max_sigma <= 0.001:
@@ -2353,45 +2351,60 @@ class DynamicEvolution:
             pass
 
         # register the evolved maps
-        gscript.run_command('t.register',
-            type=raster,
-            input=self.elevation_timeseries,
-            maps=evolved_elevation,
-            start=evol.start,
-            increment=increment,
-            flags='i',
-            overwrite=True)
-        gscript.run_command('t.register',
-            type=raster,
-            input=self.depth_timeseries,
-            maps=depth,
-            start=evol.start,
-            increment=increment,
-            flags='i',
-            overwrite=True)
-        gscript.run_command('t.register',
-            type=raster,
-            input=self.erdep_timeseries,
-            maps=erosion_deposition,
-            start=evol.start,
-            increment=increment,
-            flags='i',
-            overwrite=True)
-        gscript.run_command('t.register',
-            type=raster,
-            input=self.flux_timeseries,
-            maps=sediment_flux,
-            start=evol.start,
-            increment=increment,
-            flags='i', overwrite=True)
-        gscript.run_command('t.register',
-            type=raster,
-            input=self.difference_timeseries,
-            maps=difference,
-            start=evol.start,
-            increment=increment,
-            flags='i',
-            overwrite=True)
+        try:
+            gscript.run_command('t.register',
+                type=raster,
+                input=self.elevation_timeseries,
+                maps=evolved_elevation,
+                start=evol.start,
+                increment=increment,
+                flags='i',
+                overwrite=True)
+        except CalledModuleError:
+            pass
+        try:
+            gscript.run_command('t.register',
+                type=raster,
+                input=self.depth_timeseries,
+                maps=depth,
+                start=evol.start,
+                increment=increment,
+                flags='i',
+                overwrite=True)
+        except CalledModuleError:
+            pass
+        try:
+            gscript.run_command('t.register',
+                type=raster,
+                input=self.erdep_timeseries,
+                maps=erosion_deposition,
+                start=evol.start,
+                increment=increment,
+                flags='i',
+                overwrite=True)
+        except CalledModuleError:
+            pass
+        try:
+            gscript.run_command('t.register',
+                type=raster,
+                input=self.flux_timeseries,
+                maps=sediment_flux,
+                start=evol.start,
+                increment=increment,
+                flags='i', overwrite=True)
+        except CalledModuleError:
+            pass
+        try:
+            gscript.run_command('t.register',
+                type=raster,
+                input=self.difference_timeseries,
+                maps=difference,
+                start=evol.start,
+                increment=increment,
+                flags='i',
+                overwrite=True)
+        except CalledModuleError:
+            pass
 
         # run the landscape evolution model as a series of rainfall intervals in a rainfall event
         i = 1
@@ -2463,45 +2476,60 @@ class DynamicEvolution:
                 pass
 
             # register the evolved maps
-            gscript.run_command('t.register',
-                type=raster,
-                input=self.elevation_timeseries,
-                maps=evolved_elevation,
-                start=evol.start,
-                increment=increment,
-                flags='i',
-                overwrite=True)
-            gscript.run_command('t.register',
-                type=raster,
-                input=self.depth_timeseries,
-                maps=depth,
-                start=evol.start,
-                increment=increment,
-                flags='i',
-                overwrite=True)
-            gscript.run_command('t.register',
-                type=raster,
-                input=self.erdep_timeseries,
-                maps=erosion_deposition,
-                start=evol.start,
-                increment=increment,
-                flags='i',
-                overwrite=True)
-            gscript.run_command('t.register',
-                type=raster,
-                input=self.flux_timeseries,
-                maps=sediment_flux,
-                start=evol.start,
-                increment=increment,
-                flags='i', overwrite=True)
-            gscript.run_command('t.register',
-                type=raster,
-                input=self.difference_timeseries,
-                maps=difference,
-                start=evol.start,
-                increment=increment,
-                flags='i',
-                overwrite=True)
+            try:
+                gscript.run_command('t.register',
+                    type=raster,
+                    input=self.elevation_timeseries,
+                    maps=evolved_elevation,
+                    start=evol.start,
+                    increment=increment,
+                    flags='i',
+                    overwrite=True)
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('t.register',
+                    type=raster,
+                    input=self.depth_timeseries,
+                    maps=depth,
+                    start=evol.start,
+                    increment=increment,
+                    flags='i',
+                    overwrite=True)
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('t.register',
+                    type=raster,
+                    input=self.erdep_timeseries,
+                    maps=erosion_deposition,
+                    start=evol.start,
+                    increment=increment,
+                    flags='i',
+                    overwrite=True)
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('t.register',
+                    type=raster,
+                    input=self.flux_timeseries,
+                    maps=sediment_flux,
+                    start=evol.start,
+                    increment=increment,
+                    flags='i', overwrite=True)
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('t.register',
+                    type=raster,
+                    input=self.difference_timeseries,
+                    maps=difference,
+                    start=evol.start,
+                    increment=increment,
+                    flags='i',
+                    overwrite=True)
+            except CalledModuleError:
+                pass
 
             # remove temporary maps
             gscript.run_command('g.remove',
@@ -2676,47 +2704,61 @@ class DynamicEvolution:
             except CalledModuleError:
                 pass
 
-            # register the evolved digital elevation model
-            gscript.run_command('t.register',
-                type=raster,
-                input=self.elevation_timeseries,
-                maps=evolved_elevation,
-                start=evol.start,
-                increment=increment,
-                flags='i',
-                overwrite=True)
-            gscript.run_command('t.register',
-                type=raster,
-                input=self.depth_timeseries,
-                maps=depth,
-                start=evol.start,
-                increment=increment,
-                flags='i',
-                overwrite=True)
-            gscript.run_command('t.register',
-                type=raster,
-                input=self.erdep_timeseries,
-                maps=erosion_deposition,
-                start=evol.start,
-                increment=increment,
-                flags='i',
-                overwrite=True)
-            gscript.run_command('t.register',
-                type=raster,
-                input=self.flux_timeseries,
-                maps=sediment_flux,
-                start=evol.start,
-                increment=increment,
-                flags='i',
-                overwrite=True)
-            gscript.run_command('t.register',
-                type=raster,
-                input=self.difference_timeseries,
-                maps=difference,
-                start=evol.start,
-                increment=increment,
-                flags='i',
-                overwrite=True)
+            # register the evolved maps
+            try:
+                gscript.run_command('t.register',
+                    type=raster,
+                    input=self.elevation_timeseries,
+                    maps=evolved_elevation,
+                    start=evol.start,
+                    increment=increment,
+                    flags='i',
+                    overwrite=True)
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('t.register',
+                    type=raster,
+                    input=self.depth_timeseries,
+                    maps=depth,
+                    start=evol.start,
+                    increment=increment,
+                    flags='i',
+                    overwrite=True)
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('t.register',
+                    type=raster,
+                    input=self.erdep_timeseries,
+                    maps=erosion_deposition,
+                    start=evol.start,
+                    increment=increment,
+                    flags='i',
+                    overwrite=True)
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('t.register',
+                    type=raster,
+                    input=self.flux_timeseries,
+                    maps=sediment_flux,
+                    start=evol.start,
+                    increment=increment,
+                    flags='i', overwrite=True)
+            except CalledModuleError:
+                pass
+            try:
+                gscript.run_command('t.register',
+                    type=raster,
+                    input=self.difference_timeseries,
+                    maps=difference,
+                    start=evol.start,
+                    increment=increment,
+                    flags='i',
+                    overwrite=True)
+            except CalledModuleError:
+                pass
 
             # run the landscape evolution model for each rainfall record
             for row in precip:
@@ -2787,47 +2829,61 @@ class DynamicEvolution:
                 except CalledModuleError:
                     pass
 
-                # register the evolved digital elevation model
-                gscript.run_command('t.register',
-                    type=raster,
-                    input=self.elevation_timeseries,
-                    maps=evolved_elevation,
-                    start=evol.start,
-                    increment=increment,
-                    flags='i',
-                    overwrite=True)
-                gscript.run_command('t.register',
-                    type=raster,
-                    input=self.depth_timeseries,
-                    maps=depth,
-                    start=evol.start,
-                    increment=increment,
-                    flags='i',
-                    overwrite=True)
-                gscript.run_command('t.register',
-                    type=raster,
-                    input=self.erdep_timeseries,
-                    maps=erosion_deposition,
-                    start=evol.start,
-                    increment=increment,
-                    flags='i',
-                    overwrite=True)
-                gscript.run_command('t.register',
-                    type=raster,
-                    input=self.flux_timeseries,
-                    maps=sediment_flux,
-                    start=evol.start,
-                    increment=increment,
-                    flags='i',
-                    overwrite=True)
-                gscript.run_command('t.register',
-                    type=raster,
-                    input=self.difference_timeseries,
-                    maps=difference,
-                    start=evol.start,
-                    increment=increment,
-                    flags='i',
-                    overwrite=True)
+                # register the evolved maps
+                try:
+                    gscript.run_command('t.register',
+                        type=raster,
+                        input=self.elevation_timeseries,
+                        maps=evolved_elevation,
+                        start=evol.start,
+                        increment=increment,
+                        flags='i',
+                        overwrite=True)
+                except CalledModuleError:
+                    pass
+                try:
+                    gscript.run_command('t.register',
+                        type=raster,
+                        input=self.depth_timeseries,
+                        maps=depth,
+                        start=evol.start,
+                        increment=increment,
+                        flags='i',
+                        overwrite=True)
+                except CalledModuleError:
+                    pass
+                try:
+                    gscript.run_command('t.register',
+                        type=raster,
+                        input=self.erdep_timeseries,
+                        maps=erosion_deposition,
+                        start=evol.start,
+                        increment=increment,
+                        flags='i',
+                        overwrite=True)
+                except CalledModuleError:
+                    pass
+                try:
+                    gscript.run_command('t.register',
+                        type=raster,
+                        input=self.flux_timeseries,
+                        maps=sediment_flux,
+                        start=evol.start,
+                        increment=increment,
+                        flags='i', overwrite=True)
+                except CalledModuleError:
+                    pass
+                try:
+                    gscript.run_command('t.register',
+                        type=raster,
+                        input=self.difference_timeseries,
+                        maps=difference,
+                        start=evol.start,
+                        increment=increment,
+                        flags='i',
+                        overwrite=True)
+                except CalledModuleError:
+                    pass
 
                 # remove temporary maps
                 gscript.run_command('g.remove',
@@ -2853,6 +2909,8 @@ def cleanup():
             name=['rain_excess',
                 'rain',
                 'sedflow',
+                'sedflux',
+                'erdep',
                 'evolving_elevation',
                 'smoothed_elevation',
                 'settled_elevation',
