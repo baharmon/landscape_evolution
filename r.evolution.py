@@ -2310,7 +2310,7 @@ class DynamicEvolution:
         gscript.use_temp_region()
 
         # determine erosion regime
-        regime = evol.regime()
+        regime = evol.erosion_regime()
 
         # determine mode and run model
         if self.mode == "simwe_mode":
@@ -2411,7 +2411,7 @@ class DynamicEvolution:
             evol.rain_intensity = rain_intensity
 
             # determine erosion regime
-            regime = evol.regime()
+            regime = evol.erosion_regime()
 
             # determine mode and run model
             if self.mode == "simwe_mode":
@@ -2616,7 +2616,7 @@ class DynamicEvolution:
                 overwrite=True)
 
             # determine erosion regime
-            regime = evol.regime()
+            regime = evol.erosion_regime()
 
             # determine mode and run model
             if self.mode == "simwe_mode":
@@ -2718,7 +2718,7 @@ class DynamicEvolution:
                 evol.rain_intensity = rain_intensity
 
                 # determine erosion regime
-                regime = evol.regime()
+                regime = evol.erosion_regime()
 
                 # determine mode and run model
                 if self.mode == "simwe_mode":
