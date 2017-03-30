@@ -2147,7 +2147,6 @@ class Evolution:
             overwrite=True)
         info = gscript.parse_command('r.info',
             map=sigma,
-            separator='newline',
             flags='r')
         min_sigma = float(info['min'])
         max_sigma = float(info['max'])
