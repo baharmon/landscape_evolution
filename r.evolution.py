@@ -2362,7 +2362,7 @@ class DynamicEvolution:
             increment=increment,
             flags='i',
             overwrite=True)
-        if self.mode == "rusle_mode" or regime == "detachment limited":
+        if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
             gscript.run_command('t.register',
                 type=raster,
                 input=self.erdep_timeseries,
@@ -2371,7 +2371,7 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-        if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+        if self.mode == "rusle_mode" or regime == "detachment limited":
             gscript.run_command('t.register',
                 type=raster,
                 input=self.flux_timeseries,
@@ -2469,7 +2469,7 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-            if self.mode == "rusle_mode" or regime == "detachment limited":
+            if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.erdep_timeseries,
@@ -2478,7 +2478,7 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-            if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+            if self.mode == "rusle_mode" or regime == "detachment limited":
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.flux_timeseries,
@@ -2680,7 +2680,7 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-            if self.mode == "rusle_mode" or regime == "detachment limited":
+            if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.erdep_timeseries,
@@ -2689,7 +2689,7 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-            if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+            if self.mode == "rusle_mode" or regime == "detachment limited":
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.flux_timeseries,
@@ -2787,7 +2787,7 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-                if self.mode == "rusle_mode" or regime == "detachment limited":
+                if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
                     gscript.run_command('t.register',
                         type=raster,
                         input=self.erdep_timeseries,
@@ -2796,7 +2796,7 @@ class DynamicEvolution:
                         increment=increment,
                         flags='i',
                         overwrite=True)
-                if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+                if self.mode == "rusle_mode" or regime == "detachment limited":
                     gscript.run_command('t.register',
                         type=raster,
                         input=self.flux_timeseries,
