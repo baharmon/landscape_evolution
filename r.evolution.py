@@ -2142,8 +2142,8 @@ class Evolution:
         """detachment capacity coefficient = sigma * transport capacity coefficient"""
         gscript.run_command('r.mapcalc',
             expression="{sigma} = {detachment}/{transport}".format(sigma=sigma,
-                detachment=detachment,
-                transport=transport),
+                detachment=self.detachment,
+                transport=self.transport),
             overwrite=True)
         info = gscript.parse_command('r.info',
             map=sigma,
