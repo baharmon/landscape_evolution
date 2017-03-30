@@ -2132,6 +2132,44 @@ class Evolution:
 
         return evolved_elevation, time, depth, erosion_deposition, difference
 
+    def erosion_regime(self):
+        """determine whether transport limited or detachment limited regime"""
+
+        # assign local variables
+        sigma = 'sigma' # first order reaction term dependent on soil and cover properties (m^−1)
+
+        # derive sigma
+        """detachment capacity coefficient = sigma * transport capacity coefficient"""
+        gscript.run_command('r.mapcalc',
+            expression="{sigma} = {detachment}/{transport}".format(sigma=sigma,
+                detachment=detachment,
+                transport=transport),
+            overwrite=True)
+        info = gscript.parse_command('r.info',
+            map=sigma,
+            separator='newline',
+            flags='r')
+        min_sigma = float(info['min'])
+        max_sigma = float(info['max'])
+        print min_sigma
+        print max_sigma
+
+        # determine regime
+        if min_sigma <= 0.001 and max_sigma <= 0.001:
+            regime = "detachment limited"
+        if min_sigma >= 100. and max_sigma >= 100.:
+            regime = "transport limited"
+        else:
+            regime = "erosion deposition"
+
+        # remove temporary maps
+        gscript.run_command('g.remove',
+            type='raster',
+            name=['sigma'],
+            flags='f')
+
+        return regime
+
 
 class DynamicEvolution:
     def __init__(self, elevation, mode, precipitation, rain_intensity,
@@ -2183,44 +2221,6 @@ class DynamicEvolution:
         self.c_factor = c_factor
         self.m = m
         self.n = n
-
-    def erosion_regime(self):
-        """determine whether transport limited or detachment limited regime"""
-
-        # assign local variables
-        sigma = 'sigma' # first order reaction term dependent on soil and cover properties (m^−1)
-
-        # derive sigma
-        """detachment capacity coefficient = sigma * transport capacity coefficient"""
-        gscript.run_command('r.mapcalc',
-            expression="{sigma} = {detachment}/{transport}".format(sigma=sigma,
-                detachment=detachment,
-                transport=transport),
-            overwrite=True)
-        info = gscript.parse_command('r.info',
-            map=sigma,
-            separator='newline',
-            flags='r')
-        min_sigma = float(info['min'])
-        max_sigma = float(info['max'])
-        print min_sigma
-        print max_sigma
-
-        # determine regime
-        if min_sigma <= 0.001 and max_sigma <= 0.001:
-            regime = "detachment limited"
-        if min_sigma >= 100. and max_sigma >= 100.:
-            regime = "transport limited"
-        else:
-            regime = "erosion deposition"
-
-        # remove temporary maps
-        gscript.run_command('g.remove',
-            type='raster',
-            name=['sigma'],
-            flags='f')
-
-        return regime
 
     def rainfall_event(self):
         """a dynamic, process-based landscape evolution model
@@ -2309,16 +2309,19 @@ class DynamicEvolution:
         # set temporary region
         gscript.use_temp_region()
 
+        # determine erosion regime
+        regime = evol.regime()
+
         # determine mode and run model
         if self.mode == "simwe_mode":
 
-            if self.regime == "detachment limited":
+            if regime == "detachment limited":
                 evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
 
-            if self.regime == "transport limited":
+            if regime == "transport limited":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
 
-            if self.regime == "erosion deposition":
+            if regime == "erosion deposition":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
 
         if self.mode == "usped_mode":
@@ -2407,16 +2410,19 @@ class DynamicEvolution:
                 overwrite=True)
             evol.rain_intensity = rain_intensity
 
+            # determine erosion regime
+            regime = evol.regime()
+
             # determine mode and run model
             if self.mode == "simwe_mode":
 
-                if self.regime == "detachment limited":
+                if regime == "detachment limited":
                     evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
 
-                if self.regime == "transport limited":
+                if regime == "transport limited":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
 
-                if self.regime == "erosion deposition":
+                if regime == "erosion deposition":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
 
             if self.mode == "usped_mode":
@@ -2609,16 +2615,19 @@ class DynamicEvolution:
                     initial=float(initial[1])),
                 overwrite=True)
 
+            # determine erosion regime
+            regime = evol.regime()
+
             # determine mode and run model
             if self.mode == "simwe_mode":
 
-                if self.regime == "detachment limited":
+                if regime == "detachment limited":
                     evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
 
-                if self.regime == "transport limited":
+                if regime == "transport limited":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
 
-                if self.regime == "erosion deposition":
+                if regime == "erosion deposition":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
 
             if self.mode == "usped_mode":
@@ -2708,16 +2717,19 @@ class DynamicEvolution:
                     overwrite=True)
                 evol.rain_intensity = rain_intensity
 
+                # determine erosion regime
+                regime = evol.regime()
+
                 # determine mode and run model
                 if self.mode == "simwe_mode":
 
-                    if self.regime == "detachment limited":
+                    if regime == "detachment limited":
                         evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
 
-                    if self.regime == "transport limited":
+                    if regime == "transport limited":
                         evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
 
-                    if self.regime == "erosion deposition":
+                    if regime == "erosion deposition":
                         evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
 
                 if self.mode == "usped_mode":
