@@ -11,8 +11,3 @@
 * default params for m and n?
 - rusle3d m = 0.2-0.6, n = 1-1.3
 - upsed m = 1-1.6, n = 1-1.3
-
-# refactor
-* replace try pass statements for checking erosion_deposition or sediment_flux
-* check if using erosion_deposition or sediment_flux based on mode
-- based on mode, use either with timestamp, t.create, and t.register
