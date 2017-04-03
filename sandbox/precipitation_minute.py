@@ -15,9 +15,9 @@ for year in range(2006,2016):
 
     # write new csv header
     with open(output_file, 'wb') as csvfile:
-        cells_writer = csv.writer(csvfile, delimiter=',',
+        write = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        cells_writer.writerow(['ob', 'precip'])
+        write.writerow(['ob', 'precip'])
 
         data = pd.read_csv(input_file.format(year=year), iterator=True, chunksize=1000)
         #minute = pd.concat([chunk[chunk['precip'] >= 0.01] for chunk in data])
@@ -40,7 +40,7 @@ for year in range(2006,2016):
             else:
                 if counter >= 30:
                     # write buffer to output_file
-                    cells_writer.writerow(buffer)
+                    write.writerow(buffer) # for row in buffer
 
                 buffer = []
                 counter = 0
