@@ -15,57 +15,32 @@ for year in range(2006,2016):
 
     # write new csv header
     with open(output_file, 'wb') as csvfile:
-        write = csv.writer(csvfile, delimiter=',',
-                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        write = csv.writer(csvfile,
+            delimiter=',',
+            quotechar='|',
+            quoting=csv.QUOTE_MINIMAL)
         write.writerow(['ob', 'precip'])
 
-        data = pd.read_csv(input_file.format(year=year), iterator=True, chunksize=1000)
-        #minute = pd.concat([chunk[chunk['precip'] >= 0.01] for chunk in data])
+        data = pd.read_csv(input_file.format(year=year),
+            iterator=True,
+            chunksize=1000)
         minute = pd.concat([chunk[chunk['precip'] >= 0.] for chunk in data])
         minute['ob'] = pd.to_datetime(minute['ob'])
         minute.index = minute['ob']
         del minute['ob']
+        del minute['station']
 
         buffer = []
         counter = 0
         for row in minute.itertuples():
-            print row
-            value = row[2]
-            print value
-            #value = row['precip']
+            value = float(row[1])
             if value >= 0.01:
-                value * 25.4
-                buffer.append(row)
+                new_row = [row[0],value * 25.4]
+                buffer.append(new_row)
                 counter = len(buffer)
             else:
                 if counter >= 30:
-                    # write buffer to output_file
-                    write.writerow(buffer) # for row in buffer
-
+                    for buffer_row in buffer:
+                        write.writerow(buffer_row)
                 buffer = []
                 counter = 0
-
-#    minute_mm = minute
-#    minute_mm['precip'] = minute['precip'] * 25.4
-#    minute_mm.to_csv(output_file, sep=',', encoding='utf-8') # index=False, header=False
-
-#for row in minute.iterrows():
-#    print row['c1'], row['c2']
-#
-#for row in minute.itertuples():
-#    print row[1]
-#
-#row[1] * 2 for row in df.itertuples()
-
-#    buffer = []
-#    counter = 0
-#    for row in minute:
-#        value = row['precip']
-#        if value >= 0.01:
-#            value * 25.4
-#            buffer.append(row)
-#            counter = len(buffer)
-#        else:
-#            if counter >= 30:
-#                # write buffer to output_file
-#                cells_writer.writerow(buffer)
