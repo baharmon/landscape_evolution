@@ -2302,8 +2302,8 @@ class DynamicEvolution:
         gscript.use_temp_region()
 
         # determine mode and run model
-        regime = evol.erosion_regime()
         if self.mode == "simwe_mode":
+            regime = evol.erosion_regime()
 
             if regime == "detachment limited":
                 evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
@@ -2361,7 +2361,7 @@ class DynamicEvolution:
             increment=increment,
             flags='i',
             overwrite=True)
-        if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+        if erosion_deposition in locals():
             gscript.run_command('t.register',
                 type=raster,
                 input=self.erdep_timeseries,
@@ -2370,7 +2370,7 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-        if self.mode == "rusle_mode" or regime == "detachment limited":
+        if sediment_flux in locals():
             gscript.run_command('t.register',
                 type=raster,
                 input=self.flux_timeseries,
@@ -2471,7 +2471,7 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-            if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+            if erosion_deposition in locals():
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.erdep_timeseries,
@@ -2480,7 +2480,7 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-            if self.mode == "rusle_mode" or regime == "detachment limited":
+            if sediment_flux in locals():
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.flux_timeseries,
@@ -2627,8 +2627,8 @@ class DynamicEvolution:
                 overwrite=True)
 
             # determine mode and run model
-            regime = evol.erosion_regime()
             if self.mode == "simwe_mode":
+                regime = evol.erosion_regime()
 
                 if regime == "detachment limited":
                     evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
@@ -2686,7 +2686,7 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-            if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+            if erosion_deposition in locals():
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.erdep_timeseries,
@@ -2695,7 +2695,7 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-            if self.mode == "rusle_mode" or regime == "detachment limited":
+            if sediment_flux in locals():
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.flux_timeseries,
@@ -2797,7 +2797,7 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-                if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+                if erosion_deposition in locals():
                     gscript.run_command('t.register',
                         type=raster,
                         input=self.erdep_timeseries,
@@ -2806,7 +2806,7 @@ class DynamicEvolution:
                         increment=increment,
                         flags='i',
                         overwrite=True)
-                if self.mode == "rusle_mode" or regime == "detachment limited":
+                if sediment_flux in locals():
                     gscript.run_command('t.register',
                         type=raster,
                         input=self.flux_timeseries,
