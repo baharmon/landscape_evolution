@@ -1648,7 +1648,7 @@ class Evolution:
                 rain_interval=self.rain_interval),
             overwrite=True)
 
-        # compute slope and aspect
+        # compute slope
         gscript.run_command('r.slope.aspect',
             elevation=self.elevation,
             slope=slope,
@@ -2323,7 +2323,7 @@ class DynamicEvolution:
                     map=depth,
                     date='none')
                 gscript.run_command('r.timestamp',
-                    map=sediment_flux,
+                    map=erosion_deposition,
                     date='none')
 
             if regime == "erosion deposition":
@@ -2437,7 +2437,7 @@ class DynamicEvolution:
                         map=depth,
                         date='none')
                     gscript.run_command('r.timestamp',
-                        map=sediment_flux,
+                        map=erosion_deposition,
                         date='none')
 
                 if regime == "erosion deposition":
@@ -2656,7 +2656,7 @@ class DynamicEvolution:
                         map=depth,
                         date='none')
                     gscript.run_command('r.timestamp',
-                        map=sediment_flux,
+                        map=erosion_deposition,
                         date='none')
 
                 if regime == "erosion deposition":
@@ -2771,7 +2771,7 @@ class DynamicEvolution:
                             map=depth,
                             date='none')
                         gscript.run_command('r.timestamp',
-                            map=sediment_flux,
+                            map=erosion_deposition,
                             date='none')
 
                     if regime == "erosion deposition":
