@@ -1241,7 +1241,7 @@ class Evolution:
         gscript.run_command('g.remove',
             type='raster',
             name=['rain',
-                'sedflux',
+                'flux',
                 'evolving_elevation',
                 'smoothed_elevation',
                 'settled_elevation',
@@ -1586,16 +1586,10 @@ class Evolution:
         ls_factor = 'ls_factor'
         slope = 'slope'
         aspect = 'aspect'
-        qsx = 'qsx'
-        qsxdx = 'qsxdx'
-        qsy = 'qsy'
-        qsydy = 'qsydy'
         dxx = 'dxx'
         dyy = 'dyy'
         grow_slope = 'grow_slope'
         grow_aspect  = 'grow_aspect'
-        grow_qsxdx = 'grow_qsxdx'
-        grow_qsydy = 'grow_qsydy'
         grow_dxx = 'grow_dxx'
         grow_dyy = 'grow_dyy'
         erdep = 'erdep' # kg/m^2s
@@ -1808,7 +1802,6 @@ class Evolution:
                 'grow_dxx',
                 'grow_dyy',
                 'sedflow',
-                'sedflux',
                 'smoothed_elevation',
                 'settled_elevation',
                 'divergence',
@@ -2834,17 +2827,28 @@ def cleanup():
         # remove temporary maps
         gscript.run_command('g.remove',
             type='raster',
-            name=['rain_excess',
+            name=['runoff',
+                'mannings',
+                'detachment',
+                'transport',
+                'shearstress',
+                'mass',
+                'density',
+                'sigma',
+                'rain_excess',
                 'rain',
                 'sedflow',
-                'sedflux',
+                'flux',
                 'erdep',
+                'c_factor',
+                'k_factor',
                 'evolving_elevation',
                 'smoothed_elevation',
                 'settled_elevation',
                 'divergence',
                 'rain_energy',
                 'rain_volume',
+                'rain_intensity',
                 'erosivity',
                 'r_factor',
                 'ls_factor',
@@ -2856,6 +2860,8 @@ def cleanup():
                 'qsy',
                 'qsxdx',
                 'qsydy',
+                'slope',
+                'aspect',
                 'grow_slope',
                 'grow_aspect',
                 'grow_dx',
