@@ -1472,13 +1472,14 @@ class Evolution:
                 density=self.density),
             overwrite=True)
 
-        # smooth evolved elevation
-        gscript.run_command('r.neighbors',
-            input=evolved_elevation,
-            output=smoothed_elevation,
-            method='average',
-            size=self.smoothing,
-            overwrite=True)
+        # # smooth evolved elevation
+        # gscript.run_command('r.neighbors',
+        #     input=evolved_elevation,
+        #     output=smoothed_elevation,
+        #     method='average',
+        #     size=self.smoothing,
+        #     overwrite=True)
+
         # update elevation
         gscript.run_command('r.mapcalc',
             expression="{evolved_elevation} = {smoothed_elevation}".format(evolved_elevation=evolved_elevation,
@@ -2149,7 +2150,7 @@ class Evolution:
         # determine regime
         if min_sigma <= 0.001 and max_sigma <= 0.001:
             regime = "detachment limited"
-        if min_sigma >= 100. and max_sigma >= 100.:
+        if min_sigma >= 100. and max_sigma >= 100 .:
             regime = "transport limited"
         else:
             regime = "erosion deposition"
