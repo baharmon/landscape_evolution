@@ -2361,7 +2361,7 @@ class DynamicEvolution:
             increment=increment,
             flags='i',
             overwrite=True)
-        if erosion_deposition in locals():
+        try:
             gscript.run_command('t.register',
                 type=raster,
                 input=self.erdep_timeseries,
@@ -2370,7 +2370,9 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-        if sediment_flux in locals():
+        except (NameError, CalledModuleError):
+            pass
+        try:
             gscript.run_command('t.register',
                 type=raster,
                 input=self.flux_timeseries,
@@ -2378,6 +2380,8 @@ class DynamicEvolution:
                 start=evol.start,
                 increment=increment,
                 flags='i', overwrite=True)
+        except (NameError, CalledModuleError):
+            pass
         gscript.run_command('t.register',
             type=raster,
             input=self.difference_timeseries,
@@ -2471,7 +2475,7 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-            if erosion_deposition in locals():
+            try:
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.erdep_timeseries,
@@ -2480,7 +2484,9 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-            if sediment_flux in locals():
+            except (NameError, CalledModuleError):
+                pass
+            try:
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.flux_timeseries,
@@ -2488,6 +2494,8 @@ class DynamicEvolution:
                     start=evol.start,
                     increment=increment,
                     flags='i', overwrite=True)
+            except (NameError, CalledModuleError):
+                pass
             gscript.run_command('t.register',
                 type=raster,
                 input=self.difference_timeseries,
@@ -2686,7 +2694,7 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-            if erosion_deposition in locals():
+            try:
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.erdep_timeseries,
@@ -2695,7 +2703,9 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-            if sediment_flux in locals():
+            except (NameError, CalledModuleError):
+                pass
+            try:
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.flux_timeseries,
@@ -2703,6 +2713,8 @@ class DynamicEvolution:
                     start=evol.start,
                     increment=increment,
                     flags='i', overwrite=True)
+            except (NameError, CalledModuleError):
+                pass
             gscript.run_command('t.register',
                 type=raster,
                 input=self.difference_timeseries,
@@ -2797,7 +2809,7 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-                if erosion_deposition in locals():
+                try:
                     gscript.run_command('t.register',
                         type=raster,
                         input=self.erdep_timeseries,
@@ -2806,7 +2818,9 @@ class DynamicEvolution:
                         increment=increment,
                         flags='i',
                         overwrite=True)
-                if sediment_flux in locals():
+                except (NameError, CalledModuleError):
+                    pass
+                try:
                     gscript.run_command('t.register',
                         type=raster,
                         input=self.flux_timeseries,
@@ -2814,6 +2828,8 @@ class DynamicEvolution:
                         start=evol.start,
                         increment=increment,
                         flags='i', overwrite=True)
+                except (NameError, CalledModuleError):
+                    pass
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.difference_timeseries,
