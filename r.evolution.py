@@ -2302,12 +2302,10 @@ class DynamicEvolution:
         gscript.use_temp_region()
 
         # determine mode and run model
+        regime = evol.erosion_regime()
         if self.mode == "simwe_mode":
 
-            regime = evol.erosion_regime()
-
             if regime == "detachment limited":
-                # run sediment flux model
                 evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
                 # remove relative timestamps from r.sim.water and r.sim.sediment
                 gscript.run_command('r.timestamp',
@@ -2318,7 +2316,6 @@ class DynamicEvolution:
                     date='none')
 
             if regime == "transport limited":
-                # run transport limited model
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
                 # remove relative timestamps from r.sim.water and r.sim.sediment
                 gscript.run_command('r.timestamp',
@@ -2329,7 +2326,6 @@ class DynamicEvolution:
                     date='none')
 
             if regime == "erosion deposition":
-                # run erosion deposition model
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
                 # remove relative timestamps from r.sim.water and r.sim.sediment
                 gscript.run_command('r.timestamp',
@@ -2419,16 +2415,35 @@ class DynamicEvolution:
             # determine mode and run model
             if self.mode == "simwe_mode":
 
-                regime = evol.erosion_regime()
-
                 if regime == "detachment limited":
                     evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=sediment_flux,
+                        date='none')
 
                 if regime == "transport limited":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=sediment_flux,
+                        date='none')
 
                 if regime == "erosion deposition":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=erosion_deposition,
+                        date='none')
 
             if self.mode == "usped_mode":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.usped()
@@ -2438,22 +2453,6 @@ class DynamicEvolution:
 
             if self.mode == "rusle2d_mode":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.rusle_2d()
-
-            # remove relative timestamps from r.sim.water and r.sim.sediment
-            if regime == "detachment limited":
-                gscript.run_command('r.timestamp',
-                    map=depth,
-                    date='none')
-                gscript.run_command('r.timestamp',
-                    map=sediment_flux,
-                    date='none')
-            if regime == "transport limited" or regime == "erosion deposition":
-                gscript.run_command('r.timestamp',
-                    map=depth,
-                    date='none')
-                gscript.run_command('r.timestamp',
-                    map=erosion_deposition,
-                    date='none')
 
             # register the evolved maps
             gscript.run_command('t.register',
@@ -2628,18 +2627,38 @@ class DynamicEvolution:
                 overwrite=True)
 
             # determine mode and run model
+            regime = evol.erosion_regime()
             if self.mode == "simwe_mode":
-
-                regime = evol.erosion_regime()
 
                 if regime == "detachment limited":
                     evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=sediment_flux,
+                        date='none')
 
                 if regime == "transport limited":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=sediment_flux,
+                        date='none')
 
                 if regime == "erosion deposition":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=erosion_deposition,
+                        date='none')
 
             if self.mode == "usped_mode":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.usped()
@@ -2649,22 +2668,6 @@ class DynamicEvolution:
 
             if self.mode == "rusle2d_mode":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.rusle_2d()
-
-            # remove relative timestamps from r.sim.water and r.sim.sediment
-            if regime == "detachment limited":
-                gscript.run_command('r.timestamp',
-                    map=depth,
-                    date='none')
-                gscript.run_command('r.timestamp',
-                    map=sediment_flux,
-                    date='none')
-            if regime == "transport limited" or regime == "erosion deposition":
-                gscript.run_command('r.timestamp',
-                    map=depth,
-                    date='none')
-                gscript.run_command('r.timestamp',
-                    map=erosion_deposition,
-                    date='none')
 
             # register the evolved maps
             gscript.run_command('t.register',
@@ -2735,18 +2738,38 @@ class DynamicEvolution:
                 evol.rain_intensity = rain_intensity
 
                 # determine mode and run model
+                regime = evol.erosion_regime()
                 if self.mode == "simwe_mode":
-
-                    regime = evol.erosion_regime()
 
                     if regime == "detachment limited":
                         evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
+                        # remove relative timestamps from r.sim.water and r.sim.sediment
+                        gscript.run_command('r.timestamp',
+                            map=depth,
+                            date='none')
+                        gscript.run_command('r.timestamp',
+                            map=sediment_flux,
+                            date='none')
 
                     if regime == "transport limited":
                         evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
+                        # remove relative timestamps from r.sim.water and r.sim.sediment
+                        gscript.run_command('r.timestamp',
+                            map=depth,
+                            date='none')
+                        gscript.run_command('r.timestamp',
+                            map=sediment_flux,
+                            date='none')
 
                     if regime == "erosion deposition":
                         evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
+                        # remove relative timestamps from r.sim.water and r.sim.sediment
+                        gscript.run_command('r.timestamp',
+                            map=depth,
+                            date='none')
+                        gscript.run_command('r.timestamp',
+                            map=erosion_deposition,
+                            date='none')
 
                 if self.mode == "usped_mode":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.usped()
@@ -2756,22 +2779,6 @@ class DynamicEvolution:
 
                 if self.mode == "rusle2d_mode":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.rusle_2d()
-
-                # remove relative timestamps from r.sim.water and r.sim.sediment
-                if regime == "detachment limited":
-                    gscript.run_command('r.timestamp',
-                        map=depth,
-                        date='none')
-                    gscript.run_command('r.timestamp',
-                        map=sediment_flux,
-                        date='none')
-                if regime == "transport limited" or regime == "erosion deposition":
-                    gscript.run_command('r.timestamp',
-                        map=depth,
-                        date='none')
-                    gscript.run_command('r.timestamp',
-                        map=erosion_deposition,
-                        date='none')
 
                 # register the evolved maps
                 gscript.run_command('t.register',
