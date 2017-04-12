@@ -57,7 +57,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% key: rain_intensity
 #% type: integer
 #% description: Rainfall intensity in mm/hr
-#% answer: 150
+#% answer: 50
 #% multiple: no
 #% required: no
 #% guisection: Event
@@ -1597,6 +1597,7 @@ class Evolution:
         settled_elevation = 'settled_elevation'
         smoothed_elevation = 'smoothed_elevation'
         sedflow = 'sedflow'
+        sedflux = 'flux'
 
         # parse time
         year = int(self.start[:4])
@@ -1802,6 +1803,7 @@ class Evolution:
                 'grow_dxx',
                 'grow_dyy',
                 'sedflow',
+                'flux',
                 'smoothed_elevation',
                 'settled_elevation',
                 'divergence',
