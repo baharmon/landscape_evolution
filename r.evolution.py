@@ -57,7 +57,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% key: rain_intensity
 #% type: integer
 #% description: Rainfall intensity in mm/hr
-#% answer: 150
+#% answer: 50
 #% multiple: no
 #% required: no
 #% guisection: Event
@@ -1241,7 +1241,7 @@ class Evolution:
         gscript.run_command('g.remove',
             type='raster',
             name=['rain',
-                'sedflux',
+                'flux',
                 'evolving_elevation',
                 'smoothed_elevation',
                 'settled_elevation',
@@ -1472,13 +1472,14 @@ class Evolution:
                 density=self.density),
             overwrite=True)
 
-        # smooth evolved elevation
-        gscript.run_command('r.neighbors',
-            input=evolved_elevation,
-            output=smoothed_elevation,
-            method='average',
-            size=self.smoothing,
-            overwrite=True)
+        # # smooth evolved elevation
+        # gscript.run_command('r.neighbors',
+        #     input=evolved_elevation,
+        #     output=smoothed_elevation,
+        #     method='average',
+        #     size=self.smoothing,
+        #     overwrite=True)
+
         # update elevation
         gscript.run_command('r.mapcalc',
             expression="{evolved_elevation} = {smoothed_elevation}".format(evolved_elevation=evolved_elevation,
@@ -1586,16 +1587,10 @@ class Evolution:
         ls_factor = 'ls_factor'
         slope = 'slope'
         aspect = 'aspect'
-        qsx = 'qsx'
-        qsxdx = 'qsxdx'
-        qsy = 'qsy'
-        qsydy = 'qsydy'
         dxx = 'dxx'
         dyy = 'dyy'
         grow_slope = 'grow_slope'
         grow_aspect  = 'grow_aspect'
-        grow_qsxdx = 'grow_qsxdx'
-        grow_qsydy = 'grow_qsydy'
         grow_dxx = 'grow_dxx'
         grow_dyy = 'grow_dyy'
         erdep = 'erdep' # kg/m^2s
@@ -1603,6 +1598,7 @@ class Evolution:
         settled_elevation = 'settled_elevation'
         smoothed_elevation = 'smoothed_elevation'
         sedflow = 'sedflow'
+        sedflux = 'flux'
 
         # parse time
         year = int(self.start[:4])
@@ -1652,7 +1648,7 @@ class Evolution:
                 rain_interval=self.rain_interval),
             overwrite=True)
 
-        # compute slope and aspect
+        # compute slope
         gscript.run_command('r.slope.aspect',
             elevation=self.elevation,
             slope=slope,
@@ -1808,7 +1804,7 @@ class Evolution:
                 'grow_dxx',
                 'grow_dyy',
                 'sedflow',
-                'sedflux',
+                'flux',
                 'smoothed_elevation',
                 'settled_elevation',
                 'divergence',
@@ -2154,7 +2150,7 @@ class Evolution:
         # determine regime
         if min_sigma <= 0.001 and max_sigma <= 0.001:
             regime = "detachment limited"
-        if min_sigma >= 100. and max_sigma >= 100.:
+        if min_sigma >= 100. and max_sigma >= 100 .:
             regime = "transport limited"
         else:
             regime = "erosion deposition"
@@ -2308,17 +2304,37 @@ class DynamicEvolution:
 
         # determine mode and run model
         if self.mode == "simwe_mode":
-
             regime = evol.erosion_regime()
 
             if regime == "detachment limited":
                 evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
+                # remove relative timestamps from r.sim.water and r.sim.sediment
+                gscript.run_command('r.timestamp',
+                    map=depth,
+                    date='none')
+                gscript.run_command('r.timestamp',
+                    map=sediment_flux,
+                    date='none')
 
             if regime == "transport limited":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
+                # remove relative timestamps from r.sim.water and r.sim.sediment
+                gscript.run_command('r.timestamp',
+                    map=depth,
+                    date='none')
+                gscript.run_command('r.timestamp',
+                    map=erosion_deposition,
+                    date='none')
 
             if regime == "erosion deposition":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
+                # remove relative timestamps from r.sim.water and r.sim.sediment
+                gscript.run_command('r.timestamp',
+                    map=depth,
+                    date='none')
+                gscript.run_command('r.timestamp',
+                    map=erosion_deposition,
+                    date='none')
 
         if self.mode == "usped_mode":
             evolved_elevation, time, depth, erosion_deposition, difference = evol.usped()
@@ -2328,22 +2344,6 @@ class DynamicEvolution:
 
         if self.mode == "rusle2d_mode":
             evolved_elevation, time, depth, erosion_deposition, difference = evol.rusle_2d()
-
-        # remove relative timestamps from r.sim.water and r.sim.sediment
-        if regime == "detachment limited":
-            gscript.run_command('r.timestamp',
-                map=depth,
-                date='none')
-            gscript.run_command('r.timestamp',
-                map=sediment_flux,
-                date='none')
-        if regime == "transport limited" or regime == "erosion deposition":
-            gscript.run_command('r.timestamp',
-                map=depth,
-                date='none')
-            gscript.run_command('r.timestamp',
-                map=erosion_deposition,
-                date='none')
 
         # register the evolved maps
         gscript.run_command('t.register',
@@ -2362,7 +2362,7 @@ class DynamicEvolution:
             increment=increment,
             flags='i',
             overwrite=True)
-        if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+        try:
             gscript.run_command('t.register',
                 type=raster,
                 input=self.erdep_timeseries,
@@ -2371,7 +2371,9 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-        if self.mode == "rusle_mode" or regime == "detachment limited":
+        except (NameError, CalledModuleError):
+            pass
+        try:
             gscript.run_command('t.register',
                 type=raster,
                 input=self.flux_timeseries,
@@ -2379,6 +2381,8 @@ class DynamicEvolution:
                 start=evol.start,
                 increment=increment,
                 flags='i', overwrite=True)
+        except (NameError, CalledModuleError):
+            pass
         gscript.run_command('t.register',
             type=raster,
             input=self.difference_timeseries,
@@ -2416,16 +2420,35 @@ class DynamicEvolution:
             # determine mode and run model
             if self.mode == "simwe_mode":
 
-                regime = evol.erosion_regime()
-
                 if regime == "detachment limited":
                     evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=sediment_flux,
+                        date='none')
 
                 if regime == "transport limited":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=erosion_deposition,
+                        date='none')
 
                 if regime == "erosion deposition":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=erosion_deposition,
+                        date='none')
 
             if self.mode == "usped_mode":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.usped()
@@ -2435,22 +2458,6 @@ class DynamicEvolution:
 
             if self.mode == "rusle2d_mode":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.rusle_2d()
-
-            # remove relative timestamps from r.sim.water and r.sim.sediment
-            if regime == "detachment limited":
-                gscript.run_command('r.timestamp',
-                    map=depth,
-                    date='none')
-                gscript.run_command('r.timestamp',
-                    map=sediment_flux,
-                    date='none')
-            if regime == "transport limited" or regime == "erosion deposition":
-                gscript.run_command('r.timestamp',
-                    map=depth,
-                    date='none')
-                gscript.run_command('r.timestamp',
-                    map=erosion_deposition,
-                    date='none')
 
             # register the evolved maps
             gscript.run_command('t.register',
@@ -2469,7 +2476,7 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-            if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+            try:
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.erdep_timeseries,
@@ -2478,7 +2485,9 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-            if self.mode == "rusle_mode" or regime == "detachment limited":
+            except (NameError, CalledModuleError):
+                pass
+            try:
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.flux_timeseries,
@@ -2486,6 +2495,8 @@ class DynamicEvolution:
                     start=evol.start,
                     increment=increment,
                     flags='i', overwrite=True)
+            except (NameError, CalledModuleError):
+                pass
             gscript.run_command('t.register',
                 type=raster,
                 input=self.difference_timeseries,
@@ -2626,17 +2637,37 @@ class DynamicEvolution:
 
             # determine mode and run model
             if self.mode == "simwe_mode":
-
                 regime = evol.erosion_regime()
 
                 if regime == "detachment limited":
                     evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=sediment_flux,
+                        date='none')
 
                 if regime == "transport limited":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=erosion_deposition,
+                        date='none')
 
                 if regime == "erosion deposition":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
+                    # remove relative timestamps from r.sim.water and r.sim.sediment
+                    gscript.run_command('r.timestamp',
+                        map=depth,
+                        date='none')
+                    gscript.run_command('r.timestamp',
+                        map=erosion_deposition,
+                        date='none')
 
             if self.mode == "usped_mode":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.usped()
@@ -2646,22 +2677,6 @@ class DynamicEvolution:
 
             if self.mode == "rusle2d_mode":
                 evolved_elevation, time, depth, erosion_deposition, difference = evol.rusle_2d()
-
-            # remove relative timestamps from r.sim.water and r.sim.sediment
-            if regime == "detachment limited":
-                gscript.run_command('r.timestamp',
-                    map=depth,
-                    date='none')
-                gscript.run_command('r.timestamp',
-                    map=sediment_flux,
-                    date='none')
-            if regime == "transport limited" or regime == "erosion deposition":
-                gscript.run_command('r.timestamp',
-                    map=depth,
-                    date='none')
-                gscript.run_command('r.timestamp',
-                    map=erosion_deposition,
-                    date='none')
 
             # register the evolved maps
             gscript.run_command('t.register',
@@ -2680,7 +2695,7 @@ class DynamicEvolution:
                 increment=increment,
                 flags='i',
                 overwrite=True)
-            if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+            try:
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.erdep_timeseries,
@@ -2689,7 +2704,9 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-            if self.mode == "rusle_mode" or regime == "detachment limited":
+            except (NameError, CalledModuleError):
+                pass
+            try:
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.flux_timeseries,
@@ -2697,6 +2714,8 @@ class DynamicEvolution:
                     start=evol.start,
                     increment=increment,
                     flags='i', overwrite=True)
+            except (NameError, CalledModuleError):
+                pass
             gscript.run_command('t.register',
                 type=raster,
                 input=self.difference_timeseries,
@@ -2732,18 +2751,38 @@ class DynamicEvolution:
                 evol.rain_intensity = rain_intensity
 
                 # determine mode and run model
+                regime = evol.erosion_regime()
                 if self.mode == "simwe_mode":
-
-                    regime = evol.erosion_regime()
 
                     if regime == "detachment limited":
                         evolved_elevation, time, depth, sediment_flux, difference = evol.flux()
+                        # remove relative timestamps from r.sim.water and r.sim.sediment
+                        gscript.run_command('r.timestamp',
+                            map=depth,
+                            date='none')
+                        gscript.run_command('r.timestamp',
+                            map=sediment_flux,
+                            date='none')
 
                     if regime == "transport limited":
                         evolved_elevation, time, depth, erosion_deposition, difference = evol.transport_limited()
+                        # remove relative timestamps from r.sim.water and r.sim.sediment
+                        gscript.run_command('r.timestamp',
+                            map=depth,
+                            date='none')
+                        gscript.run_command('r.timestamp',
+                            map=erosion_deposition,
+                            date='none')
 
                     if regime == "erosion deposition":
                         evolved_elevation, time, depth, erosion_deposition, difference = evol.erosion_deposition()
+                        # remove relative timestamps from r.sim.water and r.sim.sediment
+                        gscript.run_command('r.timestamp',
+                            map=depth,
+                            date='none')
+                        gscript.run_command('r.timestamp',
+                            map=erosion_deposition,
+                            date='none')
 
                 if self.mode == "usped_mode":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.usped()
@@ -2753,22 +2792,6 @@ class DynamicEvolution:
 
                 if self.mode == "rusle2d_mode":
                     evolved_elevation, time, depth, erosion_deposition, difference = evol.rusle_2d()
-
-                # remove relative timestamps from r.sim.water and r.sim.sediment
-                if regime == "detachment limited":
-                    gscript.run_command('r.timestamp',
-                        map=depth,
-                        date='none')
-                    gscript.run_command('r.timestamp',
-                        map=sediment_flux,
-                        date='none')
-                if regime == "transport limited" or regime == "erosion deposition":
-                    gscript.run_command('r.timestamp',
-                        map=depth,
-                        date='none')
-                    gscript.run_command('r.timestamp',
-                        map=erosion_deposition,
-                        date='none')
 
                 # register the evolved maps
                 gscript.run_command('t.register',
@@ -2787,7 +2810,7 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-                if self.mode == "usped_mode" or self.mode == "rusle2d_mode" or regime == "transport limited" or regime == "erosion deposition":
+                try:
                     gscript.run_command('t.register',
                         type=raster,
                         input=self.erdep_timeseries,
@@ -2796,7 +2819,9 @@ class DynamicEvolution:
                         increment=increment,
                         flags='i',
                         overwrite=True)
-                if self.mode == "rusle_mode" or regime == "detachment limited":
+                except (NameError, CalledModuleError):
+                    pass
+                try:
                     gscript.run_command('t.register',
                         type=raster,
                         input=self.flux_timeseries,
@@ -2804,6 +2829,8 @@ class DynamicEvolution:
                         start=evol.start,
                         increment=increment,
                         flags='i', overwrite=True)
+                except (NameError, CalledModuleError):
+                    pass
                 gscript.run_command('t.register',
                     type=raster,
                     input=self.difference_timeseries,
@@ -2834,17 +2861,28 @@ def cleanup():
         # remove temporary maps
         gscript.run_command('g.remove',
             type='raster',
-            name=['rain_excess',
+            name=['runoff',
+                'mannings',
+                'detachment',
+                'transport',
+                'shearstress',
+                'mass',
+                'density',
+                'sigma',
+                'rain_excess',
                 'rain',
                 'sedflow',
-                'sedflux',
+                'flux',
                 'erdep',
+                'c_factor',
+                'k_factor',
                 'evolving_elevation',
                 'smoothed_elevation',
                 'settled_elevation',
                 'divergence',
                 'rain_energy',
                 'rain_volume',
+                'rain_intensity',
                 'erosivity',
                 'r_factor',
                 'ls_factor',
@@ -2856,6 +2894,8 @@ def cleanup():
                 'qsy',
                 'qsxdx',
                 'qsydy',
+                'slope',
+                'aspect',
                 'grow_slope',
                 'grow_aspect',
                 'grow_dx',
