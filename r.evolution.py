@@ -2150,7 +2150,7 @@ class Evolution:
         # determine regime
         if min_sigma <= 0.001 and max_sigma <= 0.001:
             regime = "detachment limited"
-        if min_sigma >= 100. and max_sigma >= 100 .:
+        if min_sigma >= 100. and max_sigma >= 100.:
             regime = "transport limited"
         else:
             regime = "erosion deposition"
