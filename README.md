@@ -18,21 +18,13 @@ GNU General Public License >= version 2
 # Development
 
 ## TODO
-* Compute R factor for USPED from rain intensity
-* Run as steady state or dynamic model
-- Create steady state class
 * Derive parameters from landcover, soil, and rain maps
 - Create recode tables
-* Create temporal function
 * Testing
-- Run each mode for SECREF
+- Run each model for SECREF
+- Run each model for Fort Bragg
 - Compare with results of r.landevol and r.terradyn
 * Draw conceptual model
-* Documentation (html)
-* Style (PEP8)
 * Reverse landscape evolution
-* Reverse landscape evolution
-  - Toggle plus / minus operator
-  - Set start / stop time
 * Subsurface groundwater flow
 - https://grass.osgeo.org/grass73/manuals/r3.gwflow.html
