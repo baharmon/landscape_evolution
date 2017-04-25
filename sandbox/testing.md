@@ -10,17 +10,29 @@ r.evolution elevation=elevation runs=event mode=simwe_mode rain_duration=30 star
 # FLUX
 r.evolution elevation=elevation runs=event mode=simwe_mode rain_duration=30 transport_value=1 start="2013-01-01 00:00:00" rain_interval=1
 
+transport_value=100
+
 # TRANSPORT LIMITED
 r.evolution elevation=elevation runs=event mode=simwe_mode rain_duration=30 detachment_value=1 start="2013-01-01 00:00:00" rain_interval=1
+
+grav_diffusion=0.5
 
 # USPED
 r.evolution elevation=elevation runs=event mode=usped_mode rain_duration=30 start="2013-01-01 00:00:00" rain_interval=1
 
-# RUSLE
+n=1.2
+m=1.5
+
+# RUSLE 3D
 r.evolution elevation=elevation runs=event mode=rusle_mode rain_duration=30 start="2013-01-01 00:00:00" rain_interval=1
+
+n=1.2
+m=0.5
 
 # RUSLE 2D
 r.evolution elevation=elevation runs=event mode=rusle2d_mode rain_duration=30 start="2013-01-01 00:00:00" rain_interval=1
+
+X
 
 # COMPLEX ERDEP
 g.copy raster=mannings_2013@PERMANENT,mannings_2013
