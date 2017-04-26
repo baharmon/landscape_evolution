@@ -93,7 +93,7 @@ def main():
     # g.mapset mapset=
 
     render_2d()
-    # render_3d()
+    render_3d()
     atexit.register(cleanup)
     sys.exit(0)
 

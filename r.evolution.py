@@ -1771,9 +1771,9 @@ class Evolution:
         max_sigma = float(info['max'])
 
         # determine regime
-        if min_sigma <= 0.001 and max_sigma <= 0.001:
+        if max_sigma <= 0.01:
             regime = "detachment limited"
-        if min_sigma >= 100. and max_sigma >= 100.:
+        elif min_sigma >= 100.:
             regime = "transport limited"
         else:
             regime = "erosion deposition"
