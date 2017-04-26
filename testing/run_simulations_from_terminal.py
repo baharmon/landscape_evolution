@@ -16,6 +16,13 @@ import atexit
 import grass.script as gscript
 from grass.exceptions import CalledModuleError
 
+# define GRASS DATABASE
+gisdb = os.path.join(os.path.expanduser("~"), "grassdata")
+
+# specify (existing) location and mapset
+location = "nc_spm_evolution"
+mapset   = "PERMANENT"
+
 # use temporary region
 gscript.use_temp_region()
 
@@ -26,9 +33,12 @@ overwrite = True
 env['GRASS_OVERWRITE'] = overwrite
 env['GRASS_VERBOSE'] = False
 env['GRASS_MESSAGE_FORMAT'] = 'standard'
-gisdbase = env['GISDBASE']
-location = env['LOCATION_NAME']
-mapset = env['MAPSET']
+env['GISDBASE'] = gisdb
+env['LOCATION_NAME'] = location
+env['MAPSET'] = mapset
+# gisdbase = env['GISDBASE']
+# location = env['LOCATION_NAME']
+# mapset = env['MAPSET']
 
 # set parameters
 res = 3 #0.3  # resolution of the region
