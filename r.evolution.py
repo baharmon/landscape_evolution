@@ -122,7 +122,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% type: double
 #% description: Water flow exponent
 #% label: Water flow exponent
-#% answer: 1.0
+#% answer: 1.5
 #% multiple: no
 #% guisection: Input
 #%end
@@ -132,9 +132,9 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% type: double
 #% description: Slope exponent
 #% label: Slope exponent
-#% answer: 1.0
+#% answer: 1.2
 #% multiple: no
-#% guisection: Transport limited
+#% guisection: Input
 #%end
 
 #%option
