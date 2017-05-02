@@ -29,140 +29,176 @@ nprocs = 6
 # set map variables
 reference_elevation = 'elevation_30cm_2015@PERMANENT'
 
-# list of simulations to run
-simulations = ['erdep','flux','transport','usped','rusle']
-
 def main():
+
+    # list of simulations to run
+    simulations = ['erdep','flux','transport','usped','rusle']
 
     # # try to install dependencies
     # dependencies()
 
     # create mapsets and environments
-    tmp_gisrc_files, envs = create_environments()
+    tmp_gisrc_files, envs = create_environments(simulations)
+
+    # create list of options for each simulation
+    options_list = []
+
+    # dictionary of parameters for erosion-deposition simulation
+    erdep_params = {}
+    erdep_params['elevation'] = 'elevation@erdep'
+    erdep_params['runs'] = 'event'
+    erdep_params['mode'] = 'simwe_mode'
+    erdep_params['rain_duration'] = 1
+    erdep_params['rain_interval'] = 1
+    erdep_params['start'] = "2015-01-01 00:00:00"
+    erdep_params['walkers'] = 1000000
+    erdep_params['grav_diffusion'] = 0.2
+    erdep_params['transport_value'] = 0.01
+    erdep_params['detachment_value'] = 0.01
+    erdep_params['m'] = 1.5
+    erdep_params['n'] = 1.2
+    erdep_params['env'] = envs['erdep']
+    # append dictionary to options list
+    options_list.append(erdep_params)
+
+    # dictionary of parameters for flux simulation
+    flux_params = {}
+    flux_params['elevation'] = 'elevation@flux'
+    flux_params['runs'] = 'event'
+    flux_params['mode'] = 'simwe_mode'
+    flux_params['rain_duration'] = 1
+    flux_params['rain_interval'] = 1
+    flux_params['start'] = "2015-01-01 00:00:00"
+    flux_params['walkers'] = 1000000
+    flux_params['grav_diffusion'] = 0.2
+    flux_params['transport_value'] = 100
+    flux_params['detachment_value'] = 0.01
+    flux_params['m'] = 1.5
+    flux_params['n'] = 1.2
+    flux_params['env'] = envs['flux']
+    # append dictionary to options list
+    options_list.append(flux_params)
+
+    #print options_list
+
 
     # run simulations in parallel
-    simulate(envs)
+    parallel_simulations(options_list)
 
-    atexit.register(cleanup(tmp_gisrc_files))
+    # atexit.register(cleanup())
     sys.exit(0)
 
-def erdep(envs):
-    gscript.run_command('r.evolution',
-        elevation='elevation@erdep',
-        runs='event',
-        mode='simwe_mode',
-        rain_duration=1,
-        rain_interval=1,
-        start="2015-01-01 00:00:00",
-        env=env['erdep'])
+def simulate(params):
+    gscript.run_command('r.evolution', **params)
 
-def flux(envs):
-    gscript.run_command('r.evolution',
-        elevation='elevation',
-        runs='event',
-        mode='simwe_mode',
-        rain_duration=1,
-        rain_interval=1,
-        start="2015-01-01 00:00:00",
-        transport_value=100,
-        env=envs['flux'])
+# def erdep(envs):
+#     gscript.run_command('r.evolution',
+#         elevation='elevation@erdep',
+#         runs='event',
+#         mode='simwe_mode',
+#         rain_duration=1,
+#         rain_interval=1,
+#         start="2015-01-01 00:00:00",
+#         env=envs['erdep'])
 
-def transport(envs):
-    gscript.run_command('r.evolution',
-        elevation='elevation',
-        runs='event',
-        mode='simwe_mode',
-        rain_duration=1,
-        rain_interval=1,
-        start="2015-01-01 00:00:00",
-        detachment_value=1,
-        env=envs['transport'])
+# def flux(envs):
+#     gscript.run_command('r.evolution',
+#         elevation='elevation',
+#         runs='event',
+#         mode='simwe_mode',
+#         rain_duration=1,
+#         rain_interval=1,
+#         start="2015-01-01 00:00:00",
+#         transport_value=100,
+#         env=envs['flux'])
 
-def usped(envs):
-    gscript.run_command('r.evolution',
-        elevation='elevation',
-        runs='event',
-        mode='usped_mode',
-        rain_duration=1,
-        rain_interval=1,
-        start="2015-01-01 00:00:00",
-        n=1.2,
-        m=1.5,
-        env=env['usped'])
+# def transport(envs):
+#     gscript.run_command('r.evolution',
+#         elevation='elevation',
+#         runs='event',
+#         mode='simwe_mode',
+#         rain_duration=1,
+#         rain_interval=1,
+#         start="2015-01-01 00:00:00",
+#         detachment_value=1,
+#         env=envs['transport'])
+#
+# def usped(envs):
+#     gscript.run_command('r.evolution',
+#         elevation='elevation',
+#         runs='event',
+#         mode='usped_mode',
+#         rain_duration=1,
+#         rain_interval=1,
+#         start="2015-01-01 00:00:00",
+#         n=1.2,
+#         m=1.5,
+#         env=envs['usped'])
+#
+# def rusle(envs):
+#     gscript.run_command('r.evolution',
+#         elevation='elevation',
+#         runs='event',
+#         mode='rusle_mode',
+#         rain_duration=1,
+#         rain_interval=1,
+#         start="2015-01-01 00:00:00",
+#         n=1.2,
+#         m=0.5,
+#         env=envs['rusle'])
+#
+# def erdep_with_landcover(envs):
+#     gscript.run_command('g.copy',
+#         raster=['mannings_2014@PERMANENT','mannings_2014'],
+#         env=env['erdep_with_landcover'])
+#     gscript.run_command('g.copy',
+#         raster=['runoff_2014@PERMANENT','runoff_2014'],
+#         env=envs['erdep_with_landcover'])
+#     gscript.run_command('r.evolution',
+#         elevation='elevation',
+#         runs='event',
+#         mode='simwe_mode',
+#         rain_duration=1,
+#         rain_interval=1,
+#         start="2015-01-01 00:00:00",
+#         mannings='mannings_2014',
+#         runoff='runoff_2014',
+#         env=envs['erdep_with_landcover'])
 
-def rusle(envs):
-    gscript.run_command('r.evolution',
-        elevation='elevation',
-        runs='event',
-        mode='rusle_mode',
-        rain_duration=1,
-        rain_interval=1,
-        start="2015-01-01 00:00:00",
-        n=1.2,
-        m=0.5,
-        env=env['rusle'])
-
-def erdep_with_landcover(envs):
-    gscript.run_command('g.copy',
-        raster=['mannings_2014@PERMANENT','mannings_2014'],
-        env=env['erdep_with_landcover'])
-    gscript.run_command('g.copy',
-        raster=['runoff_2014@PERMANENT','runoff_2014'],
-        env=env['erdep_with_landcover'])
-    gscript.run_command('r.evolution',
-        elevation='elevation',
-        runs='event',
-        mode='simwe_mode',
-        rain_duration=1,
-        rain_interval=1,
-        start="2015-01-01 00:00:00",
-        mannings='mannings_2014',
-        runoff='runoff_2014',
-        env=env['erdep_with_landcover'])
-
-def create_environments():
+def create_environments(simulations):
 
     tmp_gisrc_files = {}
     envs = {}
 
-    for simulation in simulations:
+    for mapset in simulations:
 
         # create mapset
         gscript.read_command('g.mapset',
-            mapset=simulation,
+            mapset=mapset,
             location=location,
             flags='c')
 
         # create env
-        tmp_gisrc_file, env = getEnvironment(gisdbase, location, simulation)
-        tmp_gisrc_files[simulation] = tmp_gisrc_file
-        envs[simulation] = env
+        tmp_gisrc_file, env = getEnvironment(gisdbase, location, mapset)
+        tmp_gisrc_files[mapset] = tmp_gisrc_file
+        envs[mapset] = env
 
         # copy maps
         gscript.run_command('g.copy',
             raster=[reference_elevation,'elevation'],
-            env=envs[simulation])
+            env=envs[mapset])
 
     return tmp_gisrc_files, envs
 
-def simulate(envs):
+def parallel_simulations(options_list):
 
-    for simulation in simulations:
-
-        # get simulation function
-        possibles = globals().copy()
-        possibles.update(locals())
-        method = possibles.get(simulation,envs)
-        if not method:
-             raise NotImplementedError("Not implemented")
-
-        # multiprocessing
-        pool = Pool(nprocs)
-        p = pool.map_async(method, envs)
-        try:
-            p.get()
-        except (KeyboardInterrupt, CalledModuleError):
-            return
+    # multiprocessing
+    pool = Pool(nprocs)
+    p = pool.map_async(simulate, options_list)
+    try:
+        p.get()
+    except (KeyboardInterrupt, CalledModuleError):
+        return
 
 def getEnvironment(gisdbase, location, mapset):
     """Creates environment to be passed in run_command for example.
@@ -206,5 +242,5 @@ def cleanup():
     #         raise
 
 if __name__ == "__main__":
-    atexit.register(cleanup())
+    #atexit.register(cleanup())
     sys.exit(main())
