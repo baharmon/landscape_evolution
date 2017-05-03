@@ -2,12 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-@brief: run a set of landscape evolution simulations
+AUTHOR:    Brendan Harmon <brendan.harmon@gmail.com>
 
-This program is free software under the GNU General Public License
-(>=v2). Read the file COPYING that comes with GRASS for details.
+PURPOSE:   Parallel processing of a dynamic landscape evolution model
 
-@author: Brendan Harmon (brendanharmon@gmail.com)
+COPYRIGHT: (C) 2017 Brendan Harmon
+
+LICENSE:   This program is free software under the GNU General Public
+           License (>=v2).
 """
 
 import os
@@ -26,19 +28,16 @@ location = env['LOCATION_NAME']
 res = 3 #0.3  # resolution of the region
 nprocs = 6
 
-# set map variables
-reference_elevation = 'elevation_30cm_2015@PERMANENT'
+# list of simulations to run
+simulations = ['erdep','flux','transport','usped','rusle','erdep_with_landcover']
 
 def main():
 
-    # list of simulations to run
-    simulations = ['erdep','flux','transport','usped','rusle']
-
-    # # try to install dependencies
-    # dependencies()
+    # try to install dependencies
+    dependencies()
 
     # create mapsets and environments
-    tmp_gisrc_files, envs = create_environments(simulations)
+    envs = create_environments(simulations)
 
     # create list of options for each simulation
     options_list = []
@@ -53,10 +52,6 @@ def main():
     erdep_params['start'] = "2015-01-01 00:00:00"
     erdep_params['walkers'] = 1000000
     erdep_params['grav_diffusion'] = 0.2
-    erdep_params['transport_value'] = 0.01
-    erdep_params['detachment_value'] = 0.01
-    erdep_params['m'] = 1.5
-    erdep_params['n'] = 1.2
     erdep_params['env'] = envs['erdep']
     # append dictionary to options list
     options_list.append(erdep_params)
@@ -73,101 +68,87 @@ def main():
     flux_params['grav_diffusion'] = 0.2
     flux_params['transport_value'] = 100
     flux_params['detachment_value'] = 0.01
-    flux_params['m'] = 1.5
-    flux_params['n'] = 1.2
     flux_params['env'] = envs['flux']
     # append dictionary to options list
     options_list.append(flux_params)
 
-    #print options_list
+    # dictionary of parameters for transport simulation
+    transport_params = {}
+    transport_params['elevation'] = 'elevation@transport'
+    transport_params['runs'] = 'event'
+    transport_params['mode'] = 'simwe_mode'
+    transport_params['rain_duration'] = 1
+    transport_params['rain_interval'] = 1
+    transport_params['start'] = "2015-01-01 00:00:00"
+    transport_params['walkers'] = 1000000
+    transport_params['grav_diffusion'] = 0.2
+    transport_params['transport_value'] = 0.01
+    transport_params['detachment_value'] = 1
+    transport_params['env'] = envs['transport']
+    # append dictionary to options list
+    options_list.append(transport_params)
 
+    # dictionary of parameters for usped simulation
+    usped_params = {}
+    usped_params['elevation'] = 'elevation@usped'
+    usped_params['runs'] = 'event'
+    usped_params['mode'] = 'usped_mode'
+    usped_params['rain_duration'] = 1
+    usped_params['rain_interval'] = 1
+    usped_params['start'] = "2015-01-01 00:00:00"
+    usped_params['walkers'] = 1000000
+    usped_params['grav_diffusion'] = 0.2
+    usped_params['m'] = 1.5
+    usped_params['n'] = 1.2
+    usped_params['env'] = envs['usped']
+    # append dictionary to options list
+    options_list.append(usped_params)
+
+    # dictionary of parameters for rusle simulation
+    rusle_params = {}
+    rusle_params['elevation'] = 'elevation@rusle'
+    rusle_params['runs'] = 'event'
+    rusle_params['mode'] = 'rusle_mode'
+    rusle_params['rain_duration'] = 1
+    rusle_params['rain_interval'] = 1
+    rusle_params['start'] = "2015-01-01 00:00:00"
+    rusle_params['walkers'] = 1000000
+    rusle_params['grav_diffusion'] = 0.2
+    rusle_params['m'] = 0.5
+    rusle_params['n'] = 1.2
+    rusle_params['env'] = envs['rusle']
+    # append dictionary to options list
+    options_list.append(rusle_params)
+
+    # dictionary of parameters for erosion-deposition simulation
+    # with spatially variable landcover
+    erdep_with_landcover_params = {}
+    erdep_with_landcover_params['elevation'] = 'elevation@erdep_with_landcover'
+    erdep_with_landcover_params['runs'] = 'event'
+    erdep_with_landcover_params['mode'] = 'simwe_mode'
+    erdep_with_landcover_params['rain_duration'] = 1
+    erdep_with_landcover_params['rain_interval'] = 1
+    erdep_with_landcover_params['start'] = "2015-01-01 00:00:00"
+    erdep_with_landcover_params['walkers'] = 1000000
+    erdep_with_landcover_params['grav_diffusion'] = 0.2
+    erdep_with_landcover_params['mannings'] = 'mannings_2014'
+    erdep_with_landcover_params['runoff'] = 'runoff_2014'
+    erdep_with_landcover_params['env'] = envs['erdep_with_landcover']
+    # append dictionary to options list
+    options_list.append(erdep_with_landcover_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)
 
-    # atexit.register(cleanup())
+    atexit.register(cleanup())
     sys.exit(0)
 
 def simulate(params):
     gscript.run_command('r.evolution', **params)
 
-# def erdep(envs):
-#     gscript.run_command('r.evolution',
-#         elevation='elevation@erdep',
-#         runs='event',
-#         mode='simwe_mode',
-#         rain_duration=1,
-#         rain_interval=1,
-#         start="2015-01-01 00:00:00",
-#         env=envs['erdep'])
-
-# def flux(envs):
-#     gscript.run_command('r.evolution',
-#         elevation='elevation',
-#         runs='event',
-#         mode='simwe_mode',
-#         rain_duration=1,
-#         rain_interval=1,
-#         start="2015-01-01 00:00:00",
-#         transport_value=100,
-#         env=envs['flux'])
-
-# def transport(envs):
-#     gscript.run_command('r.evolution',
-#         elevation='elevation',
-#         runs='event',
-#         mode='simwe_mode',
-#         rain_duration=1,
-#         rain_interval=1,
-#         start="2015-01-01 00:00:00",
-#         detachment_value=1,
-#         env=envs['transport'])
-#
-# def usped(envs):
-#     gscript.run_command('r.evolution',
-#         elevation='elevation',
-#         runs='event',
-#         mode='usped_mode',
-#         rain_duration=1,
-#         rain_interval=1,
-#         start="2015-01-01 00:00:00",
-#         n=1.2,
-#         m=1.5,
-#         env=envs['usped'])
-#
-# def rusle(envs):
-#     gscript.run_command('r.evolution',
-#         elevation='elevation',
-#         runs='event',
-#         mode='rusle_mode',
-#         rain_duration=1,
-#         rain_interval=1,
-#         start="2015-01-01 00:00:00",
-#         n=1.2,
-#         m=0.5,
-#         env=envs['rusle'])
-#
-# def erdep_with_landcover(envs):
-#     gscript.run_command('g.copy',
-#         raster=['mannings_2014@PERMANENT','mannings_2014'],
-#         env=env['erdep_with_landcover'])
-#     gscript.run_command('g.copy',
-#         raster=['runoff_2014@PERMANENT','runoff_2014'],
-#         env=envs['erdep_with_landcover'])
-#     gscript.run_command('r.evolution',
-#         elevation='elevation',
-#         runs='event',
-#         mode='simwe_mode',
-#         rain_duration=1,
-#         rain_interval=1,
-#         start="2015-01-01 00:00:00",
-#         mannings='mannings_2014',
-#         runoff='runoff_2014',
-#         env=envs['erdep_with_landcover'])
-
 def create_environments(simulations):
 
-    tmp_gisrc_files = {}
+    global tmp_gisrc_files = {}
     envs = {}
 
     for mapset in simulations:
@@ -185,10 +166,16 @@ def create_environments(simulations):
 
         # copy maps
         gscript.run_command('g.copy',
-            raster=[reference_elevation,'elevation'],
+            raster=['elevation_30cm_2015@PERMANENT','elevation'],
+            env=envs[mapset])
+        gscript.run_command('g.copy',
+            raster=['mannings_2014@PERMANENT','mannings_2014'],
+            env=envs[mapset])
+        gscript.run_command('g.copy',
+            raster=['runoff_2014@PERMANENT','runoff_2014'],
             env=envs[mapset])
 
-    return tmp_gisrc_files, envs
+    return envs
 
 def parallel_simulations(options_list):
 
@@ -212,7 +199,7 @@ def getEnvironment(gisdbase, location, mapset):
         f.write('GUI: text\n')
     env = os.environ.copy()
     env['GISRC'] = tmp_gisrc_file
-    env['GRASS_REGION'] = gscript.region_env(raster=reference_elevation)
+    env['GRASS_REGION'] = gscript.region_env(raster='elevation_30cm_2015@PERMANENT')
     env['GRASS_OVERWRITE'] = '1'
     env['GRASS_VERBOSE'] = '0'
     env['GRASS_MESSAGE_FORMAT'] = 'standard'
@@ -229,18 +216,13 @@ def dependencies():
         pass
 
 def cleanup():
-
-    pass
-
-    # # try_remove temporary env files
-    # # make global dictionary for temporary files
-    # for simulation in simulations:
-    #     try:
-    #         os.remove(tmp_gisrc_files[simulation])
-    #         pass
-    #     except Exception as e:
-    #         raise
+    # try to remove temporary environment files
+    for simulation in simulations:
+        try:
+            os.remove(tmp_gisrc_files[simulation])
+        except Exception as e:
+            raise
 
 if __name__ == "__main__":
-    #atexit.register(cleanup())
+    atexit.register(cleanup())
     sys.exit(main())
