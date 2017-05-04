@@ -19,17 +19,35 @@ import grass.script as gscript
 from grass.exceptions import CalledModuleError
 from multiprocessing import Pool
 
+# set graphics driver
+driver = "cairo"
+
 # set environment
 env = gscript.gisenv()
 gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
-# set parameters
-res = 3 #0.3  # resolution of the region
-nprocs = 6
-
 # list of simulations to run
 simulations = ['erdep','flux','transport','usped','rusle','erdep_with_landcover']
+
+# set parameters
+res = 0.3  # resolution of the region
+nprocs = 6
+
+# color rules
+difference_colors = """\
+-15000 100 0 100
+-100 magenta
+-10 red
+-1 orange
+-0.1 yellow
+0 200 255 200
+0.1 cyan
+1 aqua
+10 blue
+100 0 0 100
+15000 black
+"""
 
 def main():
 
@@ -47,7 +65,7 @@ def main():
     erdep_params['elevation'] = 'elevation@erdep'
     erdep_params['runs'] = 'event'
     erdep_params['mode'] = 'simwe_mode'
-    erdep_params['rain_duration'] = 1
+    erdep_params['rain_duration'] = 30
     erdep_params['rain_interval'] = 1
     erdep_params['start'] = "2015-01-01 00:00:00"
     erdep_params['walkers'] = 1000000
@@ -61,7 +79,7 @@ def main():
     flux_params['elevation'] = 'elevation@flux'
     flux_params['runs'] = 'event'
     flux_params['mode'] = 'simwe_mode'
-    flux_params['rain_duration'] = 1
+    flux_params['rain_duration'] = 30
     flux_params['rain_interval'] = 1
     flux_params['start'] = "2015-01-01 00:00:00"
     flux_params['walkers'] = 1000000
@@ -77,7 +95,7 @@ def main():
     transport_params['elevation'] = 'elevation@transport'
     transport_params['runs'] = 'event'
     transport_params['mode'] = 'simwe_mode'
-    transport_params['rain_duration'] = 1
+    transport_params['rain_duration'] = 30
     transport_params['rain_interval'] = 1
     transport_params['start'] = "2015-01-01 00:00:00"
     transport_params['walkers'] = 1000000
@@ -93,7 +111,7 @@ def main():
     usped_params['elevation'] = 'elevation@usped'
     usped_params['runs'] = 'event'
     usped_params['mode'] = 'usped_mode'
-    usped_params['rain_duration'] = 1
+    usped_params['rain_duration'] = 30
     usped_params['rain_interval'] = 1
     usped_params['start'] = "2015-01-01 00:00:00"
     usped_params['walkers'] = 1000000
@@ -109,7 +127,7 @@ def main():
     rusle_params['elevation'] = 'elevation@rusle'
     rusle_params['runs'] = 'event'
     rusle_params['mode'] = 'rusle_mode'
-    rusle_params['rain_duration'] = 1
+    rusle_params['rain_duration'] = 30
     rusle_params['rain_interval'] = 1
     rusle_params['start'] = "2015-01-01 00:00:00"
     rusle_params['walkers'] = 1000000
@@ -126,7 +144,7 @@ def main():
     erdep_with_landcover_params['elevation'] = 'elevation@erdep_with_landcover'
     erdep_with_landcover_params['runs'] = 'event'
     erdep_with_landcover_params['mode'] = 'simwe_mode'
-    erdep_with_landcover_params['rain_duration'] = 1
+    erdep_with_landcover_params['rain_duration'] = 30
     erdep_with_landcover_params['rain_interval'] = 1
     erdep_with_landcover_params['start'] = "2015-01-01 00:00:00"
     erdep_with_landcover_params['walkers'] = 1000000
@@ -140,7 +158,10 @@ def main():
     # run simulations in parallel
     parallel_simulations(options_list)
 
-    atexit.register(cleanup())
+    # render maps
+    render_2d(envs)
+
+    atexit.register(cleanup)
     sys.exit(0)
 
 def simulate(params):
@@ -148,7 +169,7 @@ def simulate(params):
 
 def create_environments(simulations):
 
-    global tmp_gisrc_files = {}
+    tmp_gisrc_files = {}
     envs = {}
 
     for mapset in simulations:
@@ -215,14 +236,75 @@ def dependencies():
     except CalledModuleError:
         pass
 
+def render_2d(envs):
+
+    # set rendering parameters
+    brighten = 0  # percent brightness of shaded relief
+    render_multiplier = 1  # multiplier for rendering size
+    whitespace = 1.5
+    fontsize = 36 * render_multiplier  # legend font size
+    legend_coord = (10, 50, 1, 4)  # legend display coordinates
+    zscale = 1
+
+    # create rendering directory
+    render = os.path.join(gisdbase, location, 'rendering')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    for mapset in simulations:
+
+        # change mapset
+        gscript.read_command('g.mapset',
+            mapset=mapset,
+            location=location)
+        info = gscript.parse_command('r.info',
+            map='elevation',
+            flags='g')
+        width = int(info.cols)*render_multiplier*whitespace
+        height = int(info.rows)*render_multiplier
+
+        # render net difference
+        gscript.run_command('d.mon',
+            start=driver,
+            width=width,
+            height=height,
+            output=os.path.join(render, mapset+'_'+'net_difference'+'.png'),
+            overwrite=1)
+        gscript.write_command('r.colors',
+            map='net_difference',
+            rules='-',
+            stdin=difference_colors)
+        gscript.run_command('r.relief',
+            input='elevation',
+            output='relief',
+            altitude=90,
+            azimuth=45,
+            zscale=zscale,
+            env=envs[mapset])
+        gscript.run_command('d.shade',
+            shade='relief',
+            color='net_difference',
+            brighten=brighten)
+        gscript.run_command('d.legend',
+            raster='net_difference',
+            fontsize=fontsize,
+            at=legend_coord)
+        gscript.run_command('d.mon', stop=driver)
+
 def cleanup():
-    # try to remove temporary environment files
-    for simulation in simulations:
-        try:
-            os.remove(tmp_gisrc_files[simulation])
-        except Exception as e:
-            raise
+    try:
+        # stop cairo monitor
+        gscript.run_command('d.mon', stop=driver)
+    except CalledModuleError:
+        pass
+
+    # # try to remove temporary environment files
+    # for simulation in simulations:
+    #     try:
+    #         os.remove(tmp_gisrc_files[simulation])
+    #     except Exception as e:
+    #         raise
 
 if __name__ == "__main__":
-    atexit.register(cleanup())
+    atexit.register(cleanup)
     sys.exit(main())

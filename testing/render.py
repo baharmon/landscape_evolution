@@ -33,8 +33,7 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 mapset = env['MAPSET']
 
-# set rendering directory
-render = os.path.join(gisdbase, location, "rendering", mapset)
+
 
 # set variables
 res = 0.3  # resolution of the region
@@ -55,13 +54,13 @@ net_difference = 'net_difference'
 # 3d variables
 color_3d = "192:192:192"
 res_3d = 1
-height_3d = 2000
+height_3d = 1500
 perspective = 15 #25
 light_position = (0.68, -0.68, 0.95)
 position = (1, 1)
 zexag = 2
 fringe = "se"
-fringe_elevation = 50
+fringe_elevation = 75
 format_3d = "tif"
 size_3d = (1000, 1000)
 # vpoint_size = 4
@@ -92,13 +91,18 @@ def main():
     # loop through mapsets with
     # g.mapset mapset=
 
-    render_2d()
-    render_3d()
+    # set rendering directory
+    render = os.path.join(gisdbase, location, "rendering", mapset)
+
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    render_2d(render)
+    render_3d(render)
     atexit.register(cleanup)
     sys.exit(0)
 
-def render_2d():
-
+def render_2d(render):
     # set region
     gscript.run_command('g.region',
         rast='elevation',
@@ -108,6 +112,7 @@ def render_2d():
         flags='g')
     width = int(info.cols)*render_multiplier*whitespace
     height = int(info.rows)*render_multiplier
+    # render map
     gscript.run_command('d.mon',
         start=driver,
         width=width,
@@ -136,14 +141,14 @@ def render_2d():
         brighten=brighten)
     # gscript.run_command('d.rast',
     #     map=net_difference)
-    gscript.run_command('d.vect', map=contours, display="shape")
+    # gscript.run_command('d.vect', map=contours, display="shape")
     gscript.run_command('d.legend',
         raster=net_difference,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
 
-def render_3d():
+def render_3d(render):
 
     gscript.run_command('g.region',
         rast='elevation',
