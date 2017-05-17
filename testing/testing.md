@@ -13,5 +13,3 @@ g.extension r.evolution url=github.com/baharmon/landscape_evolution
 /Users/Brendan/landscape_evolution/testing/launch_grass_session.py
 
 /Users/baharmon/landscape_evolution/testing/launch_grass_session.py
-
-/Volumes/grey/panama_2017/data/Chelsa/CHELSA_bio_1.tif
