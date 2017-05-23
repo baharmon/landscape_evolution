@@ -131,9 +131,9 @@ def main():
     rusle_params['rain_interval'] = 1
     rusle_params['start'] = "2015-01-01 00:00:00"
     rusle_params['walkers'] = 1000000
-    rusle_params['grav_diffusion'] = 0.1
-    rusle_params['m'] = 0.4
-    rusle_params['n'] = 1.3
+    rusle_params['grav_diffusion'] = 0.2
+    rusle_params['m'] = 0.5
+    rusle_params['n'] = 1.2
     rusle_params['env'] = envs['rusle']
     # append dictionary to options list
     options_list.append(rusle_params)
@@ -155,11 +155,11 @@ def main():
     # append dictionary to options list
     options_list.append(erdep_with_landcover_params)
 
-    # run simulations in parallel
-    parallel_simulations(options_list)
+    # # run simulations in parallel
+    # parallel_simulations(options_list)
 
-    # render maps
-    render_2d(envs)
+    # run renderings in parallel
+    parallel_renderings(envs)
 
     atexit.register(cleanup)
     sys.exit(0)
@@ -290,6 +290,22 @@ def render_2d(envs):
             fontsize=fontsize,
             at=legend_coord)
         gscript.run_command('d.mon', stop=driver)
+
+        try:
+            # stop cairo monitor
+            gscript.run_command('d.mon', stop=driver)
+        except CalledModuleError:
+            pass
+
+def parallel_renderings(envs):
+
+    # multiprocessing
+    pool = Pool(nprocs)
+    p = pool.map_async(render_2d, envs)
+    try:
+        p.get()
+    except (KeyboardInterrupt, CalledModuleError):
+        return
 
 def cleanup():
     try:

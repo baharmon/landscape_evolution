@@ -176,8 +176,11 @@ def render_3d(render):
         )
 
 def cleanup():
-    # gscript.run_command('d.mon', stop=driver)
-    pass
+    try:
+        # stop cairo monitor
+        gscript.run_command('d.mon', stop=driver)
+    except CalledModuleError:
+        pass
 
 if __name__ == "__main__":
     atexit.register(cleanup)
