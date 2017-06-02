@@ -2221,6 +2221,7 @@ class DynamicEvolution:
             erdepmax=self.erdepmax,
             fluxmax=self.fluxmax,
             k_factor=self.k_factor,
+            c_factor=self.c_factor,
             m = self.m,
             n = self.n)
 
