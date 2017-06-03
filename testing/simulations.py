@@ -33,6 +33,7 @@ simulations = ['erdep','flux','transport','usped','rusle','erdep_simple']
 # set parameters
 res = 0.3  # resolution of the region
 nprocs = 6
+threads = 1
 
 # color rules
 difference_colors = """\
@@ -67,11 +68,12 @@ def main():
     erdep_params['mode'] = 'simwe_mode'
     erdep_params['rain_duration'] = 30
     erdep_params['rain_interval'] = 1
-    erdep_params['start'] = "2015-01-01 00:00:00"
+    erdep_params['start'] = "2004-01-01 00:00:00"
     erdep_params['walkers'] = 1000000
     erdep_params['grav_diffusion'] = 0.2
     erdep_params['mannings'] = 'mannings'
     erdep_params['runoff'] = 'runoff'
+    erdep_params['threads'] = threads
     erdep_params['env'] = envs['erdep']
     # append dictionary to options list
     options_list.append(erdep_params)
@@ -83,13 +85,14 @@ def main():
     flux_params['mode'] = 'simwe_mode'
     flux_params['rain_duration'] = 30
     flux_params['rain_interval'] = 1
-    flux_params['start'] = "2015-01-01 00:00:00"
+    flux_params['start'] = "2004-01-01 00:00:00"
     flux_params['walkers'] = 1000000
     flux_params['grav_diffusion'] = 0.2
     flux_params['transport_value'] = 100
     flux_params['detachment_value'] = 0.01
     flux_params['mannings'] = 'mannings'
     flux_params['runoff'] = 'runoff'
+    flux_params['threads'] = threads
     flux_params['env'] = envs['flux']
     # append dictionary to options list
     options_list.append(flux_params)
@@ -101,13 +104,14 @@ def main():
     transport_params['mode'] = 'simwe_mode'
     transport_params['rain_duration'] = 30
     transport_params['rain_interval'] = 1
-    transport_params['start'] = "2015-01-01 00:00:00"
+    transport_params['start'] = "2004-01-01 00:00:00"
     transport_params['walkers'] = 1000000
     transport_params['grav_diffusion'] = 0.2
     transport_params['transport_value'] = 0.01
     transport_params['detachment_value'] = 1
     transport_params['mannings'] = 'mannings'
     transport_params['runoff'] = 'runoff'
+    transport_params['threads'] = threads
     transport_params['env'] = envs['transport']
     # append dictionary to options list
     options_list.append(transport_params)
@@ -119,7 +123,7 @@ def main():
     usped_params['mode'] = 'usped_mode'
     usped_params['rain_duration'] = 30
     usped_params['rain_interval'] = 1
-    usped_params['start'] = "2015-01-01 00:00:00"
+    usped_params['start'] = "2004-01-01 00:00:00"
     usped_params['walkers'] = 1000000
     usped_params['grav_diffusion'] = 0.2
     usped_params['m'] = 1.5
@@ -137,7 +141,7 @@ def main():
     rusle_params['mode'] = 'rusle_mode'
     rusle_params['rain_duration'] = 30
     rusle_params['rain_interval'] = 1
-    rusle_params['start'] = "2015-01-01 00:00:00"
+    rusle_params['start'] = "2004-01-01 00:00:00"
     rusle_params['walkers'] = 1000000
     rusle_params['grav_diffusion'] = 0.1
     rusle_params['m'] = 0.4
@@ -155,9 +159,10 @@ def main():
     erdep_simple_params['mode'] = 'simwe_mode'
     erdep_simple_params['rain_duration'] = 30
     erdep_simple_params['rain_interval'] = 1
-    erdep_simple_params['start'] = "2015-01-01 00:00:00"
+    erdep_simple_params['start'] = "2004-01-01 00:00:00"
     erdep_simple_params['walkers'] = 1000000
     erdep_simple_params['grav_diffusion'] = 0.2
+    erdep_simple_params['threads'] = threads
     erdep_simple_params['env'] = envs['erdep_simple']
     # append dictionary to options list
     options_list.append(erdep_simple_params)
@@ -283,10 +288,13 @@ def render_2d(envs):
             height=height,
             output=os.path.join(render, mapset+'_'+'net_difference'+'.png'),
             overwrite=1)
-        gscript.write_command('r.colors',
+        gscript.run_command('r.colors',
             map='net_difference',
-            rules='-',
-            stdin=difference_colors)
+            color='differences')
+        # gscript.write_command('r.colors',
+        #     map='net_difference',
+        #     rules='-',
+        #     stdin=difference_colors)
         gscript.run_command('r.relief',
             input='elevation',
             output='relief',
