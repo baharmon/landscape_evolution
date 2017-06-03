@@ -6,10 +6,8 @@ g.extension r.evolution url=github.com/baharmon/landscape_evolution
 
 # RUN SCRIPT
 /Users/Brendan/landscape_evolution/testing/run_simulations.py
-
 /Users/baharmon/landscape_evolution/testing/run_simulations.py
 
 # PYTHON
 /Users/Brendan/landscape_evolution/testing/launch_grass_session.py
-
 /Users/baharmon/landscape_evolution/testing/launch_grass_session.py

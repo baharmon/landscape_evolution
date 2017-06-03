@@ -350,6 +350,16 @@ COPYRIGHT: (C) 2016 Brendan Harmon, and by the GRASS Development Team
 #% guisection: Temporal
 #%end
 
+#%option
+#% key: threads
+#% type: integer
+#% description: Number of threads for multiprocessing
+#% answer: 1
+#% multiple: no
+#% required: no
+#% guisection: Multiprocessing
+#%end
+
 #%option G_OPT_STRDS_OUTPUT
 #% key: elevation_timeseries
 #% answer: elevation_timeseries
@@ -447,6 +457,7 @@ def main():
     c_factor_value = options['c_factor_value']
     m = options['m']
     n = options['n']
+    threads = options['threads']
 
     # check for alternative input parameters
     if not runoff:
@@ -549,7 +560,8 @@ def main():
         k_factor=k_factor,
         c_factor=c_factor,
         m=m,
-        n=n)
+        n=n,
+        threads=threads)
 
     # determine type of model and run
     if runs == "series":
@@ -565,7 +577,7 @@ class Evolution:
     def __init__(self, elevation, precipitation, start, rain_intensity,
         rain_interval, walkers, runoff, mannings, detachment, transport,
         shearstress, density, mass, grav_diffusion, smoothing,
-        erdepmin, erdepmax, fluxmax, k_factor, c_factor, m, n):
+        erdepmin, erdepmax, fluxmax, k_factor, c_factor, m, n, threads):
         self.elevation = elevation
         self.precipitation = precipitation
         self.start = start
@@ -588,6 +600,7 @@ class Evolution:
         self.c_factor = c_factor
         self.m = m
         self.n = n
+        self.threads = threads
 
     def erosion_deposition(self):
         """a process-based landscape evolution model
@@ -665,7 +678,7 @@ class Evolution:
             overwrite=True)
         dy = grow_dy
 
-        # hyrdology parameters
+        # hydrology parameters
         gscript.run_command('r.mapcalc',
             expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain,
                 rain_intensity=self.rain_intensity,
@@ -673,16 +686,31 @@ class Evolution:
             overwrite=True)
 
         # hydrologic simulation
-        gscript.run_command('r.sim.water',
-            elevation=self.elevation,
-            dx=dx,
-            dy=dy,
-            rain=rain,
-            man=self.mannings,
-            depth=depth,
-            niterations=self.rain_interval,
-            nwalkers=self.walkers,
-            overwrite=True)
+        if self.threads > 1 and gscript.find_program('r.sim.water.mp', '--help'):
+            # parallel processing of hydrologic simulation
+            gscript.run_command('r.sim.water.mp',
+                elevation=self.elevation,
+                dx=dx,
+                dy=dy,
+                rain=rain,
+                man=self.mannings,
+                depth=depth,
+                niterations=self.rain_interval,
+                nwalkers=self.walkers,
+                threads=self.threads,
+                overwrite=True)
+        else:
+            # hydrologic simulation
+            gscript.run_command('r.sim.water',
+                elevation=self.elevation,
+                dx=dx,
+                dy=dy,
+                rain=rain,
+                man=self.mannings,
+                depth=depth,
+                niterations=self.rain_interval,
+                nwalkers=self.walkers,
+                overwrite=True)
 
         # erosion-deposition simulation
         gscript.run_command('r.sim.sediment',
@@ -876,7 +904,7 @@ class Evolution:
             overwrite=True)
         dy = grow_dy
 
-        # hyrdology parameters
+        # hydrology parameters
         gscript.run_command('r.mapcalc',
             expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain,
                 rain_intensity=self.rain_intensity,
@@ -884,16 +912,31 @@ class Evolution:
             overwrite=True)
 
         # hydrologic simulation
-        gscript.run_command('r.sim.water',
-            elevation=self.elevation,
-            dx=dx,
-            dy=dy,
-            rain=rain,
-            man=self.mannings,
-            depth=depth,
-            niterations=self.rain_interval,
-            nwalkers=self.walkers,
-            overwrite=True)
+        if self.threads > 1 and gscript.find_program('r.sim.water.mp', '--help'):
+            # parallel processing of hydrologic simulation
+            gscript.run_command('r.sim.water.mp',
+                elevation=self.elevation,
+                dx=dx,
+                dy=dy,
+                rain=rain,
+                man=self.mannings,
+                depth=depth,
+                niterations=self.rain_interval,
+                nwalkers=self.walkers,
+                threads=self.threads,
+                overwrite=True)
+        else:
+            # hydrologic simulation
+            gscript.run_command('r.sim.water',
+                elevation=self.elevation,
+                dx=dx,
+                dy=dy,
+                rain=rain,
+                man=self.mannings,
+                depth=depth,
+                niterations=self.rain_interval,
+                nwalkers=self.walkers,
+                overwrite=True)
 
         # erosion-deposition simulation
         gscript.run_command('r.sim.sediment',
@@ -1087,7 +1130,7 @@ class Evolution:
             overwrite=True)
         dy = grow_dy
 
-        # hyrdology parameters
+        # hydrology parameters
         gscript.run_command('r.mapcalc',
             expression="{rain} = {rain_intensity}*{runoff}".format(rain=rain,
                 rain_intensity=self.rain_intensity,
@@ -1095,16 +1138,31 @@ class Evolution:
             overwrite=True)
 
         # hydrologic simulation
-        gscript.run_command('r.sim.water',
-            elevation=self.elevation,
-            dx=dx,
-            dy=dy,
-            rain=rain,
-            man=self.mannings,
-            depth=depth,
-            niterations=self.rain_interval,
-            nwalkers=self.walkers,
-            overwrite=True)
+        if self.threads > 1 and gscript.find_program('r.sim.water.mp', '--help'):
+            # parallel processing of hydrologic simulation
+            gscript.run_command('r.sim.water.mp',
+                elevation=self.elevation,
+                dx=dx,
+                dy=dy,
+                rain=rain,
+                man=self.mannings,
+                depth=depth,
+                niterations=self.rain_interval,
+                nwalkers=self.walkers,
+                threads=self.threads,
+                overwrite=True)
+        else:
+            # hydrologic simulation
+            gscript.run_command('r.sim.water',
+                elevation=self.elevation,
+                dx=dx,
+                dy=dy,
+                rain=rain,
+                man=self.mannings,
+                depth=depth,
+                niterations=self.rain_interval,
+                nwalkers=self.walkers,
+                overwrite=True)
 
         # sediment flux simulation
         gscript.run_command('r.sim.sediment',
@@ -1796,7 +1854,7 @@ class DynamicEvolution:
         difference_title, difference_description, start, walkers, runoff,
         mannings, detachment, transport, shearstress, density, mass,
         grav_diffusion, smoothing, erdepmin, erdepmax, fluxmax,
-        k_factor, c_factor, m, n):
+        k_factor, c_factor, m, n, threads):
         self.elevation = elevation
         self.mode = mode
         self.precipitation = precipitation
@@ -1837,6 +1895,7 @@ class DynamicEvolution:
         self.c_factor = c_factor
         self.m = m
         self.n = n
+        self.threads = threads
 
     def rainfall_event(self):
         """a dynamic, process-based landscape evolution model
@@ -1920,7 +1979,8 @@ class DynamicEvolution:
             k_factor=self.k_factor,
             c_factor=self.c_factor,
             m = self.m,
-            n = self.n)
+            n = self.n,
+            threads = self.threads)
 
         # set temporary region
         gscript.use_temp_region()
@@ -2223,7 +2283,8 @@ class DynamicEvolution:
             k_factor=self.k_factor,
             c_factor=self.c_factor,
             m = self.m,
-            n = self.n)
+            n = self.n,
+            threads= self.threads)
 
         # open txt file with precipitation data
         with open(evol.precipitation) as csvfile:
