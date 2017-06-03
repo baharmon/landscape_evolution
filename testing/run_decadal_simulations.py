@@ -66,12 +66,13 @@ def main():
     # dictionary of parameters for erosion-deposition simulation
     erdep_params = {}
     erdep_params['elevation'] = 'elevation@erdep'
-    erdep_params['runs'] = 'event'
+    erdep_params['runs'] = 'series'
     erdep_params['mode'] = 'simwe_mode'
     erdep_params['precipitation'] = precipitation
     erdep_params['start'] = "2004-01-01 00:00:00"
     erdep_params['walkers'] = 1000000
     erdep_params['grav_diffusion'] = 0.2
+    erdep_params['threads'] = threads
     erdep_params['env'] = envs['erdep']
     # append dictionary to options list
     options_list.append(erdep_params)
@@ -79,7 +80,7 @@ def main():
     # dictionary of parameters for flux simulation
     flux_params = {}
     flux_params['elevation'] = 'elevation@flux'
-    flux_params['runs'] = 'event'
+    flux_params['runs'] = 'series'
     flux_params['mode'] = 'simwe_mode'
     flux_params['precipitation'] = precipitation
     flux_params['start'] = "2004-01-01 00:00:00"
@@ -87,6 +88,7 @@ def main():
     flux_params['grav_diffusion'] = 0.2
     flux_params['transport_value'] = 100
     flux_params['detachment_value'] = 0.01
+    flux_params['threads'] = threads
     flux_params['env'] = envs['flux']
     # append dictionary to options list
     options_list.append(flux_params)
@@ -212,10 +214,13 @@ def render_2d(envs):
             height=height,
             output=os.path.join(render, mapset+'_'+'net_difference'+'.png'),
             overwrite=1)
-        gscript.write_command('r.colors',
+        gscript.run_command('r.colors',
             map='net_difference',
-            rules='-',
-            stdin=difference_colors)
+            color='differences')
+        # gscript.write_command('r.colors',
+        #     map='net_difference',
+        #     rules='-',
+        #     stdin=difference_colors)
         gscript.run_command('r.relief',
             input='elevation',
             output='relief',
