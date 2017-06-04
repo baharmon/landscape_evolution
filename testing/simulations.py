@@ -35,21 +35,6 @@ res = 0.3  # resolution of the region
 nprocs = 6
 threads = 1
 
-# color rules
-difference_colors = """\
--15000 100 0 100
--100 magenta
--10 red
--1 orange
--0.1 yellow
-0 200 255 200
-0.1 cyan
-1 aqua
-10 blue
-100 0 0 100
-15000 black
-"""
-
 def main():
 
     # try to install dependencies
@@ -288,13 +273,6 @@ def render_2d(envs):
             height=height,
             output=os.path.join(render, mapset+'_'+'net_difference'+'.png'),
             overwrite=1)
-        gscript.run_command('r.colors',
-            map='net_difference',
-            color='differences')
-        # gscript.write_command('r.colors',
-        #     map='net_difference',
-        #     rules='-',
-        #     stdin=difference_colors)
         gscript.run_command('r.relief',
             input='elevation',
             output='relief',
