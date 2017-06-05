@@ -1656,19 +1656,19 @@ class Evolution:
         # compute elevation change
         difference = self.compute_difference(evolved_elevation, difference)
 
-        # remove temporary maps
-        gscript.run_command(
-            'g.remove',
-            type='raster',
-            name=['slope',
-                'grow_slope',
-                'sedflow',
-                'flux',
-                'settled_elevation',
-                'divergence',
-                'r_factor',
-                'ls_factor'],
-            flags='f')
+        # # remove temporary maps
+        # gscript.run_command(
+        #     'g.remove',
+        #     type='raster',
+        #     name=['slope',
+        #         'grow_slope',
+        #         'sedflow',
+        #         'flux',
+        #         'settled_elevation',
+        #         'divergence',
+        #         'r_factor',
+        #         'ls_factor'],
+        #     flags='f')
 
         return (evolved_elevation, time, depth, sediment_flux, difference)
 
