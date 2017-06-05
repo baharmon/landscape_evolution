@@ -736,7 +736,7 @@ class Evolution:
 
         return slope, dx, dy
 
-    def simwe(self, depth):
+    def simwe(self, dx, dy, depth):
         """hydrologic simulation using monte carlo path sampling method
         to solve the shallow water flow equations"""
 
@@ -990,7 +990,7 @@ class Evolution:
         slope, dx, dy = self.compute_slope()
 
         # hydrologic simulation
-        depth = self.simwe(depth)
+        depth = self.simwe(dx, dy, depth)
 
         # erosion-deposition simulation
         gscript.run_command(
@@ -1080,7 +1080,7 @@ class Evolution:
         (slope, dx, dy) = self.compute_slope()
 
         # hydrologic simulation
-        depth = self.simwe(depth)
+        depth = self.simwe(dx, dy, depth)
 
         # erosion-deposition simulation
         gscript.run_command(
@@ -1170,7 +1170,7 @@ class Evolution:
         (slope, dx, dy) = self.compute_slope()
 
         # hydrologic simulation
-        depth = self.simwe(depth)
+        depth = self.simwe(dx, dy, depth)
 
         # sediment flux simulation
         gscript.run_command(
