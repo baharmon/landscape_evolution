@@ -492,19 +492,22 @@ def main():
     # check for alternative input parameters
     if not runoff:
         runoff = 'runoff'
-        gscript.run_command('r.mapcalc',
+        gscript.run_command(
+            'r.mapcalc',
             expression="runoff = {runoff_value}".format(**locals()),
             overwrite=True)
 
     if not mannings:
         mannings = 'mannings'
-        gscript.run_command('r.mapcalc',
+        gscript.run_command(
+            'r.mapcalc',
             expression="mannings = {mannings_value}".format(**locals()),
             overwrite=True)
 
     if not detachment:
         detachment = 'detachment'
-        gscript.run_command('r.mapcalc',
+        gscript.run_command(
+            'r.mapcalc',
             expression="detachment = {detachment_value}".format(**locals()),
             overwrite=True)
 
@@ -1897,8 +1900,8 @@ class DynamicEvolution:
         except (NameError, CalledModuleError):
             pass
         try:
-            gscript.run_command('
-                t.register',
+            gscript.run_command(
+                't.register',
                 type=raster,
                 input=self.flux_timeseries,
                 maps=sediment_flux,
