@@ -754,7 +754,7 @@ class Evolution:
 
         return depth
 
-    def event_based_r_factor():
+    def event_based_r_factor(self):
         """compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)"""
         # assign variables
         rain_energy = 'rain_energy'
@@ -901,13 +901,13 @@ class Evolution:
         sedflux = 'flux' # kg/ms
 
         # parse, advance, and stamp time
-        evolved_elevation, time, depth, sediment_flux, erosion_deposition, difference = parse_time()
+        evolved_elevation, time, depth, sediment_flux, erosion_deposition, difference = self.parse_time()
 
         # compute slope and partial derivatives
-        slope, dx, dy = compute_slope()
+        slope, dx, dy = self.compute_slope()
 
         # hydrologic simulation
-        depth = simwe(depth)
+        depth = self.simwe(depth)
 
         # erosion-deposition simulation
         gscript.run_command('r.sim.sediment',
@@ -951,10 +951,10 @@ class Evolution:
             overwrite=True)
 
         # gravitational diffusion
-        evolved_elevation = gravitational_diffusion(evolved_elevation)
+        evolved_elevation = self.gravitational_diffusion(evolved_elevation)
 
         # compute elevation change
-        difference = compute_difference(evolved_elevation, difference)
+        difference = self.compute_difference(evolved_elevation, difference)
 
         # remove temporary maps
         gscript.run_command('g.remove',
@@ -976,13 +976,13 @@ class Evolution:
         sedflux = 'flux' # kg/ms
 
         # parse, advance, and stamp time
-        evolved_elevation, time, depth, sediment_flux, erosion_deposition, difference = parse_time()
+        evolved_elevation, time, depth, sediment_flux, erosion_deposition, difference = self.parse_time()
 
         # compute slope and partial derivatives
-        slope, dx, dy = compute_slope()
+        slope, dx, dy = self.compute_slope()
 
         # hydrologic simulation
-        depth = simwe(depth)
+        depth = self.simwe(depth)
 
         # erosion-deposition simulation
         gscript.run_command('r.sim.sediment',
@@ -1026,10 +1026,10 @@ class Evolution:
             overwrite=True)
 
         # gravitational diffusion
-        evolved_elevation = gravitational_diffusion(evolved_elevation)
+        evolved_elevation = self.gravitational_diffusion(evolved_elevation)
 
         # compute elevation change
-        difference = compute_difference(evolved_elevation, difference)
+        difference = self.compute_difference(evolved_elevation, difference)
 
         # remove temporary maps
         gscript.run_command('g.remove',
@@ -1051,13 +1051,13 @@ class Evolution:
         sedflux = 'flux' # kg/ms
 
         # parse, advance, and stamp time
-        evolved_elevation, time, depth, sediment_flux, erosion_deposition, difference = parse_time()
+        evolved_elevation, time, depth, sediment_flux, erosion_deposition, difference = self.parse_time()
 
         # compute slope, and partial derivatives
-        slope, dx, dy = compute_slope()
+        slope, dx, dy = self.compute_slope()
 
         # hydrologic simulation
-        depth = simwe(depth)
+        depth = self.simwe(depth)
 
         # sediment flux simulation
         gscript.run_command('r.sim.sediment',
@@ -1100,10 +1100,10 @@ class Evolution:
             overwrite=True)
 
         # gravitational diffusion
-        evolved_elevation = gravitational_diffusion(evolved_elevation)
+        evolved_elevation = self.gravitational_diffusion(evolved_elevation)
 
         # compute elevation change
-        difference = compute_difference(evolved_elevation, difference)
+        difference = self.compute_difference(evolved_elevation, difference)
 
         # remove temporary maps
         gscript.run_command('g.remove',
@@ -1136,10 +1136,10 @@ class Evolution:
         sedflow = 'sedflow'
 
         # parse, advance, and stamp time
-        evolved_elevation, time, depth, sediment_flux, erosion_deposition, difference = parse_time()
+        evolved_elevation, time, depth, sediment_flux, erosion_deposition, difference = self.parse_time()
 
         # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
-        r_factor = event_based_r_factor()
+        r_factor = self.event_based_r_factor()
 
         # compute slope and aspect
         gscript.run_command('r.slope.aspect',
@@ -1278,10 +1278,10 @@ class Evolution:
             overwrite=True)
 
         # gravitational diffusion
-        evolved_elevation = gravitational_diffusion(evolved_elevation)
+        evolved_elevation = self.gravitational_diffusion(evolved_elevation)
 
         # compute elevation change
-        difference = compute_difference(evolved_elevation, difference)
+        difference = self.compute_difference(evolved_elevation, difference)
 
         # remove temporary maps
         gscript.run_command('g.remove',
@@ -1320,10 +1320,10 @@ class Evolution:
         sedflux = 'flux'
 
         # parse, advance, and stamp time
-        evolved_elevation, time, depth, sediment_flux, erosion_deposition, difference = parse_time()
+        evolved_elevation, time, depth, sediment_flux, erosion_deposition, difference = self.parse_time()
 
         # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
-        r_factor = event_based_r_factor()
+        r_factor = self.event_based_r_factor()
 
         # compute slope
         gscript.run_command('r.slope.aspect',
@@ -1407,10 +1407,10 @@ class Evolution:
             overwrite=True)
 
         # gravitational diffusion
-        evolved_elevation = gravitational_diffusion(evolved_elevation)
+        evolved_elevation = self.gravitational_diffusion(evolved_elevation)
 
         # compute elevation change
-        difference = compute_difference(evolved_elevation, difference)
+        difference = self.compute_difference(evolved_elevation, difference)
 
         # remove temporary maps
         gscript.run_command('g.remove',
