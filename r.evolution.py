@@ -711,19 +711,34 @@ class Evolution:
             input=slope,
             value=grow_slope,
             overwrite=True)
-        slope = grow_slope
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{slope}={grow_slope}".format(
+                slope=slope,
+                grow_slope=grow_slope),
+            overwrite=True)
         gscript.run_command(
             'r.grow.distance',
             input=dx,
             value=grow_dx,
             overwrite=True)
-        dx = grow_dx
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{dx}={grow_dx}".format(
+                dx=dx,
+                grow_dx=grow_dx),
+            overwrite=True)
         gscript.run_command(
             'r.grow.distance',
             input=dy,
             value=grow_dy,
             overwrite=True)
-        dy = grow_dy
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{dy}={grow_dy}".format(
+                dy=dy,
+                grow_dy=grow_dy),
+            overwrite=True)
 
         # remove temporary maps
         gscript.run_command(
@@ -888,13 +903,23 @@ class Evolution:
             input=dxx,
             value=grow_dxx,
             overwrite=True)
-        dxx = grow_dxx
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{dxx}={grow_dxx}".format(
+                dxx=dxx,
+                grow_dxx=grow_dxx),
+            overwrite=True)
         gscript.run_command(
             'r.grow.distance',
             input=dyy,
             value=grow_dyy,
             overwrite=True)
-        dyy = grow_dyy
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{dyy}={grow_dyy}".format(
+                dyy=dyy,
+                grow_dyy=grow_dyy),
+            overwrite=True)
 
         # compute divergence
         # from the sum of the second order derivatives of elevation
@@ -1281,13 +1306,23 @@ class Evolution:
             input=slope,
             value=grow_slope,
             overwrite=True)
-        slope = grow_slope
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{slope}={grow_slope}".format(
+                slope=slope,
+                grow_slope=grow_slope),
+            overwrite=True)
         gscript.run_command(
             'r.grow.distance',
             input=aspect,
             value=grow_aspect,
             overwrite=True)
-        aspect = grow_aspect
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{aspect}={grow_aspect}".format(
+                aspect=aspect,
+                grow_aspect=grow_aspect),
+            overwrite=True)
 
         # compute flow accumulation
         gscript.run_command(
@@ -1385,16 +1420,26 @@ class Evolution:
         # grow border to fix edge effects of moving window computations
         gscript.run_command(
             'r.grow.distance',
-            input=qsydy,
-            value=grow_qsydy,
-            overwrite=True)
-        qsydy = grow_qsydy
-        gscript.run_command(
-            'r.grow.distance',
             input=qsxdx,
             value=grow_qsxdx,
             overwrite=True)
-        qsxdx = grow_qsxdx
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{qsxdx}={grow_qsxdx}".format(
+                qsxdx=qsxdx,
+                grow_qsxdx=grow_qsxdx),
+            overwrite=True)
+        gscript.run_command(
+            'r.grow.distance',
+            input=qsydy,
+            value=grow_qsydy,
+            overwrite=True)
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{qsydy}={grow_qsydy}".format(
+                qsydy=qsydy,
+                grow_qsydy=grow_qsydy),
+            overwrite=True)
 
         # compute net erosion-deposition (kg/m^2s)
         # as divergence of sediment flow
@@ -1483,9 +1528,7 @@ class Evolution:
         # assign variables
         ls_factor = 'ls_factor'
         slope = 'slope'
-        aspect = 'aspect'
         grow_slope = 'grow_slope'
-        grow_aspect  = 'grow_aspect'
         erdep = 'erdep' # kg/m^2s
         sedflow = 'sedflow'
         sedflux = 'flux'
@@ -1510,7 +1553,12 @@ class Evolution:
             input=slope,
             value=grow_slope,
             overwrite=True)
-        slope = grow_slope
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{slope}={grow_slope}".format(
+                slope=slope,
+                grow_slope=grow_slope),
+            overwrite=True)
 
         # compute flow accumulation
         gscript.run_command(
@@ -1613,11 +1661,7 @@ class Evolution:
             'g.remove',
             type='raster',
             name=['slope',
-                'dxx',
-                'dyy',
                 'grow_slope',
-                'grow_dxx',
-                'grow_dyy',
                 'sedflow',
                 'flux',
                 'settled_elevation',
