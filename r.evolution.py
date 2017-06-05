@@ -740,14 +740,14 @@ class Evolution:
                 grow_dy=grow_dy),
             overwrite=True)
 
-        # # remove temporary maps
-        # gscript.run_command(
-        #     'g.remove',
-        #     type='raster',
-        #     name=['grow_slope',
-        #         'grow_dx',
-        #         'grow_dy'],
-        #     flags='f')
+        # remove temporary maps
+        gscript.run_command(
+            'g.remove',
+            type='raster',
+            name=['grow_slope',
+                'grow_dx',
+                'grow_dy'],
+            flags='f')
 
         return slope, dx, dy
 
@@ -2519,53 +2519,52 @@ class DynamicEvolution:
 
 def cleanup():
     try:
-        pass
-        # # remove temporary maps
-        # gscript.run_command(
-        #     'g.remove',
-        #     type='raster',
-        #     name=['runoff',
-        #         'mannings',
-        #         'detachment',
-        #         'transport',
-        #         'shearstress',
-        #         'mass',
-        #         'density',
-        #         'sigma',
-        #         'rain_excess',
-        #         'rain',
-        #         'sedflow',
-        #         'flux',
-        #         'erdep',
-        #         'c_factor',
-        #         'k_factor',
-        #         'settled_elevation',
-        #         'divergence',
-        #         'rain_energy',
-        #         'rain_volume',
-        #         'rain_intensity',
-        #         'erosivity',
-        #         'r_factor',
-        #         'ls_factor',
-        #         'dx',
-        #         'dy',
-        #         'dxx',
-        #         'dyy',
-        #         'qsx',
-        #         'qsy',
-        #         'qsxdx',
-        #         'qsydy',
-        #         'slope',
-        #         'aspect',
-        #         'grow_slope',
-        #         'grow_aspect',
-        #         'grow_dx',
-        #         'grow_dy',
-        #         'grow_dxx',
-        #         'grow_dyy',
-        #         'grow_qsxdx',
-        #         'grow_qsydy'],
-        #     flags='f')
+        # remove temporary maps
+        gscript.run_command(
+            'g.remove',
+            type='raster',
+            name=['runoff',
+                'mannings',
+                'detachment',
+                'transport',
+                'shearstress',
+                'mass',
+                'density',
+                'sigma',
+                'rain_excess',
+                'rain',
+                'sedflow',
+                'flux',
+                'erdep',
+                'c_factor',
+                'k_factor',
+                'settled_elevation',
+                'divergence',
+                'rain_energy',
+                'rain_volume',
+                'rain_intensity',
+                'erosivity',
+                'r_factor',
+                'ls_factor',
+                'dx',
+                'dy',
+                'dxx',
+                'dyy',
+                'qsx',
+                'qsy',
+                'qsxdx',
+                'qsydy',
+                'slope',
+                'aspect',
+                'grow_slope',
+                'grow_aspect',
+                'grow_dx',
+                'grow_dy',
+                'grow_dxx',
+                'grow_dyy',
+                'grow_qsxdx',
+                'grow_qsydy'],
+            flags='f')
 
     except CalledModuleError:
         pass
