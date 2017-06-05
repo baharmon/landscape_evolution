@@ -57,6 +57,8 @@ def main():
     erdep_params['start'] = "2004-01-01 00:00:00"
     erdep_params['walkers'] = 1000000
     erdep_params['grav_diffusion'] = 0.2
+    erdep_params['mannings'] = 'mannings'
+    erdep_params['runoff'] = 'runoff'
     erdep_params['threads'] = threads
     erdep_params['env'] = envs['erdep']
     # append dictionary to options list
@@ -73,6 +75,8 @@ def main():
     flux_params['grav_diffusion'] = 0.2
     flux_params['transport_value'] = 100
     flux_params['detachment_value'] = 0.01
+    flux_params['mannings'] = 'mannings'
+    flux_params['runoff'] = 'runoff'
     flux_params['threads'] = threads
     flux_params['env'] = envs['flux']
     # append dictionary to options list

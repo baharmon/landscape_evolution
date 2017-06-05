@@ -28,7 +28,7 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = ['erdep','flux','transport','usped','rusle','erdep_simple']
+simulations = ['erdep','flux','transport','usped','rusle']
 
 # set parameters
 res = 0.3  # resolution of the region
@@ -51,7 +51,7 @@ def main():
     erdep_params['elevation'] = 'elevation@erdep'
     erdep_params['runs'] = 'event'
     erdep_params['mode'] = 'simwe_mode'
-    erdep_params['rain_duration'] = 30
+    erdep_params['rain_duration'] = 2
     erdep_params['rain_interval'] = 1
     erdep_params['start'] = "2004-01-01 00:00:00"
     erdep_params['walkers'] = 1000000
@@ -68,7 +68,7 @@ def main():
     flux_params['elevation'] = 'elevation@flux'
     flux_params['runs'] = 'event'
     flux_params['mode'] = 'simwe_mode'
-    flux_params['rain_duration'] = 30
+    flux_params['rain_duration'] = 2
     flux_params['rain_interval'] = 1
     flux_params['start'] = "2004-01-01 00:00:00"
     flux_params['walkers'] = 1000000
@@ -87,7 +87,7 @@ def main():
     transport_params['elevation'] = 'elevation@transport'
     transport_params['runs'] = 'event'
     transport_params['mode'] = 'simwe_mode'
-    transport_params['rain_duration'] = 30
+    transport_params['rain_duration'] = 2
     transport_params['rain_interval'] = 1
     transport_params['start'] = "2004-01-01 00:00:00"
     transport_params['walkers'] = 1000000
@@ -106,7 +106,7 @@ def main():
     usped_params['elevation'] = 'elevation@usped'
     usped_params['runs'] = 'event'
     usped_params['mode'] = 'usped_mode'
-    usped_params['rain_duration'] = 30
+    usped_params['rain_duration'] = 2
     usped_params['rain_interval'] = 1
     usped_params['start'] = "2004-01-01 00:00:00"
     usped_params['walkers'] = 1000000
@@ -124,7 +124,7 @@ def main():
     rusle_params['elevation'] = 'elevation@rusle'
     rusle_params['runs'] = 'event'
     rusle_params['mode'] = 'rusle_mode'
-    rusle_params['rain_duration'] = 30
+    rusle_params['rain_duration'] = 2
     rusle_params['rain_interval'] = 1
     rusle_params['start'] = "2004-01-01 00:00:00"
     rusle_params['walkers'] = 1000000
@@ -136,21 +136,6 @@ def main():
     rusle_params['env'] = envs['rusle']
     # append dictionary to options list
     options_list.append(rusle_params)
-
-    # dictionary of parameters for simple erosion-deposition simulation
-    erdep_simple_params = {}
-    erdep_simple_params['elevation'] = 'elevation@erdep_simple'
-    erdep_simple_params['runs'] = 'event'
-    erdep_simple_params['mode'] = 'simwe_mode'
-    erdep_simple_params['rain_duration'] = 30
-    erdep_simple_params['rain_interval'] = 1
-    erdep_simple_params['start'] = "2004-01-01 00:00:00"
-    erdep_simple_params['walkers'] = 1000000
-    erdep_simple_params['grav_diffusion'] = 0.2
-    erdep_simple_params['threads'] = threads
-    erdep_simple_params['env'] = envs['erdep_simple']
-    # append dictionary to options list
-    options_list.append(erdep_simple_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)
