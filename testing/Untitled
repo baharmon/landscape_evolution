@@ -1,0 +1,140 @@
+self.elevation = elevation
+self.precipitation = precipitation
+self.start = start
+self.rain_intensity = float(rain_intensity)
+self.rain_interval = int(rain_interval)
+self.walkers = walkers
+self.runoff = runoff
+self.mannings = mannings
+self.detachment = detachment
+self.transport = transport
+self.shearstress = shearstress
+self.density = density
+self.mass = mass
+self.grav_diffusion = grav_diffusion
+self.smoothing = smoothing
+self.erdepmin = erdepmin
+self.erdepmax = erdepmax
+self.fluxmax = fluxmax
+self.k_factor = k_factor
+self.c_factor = c_factor
+self.m = m
+self.n = n
+
+
+# create evolution object
+evol = Evolution(elevation=self.elevation,
+    precipitation=self.precipitation,
+    start=self.start,
+    rain_intensity=self.rain_intensity,
+    rain_interval=self.rain_interval,
+    walkers=self.walkers,
+    runoff=self.runoff,
+    mannings=self.mannings,
+    detachment=self.detachment,
+    transport=self.transport,
+    shearstress=self.shearstress,
+    density=self.density,
+    mass=self.mass,
+    grav_diffusion=self.grav_diffusion,
+    smoothing=self.smoothing,
+    erdepmin=self.erdepmin,
+    erdepmax=self.erdepmax,
+    fluxmax=self.fluxmax,
+    k_factor=self.k_factor,
+    c_factor=self.c_factor,
+    m = self.m,
+    n = self.n)
+
+
+class DynamicEvolution:
+    def __init__(self, elevation, mode, precipitation, rain_intensity,
+        rain_duration, rain_interval, temporaltype, elevation_timeseries,
+        elevation_title, elevation_description, depth_timeseries, depth_title,
+        depth_description, erdep_timeseries, erdep_title, erdep_description,
+        flux_timeseries, flux_title, flux_description, difference_timeseries,
+        difference_title, difference_description, start, walkers, runoff,
+        mannings, detachment, transport, shearstress, density, mass,
+        grav_diffusion, smoothing, erdepmin, erdepmax, fluxmax,
+        k_factor, c_factor, m, n):
+        self.elevation = elevation
+        self.mode = mode
+        self.precipitation = precipitation
+        self.start = start
+        self.rain_intensity = rain_intensity
+        self.rain_duration = rain_duration
+        self.rain_interval = rain_interval
+        self.temporaltype = temporaltype
+        self.elevation_timeseries = elevation_timeseries
+        self.elevation_title = elevation_title
+        self.elevation_description = elevation_description
+        self.depth_timeseries=depth_timeseries
+        self.depth_title=depth_title
+        self.depth_description=depth_description
+        self.erdep_timeseries=erdep_timeseries
+        self.erdep_title=erdep_title
+        self.erdep_description=erdep_description
+        self.flux_timeseries=flux_timeseries
+        self.flux_title=flux_title
+        self.flux_description=flux_description
+        self.difference_timeseries=difference_timeseries
+        self.difference_title=difference_title
+        self.difference_description=difference_description
+        self.walkers = walkers
+        self.runoff = runoff
+        self.mannings = mannings
+        self.detachment = detachment
+        self.transport = transport
+        self.shearstress = shearstress
+        self.density = density
+        self.mass = mass
+        self.grav_diffusion = grav_diffusion
+        self.smoothing = smoothing
+        self.erdepmin = erdepmin
+        self.erdepmax = erdepmax
+        self.fluxmax = fluxmax
+        self.k_factor = k_factor
+        self.c_factor = c_factor
+        self.m = m
+        self.n = n
+
+        event = DynamicEvolution(elevation=elevation,
+            mode=mode,
+            precipitation=precipitation,
+            rain_intensity=rain_intensity,
+            rain_duration=rain_duration,
+            rain_interval=rain_interval,
+            temporaltype=temporaltype,
+            elevation_timeseries=elevation_timeseries,
+            elevation_title=elevation_title,
+            elevation_description=elevation_description,
+            depth_timeseries=depth_timeseries,
+            depth_title=depth_title,
+            depth_description=depth_description,
+            erdep_timeseries=erdep_timeseries,
+            erdep_title=erdep_title,
+            erdep_description=erdep_description,
+            flux_timeseries=flux_timeseries,
+            flux_title=flux_title,
+            flux_description=flux_description,
+            difference_timeseries=difference_timeseries,
+            difference_title=difference_title,
+            difference_description=difference_description,
+            start=start,
+            walkers=walkers,
+            runoff=runoff,
+            mannings=mannings,
+            detachment=detachment,
+            transport=transport,
+            shearstress=shearstress,
+            density=density,
+            mass=mass,
+            grav_diffusion=grav_diffusion,
+            smoothing=smoothing,
+            erdepmin=erdepmin,
+            erdepmax=erdepmax,
+            fluxmax=fluxmax,
+            k_factor=k_factor,
+            c_factor=c_factor,
+            m=m,
+            n=n)
