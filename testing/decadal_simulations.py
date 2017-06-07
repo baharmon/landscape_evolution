@@ -35,7 +35,7 @@ res = 0.3  # resolution of the region
 nprocs = 5
 threads = 5
 
-precipitation = os.path.join(gisdbase, location, 'rain_events_2004_2016.csv')
+precipitation = os.path.join(gisdbase, location, 'rain_events_2013_2016.csv')
 
 def main():
 
@@ -55,8 +55,8 @@ def main():
     erdep_params['mode'] = 'simwe_mode'
     erdep_params['precipitation'] = precipitation
     erdep_params['start'] = "2004-01-01 00:00:00"
-    erdep_params['walkers'] = 1000000
-    erdep_params['grav_diffusion'] = 0.2
+    erdep_params['walkers'] = 2000000
+    erdep_params['grav_diffusion'] = 0.1
     erdep_params['mannings'] = 'mannings'
     erdep_params['runoff'] = 'runoff'
     erdep_params['threads'] = threads
@@ -71,8 +71,8 @@ def main():
     flux_params['mode'] = 'simwe_mode'
     flux_params['precipitation'] = precipitation
     flux_params['start'] = "2004-01-01 00:00:00"
-    flux_params['walkers'] = 1000000
-    flux_params['grav_diffusion'] = 0.2
+    flux_params['walkers'] = 2000000
+    flux_params['grav_diffusion'] = 0.1
     flux_params['transport_value'] = 100
     flux_params['detachment_value'] = 0.01
     flux_params['mannings'] = 'mannings'
