@@ -991,11 +991,15 @@ class Evolution:
                 elevation=self.elevation,
                 evolved_elevation=evolved_elevation),
             overwrite=True)
-        gscript.write_command(
+        # gscript.write_command(
+        #     'r.colors',
+        #     map=difference,
+        #     rules='-',
+        #     stdin=difference_colors)
+        gscript.run_command(
             'r.colors',
             map=difference,
-            rules='-',
-            stdin=difference_colors)
+            color="differences")
 
         return difference
 
