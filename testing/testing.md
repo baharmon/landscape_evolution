@@ -13,11 +13,15 @@ g.extension r.evolution url=github.com/baharmon/landscape_evolution
 /Users/baharmon/landscape_evolution/testing/launch_grass_session.py
 
 # FATRA
-scp -rC /Users/Brendan/grassdata/nc_spm_evolution baharmon@fatra.cnr.ncsu.edu:Downloads
-scp /Users/Brendan/Downloads/nc_spm_evolution.zip baharmon@fatra.cnr.ncsu.edu:Downloads
+ssh -Y baharmon@fatra.cnr.ncsu.edu
+mkdir grassdata
+~.
+scp /Users/Brendan/Downloads/nc_spm_evolution.zip baharmon@fatra.cnr.ncsu.edu:grassdata/nc_spm_evolution.zip
 ssh -X baharmon@fatra.cnr.ncsu.edu
-cp
-git clone git@github.com:baharmon/landscape_evolution.git
+cd grassdata
+unzip nc_spm_evolution.zip
+rm nc_spm_evolution.zip
+git clone https://github.com/baharmon/landscape_evolution.git
 grass-trunk
 landscape_evolution/testing/decadal_simulations.py
-scp -rC baharmon@fatra.cnr.ncsu.edu:Downloads/nc_spm_evolution /Users/Brendan/Downloads
+~.
