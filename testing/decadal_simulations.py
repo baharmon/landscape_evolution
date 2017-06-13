@@ -28,7 +28,7 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = ['erdep'] #['erdep','flux']
+simulations = ['erdep','flux']
 
 # set parameters
 res = 0.3  # resolution of the region
@@ -55,8 +55,8 @@ def main():
     erdep_params['mode'] = 'simwe_mode'
     erdep_params['precipitation'] = precipitation
     erdep_params['start'] = "2013-01-01 00:00:00"
-    erdep_params['walkers'] = 3000000
-    erdep_params['grav_diffusion'] = 0.2
+    erdep_params['walkers'] = 1000000
+    erdep_params['grav_diffusion'] = 0.1
     erdep_params['mannings'] = 'mannings'
     erdep_params['runoff'] = 'runoff'
     erdep_params['threads'] = threads
@@ -64,23 +64,23 @@ def main():
     # append dictionary to options list
     options_list.append(erdep_params)
 
-    # # dictionary of parameters for flux simulation
-    # flux_params = {}
-    # flux_params['elevation'] = 'elevation@flux'
-    # flux_params['runs'] = 'series'
-    # flux_params['mode'] = 'simwe_mode'
-    # flux_params['precipitation'] = precipitation
-    # flux_params['start'] = "2013-01-01 00:00:00"
-    # flux_params['walkers'] = 3000000
-    # flux_params['grav_diffusion'] = 0.2
-    # flux_params['transport_value'] = 100
-    # flux_params['detachment_value'] = 0.01
-    # flux_params['mannings'] = 'mannings'
-    # flux_params['runoff'] = 'runoff'
-    # flux_params['threads'] = threads
-    # flux_params['env'] = envs['flux']
-    # # append dictionary to options list
-    # options_list.append(flux_params)
+    # dictionary of parameters for flux simulation
+    flux_params = {}
+    flux_params['elevation'] = 'elevation@flux'
+    flux_params['runs'] = 'series'
+    flux_params['mode'] = 'simwe_mode'
+    flux_params['precipitation'] = precipitation
+    flux_params['start'] = "2013-01-01 00:00:00"
+    flux_params['walkers'] = 1000000
+    flux_params['grav_diffusion'] = 0.1
+    flux_params['transport_value'] = 100
+    flux_params['detachment_value'] = 0.01
+    flux_params['mannings'] = 'mannings'
+    flux_params['runoff'] = 'runoff'
+    flux_params['threads'] = threads
+    flux_params['env'] = envs['flux']
+    # append dictionary to options list
+    options_list.append(flux_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)

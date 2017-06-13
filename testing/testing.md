@@ -23,5 +23,6 @@ unzip nc_spm_evolution.zip
 rm nc_spm_evolution.zip
 git clone https://github.com/baharmon/landscape_evolution.git
 grass-trunk
+g.extension r.sim.water.mp
 landscape_evolution/testing/decadal_simulations.py
 ~.
