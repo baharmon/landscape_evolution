@@ -35,9 +35,9 @@ res = 1  # resolution of the region
 nprocs = 6
 threads = 2
 
+design_storm_1m = os.path.join(gisdbase, location, 'design_storm_1m.txt')
 design_storm_2m = os.path.join(gisdbase, location, 'design_storm_2m.txt')
-design_storm_5m = os.path.join(gisdbase, location, 'design_storm_5m.txt')
-design_storm_10m = os.path.join(gisdbase, location, 'design_storm_10m.txt')
+design_storm_3m = os.path.join(gisdbase, location, 'design_storm_3m.txt')
 
 def main():
 
