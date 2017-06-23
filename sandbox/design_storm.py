@@ -22,7 +22,7 @@ import csv
 import os
 
 # assign variables
-interval = 1 # minutes
+interval = 3 # minutes
 duration = 60 # minutes
 min_precip = 1 # mm
 max_precip = 60 # mm
@@ -59,7 +59,7 @@ with open(filename, 'wb') as csvfile:
 
     for counter, value in enumerate(range(0,duration,interval)):
         write.writerow([
-            '{year}-{month}-{day} {hour}:{minute}:{second}'.format(
+            '{year:04d}-{month:02d}-{day:02d} {hour:02d}:{minute:02d}:{second:02d}'.format(
                 year=year,
                 month=month,
                 day=day,
