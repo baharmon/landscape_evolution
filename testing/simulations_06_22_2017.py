@@ -28,7 +28,13 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = ['event_2','event_5','event_10','series_2','series_5','series_10']
+simulations = [
+    'event_1',
+    'event_2',
+    'event_3',
+    'series_1',
+    'series_2',
+    'series_3']
 
 # set parameters
 res = 1  # resolution of the region
@@ -50,6 +56,24 @@ def main():
     # create list of options for each simulation
     options_list = []
 
+    # dictionary of parameters for 1m event simulation
+    event_1_params = {}
+    event_1_params['elevation'] = 'elevation@event_1'
+    event_1_params['runs'] = 'event'
+    event_1_params['mode'] = 'simwe_mode'
+    event_1_params['rain_intensity'] = 50.0
+    event_1_params['rain_duration'] = 60
+    event_1_params['rain_interval'] = 1
+    event_1_params['start'] = "2015-01-01 00:00:00"
+    event_1_params['walkers'] = 1000000
+    event_1_params['grav_diffusion'] = 0.1
+    event_1_params['mannings'] = 'mannings'
+    event_1_params['runoff'] = 'runoff'
+    event_1_params['threads'] = threads
+    event_1_params['env'] = envs['event_1']
+    # append dictionary to options list
+    options_list.append(event_1_params)
+
     # dictionary of parameters for 2m event simulation
     event_2_params = {}
     event_2_params['elevation'] = 'elevation@event_2'
@@ -68,41 +92,40 @@ def main():
     # append dictionary to options list
     options_list.append(event_2_params)
 
-    # dictionary of parameters for 5m event simulation
-    event_5_params = {}
-    event_5_params['elevation'] = 'elevation@event_5'
-    event_5_params['runs'] = 'event'
-    event_5_params['mode'] = 'simwe_mode'
-    event_5_params['rain_intensity'] = 50.0
-    event_5_params['rain_duration'] = 60
-    event_5_params['rain_interval'] = 5
-    event_5_params['start'] = "2015-01-01 00:00:00"
-    event_5_params['walkers'] = 1000000
-    event_5_params['grav_diffusion'] = 0.1
-    event_5_params['mannings'] = 'mannings'
-    event_5_params['runoff'] = 'runoff'
-    event_5_params['threads'] = threads
-    event_5_params['env'] = envs['event_5']
+    # dictionary of parameters for 3m event simulation
+    event_3_params = {}
+    event_3_params['elevation'] = 'elevation@event_3'
+    event_3_params['runs'] = 'event'
+    event_3_params['mode'] = 'simwe_mode'
+    event_3_params['rain_intensity'] = 50.0
+    event_3_params['rain_duration'] = 60
+    event_3_params['rain_interval'] = 3
+    event_3_params['start'] = "2015-01-01 00:00:00"
+    event_3_params['walkers'] = 1000000
+    event_3_params['grav_diffusion'] = 0.1
+    event_3_params['mannings'] = 'mannings'
+    event_3_params['runoff'] = 'runoff'
+    event_3_params['threads'] = threads
+    event_3_params['env'] = envs['event_3']
     # append dictionary to options list
-    options_list.append(event_5_params)
+    options_list.append(event_3_params)
 
-    # dictionary of parameters for 10m event simulation
-    event_10_params = {}
-    event_10_params['elevation'] = 'elevation@event_10'
-    event_10_params['runs'] = 'event'
-    event_10_params['mode'] = 'simwe_mode'
-    event_10_params['rain_intensity'] = 50.0
-    event_10_params['rain_duration'] = 60
-    event_10_params['rain_interval'] = 10
-    event_10_params['start'] = "2015-01-01 00:00:00"
-    event_10_params['walkers'] = 1000000
-    event_10_params['grav_diffusion'] = 0.1
-    event_10_params['mannings'] = 'mannings'
-    event_10_params['runoff'] = 'runoff'
-    event_10_params['threads'] = threads
-    event_10_params['env'] = envs['event_10']
+    # dictionary of parameters for 1m series simulation
+    series_1_params = {}
+    series_1_params['elevation'] = 'elevation@series_1'
+    series_1_params['runs'] = 'series'
+    series_1_params['mode'] = 'simwe_mode'
+    series_1_params['precipitation'] = design_storm_1m
+    series_1_params['rain_interval'] = 1
+    series_1_params['start'] = "2015-01-01 00:00:00"
+    series_1_params['walkers'] = 1000000
+    series_1_params['grav_diffusion'] = 0.1
+    series_1_params['mannings'] = 'mannings'
+    series_1_params['runoff'] = 'runoff'
+    series_1_params['threads'] = threads
+    series_1_params['env'] = envs['series_1']
     # append dictionary to options list
-    options_list.append(event_10_params)
+    options_list.append(series_1_params)
 
     # dictionary of parameters for 2m series simulation
     series_2_params = {}
@@ -121,39 +144,22 @@ def main():
     # append dictionary to options list
     options_list.append(series_2_params)
 
-    # dictionary of parameters for 5m series simulation
-    series_5_params = {}
-    series_5_params['elevation'] = 'elevation@series_5'
-    series_5_params['runs'] = 'series'
-    series_5_params['mode'] = 'simwe_mode'
-    series_5_params['precipitation'] = design_storm_5m
-    series_5_params['rain_interval'] = 5
-    series_5_params['start'] = "2015-01-01 00:00:00"
-    series_5_params['walkers'] = 1000000
-    series_5_params['grav_diffusion'] = 0.1
-    series_5_params['mannings'] = 'mannings'
-    series_5_params['runoff'] = 'runoff'
-    series_5_params['threads'] = threads
-    series_5_params['env'] = envs['series_5']
+    # dictionary of parameters for 3m series simulation
+    series_3_params = {}
+    series_3_params['elevation'] = 'elevation@series_3'
+    series_3_params['runs'] = 'series'
+    series_3_params['mode'] = 'simwe_mode'
+    series_3_params['precipitation'] = design_storm_3m
+    series_2_params['rain_interval'] = 3
+    series_3_params['start'] = "2015-01-01 00:00:00"
+    series_3_params['walkers'] = 1000000
+    series_3_params['grav_diffusion'] = 0.1
+    series_3_params['mannings'] = 'mannings'
+    series_3_params['runoff'] = 'runoff'
+    series_3_params['threads'] = threads
+    series_3_params['env'] = envs['series_3']
     # append dictionary to options list
-    options_list.append(series_5_params)
-
-    # dictionary of parameters for 10m series simulation
-    series_10_params = {}
-    series_10_params['elevation'] = 'elevation@series_10'
-    series_10_params['runs'] = 'series'
-    series_10_params['mode'] = 'simwe_mode'
-    series_10_params['precipitation'] = design_storm_10m
-    series_5_params['rain_interval'] = 10
-    series_10_params['start'] = "2015-01-01 00:00:00"
-    series_10_params['walkers'] = 1000000
-    series_10_params['grav_diffusion'] = 0.1
-    series_10_params['mannings'] = 'mannings'
-    series_10_params['runoff'] = 'runoff'
-    series_10_params['threads'] = threads
-    series_10_params['env'] = envs['series_10']
-    # append dictionary to options list
-    options_list.append(series_10_params)
+    options_list.append(series_3_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)

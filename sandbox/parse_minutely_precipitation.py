@@ -8,8 +8,8 @@ import pandas as pd
 import warnings
 warnings.simplefilter(action = "ignore", category = RuntimeWarning)
 
-data_dir = input_file = os.path.join(os.path.dirname(__file__), 'precipitation', 'horticultural_crops_research_station', 'source_data')
-output_dir = input_file = os.path.join(os.path.dirname(__file__), 'precipitation', 'horticultural_crops_research_station')
+data_dir = os.path.join(os.path.dirname(__file__), 'precipitation', 'horticultural_crops_research_station', 'source_data')
+output_dir = os.path.join(os.path.dirname(__file__), 'precipitation', 'horticultural_crops_research_station')
 filenames = defaultdict(list)
 years = range(2006,2017)
 
