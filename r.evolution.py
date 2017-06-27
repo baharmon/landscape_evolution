@@ -1242,7 +1242,7 @@ class Evolution:
             'r.mapcalc',
             expression="{evolved_elevation}"
             "={elevation}"
-            "+({rain_interval}*60"
+            "-({rain_interval}*60"
             "*{sediment_flux}"
             "/{density})".format(
                 evolved_elevation=evolved_elevation,
