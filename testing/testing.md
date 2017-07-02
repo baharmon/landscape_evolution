@@ -7,7 +7,7 @@ g.extension r.evolution url=github.com/baharmon/landscape_evolution
 # FATRA
 ssh -Y baharmon@fatra.cnr.ncsu.edu
 mkdir grassdata
-~.
+exit
 scp /Users/Brendan/Downloads/nc_spm_evolution.zip baharmon@fatra.cnr.ncsu.edu:grassdata/nc_spm_evolution.zip
 ssh -X baharmon@fatra.cnr.ncsu.edu
 cd grassdata
@@ -19,7 +19,8 @@ grass-trunk
 g.extension r.sim.water.mp
 landscape_evolution/testing/decadal_simulations.py
 landscape_evolution/testing/simulations_06_22_2017.py
-~.
+top
+exit
 
 # TODO
 Test event and series based SIMWE simulations for 1 m, 2 m, and 3 m intervals

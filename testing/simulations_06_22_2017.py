@@ -29,6 +29,7 @@ location = env['LOCATION_NAME']
 
 # list of simulations to run
 simulations = [
+    'steady_state',
     'event_1',
     'event_2',
     'event_3',
@@ -38,7 +39,7 @@ simulations = [
 
 # set parameters
 res = 1  # resolution of the region
-nprocs = 6
+nprocs = 7
 threads = 2
 
 design_storm_1m = os.path.join(gisdbase, location, 'design_storm_1m.txt')
@@ -55,6 +56,24 @@ def main():
 
     # create list of options for each simulation
     options_list = []
+
+    # dictionary of parameters for 1m event simulation
+    steady_state_params = {}
+    steady_state_params['elevation'] = 'elevation@steady_state'
+    steady_state_params['runs'] = 'event'
+    steady_state_params['mode'] = 'simwe_mode'
+    steady_state_params['rain_intensity'] = 50.0
+    steady_state_params['rain_duration'] = 60
+    steady_state_params['rain_interval'] = 60
+    steady_state_params['start'] = "2015-01-01 00:00:00"
+    steady_state_params['walkers'] = 1000000
+    steady_state_params['grav_diffusion'] = 0.1
+    steady_state_params['mannings'] = 'mannings'
+    steady_state_params['runoff'] = 'runoff'
+    steady_state_params['threads'] = threads
+    steady_state_params['env'] = envs['steady_state']
+    # append dictionary to options list
+    options_list.append(steady_state_params)
 
     # dictionary of parameters for 1m event simulation
     event_1_params = {}
