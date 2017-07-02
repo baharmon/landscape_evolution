@@ -327,7 +327,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% key: start
 #% type: string
 #% description: Start time in year-month-day hour:minute:second format
-#% answer: 2015-10-06 00:00:00
+#% answer: 2000-01-01 00:00:00
 #% multiple: no
 #% required: yes
 #% guisection: Temporal
@@ -337,7 +337,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% key: rain_interval
 #% type: integer
 #% description: Time interval between evolution events in minutes
-#% answer: 10
+#% answer: 1
 #% multiple: no
 #% required: yes
 #% guisection: Temporal
@@ -1644,7 +1644,7 @@ class Evolution:
             'r.mapcalc',
             expression="{evolved_elevation}"
             "={elevation}"
-            "+({rain_interval}*60"
+            "-({rain_interval}*60"
             "*{sediment_flux}"
             "/{density})".format(
                 evolved_elevation=evolved_elevation,

@@ -1,16 +1,8 @@
 # EXTENSION
 g.extension r.evolution url=github.com/baharmon/landscape_evolution
 
-# LAUNCH GRASS
-/Applications/GRASS-7.3.app/Contents/MacOS/grass73
-
 # RUN SCRIPT
-/Users/Brendan/landscape_evolution/testing/simulations.py
 /Users/baharmon/landscape_evolution/testing/simulations.py
-
-# PYTHON
-/Users/Brendan/landscape_evolution/testing/launch_grass_session.py
-/Users/baharmon/landscape_evolution/testing/launch_grass_session.py
 
 # FATRA
 ssh -Y baharmon@fatra.cnr.ncsu.edu
@@ -28,3 +20,9 @@ g.extension r.sim.water.mp
 landscape_evolution/testing/decadal_simulations.py
 landscape_evolution/testing/simulations_06_22_2017.py
 ~.
+
+# TODO
+Test event and series based SIMWE simulations for 1 m, 2 m, and 3 m intervals
+Test all simulation modes with 60 min storm with 50 mm/hr
+Run 1 year simulation
+Run 12 year simulation
