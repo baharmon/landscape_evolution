@@ -1982,13 +1982,15 @@ class DynamicEvolution:
             print evol.start
 
             # derive excess water (mm/hr) from rainfall rate (mm/hr)
-            # plus the product of depth (m) and the rainfall interval (min)
+            # plus the depth (m) per rainfall interval (min)
             gscript.run_command(
                 'r.mapcalc',
                 expression="{rain_excess}"
                 "={rain_intensity}"
-                "+(({depth}*(1/1000))"
-                "*({rain_interval}*(1/60)))".format(
+                "+{depth}"
+                "/1000."
+                "/{rain_interval}"
+                "*60.".format(
                     rain_excess=rain_excess,
                     rain_intensity=self.rain_intensity,
                     depth=depth,
@@ -2247,11 +2249,17 @@ class DynamicEvolution:
             initial = next(precip)
             evol.start = initial[0]
             evol.rain_intensity = 'rain_intensity'
+            # compute rainfall intensity (mm/hr)
+            # from rainfall observation (mm)
             gscript.run_command(
                 'r.mapcalc',
-                expression="{rain_intensity} = {initial}".format(
+                expression="{rain_intensity}"
+                "={rain_observation}"
+                "/{rain_interval}"
+                "*60.".format(
                     rain_intensity=evol.rain_intensity,
-                    initial=float(initial[1])),
+                    rain_observation=float(initial[1]),
+                    rain_interval=self.rain_interval),
                 overwrite=True)
 
             # determine mode and run model
@@ -2369,22 +2377,37 @@ class DynamicEvolution:
                 # update time
                 evol.start=row[0]
 
+                # compute rainfall intensity (mm/hr)
+                # from rainfall observation (mm)
+                rain_intensity = 'rain_intensity'
+                gscript.run_command(
+                    'r.mapcalc',
+                    expression="{rain_intensity}"
+                    "={rain_observation}"
+                    "/{rain_interval}"
+                    "*60.".format(
+                        rain_intensity=rain_intensity,
+                        rain_observation=float(row[1]),
+                        rain_interval=self.rain_interval),
+                    overwrite=True)
+
                 # derive excess water (mm/hr) from rainfall rate (mm/hr)
-                # plus the product of depth (m) and the rainfall interval (min)
+                # plus the depth (m) per rainfall interval (min)
                 gscript.run_command(
                     'r.mapcalc',
                     expression="{rain_excess}"
                     "={rain_intensity}"
-                    "+(({depth}*(1/1000))"
-                    "*({rain_interval}*(1/60)))".format(
+                    "+{depth}"
+                    "/1000."
+                    "/{rain_interval}"
+                    "*60.".format(
                         rain_excess=rain_excess,
-                        rain_intensity=float(row[1]),
+                        rain_intensity=rain_intensity,
                         depth=depth,
                         rain_interval=self.rain_interval),
                     overwrite=True)
 
                 # update excess rainfall
-                rain_intensity = 'rain_intensity'
                 gscript.run_command(
                     'r.mapcalc',
                     expression="{rain_intensity} = {rain_excess}".format(
