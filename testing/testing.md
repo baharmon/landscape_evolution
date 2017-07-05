@@ -25,7 +25,7 @@ exit
 # TODO
 Troubleshoot RUSLE
 Run steady state simulations
-Run event based simulations for 1 min intervals for 3 hrs parameterized to generate +-1m elevation change
+Run event based simulations for 1 min intervals parameterized to generate +-1m elevation change
 Run series based SIMWE simulations with design storm with 1 min intervals for 1 hr
-Run 2 year simulation
-Run 12 year simulation
+Run 3 year simulation (2013-2016)
+Run 10 year simulation (2006-2016)

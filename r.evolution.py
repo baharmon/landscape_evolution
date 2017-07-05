@@ -610,7 +610,7 @@ def main():
     if runs == "event":
         elevation = dynamics.rainfall_event()
 
-    # atexit.register(cleanup)
+    atexit.register(cleanup)
     sys.exit(0)
 
 class Evolution:
@@ -1012,7 +1012,7 @@ class Evolution:
         sedflux = 'flux' # kg/ms
 
         # parse, advance, and stamp time
-        (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
+        (evolved_elevation, time, depth, erosion_deposition,
         difference) = self.parse_time()
 
         # compute slope and partial derivatives
@@ -1102,7 +1102,7 @@ class Evolution:
         sedflux = 'flux' # kg/ms
 
         # parse, advance, and stamp time
-        (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
+        (evolved_elevation, time, depth, erosion_deposition,
         difference) = self.parse_time()
 
         # compute slope and partial derivatives
@@ -1192,7 +1192,7 @@ class Evolution:
         sedflux = 'flux' # kg/ms
 
         # parse, advance, and stamp time
-        (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
+        (evolved_elevation, time, depth, sediment_flux,
         difference) = self.parse_time()
 
         # compute slope, and partial derivatives
@@ -1290,7 +1290,7 @@ class Evolution:
         sedflow = 'sedflow'
 
         # parse, advance, and stamp time
-        (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
+        (evolved_elevation, time, depth, erosion_deposition,
         difference) = self.parse_time()
 
         # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
@@ -1538,7 +1538,7 @@ class Evolution:
         sedflux = 'flux'
 
         # parse, advance, and stamp time
-        (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
+        (evolved_elevation, time, depth, sediment_flux,
         difference) = self.parse_time()
 
         # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
@@ -1598,14 +1598,15 @@ class Evolution:
         gscript.run_command(
             'r.mapcalc',
             expression="{sedflow}"
-            "={r_factor}*{k_factor}*{ls_factor}*{c_factor}".format(
+            "={r_factor}"
+            "*{k_factor}"
+            "*{ls_factor}"
+            "*{c_factor}".format(
+                sedflow=sedflow,
                 r_factor=r_factor,
                 k_factor=self.k_factor,
-                c_factor=self.c_factor,
                 ls_factor=ls_factor,
-                slope=slope,
-                flowacc=depth,
-                sedflow=sedflow),
+                c_factor=self.c_factor),
             overwrite=True)
 
         # convert sediment flow from tons/ha to kg/ms
@@ -1660,19 +1661,19 @@ class Evolution:
         # compute elevation change
         difference = self.compute_difference(evolved_elevation, difference)
 
-        # # remove temporary maps
-        # gscript.run_command(
-        #     'g.remove',
-        #     type='raster',
-        #     name=['slope',
-        #         'grow_slope',
-        #         'sedflow',
-        #         'flux',
-        #         'settled_elevation',
-        #         'divergence',
-        #         'r_factor',
-        #         'ls_factor'],
-        #     flags='f')
+        # remove temporary maps
+        gscript.run_command(
+            'g.remove',
+            type='raster',
+            name=['slope',
+                'grow_slope',
+                'sedflow',
+                'flux',
+                'settled_elevation',
+                'divergence',
+                'r_factor',
+                'ls_factor'],
+            flags='f')
 
         return (evolved_elevation, time, depth, sediment_flux, difference)
 
