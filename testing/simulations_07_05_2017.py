@@ -34,8 +34,8 @@ simulations = [
 
 # set parameters
 res = 1  # resolution of the region
-nprocs = 4
-threads = 3
+nprocs = 2
+threads = 6
 
 design_storm_1m = os.path.join(gisdbase, location, 'design_storm_1m.txt')
 design_storm_2m = os.path.join(gisdbase, location, 'design_storm_2m.txt')
