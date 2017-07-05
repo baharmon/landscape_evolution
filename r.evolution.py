@@ -610,7 +610,7 @@ def main():
     if runs == "event":
         elevation = dynamics.rainfall_event()
 
-    atexit.register(cleanup)
+    # atexit.register(cleanup)
     sys.exit(0)
 
 class Evolution:

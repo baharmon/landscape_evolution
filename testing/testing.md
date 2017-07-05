@@ -23,7 +23,9 @@ top
 exit
 
 # TODO
-Test event and series based SIMWE simulations for 1 m, 2 m, and 3 m intervals
-Test all simulation modes with 60 min storm with 50 mm/hr
-Run 1 year simulation
+Troubleshoot RUSLE
+Run steady state simulations
+Run event based simulations for 1 min intervals for 3 hrs parameterized to generate +-1m elevation change
+Run series based SIMWE simulations with design storm with 1 min intervals for 1 hr
+Run 2 year simulation
 Run 12 year simulation
