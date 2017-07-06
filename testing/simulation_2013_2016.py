@@ -29,22 +29,14 @@ location = env['LOCATION_NAME']
 
 # list of simulations to run
 simulations = [
-    'steady_state',
-    'event_1',
-    'event_2',
-    'event_3',
-    'series_1',
-    'series_2',
-    'series_3']
+    'erdep_3yr']
 
 # set parameters
 res = 1  # resolution of the region
-nprocs = 7
-threads = 2
+nprocs = 1
+threads = 8
 
-design_storm_1m = os.path.join(gisdbase, location, 'design_storm_1m.txt')
-design_storm_2m = os.path.join(gisdbase, location, 'design_storm_2m.txt')
-design_storm_3m = os.path.join(gisdbase, location, 'design_storm_3m.txt')
+precipitation = os.path.join(gisdbase, location, 'rain_events_2013_2016.csv')
 
 def main():
 
@@ -57,128 +49,23 @@ def main():
     # create list of options for each simulation
     options_list = []
 
-    # dictionary of parameters for 1m event simulation
-    steady_state_params = {}
-    steady_state_params['elevation'] = 'elevation@steady_state'
-    steady_state_params['runs'] = 'event'
-    steady_state_params['mode'] = 'simwe_mode'
-    steady_state_params['rain_intensity'] = 50.0
-    steady_state_params['rain_duration'] = 60
-    steady_state_params['rain_interval'] = 60
-    steady_state_params['start'] = "2015-01-01 00:00:00"
-    steady_state_params['walkers'] = 1000000
-    steady_state_params['grav_diffusion'] = 0.1
-    steady_state_params['mannings'] = 'mannings'
-    steady_state_params['runoff'] = 'runoff'
-    steady_state_params['threads'] = threads
-    steady_state_params['env'] = envs['steady_state']
+    # dictionary of parameters
+    # for erosion-deposition simulation from 2013 to 2016
+    erdep_3yr_params = {}
+    erdep_3yr_params['elevation'] = 'elevation@erdep_3yr'
+    erdep_3yr_params['runs'] = 'series'
+    erdep_3yr_params['mode'] = 'simwe_mode'
+    erdep_3yr_params['precipitation'] = precipitation
+    erdep_3yr_params['rain_interval'] = 1
+    erdep_3yr_params['start'] = "2013-01-01 00:00:00"
+    erdep_3yr_params['walkers'] = 5000000
+    erdep_3yr_params['grav_diffusion'] = 0.1
+    erdep_3yr_params['mannings'] = 'mannings'
+    erdep_3yr_params['runoff'] = 'runoff'
+    erdep_3yr_params['threads'] = threads
+    erdep_3yr_params['env'] = envs['erdep_3yr']
     # append dictionary to options list
-    options_list.append(steady_state_params)
-
-    # dictionary of parameters for 1m event simulation
-    event_1_params = {}
-    event_1_params['elevation'] = 'elevation@event_1'
-    event_1_params['runs'] = 'event'
-    event_1_params['mode'] = 'simwe_mode'
-    event_1_params['rain_intensity'] = 50.0
-    event_1_params['rain_duration'] = 60
-    event_1_params['rain_interval'] = 1
-    event_1_params['start'] = "2015-01-01 00:00:00"
-    event_1_params['walkers'] = 1000000
-    event_1_params['grav_diffusion'] = 0.1
-    event_1_params['mannings'] = 'mannings'
-    event_1_params['runoff'] = 'runoff'
-    event_1_params['threads'] = threads
-    event_1_params['env'] = envs['event_1']
-    # append dictionary to options list
-    options_list.append(event_1_params)
-
-    # dictionary of parameters for 2m event simulation
-    event_2_params = {}
-    event_2_params['elevation'] = 'elevation@event_2'
-    event_2_params['runs'] = 'event'
-    event_2_params['mode'] = 'simwe_mode'
-    event_2_params['rain_intensity'] = 50.0
-    event_2_params['rain_duration'] = 60
-    event_2_params['rain_interval'] = 2
-    event_2_params['start'] = "2015-01-01 00:00:00"
-    event_2_params['walkers'] = 1000000
-    event_2_params['grav_diffusion'] = 0.1
-    event_2_params['mannings'] = 'mannings'
-    event_2_params['runoff'] = 'runoff'
-    event_2_params['threads'] = threads
-    event_2_params['env'] = envs['event_2']
-    # append dictionary to options list
-    options_list.append(event_2_params)
-
-    # dictionary of parameters for 3m event simulation
-    event_3_params = {}
-    event_3_params['elevation'] = 'elevation@event_3'
-    event_3_params['runs'] = 'event'
-    event_3_params['mode'] = 'simwe_mode'
-    event_3_params['rain_intensity'] = 50.0
-    event_3_params['rain_duration'] = 60
-    event_3_params['rain_interval'] = 3
-    event_3_params['start'] = "2015-01-01 00:00:00"
-    event_3_params['walkers'] = 1000000
-    event_3_params['grav_diffusion'] = 0.1
-    event_3_params['mannings'] = 'mannings'
-    event_3_params['runoff'] = 'runoff'
-    event_3_params['threads'] = threads
-    event_3_params['env'] = envs['event_3']
-    # append dictionary to options list
-    options_list.append(event_3_params)
-
-    # dictionary of parameters for 1m series simulation
-    series_1_params = {}
-    series_1_params['elevation'] = 'elevation@series_1'
-    series_1_params['runs'] = 'series'
-    series_1_params['mode'] = 'simwe_mode'
-    series_1_params['precipitation'] = design_storm_1m
-    series_1_params['rain_interval'] = 1
-    series_1_params['start'] = "2015-01-01 00:00:00"
-    series_1_params['walkers'] = 1000000
-    series_1_params['grav_diffusion'] = 0.1
-    series_1_params['mannings'] = 'mannings'
-    series_1_params['runoff'] = 'runoff'
-    series_1_params['threads'] = threads
-    series_1_params['env'] = envs['series_1']
-    # append dictionary to options list
-    options_list.append(series_1_params)
-
-    # dictionary of parameters for 2m series simulation
-    series_2_params = {}
-    series_2_params['elevation'] = 'elevation@series_2'
-    series_2_params['runs'] = 'series'
-    series_2_params['mode'] = 'simwe_mode'
-    series_2_params['precipitation'] = design_storm_2m
-    series_2_params['rain_interval'] = 2
-    series_2_params['start'] = "2015-01-01 00:00:00"
-    series_2_params['walkers'] = 1000000
-    series_2_params['grav_diffusion'] = 0.1
-    series_2_params['mannings'] = 'mannings'
-    series_2_params['runoff'] = 'runoff'
-    series_2_params['threads'] = threads
-    series_2_params['env'] = envs['series_2']
-    # append dictionary to options list
-    options_list.append(series_2_params)
-
-    # dictionary of parameters for 3m series simulation
-    series_3_params = {}
-    series_3_params['elevation'] = 'elevation@series_3'
-    series_3_params['runs'] = 'series'
-    series_3_params['mode'] = 'simwe_mode'
-    series_3_params['precipitation'] = design_storm_3m
-    series_2_params['rain_interval'] = 3
-    series_3_params['start'] = "2015-01-01 00:00:00"
-    series_3_params['walkers'] = 1000000
-    series_3_params['grav_diffusion'] = 0.1
-    series_3_params['mannings'] = 'mannings'
-    series_3_params['runoff'] = 'runoff'
-    series_3_params['threads'] = threads
-    series_3_params['env'] = envs['series_3']
-    # append dictionary to options list
-    options_list.append(series_3_params)
+    options_list.append(erdep_3yr_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)
@@ -212,7 +99,7 @@ def create_environments(simulations):
 
         # copy maps
         gscript.run_command('g.copy',
-            raster=['elevation_2004@PERMANENT','elevation'],
+            raster=['elevation_2012@PERMANENT','elevation'],
             env=envs[mapset])
         gscript.run_command('g.copy',
             raster=['mannings@PERMANENT','mannings'],
@@ -264,6 +151,13 @@ def dependencies():
             extension='r.evolution',
             operation='add',
             url='github.com/baharmon/landscape_evolution')
+    except CalledModuleError:
+        pass
+
+    try:
+        gscript.run_command('g.extension',
+            extension='r.sim.water.mp',
+            operation='add')
     except CalledModuleError:
         pass
 

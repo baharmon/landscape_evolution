@@ -60,7 +60,7 @@ def main():
     ss_erdep_params['rain_duration'] = 60
     ss_erdep_params['rain_interval'] = 60
     ss_erdep_params['start'] = "2016-01-01 00:00:00"
-    ss_erdep_params['walkers'] = 3000000
+    ss_erdep_params['walkers'] = 5000000
     ss_erdep_params['grav_diffusion'] = 0.1
     ss_erdep_params['mannings'] = 'mannings'
     ss_erdep_params['runoff'] = 'runoff'
@@ -79,8 +79,8 @@ def main():
     ss_flux_params['rain_duration'] = 60
     ss_flux_params['rain_interval'] = 60
     ss_flux_params['start'] = "2016-01-01 00:00:00"
-    ss_flux_params['walkers'] = 3000000
-    ss_flux_params['grav_diffusion'] = 0.2
+    ss_flux_params['walkers'] = 5000000
+    ss_flux_params['grav_diffusion'] = 0.1
     ss_flux_params['transport_value'] = 100
     ss_flux_params['detachment_value'] = 0.01
     ss_flux_params['mannings'] = 'mannings'
@@ -99,8 +99,8 @@ def main():
     ss_transport_params['rain_duration'] = 60
     ss_transport_params['rain_interval'] = 60
     ss_transport_params['start'] = "2016-01-01 00:00:00"
-    ss_transport_params['walkers'] = 3000000
-    ss_transport_params['grav_diffusion'] = 0.2
+    ss_transport_params['walkers'] = 5000000
+    ss_transport_params['grav_diffusion'] = 0.1
     ss_transport_params['ss_transport_value'] = 0.01
     ss_transport_params['detachment_value'] = 1
     ss_transport_params['mannings'] = 'mannings'
@@ -119,7 +119,7 @@ def main():
     ss_usped_params['rain_duration'] = 60
     ss_usped_params['rain_interval'] = 60
     ss_usped_params['start'] = "2016-01-01 00:00:00"
-    ss_usped_params['grav_diffusion'] = 0.2
+    ss_usped_params['grav_diffusion'] = 0.1
     ss_usped_params['m'] = 1.5
     ss_usped_params['n'] = 1.2
     ss_usped_params['c_factor'] = 'c_factor'
@@ -137,7 +137,7 @@ def main():
     ss_rusle_params['rain_duration'] = 60
     ss_rusle_params['rain_interval'] = 60
     ss_rusle_params['start'] = "2016-01-01 00:00:00"
-    ss_rusle_params['grav_diffusion'] = 0.2
+    ss_rusle_params['grav_diffusion'] = 0.1
     ss_rusle_params['m'] = 0.4
     ss_rusle_params['n'] = 1.3
     ss_rusle_params['c_factor'] = 'c_factor'
@@ -230,6 +230,13 @@ def dependencies():
             extension='r.evolution',
             operation='add',
             url='github.com/baharmon/landscape_evolution')
+    except CalledModuleError:
+        pass
+
+    try:
+        gscript.run_command('g.extension',
+            extension='r.sim.water.mp',
+            operation='add')
     except CalledModuleError:
         pass
 

@@ -8,8 +8,8 @@ g.extension r.evolution url=github.com/baharmon/landscape_evolution
 ssh -Y baharmon@fatra.cnr.ncsu.edu
 mkdir grassdata
 exit
-scp /Users/Brendan/Downloads/nc_spm_evolution.zip baharmon@fatra.cnr.ncsu.edu:grassdata/nc_spm_evolution.zip
-ssh -X baharmon@fatra.cnr.ncsu.edu
+scp /Users/baharmon/grassdata/nc_spm_evolution.zip baharmon@fatra.cnr.ncsu.edu:grassdata/nc_spm_evolution.zip
+ssh -Y baharmon@fatra.cnr.ncsu.edu
 cd grassdata
 unzip nc_spm_evolution.zip
 rm nc_spm_evolution.zip

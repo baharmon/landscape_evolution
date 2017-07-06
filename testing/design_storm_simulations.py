@@ -29,16 +29,15 @@ location = env['LOCATION_NAME']
 
 # list of simulations to run
 simulations = [
-    'series_1',
-    'series_2']
+    'design_erdep',
+    'design_flux']
 
 # set parameters
 res = 1  # resolution of the region
 nprocs = 2
 threads = 6
 
-design_storm_1m = os.path.join(gisdbase, location, 'design_storm_1m.txt')
-design_storm_2m = os.path.join(gisdbase, location, 'design_storm_2m.txt')
+design_storm = os.path.join(gisdbase, location, 'design_storm.txt')
 
 def main():
 
@@ -51,39 +50,43 @@ def main():
     # create list of options for each simulation
     options_list = []
 
-    # dictionary of parameters for 1m series simulation
-    series_1_params = {}
-    series_1_params['elevation'] = 'elevation@series_1'
-    series_1_params['runs'] = 'series'
-    series_1_params['mode'] = 'simwe_mode'
-    series_1_params['precipitation'] = design_storm_1m
-    series_1_params['rain_interval'] = 1
-    series_1_params['start'] = "2015-01-01 00:00:00"
-    series_1_params['walkers'] = 2000000
-    series_1_params['grav_diffusion'] = 0.1
-    series_1_params['mannings'] = 'mannings'
-    series_1_params['runoff'] = 'runoff'
-    series_1_params['threads'] = threads
-    series_1_params['env'] = envs['series_1']
+    # dictionary of parameters
+    # for erosion-deposition simulation with a design storm
+    design_erdep_params = {}
+    design_erdep_params['elevation'] = 'elevation@design_erdep'
+    design_erdep_params['runs'] = 'series'
+    design_erdep_params['mode'] = 'simwe_mode'
+    design_erdep_params['precipitation'] = design_storm
+    design_erdep_params['rain_interval'] = 1
+    design_erdep_params['start'] = "2016-01-01 00:00:00"
+    design_erdep_params['walkers'] = 5000000
+    design_erdep_params['grav_diffusion'] = 0.1
+    design_erdep_params['mannings'] = 'mannings'
+    design_erdep_params['runoff'] = 'runoff'
+    design_erdep_params['threads'] = threads
+    design_erdep_params['env'] = envs['design_erdep']
     # append dictionary to options list
-    options_list.append(series_1_params)
+    options_list.append(design_erdep_params)
 
-    # dictionary of parameters for 2m series simulation
-    series_2_params = {}
-    series_2_params['elevation'] = 'elevation@series_2'
-    series_2_params['runs'] = 'series'
-    series_2_params['mode'] = 'simwe_mode'
-    series_2_params['precipitation'] = design_storm_2m
-    series_2_params['rain_interval'] = 2
-    series_2_params['start'] = "2015-01-01 00:00:00"
-    series_2_params['walkers'] = 2000000
-    series_2_params['grav_diffusion'] = 0.1
-    series_2_params['mannings'] = 'mannings'
-    series_2_params['runoff'] = 'runoff'
-    series_2_params['threads'] = threads
-    series_2_params['env'] = envs['series_2']
+    # dictionary of parameters
+    # for erosion-deposition simulation with a design storm
+    design_flux_params = {}
+    design_flux_params['elevation'] = 'elevation@design_flux'
+    design_flux_params['runs'] = 'series'
+    design_flux_params['mode'] = 'simwe_mode'
+    design_flux_params['precipitation'] = design_storm
+    design_flux_params['rain_interval'] = 1
+    design_flux_params['start'] = "2016-01-01 00:00:00"
+    design_flux_params['walkers'] = 5000000
+    design_flux_params['transport_value'] = 100
+    design_flux_params['detachment_value'] = 0.01
+    design_flux_params['grav_diffusion'] = 0.1
+    design_flux_params['mannings'] = 'mannings'
+    design_flux_params['runoff'] = 'runoff'
+    design_flux_params['threads'] = threads
+    design_flux_params['env'] = envs['design_flux']
     # append dictionary to options list
-    options_list.append(series_2_params)
+    options_list.append(design_erdep_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)
@@ -169,6 +172,13 @@ def dependencies():
             extension='r.evolution',
             operation='add',
             url='github.com/baharmon/landscape_evolution')
+    except CalledModuleError:
+        pass
+
+    try:
+        gscript.run_command('g.extension',
+            extension='r.sim.water.mp',
+            operation='add')
     except CalledModuleError:
         pass
 
