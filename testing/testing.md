@@ -23,7 +23,6 @@ top
 exit
 
 # TODO
-Troubleshoot RUSLE
 Run steady state simulations
 Run event based simulations for 1 min intervals parameterized to generate +-1m elevation change
 Run series based SIMWE simulations with design storm with 1 min intervals for 1 hr
