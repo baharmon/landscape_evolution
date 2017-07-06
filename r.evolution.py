@@ -610,8 +610,8 @@ def main():
     if runs == "event":
         elevation = dynamics.rainfall_event()
 
-    atexit.register(cleanup)
-    sys.exit(0)
+    # atexit.register(cleanup)
+    # sys.exit(0)
 
 class Evolution:
     def __init__(self, elevation, precipitation, start, rain_intensity,
@@ -1660,6 +1660,9 @@ class Evolution:
 
         # compute elevation change
         difference = self.compute_difference(evolved_elevation, difference)
+
+        # troubleshooting
+        sys.exit("single run of RUSLE for troubleshooting")
 
         # remove temporary maps
         gscript.run_command(
