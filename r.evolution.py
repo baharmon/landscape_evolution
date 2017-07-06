@@ -1333,6 +1333,7 @@ class Evolution:
             'r.watershed',
             elevation=self.elevation,
             accumulation=depth,
+            flags="a",
             overwrite=True)
         # add depression parameter to r.watershed
         # derive from landcover class
@@ -1569,6 +1570,7 @@ class Evolution:
             'r.watershed',
             elevation=self.elevation,
             accumulation=depth,
+            flags="a",
             overwrite=True)
 
         # compute dimensionless topographic factor
