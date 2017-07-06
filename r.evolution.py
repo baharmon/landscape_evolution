@@ -1012,7 +1012,7 @@ class Evolution:
         sedflux = 'flux' # kg/ms
 
         # parse, advance, and stamp time
-        (evolved_elevation, time, depth, erosion_deposition,
+        (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
         difference) = self.parse_time()
 
         # compute slope and partial derivatives
@@ -1102,7 +1102,7 @@ class Evolution:
         sedflux = 'flux' # kg/ms
 
         # parse, advance, and stamp time
-        (evolved_elevation, time, depth, erosion_deposition,
+        (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
         difference) = self.parse_time()
 
         # compute slope and partial derivatives
@@ -1192,7 +1192,7 @@ class Evolution:
         sedflux = 'flux' # kg/ms
 
         # parse, advance, and stamp time
-        (evolved_elevation, time, depth, sediment_flux,
+        (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
         difference) = self.parse_time()
 
         # compute slope, and partial derivatives
@@ -1290,7 +1290,7 @@ class Evolution:
         sedflow = 'sedflow'
 
         # parse, advance, and stamp time
-        (evolved_elevation, time, depth, erosion_deposition,
+        (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
         difference) = self.parse_time()
 
         # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
@@ -1538,7 +1538,7 @@ class Evolution:
         sedflux = 'flux'
 
         # parse, advance, and stamp time
-        (evolved_elevation, time, depth, sediment_flux,
+        (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
         difference) = self.parse_time()
 
         # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
