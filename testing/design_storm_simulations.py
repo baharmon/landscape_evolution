@@ -60,7 +60,7 @@ def main():
     design_erdep_params['rain_interval'] = 1
     design_erdep_params['start'] = "2016-01-01 00:00:00"
     design_erdep_params['walkers'] = 5000000
-    design_erdep_params['grav_diffusion'] = 0.1
+    design_erdep_params['grav_diffusion'] = 0.2
     design_erdep_params['mannings'] = 'mannings'
     design_erdep_params['runoff'] = 'runoff'
     design_erdep_params['threads'] = threads
@@ -80,7 +80,7 @@ def main():
     design_flux_params['walkers'] = 5000000
     design_flux_params['transport_value'] = 100
     design_flux_params['detachment_value'] = 0.01
-    design_flux_params['grav_diffusion'] = 0.1
+    design_flux_params['grav_diffusion'] = 0.2
     design_flux_params['mannings'] = 'mannings'
     design_flux_params['runoff'] = 'runoff'
     design_flux_params['threads'] = threads

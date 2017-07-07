@@ -56,7 +56,7 @@ def main():
     erdep_params['rain_interval'] = 1
     erdep_params['start'] = "2016-01-01 00:00:00"
     erdep_params['walkers'] = 5000000
-    erdep_params['grav_diffusion'] = 0.1
+    erdep_params['grav_diffusion'] = 0.2
     erdep_params['mannings'] = 'mannings'
     erdep_params['runoff'] = 'runoff'
     erdep_params['threads'] = threads
@@ -74,8 +74,8 @@ def main():
     flux_params['rain_interval'] = 1
     flux_params['start'] = "2016-01-01 00:00:00"
     flux_params['walkers'] = 5000000
-    flux_params['grav_diffusion'] = 0.1
-    flux_params['transport_value'] = 100
+    flux_params['grav_diffusion'] = 0.2
+    flux_params['transport_value'] = 100.
     flux_params['detachment_value'] = 0.01
     flux_params['mannings'] = 'mannings'
     flux_params['runoff'] = 'runoff'
@@ -94,9 +94,9 @@ def main():
     transport_params['rain_interval'] = 1
     transport_params['start'] = "2016-01-01 00:00:00"
     transport_params['walkers'] = 5000000
-    transport_params['grav_diffusion'] = 0.1
+    transport_params['grav_diffusion'] = 0.2
     transport_params['transport_value'] = 0.01
-    transport_params['detachment_value'] = 1
+    transport_params['detachment_value'] = 1.
     transport_params['mannings'] = 'mannings'
     transport_params['runoff'] = 'runoff'
     transport_params['threads'] = threads
@@ -113,7 +113,7 @@ def main():
     usped_params['rain_duration'] = 60
     usped_params['rain_interval'] = 1
     usped_params['start'] = "2016-01-01 00:00:00"
-    usped_params['grav_diffusion'] = 0.1
+    usped_params['grav_diffusion'] = 0.2
     usped_params['m'] = 1.5
     usped_params['n'] = 1.2
     usped_params['c_factor'] = 'c_factor'
@@ -131,7 +131,7 @@ def main():
     rusle_params['rain_duration'] = 60
     rusle_params['rain_interval'] = 1
     rusle_params['start'] = "2016-01-01 00:00:00"
-    rusle_params['grav_diffusion'] = 0.1
+    rusle_params['grav_diffusion'] = 0.2
     rusle_params['m'] = 0.4
     rusle_params['n'] = 1.3
     rusle_params['c_factor'] = 'c_factor'
