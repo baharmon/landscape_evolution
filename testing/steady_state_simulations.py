@@ -38,7 +38,7 @@ simulations = [
 # set parameters
 res = 1  # resolution of the region
 nprocs = 5
-#threads = 2
+threads = 1
 
 def main():
 
