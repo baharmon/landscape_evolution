@@ -86,7 +86,7 @@ def main():
     design_flux_params['threads'] = threads
     design_flux_params['env'] = envs['design_flux']
     # append dictionary to options list
-    options_list.append(design_erdep_params)
+    options_list.append(design_flux_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)
