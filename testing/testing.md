@@ -24,7 +24,7 @@ exit
 
 # TODO
 Run steady state simulations
-Run event based simulations for 1 min intervals parameterized to generate +-1m elevation change
-Run series based SIMWE simulations with design storm with 1 min intervals for 1 hr
+Run dynamic simulations
+Run design storm simulations
 Run 3 year simulation (2013-2016)
 Run 10 year simulation (2006-2016)
