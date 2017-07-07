@@ -33,7 +33,7 @@ simulations = [
     'design_flux']
 
 # set parameters
-res = 1  # resolution of the region
+res = 3  # resolution of the region
 nprocs = 2
 threads = 6
 
