@@ -34,7 +34,7 @@ simulations = [
 # set parameters
 res = 1  # resolution of the region
 nprocs = 1
-threads = 8
+threads = 4
 
 precipitation = os.path.join(gisdbase, location, 'rain_events_2013_2016.csv')
 
@@ -59,7 +59,7 @@ def main():
     erdep_3yr_params['rain_interval'] = 1
     erdep_3yr_params['start'] = "2013-01-01 00:00:00"
     erdep_3yr_params['walkers'] = 5000000
-    erdep_3yr_params['grav_diffusion'] = 0.1
+    erdep_3yr_params['grav_diffusion'] = 0.05
     erdep_3yr_params['mannings'] = 'mannings'
     erdep_3yr_params['runoff'] = 'runoff'
     erdep_3yr_params['threads'] = threads
