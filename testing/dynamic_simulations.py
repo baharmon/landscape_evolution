@@ -31,7 +31,7 @@ location = env['LOCATION_NAME']
 simulations = ['erdep','flux','transport','usped','rusle']
 
 # set parameters
-res = 1  # resolution of the region
+res = 3  # resolution of the region
 nprocs = 5
 threads = 2
 
