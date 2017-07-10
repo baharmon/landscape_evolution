@@ -176,10 +176,10 @@ def getEnvironment(gisdbase, location, mapset):
         f.write('GUI: text\n')
     env = os.environ.copy()
     env['GISRC'] = tmp_gisrc_file
-    env['GRAtoggled_REGION'] = gscript.region_env(raster='elevation_2004@PERMANENT')
-    env['GRAtoggled_OVERWRITE'] = '1'
-    env['GRAtoggled_VERBOSE'] = '0'
-    env['GRAtoggled_MESSAGE_FORMAT'] = 'standard'
+    env['GRASS_REGION'] = gscript.region_env(raster='elevation_2004@PERMANENT')
+    env['GRASS_OVERWRITE'] = '1'
+    env['GRASS_VERBOSE'] = '0'
+    env['GRASS_MESSAGE_FORMAT'] = 'standard'
     return tmp_gisrc_file, env
 
 def dependencies():
