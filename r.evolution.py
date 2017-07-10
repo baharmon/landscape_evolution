@@ -1065,7 +1065,7 @@ class Evolution:
             'r.mapcalc',
             expression="{evolved_elevation}"
             "={elevation}"
-            "+({rain_interval}*60"
+            "-({rain_interval}*60"
             "*{erosion_deposition}"
             "/{density})".format(
                 evolved_elevation=evolved_elevation,
@@ -1155,7 +1155,7 @@ class Evolution:
             'r.mapcalc',
             expression="{evolved_elevation}"
             "={elevation}"
-            "+({rain_interval}*60"
+            "-({rain_interval}*60"
             "*{erosion_deposition}"
             "/{density})".format(
                 evolved_elevation=evolved_elevation,
@@ -1487,7 +1487,7 @@ class Evolution:
             'r.mapcalc',
             expression="{evolved_elevation}"
             "={elevation}"
-            "+({rain_interval}*60"
+            "-({rain_interval}*60"
             "*{erosion_deposition}"
             "/{density})".format(
                 evolved_elevation=evolved_elevation,
