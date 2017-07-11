@@ -57,7 +57,7 @@ def main():
     design_erdep_params['runs'] = 'series'
     design_erdep_params['mode'] = 'simwe_mode'
     design_erdep_params['precipitation'] = design_storm
-    design_erdep_params['rain_interval'] = 1
+    design_erdep_params['rain_interval'] = 3
     design_erdep_params['start'] = "2016-01-01 00:00:00"
     design_erdep_params['walkers'] = 5000000
     design_erdep_params['grav_diffusion'] = 0.05
@@ -69,17 +69,17 @@ def main():
     options_list.append(design_erdep_params)
 
     # dictionary of parameters
-    # for erosion-deposition simulation with a design storm
+    # for flux simulation with a design storm
     design_flux_params = {}
     design_flux_params['elevation'] = 'elevation@design_flux'
     design_flux_params['runs'] = 'series'
     design_flux_params['mode'] = 'simwe_mode'
     design_flux_params['precipitation'] = design_storm
-    design_flux_params['rain_interval'] = 1
+    design_flux_params['rain_interval'] = 3
     design_flux_params['start'] = "2016-01-01 00:00:00"
     design_flux_params['walkers'] = 5000000
-    design_flux_params['transport_value'] = 100
-    design_flux_params['detachment_value'] = 0.01
+    design_flux_params['detachment_value'] = 0.0001
+    design_flux_params['transport_value'] = 0.01
     design_flux_params['grav_diffusion'] = 0.05
     design_flux_params['mannings'] = 'mannings'
     design_flux_params['runoff'] = 'runoff'
@@ -120,7 +120,7 @@ def create_environments(simulations):
 
         # copy maps
         gscript.run_command('g.copy',
-            raster=['elevation_2004@PERMANENT','elevation'],
+            raster=['elevation_2012@PERMANENT','elevation'],
             env=envs[mapset])
         gscript.run_command('g.copy',
             raster=['mannings@PERMANENT','mannings'],
@@ -159,7 +159,7 @@ def getEnvironment(gisdbase, location, mapset):
         f.write('GUI: text\n')
     env = os.environ.copy()
     env['GISRC'] = tmp_gisrc_file
-    env['GRASS_REGION'] = gscript.region_env(raster='elevation_2004@PERMANENT')
+    env['GRASS_REGION'] = gscript.region_env(raster='elevation_2012@PERMANENT')
     env['GRASS_OVERWRITE'] = '1'
     env['GRASS_VERBOSE'] = '0'
     env['GRASS_MESSAGE_FORMAT'] = 'standard'

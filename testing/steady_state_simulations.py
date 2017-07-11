@@ -178,7 +178,7 @@ def create_environments(simulations):
 
         # copy maps
         gscript.run_command('g.copy',
-            raster=['elevation_2004@PERMANENT','elevation'],
+            raster=['elevation_2012@PERMANENT','elevation'],
             env=envs[mapset])
         gscript.run_command('g.copy',
             raster=['mannings@PERMANENT','mannings'],
@@ -217,7 +217,7 @@ def getEnvironment(gisdbase, location, mapset):
         f.write('GUI: text\n')
     env = os.environ.copy()
     env['GISRC'] = tmp_gisrc_file
-    env['GRASS_REGION'] = gscript.region_env(raster='elevation_2004@PERMANENT')
+    env['GRASS_REGION'] = gscript.region_env(raster='elevation_2012@PERMANENT')
     env['GRASS_OVERWRITE'] = '1'
     env['GRASS_VERBOSE'] = '0'
     env['GRASS_MESSAGE_FORMAT'] = 'standard'

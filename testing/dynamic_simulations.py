@@ -53,7 +53,7 @@ def main():
     erdep_params['mode'] = 'simwe_mode'
     erdep_params['rain_intensity'] = 50.0
     erdep_params['rain_duration'] = 60
-    erdep_params['rain_interval'] = 1
+    erdep_params['rain_interval'] = 3
     erdep_params['start'] = "2016-01-01 00:00:00"
     erdep_params['walkers'] = 5000000
     erdep_params['grav_diffusion'] = 0.05
@@ -71,7 +71,7 @@ def main():
     flux_params['mode'] = 'simwe_mode'
     flux_params['rain_intensity'] = 50.0
     flux_params['rain_duration'] = 60
-    flux_params['rain_interval'] = 1
+    flux_params['rain_interval'] = 3
     flux_params['start'] = "2016-01-01 00:00:00"
     flux_params['walkers'] = 5000000
     flux_params['grav_diffusion'] = 0.05
@@ -91,7 +91,7 @@ def main():
     transport_params['mode'] = 'simwe_mode'
     transport_params['rain_intensity'] = 50.0
     transport_params['rain_duration'] = 60
-    transport_params['rain_interval'] = 1
+    transport_params['rain_interval'] = 3
     transport_params['start'] = "2016-01-01 00:00:00"
     transport_params['walkers'] = 5000000
     transport_params['grav_diffusion'] = 0.05
@@ -111,7 +111,7 @@ def main():
     usped_params['mode'] = 'usped_mode'
     usped_params['rain_intensity'] = 50.0
     usped_params['rain_duration'] = 60
-    usped_params['rain_interval'] = 1
+    usped_params['rain_interval'] = 3
     usped_params['start'] = "2016-01-01 00:00:00"
     usped_params['grav_diffusion'] = 0.05
     usped_params['m'] = 1.5
@@ -129,7 +129,7 @@ def main():
     rusle_params['mode'] = 'rusle_mode'
     rusle_params['rain_intensity'] = 50.0
     rusle_params['rain_duration'] = 60
-    rusle_params['rain_interval'] = 1
+    rusle_params['rain_interval'] = 3
     rusle_params['start'] = "2016-01-01 00:00:00"
     rusle_params['grav_diffusion'] = 0.05
     rusle_params['m'] = 0.4
@@ -172,7 +172,7 @@ def create_environments(simulations):
 
         # copy maps
         gscript.run_command('g.copy',
-            raster=['elevation_2004@PERMANENT','elevation'],
+            raster=['elevation_2012@PERMANENT','elevation'],
             env=envs[mapset])
         gscript.run_command('g.copy',
             raster=['mannings@PERMANENT','mannings'],
@@ -211,7 +211,7 @@ def getEnvironment(gisdbase, location, mapset):
         f.write('GUI: text\n')
     env = os.environ.copy()
     env['GISRC'] = tmp_gisrc_file
-    env['GRASS_REGION'] = gscript.region_env(raster='elevation_2004@PERMANENT')
+    env['GRASS_REGION'] = gscript.region_env(raster='elevation_2012@PERMANENT')
     env['GRASS_OVERWRITE'] = '1'
     env['GRASS_VERBOSE'] = '0'
     env['GRASS_MESSAGE_FORMAT'] = 'standard'
