@@ -75,8 +75,8 @@ def main():
     flux_params['start'] = "2016-01-01 00:00:00"
     flux_params['walkers'] = 5000000
     flux_params['grav_diffusion'] = 0.05
-    flux_params['transport_value'] = 100.
-    flux_params['detachment_value'] = 0.01
+    flux_params['detachment_value'] = 0.0001
+    flux_params['transport_value'] = 0.01
     flux_params['mannings'] = 'mannings'
     flux_params['runoff'] = 'runoff'
     flux_params['threads'] = threads
@@ -95,8 +95,8 @@ def main():
     transport_params['start'] = "2016-01-01 00:00:00"
     transport_params['walkers'] = 5000000
     transport_params['grav_diffusion'] = 0.05
-    transport_params['transport_value'] = 0.01
-    transport_params['detachment_value'] = 1.
+    transport_params['detachment_value'] = 0.01
+    transport_params['transport_value'] = 0.0001
     transport_params['mannings'] = 'mannings'
     transport_params['runoff'] = 'runoff'
     transport_params['threads'] = threads

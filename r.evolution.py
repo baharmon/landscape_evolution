@@ -196,7 +196,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% type: double
 #% description: Detachment coefficient
 #% label: Detachment coefficient
-#% answer: 0.01
+#% answer: 0.001
 #% multiple: no
 #% guisection: Input
 #%end
@@ -214,7 +214,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% type: double
 #% description: Transport coefficient
 #% label: Transport coefficient
-#% answer: 0.01
+#% answer: 0.001
 #% multiple: no
 #% guisection: Input
 #%end
@@ -1065,7 +1065,7 @@ class Evolution:
             'r.mapcalc',
             expression="{evolved_elevation}"
             "={elevation}"
-            "-({rain_interval}*60"
+            "+({rain_interval}*60"
             "*{erosion_deposition}"
             "/{density})".format(
                 evolved_elevation=evolved_elevation,
@@ -1155,7 +1155,7 @@ class Evolution:
             'r.mapcalc',
             expression="{evolved_elevation}"
             "={elevation}"
-            "-({rain_interval}*60"
+            "+({rain_interval}*60"
             "*{erosion_deposition}"
             "/{density})".format(
                 evolved_elevation=evolved_elevation,
@@ -1487,7 +1487,7 @@ class Evolution:
             'r.mapcalc',
             expression="{evolved_elevation}"
             "={elevation}"
-            "-({rain_interval}*60"
+            "+({rain_interval}*60"
             "*{erosion_deposition}"
             "/{density})".format(
                 evolved_elevation=evolved_elevation,
