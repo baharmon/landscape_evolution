@@ -1712,6 +1712,8 @@ class Evolution:
             regime = "detachment limited"
         elif min_sigma >= 100.:
             regime = "transport limited"
+        elif self.rain_intensity >= 60.:
+            regime = "detachment limited"
         else:
             regime = "erosion deposition"
 
