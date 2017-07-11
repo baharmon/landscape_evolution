@@ -15,8 +15,6 @@ COPYRIGHT: (C) 2017 Brendan Harmon
            for details.
 """
 
-# docs: https://docs.scipy.org/doc/scipy/reference/tutorial/interpolate.html
-
 import numpy as np
 import csv
 import os
@@ -24,8 +22,8 @@ import os
 # assign variables
 interval = 3 # minutes
 duration = 60 # minutes
-min_precip = 1 # mm
-max_precip = 60 # mm
+min_precip = 0.1 # mm
+max_precip = 45 # mm
 year = 2015
 month = 01
 day = 01
