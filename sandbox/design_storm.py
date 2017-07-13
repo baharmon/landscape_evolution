@@ -22,9 +22,9 @@ import os
 # assign variables
 interval = 3 # minutes
 duration = 60 # minutes
-min_precip = 0.1 # mm
-max_precip = 45 # mm
-year = 2015
+min_precip = 0.3 # mm
+max_precip = 60 # mm
+year = 2016
 month = 01
 day = 01
 hour = 00
@@ -32,16 +32,20 @@ second = 00
 
 filename = os.path.join(
     os.path.dirname(__file__),
-    'design_storms',
-    'design_storm_{interval}m.txt'.format(
+    'design_storm.txt'.format(
         interval=interval))
 
-# interpolate values
-precipitation = np.linspace(
-    max_precip, min_precip, num=duration/interval, endpoint=True) # precipitation in m
-time = np.linspace(
-    0, duration-interval, num=duration/interval, endpoint=True) # time in minutes
+# # linearly interpolate precipitation
+# precipitation = np.linspace(
+#     max_precip, min_precip, num=duration/interval, endpoint=True)
 
+# logarithmically interpolate precipitation
+precipitation = np.logspace(
+    np.log10(max_precip), np.log10(min_precip), num=duration/interval)
+
+# linearly interpolate time
+time = np.linspace(
+    0, duration-interval, num=duration/interval, endpoint=True)
 
 # open csv file
 with open(filename, 'wb') as csvfile:

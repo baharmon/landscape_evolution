@@ -31,7 +31,8 @@ location = env['LOCATION_NAME']
 simulations = ['erdep','flux','transport','usped','rusle']
 
 # set parameters
-res = 3  # resolution of the region
+res = 1  # resolution of the region
+region = 'elevation_2012@PERMANENT'
 nprocs = 5
 threads = 2
 
@@ -172,7 +173,7 @@ def create_environments(simulations):
 
         # copy maps
         gscript.run_command('g.copy',
-            raster=['elevation_2012@PERMANENT','elevation'],
+            raster=[region,'elevation'],
             env=envs[mapset])
         gscript.run_command('g.copy',
             raster=['mannings@PERMANENT','mannings'],
@@ -211,7 +212,7 @@ def getEnvironment(gisdbase, location, mapset):
         f.write('GUI: text\n')
     env = os.environ.copy()
     env['GISRC'] = tmp_gisrc_file
-    env['GRASS_REGION'] = gscript.region_env(raster='elevation_2012@PERMANENT')
+    env['GRASS_REGION'] = gscript.region_env(raster=region)
     env['GRASS_OVERWRITE'] = '1'
     env['GRASS_VERBOSE'] = '0'
     env['GRASS_MESSAGE_FORMAT'] = 'standard'
@@ -240,7 +241,7 @@ def render_2d(envs):
     render_multiplier = 1  # multiplier for rendering size
     whitespace = 1.5 # canvas width relative to map for legend
     fontsize = 36 * render_multiplier  # legend font size
-    legend_coord = (10, 50, 1, 4)  # legend display coordinates
+    legend_coord = (5, 45, 2, 5)  # legend display coordinates
     zscale = 1 # vertical exaggeration
 
     # create rendering directory
@@ -254,6 +255,11 @@ def render_2d(envs):
         gscript.read_command('g.mapset',
             mapset=mapset,
             location=location)
+
+        # set region
+        gscript.run_command('g.region', rast=region, res=res)
+
+        # set render size
         info = gscript.parse_command('r.info',
             map='elevation',
             flags='g')

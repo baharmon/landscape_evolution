@@ -33,8 +33,9 @@ simulations = [
 
 # set parameters
 res = 1  # resolution of the region
-nprocs = 1
-threads = 4
+region = 'elevation_2012@PERMANENT'
+nprocs = 5
+threads = 2
 
 precipitation = os.path.join(gisdbase, location, 'rain_events_2013_2016.csv')
 
@@ -99,7 +100,7 @@ def create_environments(simulations):
 
         # copy maps
         gscript.run_command('g.copy',
-            raster=['elevation_2012@PERMANENT','elevation'],
+            raster=[region,'elevation'],
             env=envs[mapset])
         gscript.run_command('g.copy',
             raster=['mannings@PERMANENT','mannings'],
@@ -138,7 +139,7 @@ def getEnvironment(gisdbase, location, mapset):
         f.write('GUI: text\n')
     env = os.environ.copy()
     env['GISRC'] = tmp_gisrc_file
-    env['GRASS_REGION'] = gscript.region_env(raster='elevation_2012@PERMANENT')
+    env['GRASS_REGION'] = gscript.region_env(raster=region)
     env['GRASS_OVERWRITE'] = '1'
     env['GRASS_VERBOSE'] = '0'
     env['GRASS_MESSAGE_FORMAT'] = 'standard'
@@ -181,6 +182,11 @@ def render_2d(envs):
         gscript.read_command('g.mapset',
             mapset=mapset,
             location=location)
+
+        # set region
+        gscript.run_command('g.region', rast=region, res=res)
+
+        # set render size
         info = gscript.parse_command('r.info',
             map='elevation',
             flags='g')
