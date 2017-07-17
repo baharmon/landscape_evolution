@@ -23,7 +23,7 @@ import os
 interval = 3 # minutes
 duration = 60 # minutes
 min_precip = 0.3 # mm
-max_precip = 60 # mm
+max_precip = 10. # mm
 year = 2016
 month = 01
 day = 01
@@ -35,13 +35,13 @@ filename = os.path.join(
     'design_storm.txt'.format(
         interval=interval))
 
-# # linearly interpolate precipitation
-# precipitation = np.linspace(
-#     max_precip, min_precip, num=duration/interval, endpoint=True)
+# linearly interpolate precipitation
+precipitation = np.linspace(
+    max_precip, min_precip, num=duration/interval, endpoint=True)
 
-# logarithmically interpolate precipitation
-precipitation = np.logspace(
-    np.log10(max_precip), np.log10(min_precip), num=duration/interval)
+## logarithmically interpolate precipitation
+#precipitation = np.logspace(
+#    np.log10(max_precip), np.log10(min_precip), num=duration/interval, base=10)
 
 # linearly interpolate time
 time = np.linspace(

@@ -20,6 +20,7 @@ g.extension r.sim.water.mp
 landscape_evolution/testing/decadal_simulations.py
 landscape_evolution/testing/simulations_06_22_2017.py
 top
+scp -r baharmon@fatra.cnr.ncsu.edu:/home/baharmon/grassdata/nc_spm_evolution/rendering /Users/baharmon/grassdata/nc_spm_evolution/
 exit
 
 # TODO
