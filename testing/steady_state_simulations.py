@@ -32,8 +32,7 @@ simulations = [
     'ss_erdep',
     'ss_flux',
     'ss_transport',
-    'ss_usped',
-    'ss_rusle']
+    'ss_usped']
 
 # set parameters
 res = 1  # resolution of the region
@@ -128,24 +127,6 @@ def main():
     ss_usped_params['env'] = envs['ss_usped']
     # append dictionary to options list
     options_list.append(ss_usped_params)
-
-    # dictionary of parameters for steady state rusle simulation
-    ss_rusle_params = {}
-    ss_rusle_params['elevation'] = 'elevation@ss_rusle'
-    ss_rusle_params['runs'] = 'event'
-    ss_rusle_params['mode'] = 'rusle_mode'
-    ss_rusle_params['rain_intensity'] = 50.0
-    ss_rusle_params['rain_duration'] = 60
-    ss_rusle_params['rain_interval'] = 60
-    ss_rusle_params['start'] = "2016-01-01 00:00:00"
-    ss_rusle_params['grav_diffusion'] = 0.05
-    ss_rusle_params['m'] = 0.4
-    ss_rusle_params['n'] = 1.3
-    ss_rusle_params['c_factor'] = 'c_factor'
-    ss_rusle_params['k_factor'] = 'k_factor'
-    ss_rusle_params['env'] = envs['ss_rusle']
-    # append dictionary to options list
-    options_list.append(ss_rusle_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)
