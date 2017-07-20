@@ -1724,6 +1724,7 @@ class Evolution:
             name=['sigma'],
             flags='f')
 
+        gscript.verbose({}).format(regime)
         return regime
 
 
@@ -1887,7 +1888,7 @@ class DynamicEvolution:
                     map=sediment_flux,
                     date='none')
 
-            if regime == "transport limited":
+            elif regime == "transport limited":
                 (evolved_elevation, time, depth, erosion_deposition,
                 difference) = evol.transport_limited()
                 # remove relative timestamps from r.sim.water and r.sim.sediment
@@ -1900,7 +1901,7 @@ class DynamicEvolution:
                     map=erosion_deposition,
                     date='none')
 
-            if regime == "erosion deposition":
+            elif regime == "erosion deposition":
                 (evolved_elevation, time, depth, erosion_deposition,
                 difference) = evol.erosion_deposition()
                 # remove relative timestamps from r.sim.water and r.sim.sediment
@@ -1913,13 +1914,21 @@ class DynamicEvolution:
                     map=erosion_deposition,
                     date='none')
 
-        if self.mode == "usped_mode":
+            else:
+                raise RuntimeError(
+                    '{} regime does not exist').format(regime)
+
+        elif self.mode == "usped_mode":
             (evolved_elevation, time, depth, erosion_deposition,
             difference) = evol.usped()
 
-        if self.mode == "rusle_mode":
+        elif self.mode == "rusle_mode":
             (evolved_elevation, time, depth, sediment_flux,
             difference) = evol.rusle()
+
+        else:
+            raise RuntimeError(
+                '{} mode does not exist').format(self.mode)
 
         # register the evolved maps
         gscript.run_command(
