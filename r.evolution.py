@@ -1679,7 +1679,7 @@ class Evolution:
 
         return (evolved_elevation, time, depth, sediment_flux, difference)
 
-    def erosion_regime(self):
+    def erosion_regime(self, rain_intensity):
         """determine whether transport limited or detachment limited regime"""
 
         # assign local variables
@@ -1707,11 +1707,11 @@ class Evolution:
         mean_sigma = float(stats['mean'])
 
         # determine regime
-        if self.rain_intensity >= 60. or mean_sigma <= 0.01:
+        if rain_intensity >= 60. or mean_sigma <= 0.01:
             regime = 'detachment limited'
-        elif self.rain_intensity < 60. and 0.01 < mean_sigma < 100.:
+        elif rain_intensity < 60. and 0.01 < mean_sigma < 100.:
             regime = 'erosion deposition'
-        elif self.rain_intensity < 60 and mean_sigma >= 100.:
+        elif rain_intensity < 60 and mean_sigma >= 100.:
             regime = 'transport limited'
         else:
             raise RuntimeError('regime could not be determined')
@@ -1723,17 +1723,10 @@ class Evolution:
             name=['sigma'],
             flags='f')
 
-        # verbose feedback
-        print stats
+        # feedback
         print mean_sigma
         print self.rain_intensity
         print regime
-        # gscript.verbose('sigma = {mean_sigma}').format(
-        #     mean_sigma=mean_sigma)
-        # gscript.verbose('rain intensity = {rain_intensity}').format(
-        #     rain_intensity=self.rain_intensity)
-        # gscript.verbose('regime = {regime}').format(
-        #     regime=regime)
 
         return regime
 
@@ -1883,7 +1876,7 @@ class DynamicEvolution:
 
         # determine mode and run model
         if self.mode == 'simwe_mode':
-            regime = evol.erosion_regime()
+            regime = evol.erosion_regime(evol.rain_intensity)
 
             if regime == 'detachment limited':
                 (evolved_elevation, time, depth, sediment_flux,
@@ -2033,7 +2026,7 @@ class DynamicEvolution:
 
             # determine mode and run model
             if self.mode == "simwe_mode":
-                regime = evol.erosion_regime()
+                regime = evol.erosion_regime(evol.rain_intensity)
 
                 if regime == "detachment limited":
                     (evolved_elevation, time, depth, sediment_flux,
@@ -2297,7 +2290,7 @@ class DynamicEvolution:
 
             # determine mode and run model
             if self.mode == "simwe_mode":
-                regime = evol.erosion_regime()
+                regime = evol.erosion_regime(evol.rain_intensity)
 
                 if regime == "detachment limited":
                     (evolved_elevation, time, depth, sediment_flux,
@@ -2459,7 +2452,7 @@ class DynamicEvolution:
 
                 # determine mode and run model
                 if self.mode == "simwe_mode":
-                    regime = evol.erosion_regime()
+                    regime = evol.erosion_regime(evol.rain_intensity)
 
                     if regime == "detachment limited":
                         (evolved_elevation, time, depth, sediment_flux,
