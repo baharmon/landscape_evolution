@@ -1724,9 +1724,12 @@ class Evolution:
             flags='f')
 
         # verbose feedback
-        gscript.verbose('sigma = {}').format(mean_sigma)
-        gscript.verbose('rain intensity = {}').format(self.rain_intensity)
-        gscript.verbose('regime = {}').format(regime)
+        gscript.verbose('sigma = {mean_sigma}').format(
+            mean_sigma=mean_sigma)
+        gscript.verbose('rain intensity = {rain_intensity}').format(
+            rain_intensity=self.rain_intensity)
+        gscript.verbose('regime = {regime}').format(
+            regime=regime)
 
         return regime
 
@@ -1919,7 +1922,7 @@ class DynamicEvolution:
 
             else:
                 raise RuntimeError(
-                    '{} regime does not exist').format(regime)
+                    '{regime} regime does not exist').format(regime=regime)
 
         elif self.mode == "usped_mode":
             (evolved_elevation, time, depth, erosion_deposition,
@@ -1931,7 +1934,7 @@ class DynamicEvolution:
 
         else:
             raise RuntimeError(
-                '{} mode does not exist').format(self.mode)
+                '{mode} mode does not exist').format(mode=self.mode)
 
         # register the evolved maps
         gscript.run_command(
@@ -2072,7 +2075,7 @@ class DynamicEvolution:
 
                 else:
                     raise RuntimeError(
-                        '{} regime does not exist').format(regime)
+                        '{regime} regime does not exist').format(regime=regime)
 
             elif self.mode == "usped_mode":
                 (evolved_elevation, time, depth, erosion_deposition,
@@ -2084,7 +2087,7 @@ class DynamicEvolution:
 
             else:
                 raise RuntimeError(
-                    '{} mode does not exist').format(mode)
+                    '{mode} mode does not exist').format(mode=self.mode)
 
             # register the evolved maps
             gscript.run_command(
@@ -2336,7 +2339,7 @@ class DynamicEvolution:
 
                 else:
                     raise RuntimeError(
-                        '{} regime does not exist').format(regime)
+                        '{regime} regime does not exist').format(regime=regime)
 
             elif self.mode == "usped_mode":
                 (evolved_elevation, time, depth, erosion_deposition,
@@ -2348,7 +2351,7 @@ class DynamicEvolution:
 
             else:
                 raise RuntimeError(
-                    '{} mode does not exist').format(mode)
+                    '{mode} mode does not exist').format(mode=self.mode)
 
             # register the evolved maps
             gscript.run_command(
@@ -2498,7 +2501,7 @@ class DynamicEvolution:
 
                     else:
                         raise RuntimeError(
-                            '{} regime does not exist').format(regime)
+                            '{regime} regime does not exist').format(regime=regime)
 
                 elif self.mode == "usped_mode":
                     (evolved_elevation, time, depth, erosion_deposition,
@@ -2510,7 +2513,7 @@ class DynamicEvolution:
 
                 else:
                     raise RuntimeError(
-                        '{} mode does not exist').format(mode)
+                        '{mode} mode does not exist').format(mode=self.mode)
 
                 # register the evolved maps
                 gscript.run_command(
