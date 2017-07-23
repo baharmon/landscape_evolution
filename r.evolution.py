@@ -1725,7 +1725,7 @@ class Evolution:
 
         # feedback
         print mean_sigma
-        print self.rain_intensity
+        print rain_intensity
         print regime
 
         return regime
