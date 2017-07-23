@@ -1707,19 +1707,14 @@ class Evolution:
         mean_sigma = float(stats['mean'])
 
         # determine regime
-        if rain_intensity >= 60. or mean_sigma <= 0.01:
+        if self.rain_intensity >= 60. or mean_sigma <= 0.01:
             regime = 'detachment limited'
-        elif rain_intensity < 60. and 0.01 < mean_sigma < 100.:
+        elif self.rain_intensity < 60. and 0.01 < mean_sigma < 100.:
             regime = 'erosion deposition'
-        elif rain_intensity < 60 and mean_sigma >= 100.:
+        elif self.rain_intensity < 60 and mean_sigma >= 100.:
             regime = 'transport limited'
         else:
             raise RuntimeError('regime could not be determined')
-
-        # verbose feedback
-        gscript.verbose('sigma = {}').format(mean_sigma)
-        gscript.verbose('rain intensity = {}').format(rain_intensity)
-        gscript.verbose('regime = {}').format(regime)
 
         # remove temporary maps
         gscript.run_command(
@@ -1727,6 +1722,11 @@ class Evolution:
             type='raster',
             name=['sigma'],
             flags='f')
+
+        # verbose feedback
+        gscript.verbose('sigma = {}').format(mean_sigma)
+        gscript.verbose('rain intensity = {}').format(self.rain_intensity)
+        gscript.verbose('regime = {}').format(regime)
 
         return regime
 
