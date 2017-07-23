@@ -1706,12 +1706,19 @@ class Evolution:
             flags='g')
         mean_sigma = float(stats['mean'])
 
+        # find mean rain intensity
+        stats = gscript.parse_command(
+            'r.univar',
+            map=rain_intensity,
+            flags='g')
+        mean_intensity = float(stats['mean'])
+
         # determine regime
-        if rain_intensity >= 60. or mean_sigma <= 0.01:
+        if mean_intensity >= 60. or mean_sigma <= 0.01:
             regime = 'detachment limited'
-        elif rain_intensity < 60. and 0.01 < mean_sigma < 100.:
+        elif mean_intensity < 60. and 0.01 < mean_sigma < 100.:
             regime = 'erosion deposition'
-        elif rain_intensity < 60 and mean_sigma >= 100.:
+        elif mean_intensity < 60. and mean_sigma >= 100.:
             regime = 'transport limited'
         else:
             raise RuntimeError('regime could not be determined')
