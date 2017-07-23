@@ -1731,8 +1731,7 @@ class Evolution:
             flags='f')
 
         # feedback
-        print mean_sigma
-        print rain_intensity
+        print mean_intensity
         print regime
 
         return regime
