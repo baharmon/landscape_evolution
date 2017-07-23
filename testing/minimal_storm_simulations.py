@@ -51,21 +51,21 @@ def main():
 
     # dictionary of parameters
     # for erosion-deposition simulation with a design storm
-    design_erdep_params = {}
-    design_erdep_params['elevation'] = 'elevation@design_erdep'
-    design_erdep_params['runs'] = 'series'
-    design_erdep_params['mode'] = 'simwe_mode'
-    design_erdep_params['precipitation'] = design_storm
-    design_erdep_params['rain_interval'] = 3
-    design_erdep_params['start'] = "2016-01-01 00:00:00"
-    design_erdep_params['walkers'] = 100000
-    design_erdep_params['grav_diffusion'] = 0.05
-    design_erdep_params['mannings'] = 'mannings'
-    design_erdep_params['runoff'] = 'runoff'
-    design_erdep_params['threads'] = threads
-    design_erdep_params['env'] = envs['design_erdep']
+    minimal_erdep_params = {}
+    minimal_erdep_params['elevation'] = 'elevation@minimal_erdep'
+    minimal_erdep_params['runs'] = 'series'
+    minimal_erdep_params['mode'] = 'simwe_mode'
+    minimal_erdep_params['precipitation'] = design_storm
+    minimal_erdep_params['rain_interval'] = 3
+    minimal_erdep_params['start'] = "2016-01-01 00:00:00"
+    minimal_erdep_params['walkers'] = 100000
+    minimal_erdep_params['grav_diffusion'] = 0.05
+    minimal_erdep_params['mannings'] = 'mannings'
+    minimal_erdep_params['runoff'] = 'runoff'
+    minimal_erdep_params['threads'] = threads
+    minimal_erdep_params['env'] = envs['minimal_erdep']
     # append dictionary to options list
-    options_list.append(design_erdep_params)
+    options_list.append(minimal_erdep_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)

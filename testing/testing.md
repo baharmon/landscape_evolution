@@ -8,7 +8,7 @@ g.extension r.evolution url=github.com/baharmon/landscape_evolution
 ssh -Y baharmon@fatra.cnr.ncsu.edu
 mkdir grassdata
 exit
-scp /Users/baharmon/grassdata/nc_spm_evolution.zip baharmon@fatra.cnr.ncsu.edu:grassdata/nc_spm_evolution.zip
+scp /Users/Brendan/grassdata/nc_spm_evolution.zip baharmon@fatra.cnr.ncsu.edu:grassdata/nc_spm_evolution.zip
 ssh -Y baharmon@fatra.cnr.ncsu.edu
 cd grassdata
 unzip nc_spm_evolution.zip
@@ -20,7 +20,7 @@ g.extension r.sim.water.mp
 landscape_evolution/testing/decadal_simulations.py
 landscape_evolution/testing/simulations_06_22_2017.py
 top
-scp -r baharmon@fatra.cnr.ncsu.edu:/home/baharmon/grassdata/nc_spm_evolution/rendering /Users/baharmon/grassdata/nc_spm_evolution/
+scp -r baharmon@fatra.cnr.ncsu.edu:/home/baharmon/grassdata/nc_spm_evolution/rendering /Users/Brendan/grassdata/nc_spm_evolution/
 exit
 
 # TODO
