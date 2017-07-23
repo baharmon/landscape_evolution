@@ -1724,12 +1724,16 @@ class Evolution:
             flags='f')
 
         # verbose feedback
-        gscript.verbose('sigma = {mean_sigma}').format(
-            mean_sigma=mean_sigma)
-        gscript.verbose('rain intensity = {rain_intensity}').format(
-            rain_intensity=self.rain_intensity)
-        gscript.verbose('regime = {regime}').format(
-            regime=regime)
+        print stats
+        print mean_sigma
+        print self.rain_intensity
+        print regime
+        # gscript.verbose('sigma = {mean_sigma}').format(
+        #     mean_sigma=mean_sigma)
+        # gscript.verbose('rain intensity = {rain_intensity}').format(
+        #     rain_intensity=self.rain_intensity)
+        # gscript.verbose('regime = {regime}').format(
+        #     regime=regime)
 
         return regime
 
