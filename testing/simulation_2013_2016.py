@@ -34,8 +34,8 @@ simulations = [
 # set parameters
 res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
-nprocs = 5
-threads = 2
+nprocs = 2
+threads = 4
 
 precipitation = os.path.join(gisdbase, location, 'rain_events_2013_2016.csv')
 
