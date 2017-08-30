@@ -767,35 +767,19 @@ class Evolution:
                 runoff=self.runoff),
             overwrite=True)
 
-        # simulation mode
-        if self.threads > 1 and gscript.find_program(
-            'r.sim.water.mp', '--help'):
-            # parallel processing of hydrologic simulation
-            gscript.run_command(
-                'r.sim.water.mp',
-                elevation=self.elevation,
-                dx=dx,
-                dy=dy,
-                rain=rain,
-                man=self.mannings,
-                depth=depth,
-                niterations=self.rain_interval,
-                nwalkers=self.walkers,
-                threads=self.threads,
-                overwrite=True)
-        else:
-            # hydrologic simulation
-            gscript.run_command(
-                'r.sim.water',
-                elevation=self.elevation,
-                dx=dx,
-                dy=dy,
-                rain=rain,
-                man=self.mannings,
-                depth=depth,
-                niterations=self.rain_interval,
-                nwalkers=self.walkers,
-                overwrite=True)
+        # hydrologic simulation
+        gscript.run_command(
+            'r.sim.water',
+            elevation=self.elevation,
+            dx=dx,
+            dy=dy,
+            rain=rain,
+            man=self.mannings,
+            depth=depth,
+            niterations=self.rain_interval,
+            nwalkers=self.walkers,
+            threads=self.threads,
+            overwrite=True)
 
         # remove temporary maps
         gscript.run_command(
@@ -1035,6 +1019,7 @@ class Evolution:
             erosion_deposition=erdep,
             niterations=self.rain_interval,
             nwalkers=self.walkers,
+            threads=self.threads,
             overwrite=True)
 
         # filter outliers
@@ -1125,6 +1110,7 @@ class Evolution:
             tlimit_erosion_deposition=erdep,
             niterations=self.rain_interval,
             nwalkers=self.walkers,
+            threads=self.threads,
             overwrite=True)
 
         # filter outliers
@@ -1215,6 +1201,7 @@ class Evolution:
             sediment_flux=sedflux,
             niterations=self.rain_interval,
             nwalkers=self.walkers,
+            threads=self.threads,
             overwrite=True)
 
         # filter outliers

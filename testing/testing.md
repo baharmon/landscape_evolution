@@ -28,4 +28,3 @@ Run steady state simulations
 Run dynamic simulations
 Run design storm simulations
 Run 3 year simulation (2013-2016)
-Run 10 year simulation (2006-2016)
