@@ -28,3 +28,4 @@ Run steady state simulations
 Run dynamic simulations
 Run design storm simulations
 Run 3 year simulation (2013-2016)
+Compare with r.landevol and r.terradyn

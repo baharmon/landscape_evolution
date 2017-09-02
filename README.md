@@ -13,12 +13,3 @@ change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) 
 
 ## License
 GNU General Public License >= version 2
-
-# Development
-
-## TODO
-* Automatically derive parameters from landcover, soil, and rain maps using recode tables
-* Compare results with r.landevol and r.terradyn
-* Conceptual model
-* Reverse landscape evolution
-* Subsurface groundwater flow with [r3.gwflow.html](https://grass.osgeo.org/grass73/manuals/r3.gwflow.html)
