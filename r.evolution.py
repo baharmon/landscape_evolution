@@ -1578,7 +1578,7 @@ class Evolution:
         """E = R * K * LS * C * P
         where
         E is average annual soil loss
-        R is rainfall factor
+        R is erosivity factor
         K is soil erodibility factor
         LS is a dimensionless topographic (length-slope) factor
         C is a dimensionless land cover factor

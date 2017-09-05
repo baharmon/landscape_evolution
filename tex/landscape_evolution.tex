@@ -36,6 +36,7 @@
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
 \usepackage{textcomp,marvosym}
+\usepackage{gensymb}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{hyperref}
@@ -90,7 +91,7 @@
 
 
 \begin{abstract}
-This is a fine-scale, short term, process-based landscape evolution model using simulated erosion and deposition to generate a timeseries of digital elevation models. This model uses a path sampling method to solve water and sediment flow continuity equations and model mass flows over complex topographies based on topographic, land cover, soil, and rainfall parameters. This either steady state or dynamic model can simulate landscape evolution for a range of hydrologic soil erosion regimes. 
+This is a fine-scale, short term, process-based landscape evolution model using simulated erosion and deposition to generate a time-series of digital elevation models and compute the net change in elevation. This model uses a path sampling method to solve water and sediment flow continuity equations and model mass flows over complex topographies based on topographic, land cover, soil, and rainfall parameters. This either steady state or dynamic model can simulate landscape evolution for a range of hydrologic soil erosion regimes. 
 %The change in elevation is a function of time, net erosion-deposition, and sediment mass density.
 \end{abstract}
 
@@ -110,12 +111,29 @@ landscape evolution \sep dynamic model
 
 % -------------- BODY --------------
 \section{Introduction}
-
 %With process-based simulations we have procedurally modeled how a landscape could evolve as the flow of water erodes the landscape surface and shapes its terrain.
-This process-based, spatial distributed, dynamic model uses a path sampling method to solve the water and sediment flow equations
+This process-based, spatially distributed, dynamic model uses a path sampling method to solve the water and sediment flow equations
 \cite{mitasova2004}
 and model mass flows over complex topographies based on topographic, land cover, soil, and rainfall parameters.
-The modeled flow of sediment -- a function of the flow of water, soil detachment, and transport parameters -- is then used to estimate the net erosion and deposition rates and the associated short-term evolution of the topography.
+% At each time step %% explain dynamics
+The modeled flow of sediment -- a function of the flow of water and soil detachment and transport parameters -- is then used to estimate the net erosion and deposition rates and the associated short-term evolution of the topography. 
+
+This highly adaptable model can simulate landscape evolution 
+for different soil erosion regimes
+across a range of spatiotemporal scales
+using either
+the simulated water erosion (SIMWE) model, 
+the unit stream power erosion deposition (USPED) model,
+or the 3-dimensional revised universal soil loss equation (RUSLE 3D) model.  
+
+% Implementation 
+This model has been implemented as an add-on module 
+for a free, open-source geographic information system (GIS) -- GRASS GIS.
+It supports multithreading and parallel processing
+for the efficient computation of 
+physics-based simulations for large, high resolution topographic datasets.
+
+
 
 \subsection{Literature review}
 
@@ -133,7 +151,7 @@ Table of landscape evolution models \\
 
 
 
-\section{Erosion-deposition model} \label{erdep_mode}
+\section{Erosion-deposition model} \label{erdep_model}
 
 
 \subsection{Shallow water flow}
@@ -244,7 +262,7 @@ $div =$ divergence $(m^{-1})$ \\
 \cite{thaxton2004}
 
 
-\section{Detachment limited model} \label{flux_mode}
+\section{Detachment limited model} \label{flux_model}
 \subsection{Shallow water flow}
 \subsection{Sediment flow}
 
@@ -291,12 +309,145 @@ $\varrho =$ mass of water carried sediment per unit area $(kg \cdot m^{-2})$ \\
 
 \subsection{Gravitational diffusion}
 
-\section{Transport limited model} \label{usped_mode}
+\section{Transport limited model} \label{transport_model}
 
-\subsection{Unit stream power erosion deposition}
+
+\section{Unit stream power erosion deposition model} \label{usped_model}
+
+\subsection{Unit stream power erosion deposition} % transport limited
 \subsection{Landscape evolution}
 \subsection{Gravitational diffusion}
 
+\clearpage
+% -------------------------------- RUSLE --------------------------------
+\section{Revised universal soil loss equation 3D model}
+\label{rusle_model} % detachment limited
+
+\subsection{Revised universal soil loss equation} % 3D
+
+\paragraph{Event-based r-factor derivation} % (MJ mm ha^-1 hr^-1)
+
+%`the R-factor is the product of kinetic energy of a rainfall event
+%and its maximum 30-minute intensity'
+%\cite{panagos_2015}
+
+% rain energy
+\cite{brown_foster_1987}
+%
+\begin{equation}
+\label{eq:rain_energy}
+{e_r = 0.29 \cdot (1.-0.72 \cdot exp(-0.05 \cdot i_r))}
+\end{equation}
+
+\noindent
+where: 
+
+\noindent
+$e_r =$ unit rain energy $(MJ \cdot ha^{-1} \cdot mm{^-1})$\\
+$i_r =$ rainfall intensity $(mm \cdot h^{-1})$\\
+\vspace{1em}
+
+
+% rainfall volume
+\begin{equation}
+\label{eq:rain_volume}
+{v_r = i_r \cdot t_r} %*(1 hr / 60 min))
+\end{equation}
+
+\noindent
+where: 
+
+\noindent
+$v_r =$ rainfall volume $(mm)$\\
+$i_r =$ rainfall intensity $(mm \cdot h^{-1})$\\
+$t_r =$ time interval $(h^{-1})$\\
+\vspace{1em}
+
+
+% event erosivity index (MJ mm ha^-1 hr^-1)
+\begin{equation}
+\label{eq:erosivity_index}
+{r = e_r \cdot v_r \cdot i_r}
+\end{equation}
+
+\noindent
+where: 
+
+\noindent
+$r =$ erosivity index $(MJ \cdot mm \cdot ha^{-1} \cdot hr^{-1} \cdot  s{^-1})$\\
+$e_r =$ unit rain energy $(MJ \cdot ha^{-1} \cdot mm{^-1})$\\
+$v_r = $ rainfall volume $(mm)$\\
+$i_r = $ rainfall intensity $(mm \cdot h^{-1})$\\
+\vspace{1em}
+% multiply by rainfall interval in seconds (MJ mm ha^-1 hr^-1 s^-1)
+
+
+\paragraph{3D topographic factor}
+
+%The modified 3D topographic factor LS3D, representing topographic potential for erosion at a point on the hill-slope, is a function of the upslope contributing area per unit width and the slope angle
+
+\begin{equation}
+\label{eq:ls_factor}
+{ls(x,y) = (m+1.0) \cdot (a(x,y) \cdot a_0^{-1})^{m} \cdot (sin(\beta) / \beta_0)^{n}}
+\end{equation}
+
+\noindent
+where: 
+
+%U is the upslope area per unit width (measure of water flow) in meters (m^2/m), 
+%β is the slope angle in degree, 
+%22.1 is the length of the standard USLE plot in meters, 
+%0.09 = 9% = 5.15◦ is the slope of the standard USLE plot. 
+%The values of exponents range for m = 0.2 − 0.6 and n = 1.0 − 1.3, where the lower values are used for prevailing sheet flow and higher values for prevailing rill flow.
+
+\noindent
+$ls =$ a dimensionless topographic (length-slope) factor\\
+$a =$ water flow accumulation $(m)$\\
+$a_0 =$ length of the standard USLE plot $(22.1 m)$\\
+$\beta =$ slope angle $(\degree)$\\
+$m =$ empirical coefficient\\
+$n =$ empirical coefficient\\
+$\beta_0 =$ slope of the standard USLE plot $(0.09 \degree)$\\
+\vspace{1em}
+%
+\cite{mitasova_1996} %http://www4.ncsu.edu/~hmitaso/gmslab/papers/erijgis.html
+
+%A simpler, continuous form of the equation for computation of the LS factor at a point r=(x,y) on a hillslope, (Mitasova et. al. 1996) is
+%
+%LS(r)  =  (m+1)  [ A(r) / a0 ]m  [ sin b(r) / b0 ]n
+%
+%where A[m]  is upslope contributing area per unit contour width, b [deg] is the slope, m and n are parameters, and a0  = 22.1m = 72.6ft  is the length and b0 = 0.09 = 9% = 5.16deg is the slope of the standard USLE plot. The impact of replacing the slope length by upslope area on the detachment pattern is illustrated by the following figures, which show that the upslope area-based factor better reflects the impact of concentrated flow on increased erosion:
+
+
+
+\paragraph{Revised universal soil loss equation}
+%
+\begin{equation}
+\label{eq:rusle}
+{e = r \cdot k \cdot ls \cdot c \cdot p}
+\end{equation}
+
+\noindent
+where: 
+
+\noindent % CHECK UNITS
+$e =$ soil loss $(kg \cdot m^{-2} \cdot min^{-1})$\\
+$r =$ erosivity factor $(MJ \cdot mm \cdot ha^{-1} \cdot hr^{-1} \cdot  s{^-1})$\\
+$k =$ soil erodibility factor $(ton \cdot ha \cdot hr \cdot ha^{-1} \cdot MJ^{-1} \cdot mm^{-1})$\\
+$ls =$ dimensionless topographic (length-slope) factor\\
+$c =$ dimensionless land cover factor\\
+$p =$ dimensionless prevention measures factor\\
+\vspace{1em}
+
+
+
+
+
+\subsection{Landscape evolution}
+\subsection{Gravitational diffusion}
+
+\clearpage
+% -------------------------------- IMPLEMENTATION --------------------------------
 \section{Implementation}
 
 % EDIT
@@ -309,11 +460,21 @@ $\varrho =$ mass of water carried sediment per unit area $(kg \cdot m^{-2})$ \\
 %\item Handling of edge effects from moving window computations
 %\end{enumerate}
 
-This set of python scripts is available on Github at \url{https://github.com/baharmon/landscape_evolution} released under the GNU General Public License version 2. These scripts are meant to be run inside of GRASS GIS using the GRASS Python Scripting Library. GRASS GIS is an open source project released under the GNU General Public License version 2. GRASS GIS is available at \url{https://grass.osgeo.org/}. 
+%This set of python scripts
+The GRASS GIS add-on module written in Python
+is available on Github at \url{https://github.com/baharmon/landscape_evolution} released under the GNU General Public License version 2. 
+%These scripts are meant to be run inside of GRASS GIS using the GRASS Python Scripting Library.
+GRASS GIS is an open source project released under the GNU General Public License version 2. GRASS GIS is available at \url{https://grass.osgeo.org/}. 
+% Geographic Resource Analysis Support System (GRASS)
 
+
+\clearpage
+% -------------------------------- CASE STUDY--------------------------------
 \section{Case study}
-\paragraph{Study area}
-\subsection{Comparison of r.evolution, r.land.evol, r.terradyn}
+\subsection{Fort Bragg}
+\subsection{Patterson Branch Creek}
+%\subsection{Comparison of r.evolution, r.land.evol, r.terradyn}
+\subsection{Benchmarks}
 % r.evolution, r.land.evol, r.terradyn
 
 %\section{Results}
@@ -454,6 +615,8 @@ This set of python scripts is available on Github at \url{https://github.com/bah
 %\label{fig_3}
 %\end{figure}
 
+\clearpage
+% -------------------------------- TANGIBLE --------------------------------
 \section{Tangible landscape evolution}
 
 Tangible Landscape -- a tangible user interface tightly integrated with a geographic information system for intuitively sketching in 3D \cite{petrasova2015}. Conceptually, Tangible Landscape couples a physical model with a digital model in a real-time feedback cycle of 3D scanning, geospatial modeling and simulation, and projection in order to physically manifest digital data as tangible bits. With tangible bits users can directly, physically feel and manipulate data with their bodies -- naturally, intuitively understanding space, form, and process. Tangible Landscape is available on Github at \url{https://github.com/ncsu-osgeorel/grass-tangible-landscape}.
@@ -471,7 +634,7 @@ we change the topography used by the model.
 \label{fig:cnc_sand}
 \end{figure*}
 
-
+% -------------------------------- DISCUSSION --------------------------------
 \section{Discussion}
 
 \subsection{Future work}
@@ -485,9 +648,7 @@ we change the topography used by the model.
 
 \section{Conclusion}
 
-% -------------- APPENDIX --------------
-
-% -------------- SUPPORTING INFO --------------
+% -------------------------------- APPENDIX --------------------------------
 \appendix
 
 \section{Supporting information}
@@ -504,7 +665,7 @@ we change the topography used by the model.
 \subsection{Tangible Landscape}\label{tangible_landscape}
 {\bf \ldots}
 
-% -------------- BIBLIOGRAPHY --------------
+% -------------------------------- BIBLIOGRAPHY --------------------------------
 
 % \bibliographystyle{elsarticle-num}
  \bibliographystyle{elsarticle-harv}
