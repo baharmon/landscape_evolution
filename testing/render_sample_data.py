@@ -1,0 +1,325 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+AUTHOR:    Brendan Harmon <brendan.harmon@gmail.com>
+
+PURPOSE:   Rendering 2D and 3D maps of landscape evolution model sample data
+
+COPYRIGHT: (C) 2017 Brendan Harmon
+
+LICENSE:   This program is free software under the GNU General Public
+           License (>=v2).
+"""
+
+import os
+import sys
+import atexit
+import grass.script as gscript
+from grass.exceptions import CalledModuleError
+
+
+
+# set graphics driver
+driver = "cairo"
+
+# temporary region
+gscript.use_temp_region()
+
+# set environment
+env = gscript.gisenv()
+
+overwrite = True
+env['GRASS_OVERWRITE'] = overwrite
+env['GRASS_VERBOSE'] = False
+env['GRASS_MESSAGE_FORMAT'] = 'standard'
+gisdbase = env['GISDBASE']
+location = env['LOCATION_NAME']
+mapset = env['MAPSET']
+
+# set 2D rendering parameters
+legend_coord = (2, 32, 2, 4)
+border = 400
+width = 1600
+height = 1600
+fontsize = 24
+
+# set data parameters
+years = [2004, 2016]
+
+def main():
+
+    # # render 2d maps
+    render_region_2d()
+    render_subregion_2d()
+    render_fortbragg_2d()
+
+    # render 3d maps
+    render_region_3d()
+
+    atexit.register(cleanup)
+    sys.exit(0)
+
+def render_region_2d():
+
+    # create rendering directory
+    render = os.path.join(gisdbase, location, 'renderings', 'sample_data')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    # set region
+    gscript.run_command('g.region', region='region', res=1)
+
+    # render shaded relief maps
+    for year in years:
+
+        gscript.run_command('d.mon',
+            start=driver,
+            width=width+border,
+            height=height,
+            output=os.path.join(render, 'elevation_'+str(year)+'.png'),
+            overwrite=overwrite)
+        gscript.run_command('d.rast',
+            map='shaded_relief_'+str(year))
+        # gscript.run_command('d.vect',
+        #     map='contours_'+str(year),
+        #     display='shape',
+        #     width=0.5,
+        #     color='white')
+        gscript.run_command('d.legend',
+            raster='elevation_'+str(year),
+            fontsize=fontsize,
+            at=legend_coord)
+        gscript.run_command('d.mon', stop=driver)
+
+    # render shaded relief maps
+    for year in years:
+
+        gscript.run_command('d.mon',
+            start=driver,
+            width=width+border,
+            height=height,
+            output=os.path.join(render, 'elevation_'+str(year)+'.png'),
+            overwrite=overwrite)
+        gscript.run_command('d.rast',
+            map='shaded_relief_'+str(year))
+        gscript.run_command('d.legend',
+            raster='elevation_'+str(year),
+            fontsize=fontsize,
+            at=legend_coord)
+        gscript.run_command('d.mon', stop=driver)
+
+    # render difference
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width+border,
+        height=height,
+        output=os.path.join(render, 'difference_2004_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='difference_2004_2016')
+    gscript.run_command('d.legend',
+        raster='difference_2004_2016',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render water depth
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width+border,
+        height=height,
+        output=os.path.join(render, 'depth_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='depth_2016')
+    gscript.run_command('d.legend',
+        raster='depth_2016',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render imagery
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'naip_2014.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='naip_2014')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render landcover
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'landcover.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='landcover')
+    gscript.run_command('d.legend',
+        raster='landcover',
+        fontsize=fontsize,
+        at=legend_coord,
+        flags='n')
+    gscript.run_command('d.mon', stop=driver)
+
+
+def render_subregion_2d():
+
+    # create rendering directory
+    render = os.path.join(gisdbase, location, 'renderings', 'sample_data')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    # set region
+    gscript.run_command('g.region', region='subregion', res=1)
+
+    # render shaded relief maps
+    for year in years:
+
+        gscript.run_command('d.mon',
+            start=driver,
+            width=width+border,
+            height=height,
+            output=os.path.join(render, 'gully_elevation_'+str(year)+'.png'),
+            overwrite=overwrite)
+        gscript.run_command('d.rast',
+            map='shaded_relief_'+str(year))
+        # gscript.run_command('d.vect',
+        #     map='contours_'+str(year),
+        #     display='shape',
+        #     width=0.5,
+        #     color='white')
+        gscript.run_command('d.legend',
+            raster='elevation_'+str(year),
+            fontsize=fontsize,
+            at=legend_coord)
+        gscript.run_command('d.mon', stop=driver)
+
+    # render landforms
+    for year in years:
+
+        gscript.run_command('d.mon',
+            start=driver,
+            width=width+border+border,
+            height=height,
+            output=os.path.join(render, 'gully_landforms_'+str(year)+'.png'),
+            overwrite=overwrite)
+        gscript.run_command('d.rast',
+            map='landforms_'+str(year))
+        gscript.run_command('d.legend',
+            raster='landforms_'+str(year),
+            fontsize=fontsize,
+            at=legend_coord)
+        gscript.run_command('d.mon', stop=driver)
+
+    # render difference
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width+border,
+        height=height,
+        output=os.path.join(render, 'gully_difference_2004_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='difference_2004_2016')
+    gscript.run_command('d.legend',
+        raster='difference_2004_2016',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+
+def render_fortbragg_2d():
+
+    # create rendering directory
+    render = os.path.join(gisdbase, location, 'renderings', 'sample_data')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    # set region
+    gscript.run_command('g.region', region='fortbragg', res=10)
+
+    # render shaded relief maps
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width+border,
+        height=height,
+        output=os.path.join(render, 'fortbragg_elevation.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='fortbragg_shaded_10m_2012')
+    gscript.run_command('d.legend',
+        raster='fortbragg_elevation_10m_2012',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+
+def render_region_3d():
+    """3D rendering with nviz"""
+
+    # set 3d rendering parameters
+    camera_height = 200
+    perspective = 15
+    position = 0.84,0.16
+    light_position = (0.68, -0.68, 0.95)
+    fringe = "se"
+    fringe_color = "192:192:192"
+    fringe_elevation = 90
+    size = (1600, 1600)
+    zexag = 3
+
+    # create rendering directory
+    render = os.path.join(gisdbase, location, 'renderings', 'sample_data_3d')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    # set region
+    gscript.run_command('g.region',
+                        # region='region',
+                        raster='elevation_2016',
+                        res=1)
+
+    # 3D render elevation
+    gscript.run_command('m.nviz.image',
+        elevation_map='elevation_2016',
+        color_map='elevation_2016',
+        resolution_fine=1,
+        height=camera_height,
+        position=position,
+        perspective=perspective,
+        zexag=zexag,
+        light_position=light_position,
+        fringe=fringe,
+        fringe_color=fringe_color,
+        fringe_elevation=fringe_elevation,
+        output=os.path.join(render,'elevation_2016'),
+        format='tif',
+        size=size,
+        errors='ignore'
+        )
+
+
+# def render_fortbragg_3d():
+#
+#     # create rendering directory
+#     render = os.path.join(gisdbase, location, 'renderings', 'sample_data_3d')
+#     if not os.path.exists(render):
+#         os.makedirs(render)
+
+
+
+
+def cleanup():
+    try:
+        # stop cairo monitor
+        gscript.run_command('d.mon', stop=driver)
+    except CalledModuleError:
+        pass
+
+if __name__ == "__main__":
+    atexit.register(cleanup)
+    sys.exit(main())

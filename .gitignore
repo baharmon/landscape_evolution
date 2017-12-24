@@ -10,6 +10,9 @@ raw_data/*
 __pycache__/
 *.py[cod]
 
+# Lupa
+lupaProject.json
+
 # C extensions
 *.so
 
