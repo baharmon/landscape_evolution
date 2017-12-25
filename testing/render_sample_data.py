@@ -66,7 +66,7 @@ def render_region_2d():
     """2D rendering of region"""
 
     # create rendering directory
-    render = os.path.join(gisdbase, location, 'renderings', 'sample_data')
+    render = os.path.join(gisdbase, 'images', 'sample_data')
     if not os.path.exists(render):
         os.makedirs(render)
 
@@ -173,7 +173,7 @@ def render_region_2d():
 def render_subregion_2d():
 
     # create rendering directory
-    render = os.path.join(gisdbase, location, 'renderings', 'sample_data')
+    render = os.path.join(gisdbase, 'images', 'sample_data')
     if not os.path.exists(render):
         os.makedirs(render)
 
@@ -233,7 +233,7 @@ def render_subregion_2d():
 def render_fortbragg_2d():
 
     # create rendering directory
-    render = os.path.join(gisdbase, location, 'renderings', 'sample_data')
+    render = os.path.join(gisdbase, 'images', 'sample_data')
     if not os.path.exists(render):
         os.makedirs(render)
 
@@ -271,7 +271,7 @@ def render_region_3d():
     zexag = 3
 
     # create rendering directory
-    render = os.path.join(gisdbase, location, 'renderings', 'sample_data_3d')
+    render = os.path.join(gisdbase, 'images', 'sample_data_3d')
     if not os.path.exists(render):
         os.makedirs(render)
 
@@ -350,7 +350,7 @@ def render_subregion_3d():
     zexag = 3
 
     # create rendering directory
-    render = os.path.join(gisdbase, location, 'renderings', 'sample_data_3d')
+    render = os.path.join(gisdbase, 'images', 'sample_data_3d')
     if not os.path.exists(render):
         os.makedirs(render)
 
@@ -429,7 +429,7 @@ def render_fortbragg_3d():
     zexag = 3
 
     # create rendering directory
-    render = os.path.join(gisdbase, location, 'renderings', 'sample_data_3d')
+    render = os.path.join(gisdbase, 'images', 'sample_data_3d')
     if not os.path.exists(render):
         os.makedirs(render)
 
