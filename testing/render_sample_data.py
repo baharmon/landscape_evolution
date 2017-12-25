@@ -18,8 +18,6 @@ import atexit
 import grass.script as gscript
 from grass.exceptions import CalledModuleError
 
-
-
 # set graphics driver
 driver = "cairo"
 
@@ -47,20 +45,25 @@ fontsize = 24
 # set data parameters
 years = [2004, 2016]
 
+
 def main():
 
     # # render 2d maps
-    render_region_2d()
-    render_subregion_2d()
-    render_fortbragg_2d()
+    # render_region_2d()
+    # render_subregion_2d()
+    # render_fortbragg_2d()
 
     # render 3d maps
     render_region_3d()
+    render_subregion_3d()
+    render_fortbragg_3d()
 
     atexit.register(cleanup)
     sys.exit(0)
 
+
 def render_region_2d():
+    """2D rendering of region"""
 
     # create rendering directory
     render = os.path.join(gisdbase, location, 'renderings', 'sample_data')
@@ -188,11 +191,6 @@ def render_subregion_2d():
             overwrite=overwrite)
         gscript.run_command('d.rast',
             map='shaded_relief_'+str(year))
-        # gscript.run_command('d.vect',
-        #     map='contours_'+str(year),
-        #     display='shape',
-        #     width=0.5,
-        #     color='white')
         gscript.run_command('d.legend',
             raster='elevation_'+str(year),
             fontsize=fontsize,
@@ -259,17 +257,17 @@ def render_fortbragg_2d():
 
 
 def render_region_3d():
-    """3D rendering with nviz"""
+    """3D rendering of region with nviz"""
 
     # set 3d rendering parameters
-    camera_height = 200
+    camera_height = 750
     perspective = 15
-    position = 0.84,0.16
+    position = 1.0,1.0
     light_position = (0.68, -0.68, 0.95)
     fringe = "se"
-    fringe_color = "192:192:192"
-    fringe_elevation = 90
-    size = (1600, 1600)
+    fringe_color = "255:255:245" #"244:244:244" #"254:246:232"
+    fringe_elevation = 85
+    size = (1600, 1200)
     zexag = 3
 
     # create rendering directory
@@ -279,14 +277,171 @@ def render_region_3d():
 
     # set region
     gscript.run_command('g.region',
-                        # region='region',
-                        raster='elevation_2016',
+                        region='region',
                         res=1)
+
+    # list of rasters to render
+    rasters = ['elevation_2016',
+        'colorized_skyview_2016',
+        'depth_2016',
+        'landforms_2016',
+        'naip_2014',
+        'landcover',
+        'difference_2004_2016']
+
+    # list of 2004 rasters to render
+    rasters_2004 = ['elevation_2004',
+        'colorized_skyview_2004',
+        'landforms_2004']
+
+    for raster in rasters:
+        # 3D render raster
+        gscript.run_command('m.nviz.image',
+            elevation_map='elevation_2016',
+            color_map=raster,
+            resolution_fine=1,
+            height=camera_height,
+            position=position,
+            perspective=perspective,
+            zexag=zexag,
+            light_position=light_position,
+            fringe=fringe,
+            fringe_color=fringe_color,
+            fringe_elevation=fringe_elevation,
+            output=os.path.join(render,raster),
+            format='tif',
+            size=size,
+            errors='ignore'
+            )
+
+    for raster in rasters_2004:
+        # 3D render raster
+        gscript.run_command('m.nviz.image',
+            elevation_map='elevation_2004',
+            color_map=raster,
+            resolution_fine=1,
+            height=camera_height,
+            position=position,
+            perspective=perspective,
+            zexag=zexag,
+            light_position=light_position,
+            fringe=fringe,
+            fringe_color=fringe_color,
+            fringe_elevation=fringe_elevation,
+            output=os.path.join(render,raster),
+            format='tif',
+            size=size,
+            errors='ignore'
+            )
+
+
+def render_subregion_3d():
+    """3D rendering of subregion with nviz"""
+
+    # set 3d rendering parameters
+    camera_height = 300
+    perspective = 16
+    position = 1.0,1.0
+    light_position = (0.68, -0.68, 0.99)
+    fringe = "se"
+    fringe_color = "255:255:245" #"244:244:244" #"254:250:236"
+    fringe_elevation = 94
+    size = (1600, 1200)
+    zexag = 3
+
+    # create rendering directory
+    render = os.path.join(gisdbase, location, 'renderings', 'sample_data_3d')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    # set region
+    gscript.run_command('g.region',
+                        region='subregion',
+                        res=1)
+
+    # list of rasters to render
+    rasters = ['elevation_2016',
+        'colorized_skyview_2016',
+        'depth_2016',
+        'landforms_2016',
+        'naip_2014',
+        'landcover',
+        'difference_2004_2016']
+
+    # list of 2004 rasters to render
+    rasters_2004 = ['elevation_2004',
+        'colorized_skyview_2004',
+        'landforms_2004']
+
+    for raster in rasters:
+        # 3D render raster
+        gscript.run_command('m.nviz.image',
+            elevation_map='elevation_2016',
+            color_map=raster,
+            resolution_fine=1,
+            height=camera_height,
+            position=position,
+            perspective=perspective,
+            zexag=zexag,
+            light_position=light_position,
+            fringe=fringe,
+            fringe_color=fringe_color,
+            fringe_elevation=fringe_elevation,
+            output=os.path.join(render,'gully_'+raster),
+            format='tif',
+            size=size,
+            errors='ignore'
+            )
+
+    for raster in rasters_2004:
+        # 3D render raster
+        gscript.run_command('m.nviz.image',
+            elevation_map='elevation_2004',
+            color_map=raster,
+            resolution_fine=1,
+            height=camera_height,
+            position=position,
+            perspective=perspective,
+            zexag=zexag,
+            light_position=light_position,
+            fringe=fringe,
+            fringe_color=fringe_color,
+            fringe_elevation=fringe_elevation,
+            output=os.path.join(render,'gully_'+raster),
+            format='tif',
+            size=size,
+            errors='ignore'
+            )
+
+
+def render_fortbragg_3d():
+    """3D rendering of fort bragg region with nviz"""
+
+    # set 3d rendering parameters
+    camera_height = 25000
+    perspective = 14
+    position = 1.0,1.0
+    light_position = (0.68, -0.68, 0.95)
+    fringe = "se"
+    fringe_color = "85:250:182"
+    fringe_elevation = 100
+    size = (1600, 1200)
+    zexag = 3
+
+    # create rendering directory
+    render = os.path.join(gisdbase, location, 'renderings', 'sample_data_3d')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    # set region
+    gscript.run_command('g.region',
+                        region='fortbragg',
+                        res=10)
 
     # 3D render elevation
     gscript.run_command('m.nviz.image',
-        elevation_map='elevation_2016',
-        color_map='elevation_2016',
+        elevation_map='fortbragg_elevation_10m_2012',
+        color_map='fortbragg_elevation_10m_2012',
         resolution_fine=1,
         height=camera_height,
         position=position,
@@ -296,21 +451,11 @@ def render_region_3d():
         fringe=fringe,
         fringe_color=fringe_color,
         fringe_elevation=fringe_elevation,
-        output=os.path.join(render,'elevation_2016'),
+        output=os.path.join(render,'fortbragg_elevation_2012'),
         format='tif',
         size=size,
         errors='ignore'
         )
-
-
-# def render_fortbragg_3d():
-#
-#     # create rendering directory
-#     render = os.path.join(gisdbase, location, 'renderings', 'sample_data_3d')
-#     if not os.path.exists(render):
-#         os.makedirs(render)
-
-
 
 
 def cleanup():

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2017.1.22)  10 OCT 2017 00:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2017.1.22)  10 OCT 2017 00:24
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -1695,7 +1695,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 691.
 Here is how much of TeX's memory you used:
  15882 strings out of 493027
  238194 string characters out of 6134069
- 386972 words of memory out of 5000000
+ 386998 words of memory out of 5000000
  19029 multiletter control sequences out of 15000+600000
  40331 words of font info for 101 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1710,7 +1710,7 @@ fonts/type1/public/txfonts/txsy.pfb></usr/local/texlive/2015/texmf-dist/fonts/t
 ype1/urw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/t
 imes/utmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri
 8a.pfb>
-Output written on landscape_evolution.pdf (8 pages, 727578 bytes).
+Output written on landscape_evolution.pdf (8 pages, 727582 bytes).
 PDF statistics:
  331 PDF objects out of 1000 (max. 8388607)
  307 compressed objects within 4 object streams
