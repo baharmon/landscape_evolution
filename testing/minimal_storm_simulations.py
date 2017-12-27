@@ -70,8 +70,8 @@ def main():
     # run simulations in parallel
     parallel_simulations(options_list)
 
-    # render maps
-    render_2d(envs)
+    # # render maps
+    # render_2d(envs)
 
     atexit.register(cleanup)
     sys.exit(0)

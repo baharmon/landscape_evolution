@@ -44,41 +44,24 @@ fontsize = 24
 
 def main():
 
-# list of mapsets to render
-    # mapsets = gscript.read_command('g.mapset',
-    #     location=location,
-    #     flags='l')
-    mapsets = gscript.mapsets(False)
-    mapsets.remove('PERMANENT')
+# # list of mapsets to render
+#     mapsets = gscript.mapsets(False)
+#     mapsets.remove('PERMANENT')
+#
+#     for mapset in mapsets:
+#
+#         # change mapset
+#         gscript.read_command('g.mapset',
+#             mapset=mapset,
+#             location=location)
 
-    for mapset in mapsets:
+    # render 2d maps
+    render_region_2d(mapset)
+    render_subregion_2d(mapset)
 
-        # change mapset
-        gscript.read_command('g.mapset',
-            mapset=mapset,
-            location=location)
-
-        # ## save named regions
-        # gscript.run_command('g.region',
-        #     n=151030, s=150580, w=597195, e=597645,
-        #     save='region',
-        #     res=1)
-        # gscript.run_command('g.region',
-        #     n=150870, s=150720, w=597290, e=597440,
-        #     save='subregion',
-        #     res=1)
-        # gscript.run_command('g.region',
-        #     n=160000, s=144000, w=587000, e=603000,
-        #     save='fortbragg',
-        #     res=10)
-
-        # render 2d maps
-        render_region_2d(mapset)
-        render_subregion_2d(mapset)
-
-        # # render 3d maps
-        # render_region_3d(mapset)
-        # render_subregion_3d(mapset)
+    # # render 3d maps
+    render_region_3d(mapset)
+    render_subregion_3d(mapset)
 
     atexit.register(cleanup)
     sys.exit(0)
@@ -87,7 +70,7 @@ def render_region_2d(mapset):
     """2D rendering of region"""
 
     # create rendering directory
-    render = os.path.join(gisdbase, 'images')
+    render = os.path.join(gisdbase, 'images', mapset)
     if not os.path.exists(render):
         os.makedirs(render)
 
@@ -99,38 +82,35 @@ def render_region_2d(mapset):
         w=597195,
         res=1)
 
-    # render net difference
+    # render net difference with shaded relief
     gscript.run_command('d.mon',
         start=driver,
         width=width+border,
         height=height,
-        output=os.path.join(render, mapset+'_'+'net_difference'+'.png'),
+        output=os.path.join(render, 'net_difference'+'.png'),
         overwrite=overwrite)
-    gscript.run_command('d.rast',
-        map='net_difference')
+    gscript.run_command('r.relief',
+        input='elevation',
+        output='relief',
+        altitude=90,
+        azimuth=45,
+        zscale=3,
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='relief',
+        color='net_difference',
+        brighten=0)
     gscript.run_command('d.legend',
         raster='net_difference',
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
 
-    # gscript.run_command('r.relief',
-    #     input='elevation',
-    #     output='relief',
-    #     altitude=90,
-    #     azimuth=45,
-    #     zscale=zscale,
-    #     env=envs[mapset])
-    # gscript.run_command('d.shade',
-    #     shade='relief',
-    #     color='net_difference',
-    #     brighten=brighten)
-
 
 def render_subregion_2d(mapset):
 
     # create rendering directory
-    render = os.path.join(gisdbase, 'images')
+    render = os.path.join(gisdbase, 'images', mapset)
     if not os.path.exists(render):
         os.makedirs(render)
 
@@ -141,21 +121,30 @@ def render_subregion_2d(mapset):
         w=597290,
         res=1)
 
-    # render net difference
+    # render net difference with shaded relief
     gscript.run_command('d.mon',
         start=driver,
         width=width+border,
         height=height,
-        output=os.path.join(render,
-            mapset+'_'+'gully_'+'net_difference'+'.png'),
+        output=os.path.join(render, 'gully_net_difference'+'.png'),
         overwrite=overwrite)
-    gscript.run_command('d.rast',
-        map='net_difference')
+    gscript.run_command('r.relief',
+        input='elevation',
+        output='relief',
+        altitude=90,
+        azimuth=45,
+        zscale=3,
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='relief',
+        color='net_difference',
+        brighten=0)
     gscript.run_command('d.legend',
         raster='net_difference',
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
+
 
 def render_region_3d(mapset):
     """3D rendering of region with nviz"""
@@ -172,28 +161,25 @@ def render_region_3d(mapset):
     zexag = 3
 
     # create rendering directory
-    render = os.path.join(gisdbase, 'images', 'sample_data_3d')
+    render = os.path.join(gisdbase, 'images', mapset+'_3d')
     if not os.path.exists(render):
         os.makedirs(render)
 
     # set region
     gscript.run_command('g.region',
-                        region='region',
-                        res=1)
+        n=151030,
+        s=150580,
+        e=597645,
+        w=597195,
+        res=1)
 
     # list of rasters to render
-    rasters = ['elevation_2016',
-        'colorized_skyview_2016',
-        'depth_2016',
-        'landforms_2016',
-        'naip_2014',
-        'landcover',
-        'difference_2004_2016']
+    rasters = ['net_difference']
 
     for raster in rasters:
         # 3D render raster
         gscript.run_command('m.nviz.image',
-            elevation_map='elevation_2016',
+            elevation_map='elevation',
             color_map=raster,
             resolution_fine=1,
             height=camera_height,
@@ -226,28 +212,25 @@ def render_subregion_3d(mapset):
     zexag = 3
 
     # create rendering directory
-    render = os.path.join(gisdbase, 'images', 'sample_data_3d')
+    render = os.path.join(gisdbase, 'images', mapset+'_3d')
     if not os.path.exists(render):
         os.makedirs(render)
 
     # set region
     gscript.run_command('g.region',
-                        region='subregion',
-                        res=1)
+        n=150870,
+        s=150720,
+        e=597440,
+        w=597290,
+        res=1)
 
     # list of rasters to render
-    rasters = ['elevation_2016',
-        'colorized_skyview_2016',
-        'depth_2016',
-        'landforms_2016',
-        'naip_2014',
-        'landcover',
-        'difference_2004_2016']
+    rasters = ['net_difference']
 
     for raster in rasters:
         # 3D render raster
         gscript.run_command('m.nviz.image',
-            elevation_map='elevation_2016',
+            elevation_map='elevation',
             color_map=raster,
             resolution_fine=1,
             height=camera_height,
