@@ -1341,7 +1341,7 @@ class Evolution:
         """
         T = R * K * C * P * LST
         where
-        E is average annual soil loss
+        T is sediment flow at transport capacity
         R is rainfall factor
         K is soil erodibility factor
         C is a dimensionless land cover factor
@@ -1574,7 +1574,7 @@ class Evolution:
                 n=self.n),
             overwrite=True)
 
-        # compute sediment flow at sediment transport capacity
+        # compute sediment flow
         """E = R * K * LS * C * P
         where
         E is average annual soil loss
