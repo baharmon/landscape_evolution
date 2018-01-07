@@ -126,7 +126,8 @@ the unit stream power erosion deposition (USPED) model,
 or the 3-dimensional revised universal soil loss equation (RUSLE 3D) model.  
 
 % Implementation 
-This model has been implemented as the add-on module 
+The dynamic landscape evolution %This model 
+has been implemented as the add-on module 
 \textit{r.evolution}
 \footnote{\url{https://github.com/baharmon/landscape\_evolution}}
 for a free, open-source geographic information system (GIS) -- 
@@ -155,37 +156,54 @@ for large, high resolution topographic datasets.
 %%and erosion and sediment transport is detachment capacity limited. 
 %%Therefore, direct application of USLE/RUSLE to complex terrain within GIS is rather restricted. 
 %%The results can also be interpreted as an extreme case with maximum possible spatial extent of erosion.
-%
-%
+
+
 %Spatial and temporal scales \\
-%
+
 %% RUSLE3D 
 %% useful for large datasets (up to 2 billion cells)
 %% scale (see Panama and Yakima, see Panagos on r-factor)
-%
-%
-%
+
 %Erosion models \\
-%
+
 %Erosion to landscape evolution \\
-%
+
 %Dynamic evolution \\
+
+
+
+
+
+
+
+
+% table of landscape evolution models
+\begin{table*}
+\small
+\caption{Select landscape evolution models}
+\begin{tabu} to \textwidth {XXXXXl}
+\toprule
+Model & Spatial scale &  Temporal scale & Representation & Dynamics & GIS\\
+\midrule
 %
-%Table of landscape evolution models \\
+SIBERIA & landscape & continuous & raster & & \\
+CHILD & landscape & continuous & mesh & & \\
+r.landscape.evol  & landscape & continuous & raster &  & \checkmark\\
+r.evolution & watershed -- & event & raster & dynamic \& & \checkmark\\
+& landscape &&& steady state & \\
+%
+\bottomrule
+\end{tabu}
+\label{table:evolution_models} 
+\end{table*}
 
 \subsection{Conceptual model}
-% Diagram
-
-%\section{Theory}
 
 %Diagram\\
 
 %Dynamic vs steady state \\
 
 %Determine mode \\
-	% SIMWE, USPED, or RULSE3D \\
-		%If SIMWE, then determine erosion regime \\
-			% erosion deposition, detachment limited or transport limited\\
 %Run erosion model \\
 %Gravitational diffusion \\
 
@@ -203,29 +221,49 @@ r.sim.water\footnote{\url{https://grass.osgeo.org/grass75/manuals/r.sim.water.ht
 and r.sim.sediment \footnote{\url{https://grass.osgeo.org/grass75/manuals/r.sim.sediment.html}}.
 
 % overview
+In SIMWE mode 
+for each time step
+the dynamic landscape evolution model 
+determines the soil erosion regime,
+simulates water and sediment flows, 
+and then evolves the topography. 
+% erdep
+In an erosion-deposition regime 
+the model 
+computes the partial derivatives of the topography,
+simulates shallow water flow and erosion-deposition,
+and then evolves the topography based on the erosion-deposition rate
+and gravitational diffusion.
+% transport limited
+The same process is used in
+a transport capacity limited regime
+except that the topography is evolved based on 
+the transport limited erosion-deposition rate
+and gravitational diffusion.
+% detachment  limited
+In a detachment capacity limited regime
+the model instead
+computes the partial derivatives of the topography,
+simulates shallow water flow and sediment flow,
+and then evolves the topography based on the sediment flow rate
+and gravitational diffusion.
 
-% regimes
-
-	%In a detachment limited soil erosion regime,
-	%landscape evolution -- the change in elevation over time -- 
-	%is a function of 
-	%the net erosion-deposition rate and the sediment mass density.
-	%etc...
-
-% water flow
-
-% sediment flux, transport limited erdep, or net erdep
+% dynamic versus steady state
+The model simulates dynamic landscape evolution 
+when the time step is less than the travel time 
+for a drop of water or a particle of sediment to cross the landscape.
+With longer time steps the model simulates steady state dynamics. 
 
 \subsection{Erosion regime}
 This model can switch erosion regimes at each time step
 based on the rainfall intensity $i_r$
 and the balance of the sediment detachment capacity $D_c$
 and the sediment transport capacity $T_c$
-represented by the first order reaction term $\sigma$ ($m^{-1}$)
+represented by the first order reaction term $\sigma$ 
 which depends on soil and landcover properties.
 The detachment capacity is the maximum potential detachment rate by overland flow, while
 the sediment transport capacity is the maximum potential sediment flow rate.
-Both are functions of shear stress.
+%Both are functions of shear stress.
 
 % erosion regime eq.
 \begin{equation}
