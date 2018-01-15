@@ -39,7 +39,6 @@
 \usepackage{gensymb}
 \usepackage{caption}
 \usepackage{subcaption}
-\usepackage{hyperref}
 \usepackage[super]{nth}
 \usepackage[inline]{enumitem}
 \usepackage{moreenum}
@@ -51,8 +50,9 @@
 \usepackage{listings}
 \usepackage{float}
 \usepackage{upquote}
-\usepackage{minted}
-\usemintedstyle{bw}
+\usepackage{hyperref}
+%\usepackage{minted}
+%\usemintedstyle{bw}
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 
 % Special characters
@@ -72,10 +72,9 @@
 
 \author[cga,la]{Brendan Alexander Harmon\corref{cor1}}
 \cortext[cor1]{Corresponding author}
-
 \ead{brendan.harmon@gmail.com}
 %\ead[url]{baharmon@github.io}
-\ead[url]{https://github.com/baharmon/landscape_evolution}
+%\ead[url]{https://github.com/baharmon/landscape_evolution}
 
 \author[cga,meas]{Helena Mitasova}
 \ead{hmitaso@ncsu.edu}
@@ -84,12 +83,11 @@
 \ead{vpetras@ncsu.edu}
 
 \author[cga,meas]{Anna Petrasova}
-\ead{akratoc@ncsu.edu }
+\ead{akratoc@ncsu.edu}
 
 \address[cga]{Center for Geospatial Analytics, North Carolina State University, Raleigh, North Carolina, United States of America}
 \address[la]{Robert Reich School of Landscape Architecture, Louisiana State University, Baton Rouge, Louisiana}
 \address[meas]{Department of Marine, Earth, and Atmospheric Sciences, North Carolina State University, Raleigh, North Carolina, United States of America}
-
 
 \begin{abstract}
 This is a fine-scale, short term, process-based landscape evolution model using simulated erosion and deposition to generate a time-series of digital elevation models and compute the net change in elevation. This model uses a path sampling method to solve water and sediment flow continuity equations and model mass flows over complex topographies based on topographic, land cover, soil, and rainfall parameters. This either steady state or dynamic model can simulate landscape evolution for a range of hydrologic soil erosion regimes. 
@@ -102,7 +100,7 @@ landscape evolution \sep dynamic model
 %% MSC codes here, in the form: \MSC code \sep code
 %% or \MSC[2008] code \sep code (2000 is the default)
 \end{keyword}
-
+%
 \end{frontmatter}
 
 % -------------- TOC --------------
@@ -128,328 +126,646 @@ the unit stream power erosion deposition (USPED) model,
 or the 3-dimensional revised universal soil loss equation (RUSLE 3D) model.  
 
 % Implementation 
-This model has been implemented as an add-on module 
-for a free, open-source geographic information system (GIS) -- GRASS GIS.
+The dynamic landscape evolution %This model 
+has been implemented as the add-on module 
+\textit{r.evolution}
+\footnote{\url{https://github.com/baharmon/landscape\_evolution}}
+for a free, open-source geographic information system (GIS) -- 
+Geographic Resources Analysis Support System (GRASS) GIS. 
 It supports multithreading and parallel processing
-for the efficient computation of 
-physics-based simulations for large, high resolution topographic datasets.
+for the efficient computation of physics-based simulations 
+for large, high resolution topographic datasets.
+
+%
+\subsection{Theory}
+
+%Steady state versus dynamic flows \\
+%
+%Soil erosion regimes \\
+%
+%
+%% DETACHMENT LIMITED  - RUSLE
+%%
+%%Both USLE and RUSLE consider erosion only along the flow line
+%%without the influence of flow convergenceJdivergence 
+%%and the equations can be properly applied only to areas experiencing net erosion. 
+%%Depositional areas should be excluded.
+%%Both the standard and modified equations can be properly applied only to areas experiencing net erosion. 
+%%Depositional areas should be excluded from the study area 
+%%because the model assumes that transport capacity exceeds detachment capacity everywhere 
+%%and erosion and sediment transport is detachment capacity limited. 
+%%Therefore, direct application of USLE/RUSLE to complex terrain within GIS is rather restricted. 
+%%The results can also be interpreted as an extreme case with maximum possible spatial extent of erosion.
+
+
+%Spatial and temporal scales \\
+
+%% RUSLE3D 
+%% useful for large datasets (up to 2 billion cells)
+%% scale (see Panama and Yakima, see Panagos on r-factor)
+
+%Erosion models \\
+
+%Erosion to landscape evolution \\
+
+%Dynamic evolution \\
 
 
 
-\subsection{Literature review}
 
-Steady state versus dynamic flows \\
 
-Spatial and temporal scales \\
 
-Table of landscape evolution models \\
+
+
+% table of landscape evolution models
+\begin{table*}
+\small
+\caption{Select landscape evolution models}
+\begin{tabu} to \textwidth {XXXXXl}
+\toprule
+Model & Spatial scale &  Temporal scale & Representation & Dynamics & GIS\\
+\midrule
+%
+SIBERIA & landscape & continuous & raster & & \\
+CHILD & landscape & continuous & mesh & & \\
+r.landscape.evol  & landscape & continuous & raster &  & \checkmark\\
+r.evolution & watershed -- & event & raster & dynamic \& & \checkmark\\
+& landscape &&& steady state & \\
+%
+\bottomrule
+\end{tabu}
+\label{table:evolution_models} 
+\end{table*}
 
 \subsection{Conceptual model}
-% Diagram
 
-%\section{Theory}
+%Diagram\\
 
+%Dynamic vs steady state \\
 
+%Determine mode \\
+%Run erosion model \\
+%Gravitational diffusion \\
 
+% --------------------------------EROSION-DEPOSITION --------------------------------
+\section{Simulation of water erosion model} \label{simwel}
 
-\section{Erosion-deposition model} \label{erdep_model}
+SIMWE -- the Simulation of Water Erosion model -- 
+is a physics-based simulation of shallow overland water and sediment flow
+that uses a path sampling method to solve the continuity and momentum equations 
+with a 2D diffusive wave approximation 
+\cite{mitas1998,mitasova2001,mitasova2004}.
+%
+It has been implemented in GRASS GIS as the modules 
+r.sim.water\footnote{\url{https://grass.osgeo.org/grass75/manuals/r.sim.water.html}} 
+and r.sim.sediment \footnote{\url{https://grass.osgeo.org/grass75/manuals/r.sim.sediment.html}}.
 
+% overview
+In SIMWE mode 
+for each time step
+the dynamic landscape evolution model 
+determines the soil erosion regime,
+simulates water and sediment flows, 
+and then evolves the topography. 
+% erdep
+In an erosion-deposition regime 
+the model 
+computes the partial derivatives of the topography,
+simulates shallow water flow and erosion-deposition,
+and then evolves the topography based on the erosion-deposition rate
+and gravitational diffusion.
+% transport limited
+The same process is used in
+a transport capacity limited regime
+except that the topography is evolved based on 
+the transport limited erosion-deposition rate
+and gravitational diffusion.
+% detachment  limited
+In a detachment capacity limited regime
+the model instead
+computes the partial derivatives of the topography,
+simulates shallow water flow and sediment flow,
+and then evolves the topography based on the sediment flow rate
+and gravitational diffusion.
+
+% dynamic versus steady state
+The model simulates dynamic landscape evolution 
+when the time step is less than the travel time 
+for a drop of water or a particle of sediment to cross the landscape.
+With longer time steps the model simulates steady state dynamics. 
+
+\subsection{Erosion regime}
+This model can switch erosion regimes at each time step
+based on the rainfall intensity $i_r$
+and the balance of the sediment detachment capacity $D_c$
+and the sediment transport capacity $T_c$
+represented by the first order reaction term $\sigma$ 
+which depends on soil and landcover properties.
+The detachment capacity is the maximum potential detachment rate by overland flow, while
+the sediment transport capacity is the maximum potential sediment flow rate.
+%Both are functions of shear stress.
+
+% erosion regime eq.
+\begin{equation}
+\label{eq:regime}
+\sigma = {D_c \over T_c}
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $\sigma$  is a first order reaction term ($m^{-1}$)\\
+\hspace*{0.5em} $D_c$ is the sediment detachment capacity ($kg~m^{-1}s^{-1}$)\\
+\hspace*{0.5em} $T_c$ is the sediment transport capacity ($kg~m^{-1}s^{-1}$)\\
+}
+
+%% erosion regime eq.
+%\begin{equation}
+%\label{eq:regime}
+%\sigma({x,y})={D_c({x,y}) \over T_c({x,y})}
+%\end{equation}
+%
+%{\small
+%\noindent
+%where: \\
+%\noindent
+%\hspace*{0.5em} $D_c({x,y})$ is the sediment detachment capacity ($kg~m^{-1}s^{-1}$)\\
+%\hspace*{0.5em} $T_c({x,y})$ is the sediment transport capacity ($kg~m^{-1}s^{-1}$)\\
+%\hspace*{0.5em} $\sigma({x,y})$  is a first order reaction term ($m^{-1}$) \\
+%}
+
+When rainfall intensity is very high ($i_r \geq 60 mm~hr^{-1}$)
+or $\sigma$ is low ($\sigma \leq 0.01 m^{-1}$),
+then the regime is detachment capacity limited. 
+%
+When rainfall intensity is not very high ($i_r < 60 mm~hr^{-1} $)
+and $\sigma$ is high ($\sigma \geq 100 m^{-1}$),
+then the regime is transport capacity limited. 
+%
+When rainfall intensity is not very high ($i_r<60 mm~hr^{-1}$)
+and $\sigma$ is neither high nor low ($ 0.01 m^{-1}< \sigma < 100 m^{-1}$),
+then there is an erosion-deposition regime. \\
 
 \subsection{Shallow water flow}
+The SIMWE model
+simulates shallow overland water flow 
+controlled by spatially variable topographic, soil, landcover, and rainfall parameters
+by solving the continuity and momentum equations 
+for steady state water flow with a path sampling method. 
+Shallow water flow $q(x,y,t)$ can be approximated by
+the bivariate form of the St.~Venant equation:
 
-We simulated shallow overland water flow controlled by spatially variable topography, soil, landcover, and rainfall parameters using the SIMWE model to solve the continuity and momentum equations for steady state water flow with a path sampling method. 
-% implemented in GRASS GIS as the module r.sim.water.
-%
-Shallow water flow can be approximated by
-the bivariate form of the St Venant equation:
-
+% shallow water flow eq.
 \begin{equation}
 \label{eq:water}
-{\partial h({\bf r},t) \over \partial t} =
- i_e({\bf r},t) - \nabla \cdot {\bf q}({\bf r},t)
+{\partial h(x,y,t) \over \partial t} =
+ i_e(x,y,t) - \nabla ~ q(x,y,t)
 \end{equation}
-
-\noindent
-where:
-
-\hspace*{1em} ${\bf r}(x,y)$ is the position [m]
-
-\hspace*{1em} $t$ is the time [s]
-
-\hspace*{1em} $h({\bf r},t)$ is the depth of overland flow [m]
-
-\hspace*{1em} $i_e({\bf r},t)$ is the rainfall excess [m/s]\\
-\hspace*{1em} (rainfall $-$ infiltration $-$ vegetation intercept) 
-
-\hspace*{1em} ${\bf q}({\bf r},t)$ is the water flow per unit width [$\rm m^2/s$]. \\
-
-
-
-%  diffusion wave approximation
-By integrating a diffusion term $ \propto \nabla^2 [h^{5/3}({\bf r})]$ 
-into
-the solution of the continuity and momentum equations for steady state water flow
-diffusive wave effects can be approximated
-so that water can flow through depressions. 
 %
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $(x,y)$ is the position ($m$)\\
+\hspace*{0.5em} $t$ is the time ($s$) \\
+\hspace*{0.5em} $h(x,y,t)$ is the depth of overland flow ($m$)\\
+\hspace*{0.5em} $i_e(x,y,t)$ is the rainfall excess ($m~s^{-1}$) \\
+\hspace*{0.5em} (i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)\\
+\hspace*{0.5em} $\nabla$ is the divergence of the flow vector field\\
+\hspace*{0.5em} $q(x,y,t)$ is the water flow per unit width ($m^2~s^{-1}$). \\
+}
+
+Diffusive wave effects can be approximated
+so that water can flow through depressions 
+by integrating a diffusion term $ \propto \nabla^2 [h^{5/3}(x,y)]$ 
+into the solution of the continuity and momentum equations 
+for steady state water flow.
+This equation is solved using a 
+Green's function Monte Carlo path sampling method. 
+
+%  diffuse wave eq.
 \begin{equation}
 \label{eq:difwater}
--{\varepsilon({\bf r})\over 2 }\nabla^2 [h^{5/3}({\bf r})]
-+\nabla \cdot [ h({\bf r}){\bf v}({\bf r})] = i_e({\bf r})
+-{\varepsilon(x,y)\over 2 }\nabla^2 [h^{5/3}(x,y)]
++\nabla ~ [ h(x,y)~v(x,y)] = i_e(x,y)
 \end{equation}
-
+%
+{\small
 \noindent
- where:
- 
+ where: \\
  \noindent
- \hspace*{1em} $\varepsilon({\bf r})$ is a spatially variable diffusion coefficient.
+ \hspace*{0.5em} $\varepsilon(x,y)$ is a spatially variable diffusion coefficient. \\
+}
 
-This equation is solved using a Green's function Monte Carlo path sampling method \cite{mitasova2004}.
+\subsection{Sediment flow}
+In SIMWE the sediment flow rate $q_s(x,y,t)$ is estimated 
+as a function of water flow and sediment concentration:
 
-%Steady state water flow equation with a 2D diffusive wave approximation\ldots
-
-%continuity and momentum equations for a steady water flow with a diffusive wave approximation
-
+%sediment flow equation
+\begin{equation}\label{eq:sedflow} 
+q_s(x,y,t) = \rho_s(x,y,t) ~ q(x,y,t)
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\hspace*{0.5em} $q_s(x,y,t)$ is the sediment flow rate per unit width ($kg~m^{-1}s^{-1}$)\\
+\hspace*{0.5em} $\rho_s(x,y,t)$ is sediment mass density ($kg~m^{-3}$).\\
+%\hspace*{0.5em} $q(x,y,t)$ is unit flow discharge vector ($m^{2} s^{-1}$) \\
+%\hspace*{0.5em} (i.e.~ the direction and rate of water flow per unit width)\\
+}
 
 \subsection{Erosion-deposition}
-%\subsection{Sediment flow}
+In SIMWE 
+the net erosion-deposition rate is estimated
+using the bivariate form of sediment continuity equation
+to model sediment storage and flow 
+based on effective sources and sinks.
+Net erosion-deposition $d_s(x,y,t)$
+-- the difference between sources and sinks --
+is approximated by
+the steady state sediment flow equation with diffusion:
 
-Steady state sediment flow equation with diffusion\ldots
+% erosion-deposition equation
 \begin{equation}\label{eq:sediment} 
-...
+d_s(x,y,t) = 
+{\partial [\rho_sc(x,y,t)h(x,y,t)] \over \partial t} +
+\nabla ~ q_s(x,y,t)
 \end{equation}
+%
+{\small
+\noindent
+where: \\
+\hspace*{0.5em} $d_s(x,y,t)$ is net erosion-deposition $(kg ~ m^{-2} s^{-1})$.\\
+%\hspace*{0.5em} $q_s(x,y,t)$ is the sediment flow rate per unit width ($kg~m^{-1}s^{-1}$)\\
+%\hspace*{0.5em} $\rho_s(x,y,t)$ is sediment mass density ($kg~m^{-3}$).\\
+}
 
+%\begin{equation}\label{eq:sediment} 
+%D(x,y,t) = \mathrm{source - sinks} =
+%{\partial [\rho_sc(x,y,t)h(x,y,t)] \over \partial t} +
+%\nabla ~ q_s(x,y,t)
+%\end{equation}
+
+%Sources and sinks of sediment are assumed to be proportional to
+%the difference between sediment transport capacity
+%and the sediment flow rate: 
+%\begin{equation}\label{eq:sources_sinks} 
+%d_s = \sigma [T_c  - |q_s|]
+%\end{equation}
+
+% ADD transport limited erosion-deposition
 
 \subsection{Landscape evolution}
+The simulated change in elevation $\Delta z(x,y,t)$ due to water erosion and deposition
+is a function of
+the change in time, the net erosion-deposition rate, and the sediment mass density 
+\cite{mitasova2013}:
 
+% landscape evolution equation
 % change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) / sediment mass density (kg/m^3)
 \begin{equation}
 \label{eq:evolution} 
-{\Delta z(x,y,t) = \Delta t \cdot d_s(x,y,t) \cdot \rho_s^{-1} }
+{\Delta z(x,y,t) = \Delta t ~ d_s(x,y,t) ~ \rho_s^{-1} }
 \end{equation}
 
-\noindent
-where: 
+%{\small
+%\noindent
+%where: \\
+%\noindent
+%\hspace*{0.5em} $\Delta z =$ change in elevation $(m)$ \\
+%\hspace*{0.5em} $d_s =$ net erosion-deposition $(kg ~ m^{-2} s^{-1})$ \\
+%\hspace*{0.5em} $\rho_s c(x,y,t)$ = sediment mass density $(kg ~m^{-3})$\\ %[kg/m$^3$]
+%\hspace*{0.5em} $\rho_s =$ sediment mass density $(kg ~m^{-3})$ \\
+%}
 
-\noindent
-$\Delta z =$ change in elevation $(m)$ \\
-$d_s =$ net erosion-deposition $(kg ~ m^{-2} s^{-1})$ \\
-$\rho_s =$ sediment mass density $(kg ~m^{-3})$ \\
-\vspace{1em}
-
-\ldots
-\cite{mitasova2013}
-
-\subsection{Gravitational diffusion}
-
-% change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
-
-\begin{equation}
-\label{eq:grav_diffusion} 
-{\Delta z(x,y,t) = \Delta t \cdot \rho_s^{-1} \cdot \varepsilon_g \cdot div(x,y,t)}
-\end{equation}
-
-\noindent
-where: 
-
-\noindent
-$\Delta z =$ change in elevation $(m)$ \\
-$\rho_s =$ sediment mass density $(kg ~m^{-3})$ \\
-$\varepsilon_g =$ gravitational diffusion coefficient $(m^{-2} s^{-1})$ \\
-$div =$ divergence $(m^{-1})$ \\
-\vspace{1em}
-
-\ldots
-\cite{Thaxton2004}
-
-\section{Detachment limited model} \label{flux_model}
-\subsection{Shallow water flow}
-\subsection{Sediment flow}
-
-% Detachment limited landscape evolution
-
-\begin{equation}
-\label{eq:flux_evolution} 
-{\Delta z(x,y,t)} = \Delta t \cdot q_s(x,y,t) \cdot \varrho(r)^{-1}
-\end{equation}
-
-\noindent
-where: 
-
-\noindent
-$\Delta z =$ change in elevation $(m)$ \\
-$q_s =$ sediment flux $(kg \cdot m^{-1} s^{-1})$ \\
-$\varrho =$ mass of water carried sediment per unit area $(kg \cdot m^{-2})$ \\
-\vspace{1em}
-
-\ldots
-\cite{mitasova2013}
-
-\subsection{Landscape evolution}
+% detachment limited landscape evolution
+In a detachment limited erosion regime
+the simulated change in elevation $\Delta z(x,y,t)$
+is a function of
+the change in time, the sediment flow rate, and the mass of water carried sediment per unit area
+\cite{mitasova2013}:
 
 % change in elevation (m) = change in time (s) * sediment flux (kg/ms) / mass of sediment per unit area (kg/m^2)
-
 \begin{equation}
-\label{eq:evolution} 
-{\Delta z(x,y,t) = \Delta t \cdot q_s(x,y,t) \cdot \varrho_s^{-1} }
+\label{eq:flux_evolution} 
+{\Delta z(x,y,t) = \Delta t ~ q_s(x,y,t) ~ \varrho_s^{-1} } 
 \end{equation}
-
+% \varrho_s(r)^{-1}
+%
+{\small
 \noindent
-where: 
-
+where: \\
 \noindent
-$\Delta z =$ change in elevation $(m)$ \\
-$q_s =$ sediment flux $(kg \cdot m^{-1} s^{-1})$ \\
-$\varrho =$ mass of water carried sediment per unit area $(kg \cdot m^{-2})$ \\
-\vspace{1em}
+%\hspace*{0.5em} $\Delta z =$ change in elevation $(m)$ \\
+%\hspace*{0.5em} $q_s =$ sediment flux $(kg ~ m^{-1} s^{-1})$ \\
+\hspace*{0.5em} $\varrho_s$ is the mass of sediment per unit area $(kg ~ m^{-2})$.\\
+}
 
-\ldots
-\cite{mitasova2013}
+% gravitational diffusion
+\noindent
+Gravitational diffusion is then applied to the evolved topography
+to simulate the settling of sediment particles. 
+The simulated change in elevation $\Delta z(x,y,t) $ due to gravitational diffusion 
+is a function of the change in time, the sediment mass density, 
+the gravitational diffusion coefficient, and topographic divergence 
+-- i.e.~the sum of the second order derivatives of elevation
+\cite{thaxton2004}:
 
+%gravitional diffusion eq.
+% change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
+\begin{equation}
+\label{eq:grav_diffusion} 
+{\Delta z(x,y,t) = \Delta t ~ \rho_s^{-1} ~ \varepsilon_g ~ \nabla(x,y,t)}
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+%\hspace*{0.5em} $\Delta z =$ change in elevation $(m)$ \\
+%\hspace*{0.5em} $\rho_s c(x,y,t)$ = sediment mass density $(kg ~m^{-3})$\\ %[kg/m$^3$]
+%\hspace*{0.5em} $\rho_s =$ sediment mass density $(kg ~m^{-3})$ \\
+\hspace*{0.5em} $\varepsilon_g$ is the gravitational diffusion coefficient $(m^{2} s^{-1})$\\ %$(m^{-2} s^{-1})$
+\hspace*{0.5em} $\nabla(x,y,t)$ is the topographic divergence $(m^{-1})$.\\
+}
 
-\subsection{Gravitational diffusion}
-
-\section{Transport limited model} \label{transport_model}
-
-
-\section{Unit stream power erosion deposition model} \label{usped_model}
-
-\subsection{Unit stream power erosion deposition} % transport limited
-\subsection{Landscape evolution}
-\subsection{Gravitational diffusion}
-
-\clearpage
 % -------------------------------- RUSLE --------------------------------
 \section{Revised universal soil loss equation 3D model}
 \label{rusle_model} % detachment limited
-
-% https://ncsu-geoforall-lab.github.io/erosion-modeling-tutorial/erdep_theory.html  % ---- RESOURCES ------
-% http://www4.ncsu.edu/~hmitaso/gmslab/reports/CerlErosionTutorial/denix/denixstart.html % ---- RESOURCES ------
-
-\subsection{Revised universal soil loss equation} % 3D
-
-\paragraph{Event-based r-factor derivation} % (MJ mm ha^-1 hr^-1)
-
-%`the R-factor is the product of kinetic energy of a rainfall event
-%and its maximum 30-minute intensity'
-%\cite{panagos_2015}
-
-% r-factor \cite{Renard1997}
-
-% rain energy
-\cite{Brown1987}
+%RUSLE
+The Revised Universal Soil Loss Equation for Complex Terrain (RUSLE3D) 
+is an empirical equation for computing erosion 
+in a detachment-capacity limited soil erosion regime
+for watersheds with complex topography \cite{Mitasova1996}. 
+% USLE
+It is based on 
+the Universal Soil Loss Equation (USLE),
+an empirical equation for estimating the average
+sheet and rill soil erosion from rainfall and runoff
+on agricultural fields and rangelands with simple topography 
+\cite{Wischmeier1978}. 
+It models erosion dominated regimes without deposition
+in which sediment transport capacity is uniformly greater than detachment capacity.
+As an empirical equation the predicted soil loss 
+is spatially and temporally averaged. 
+In USLE soil loss per unit area is determined by 
+an erosivity factor $R$,
+a soil erodibility factor $K$, 
+a slope length factor $L$,
+a slope steepness factor $S$,
+a cover management factor $C$,
+and a prevention measures factor $P$.
+These factors are empirical constants derived 
+from an extensive collection of measurements 
+%22.13m with 9\% slope
+on 22.1m standard plots with an average slope of 0.09$\degree$.  
 %
+RUSLE3D was designed to account for more complex, 3D topography 
+with converging and diverging flows. 
+In RUSLE3D the topographic potential for erosion at any given point 
+is represented by a 3D topographic factor $LS_{3D}$,
+which is a function of the upslope contributing area %flow accumulation
+and the angle of the slope. 
+
+In this spatially and temporally distributed model 
+RUSLE3D is modified by the use of a 
+event-based r-factor derived from the rainfall intensity at each time step.
+%
+For each time step
+this model computes the parameters for RUSLE3D -- 
+an event-based erosivity factor,
+the slope of the topography, the flow accumulation, and
+the 3D topographic factor -- and then
+solves the RUSLE3D equation for sediment flow. 
+The sediment flow is used to simulate landscape evolution 
+in a detachment capacity limited soil erosion regime.
+
+% RESOURCES
+% https://ncsu-geoforall-lab.github.io/erosion-modeling-tutorial/erdep_theory.html
+% http://www4.ncsu.edu/~hmitaso/gmslab/reports/CerlErosionTutorial/denix/denixstart.html
+
+\subsection{Event-based r-factor derivation} % (MJ mm ha^-1 hr^-1)
+In USLE and RUSLE the erosivity factor $R$ is the 
+combination of the total energy and peak intensity of a rainfall event,
+representing the interaction between the detachment of sediment particles
+and the transport capacity of the flow. 
+It can be calculated as the product of the 
+the kinetic energy of the rainfall event $E$
+and its maximum 30-minute intensity $I_{30}$
+\cite{Brown1987,Renard1997}.
+%
+In this model, however, the erosivity factor
+is derived at each time step as a function of
+kinetic energy, rainfall volume, rainfall intensity, and time.
+%
+First rain energy is derived from rainfall intensity \cite{Brown1987}:
+% rain energy eq.
 \begin{equation}
 \label{eq:rain_energy}
-{e_r = 0.29 \cdot (1.-0.72 \cdot exp(-0.05 \cdot i_r))}
+{e_r = 0.29 ~ (1.-0.72 ~ exp(-0.05 ~ i_r))}
 \end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $e_r$is unit rain energy $(MJ ~ ha^{-1} ~ mm{^-1})$\\
+\hspace*{0.5em} $i_r$ is rainfall intensity $(mm ~ h^{-1})$.\\
+}
 
 \noindent
-where: 
-
-\noindent
-$e_r =$ unit rain energy $(MJ \cdot ha^{-1} \cdot mm{^-1})$\\
-$i_r =$ rainfall intensity $(mm \cdot h^{-1})$\\
-\vspace{1em}
-
-
-% rainfall volume
-\begin{equation}
-\label{eq:rain_volume}
-{v_r = i_r \cdot t_r} %*(1 hr / 60 min))
-\end{equation}
-
-\noindent
-where: 
-
-\noindent
-$v_r =$ rainfall volume $(mm)$\\
-$i_r =$ rainfall intensity $(mm \cdot h^{-1})$\\
-$t_r =$ time interval $(h^{-1})$\\
-\vspace{1em}
-
-
+Then the event-based erosivity index $R_e$ is calculated as:
+%the product of unit rain energy, rainfall volume, rainfall intensity, and time: 
 % event erosivity index (MJ mm ha^-1 hr^-1)
 \begin{equation}
 \label{eq:erosivity_index}
-{r = e_r \cdot v_r \cdot i_r}
+{R_e = e_r ~ v_r ~ i_r ~ t_r}
 \end{equation}
-
+%
+{\small
 \noindent
-where: 
+\hspace*{0.5em} $R_e$ is the event-based erosivity index $(MJ ~ mm ~ ha^{-1} ~ hr^{-1})$\\
+%\hspace*{0.5em} $e_r$ is unit rain energy $(MJ ~ ha^{-1} ~ mm{^-1})$\\
+\hspace*{0.5em} $v_r$ is rainfall volume $(mm)$ derived from ${v_r = i_r ~ t_r}$\\
+%\hspace*{0.5em} $i_r$ is rainfall intensity $(mm ~ h^{-1})$\\
+\hspace*{0.5em} $t_r$ is time interval $s$\\ 
+}
+%derive event erosivity index (MJ mm ha^-1 hr^-1)
+%then multiply by rainfall interval in seconds (MJ mm ha^-1 hr^-1 s^-1)
 
-\noindent
-$r =$ erosivity index $(MJ \cdot mm \cdot ha^{-1} \cdot hr^{-1} \cdot  s{^-1})$\\
-$e_r =$ unit rain energy $(MJ \cdot ha^{-1} \cdot mm{^-1})$\\
-$v_r = $ rainfall volume $(mm)$\\
-$i_r = $ rainfall intensity $(mm \cdot h^{-1})$\\
-\vspace{1em}
-% multiply by rainfall interval in seconds (MJ mm ha^-1 hr^-1 s^-1)
+\subsection{Flow accumulation}
+The upslope contributing area is determined by flow accumulation. 
+Flow accumulation is calculated using a multiple flow direction algorithm \cite{Metz2009} 
+based on $A^{T}$ least cost paths \cite{Ehlschlaeger1989}. 
+The multiple flow direction algorithm 
+implemented in GRASS GIS as the module 
+\textit{r.watershed}\footnote{https://grass.osgeo.org/grass72/manuals/r.watershed.html}
+is computationally efficient and can
+navigate nested depressions and other obstacles. 
 
 
-\paragraph{3D topographic factor}
+\subsection{3D topographic factor}
+The 3D topographic factor $LS_{3D}(x,y)$
+is calculated as a function of 
+the flow accumulation,
+representing the upslope contributing area,
+and the slope. 
+%
+The empirical coefficients $m$ and $n$
+for the upslope contributing area 
+and the slope
+can range from $0.2$ to $0.6$
+and $1.0$ to $1.3$ respectively
+with low values representing dominant sheet flow
+and high values representing dominant rill flow.
+%http://www4.ncsu.edu/~hmitaso/gmslab/papers/erijgis.html
 
-%The modified 3D topographic factor LS3D, representing topographic potential for erosion at a point on the hill-slope, is a function of the upslope contributing area per unit width and the slope angle
+%with the higher values reflecting the pattern for prevailing rill erosion with more turbulent flow when erosion sharply increases with the amount of water. Lower exponent values close to m = n = 1 better reflect the pattern of compounded, long term impact of both rill and sheet erosion and averaging over a long term sequence of large and small events.
 
 \begin{equation}
 \label{eq:ls_factor}
-{ls(x,y) = (m+1.0) \cdot (a(x,y) \cdot a_0^{-1})^{m} \cdot (sin(\beta) / \beta_0)^{n}}
+{LS_{3D}(x,y) = (m+1.0) ~ (a(x,y) ~ a_0^{-1})^{m} ~ (sin(\beta) / \beta_0)^{n}}
 \end{equation}
-
+%
+{\small
 \noindent
-where: 
-
-%U is the upslope area per unit width (measure of water flow) in meters (m^2/m), 
-%β is the slope angle in degree, 
-%22.1 is the length of the standard USLE plot in meters, 
-%0.09 = 9% = 5.15◦ is the slope of the standard USLE plot. 
-%The values of exponents range for m = 0.2 − 0.6 and n = 1.0 − 1.3, where the lower values are used for prevailing sheet flow and higher values for prevailing rill flow.
-
+where: \\
 \noindent
-$ls =$ a dimensionless topographic (length-slope) factor\\
-$a =$ water flow accumulation $(m)$\\
-$a_0 =$ length of the standard USLE plot $(22.1 m)$\\
-$\beta =$ slope angle $(\degree)$\\
-$m =$ empirical coefficient\\
-$n =$ empirical coefficient\\
-$\beta_0 =$ slope of the standard USLE plot $(0.09 \degree)$\\
-\vspace{1em}
-%
-\cite{Mitasova1995} %http://www4.ncsu.edu/~hmitaso/gmslab/papers/erijgis.html
+\hspace*{0.5em} $LS_{3D}$ is the dimensionless topographic (length-slope) factor\\
+\hspace*{0.5em} $a$ is flow accumulation $(m)$\\
+\hspace*{0.5em} $a_0$ is the length of the standard USLE plot $(22.1 m)$\\
+\hspace*{0.5em} $\beta$ is the slope angle $(\degree)$\\
+\hspace*{0.5em} $m$ is an empirical coefficient\\
+\hspace*{0.5em} $n$ is an empirical coefficient\\
+\hspace*{0.5em} $\beta_0$ is the slope of the standard USLE plot $(0.09 \degree)$\\
+}
 
-%A simpler, continuous form of the equation for computation of the LS factor at a point r=(x,y) on a hillslope, (Mitasova et. al. 1996) is
-%
-%LS(r)  =  (m+1)  [ A(r) / a0 ]m  [ sin b(r) / b0 ]n
-%
-%where A[m]  is upslope contributing area per unit contour width, b [deg] is the slope, m and n are parameters, and a0  = 22.1m = 72.6ft  is the length and b0 = 0.09 = 9% = 5.16deg is the slope of the standard USLE plot. The impact of replacing the slope length by upslope area on the detachment pattern is illustrated by the following figures, which show that the upslope area-based factor better reflects the impact of concentrated flow on increased erosion:
-
-
-
-\paragraph{Revised universal soil loss equation}
+\subsection{Sediment flow} 
+The sediment flow is a function of the event-based erosivity factor, 
+the soil erodibility factor, the 3D topographic factor, cover factor, and the prevention measures factor:
 %
 \begin{equation}
 \label{eq:rusle}
-{e = r \cdot k \cdot ls \cdot c \cdot p}
+{E = R_e ~ K ~ LS_{3D} ~ C ~ P}
 \end{equation}
-
+%
+{\small
 \noindent
-where: 
-
-\noindent % CHECK UNITS
-$e =$ soil loss $(kg \cdot m^{-2} \cdot min^{-1})$\\
-$r =$ erosivity factor $(MJ \cdot mm \cdot ha^{-1} \cdot hr^{-1} \cdot  s{^-1})$\\
-$k =$ soil erodibility factor $(ton \cdot ha \cdot hr \cdot ha^{-1} \cdot MJ^{-1} \cdot mm^{-1})$\\
-$ls =$ dimensionless topographic (length-slope) factor\\
-$c =$ dimensionless land cover factor\\
-$p =$ dimensionless prevention measures factor\\
-\vspace{1em}
-
-
-
-
+where: \\
+\noindent
+\hspace*{0.5em} $E$ is soil loss $(kg ~ m^{-2} ~ min^{-1})$\\
+\hspace*{0.5em} $R_e$ is the event-based erosivity factor $(MJ ~ mm ~ ha^{-1} ~ hr^{-1})$\\ %~  s{^-1}
+\hspace*{0.5em} $K$ is the soil erodibility factor $(ton ~ ha ~ hr ~ ha^{-1} ~ MJ^{-1} ~ mm^{-1})$\\
+\hspace*{0.5em} $LS_{3D}$ is the dimensionless topographic (length-slope) factor\\
+\hspace*{0.5em} $C$ is the dimensionless land cover factor\\
+\hspace*{0.5em} $P$ is the dimensionless prevention measures factor\\
+}
 
 \subsection{Landscape evolution}
-\subsection{Gravitational diffusion}
+With RUSLE3D the simulated change in elevation $\Delta z(x,y,t)$
+is derived from 
+equation \ref{eq:flux_evolution}
+for landscape evolution in an detachment limited soil erosion regime
+and then equation \ref{eq:grav_diffusion}
+for the settling of sediment particles due to gravitational diffusion.
+
+% -------------------------------- USPED --------------------------------
+\section{Unit streampower erosion deposition model} \label{usped_model}
+The Unit Stream Power Erosion Deposition (USPED) model 
+estimates net erosion-deposition as the divergence of sediment flow
+in transport capacity limited soil erosion regimes.
+At transport capacity 
+shallow flows of water are carrying as much sediment possible 
+-- more sediment is being detached 
+than can be transported.
+As a transport capacity limited model
+USPED predicts erosion where transport capacity increases
+and deposition where transport capacity decreases. 
+In USPED the influence of topography on erosion and deposition
+is represented by a topographic sediment transport factor,
+while the influence of soil and landcover are represented by 
+factors adopted from USLE and RUSLE
+\cite{Mitasova1996}.
+
+With USPED net erosion-deposition is estimated by computing
+the event-based erosivity factor $R_e$ using Eq.~\ref{eq:erosivity_index},
+the slope and aspect of the topography,
+the flow accumulation with a multiple flow direction algorithm,
+the topographic sediment transport factor,
+the sediment flow at transport capacity,
+and the divergence of the sediment flow. 
+
+\subsection{Topographic sediment transport factor}
+For USPED
+the 3D topographic factor (Eq.~\ref{eq:ls_factor} for RUSLE3D 
+is adapted to represent the topographic sediment transport factor $LST$ --
+the topographic component 
+of overland flow at sediment transport capacity:
+
+\begin{equation}
+\label{eq:lst_factor}
+{LST = U^{m} ~ (\sin \beta)^{n}}
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $LST$ is the topographic sediment transport factor\\
+\hspace*{0.5em} $U$ is the flow accumulation $(m)$\\
+\hspace*{0.5em} $\beta$ is the angle of the slope $(\degree)$\\
+\hspace*{0.5em} $m$ is an empirical coefficient\\
+\hspace*{0.5em} $n$ is an empirical coefficient.\\
+}
+
+\subsection{Sediment flow at transport capacity} 
+The sediment flow at transport capacity is a function of 
+the event-based rainfall factor, the soil erodibility factor, 
+the topographic component of overland flow,
+tje landcover factor, and the prevention measures factor:
+%
+\begin{equation}
+\label{eq:usped}
+{T = R_e ~ K ~ C ~ P ~ LST}
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $T$ is sediment flow at transport capacity $(kg ~ m^{-1} ~ s^{-1})$\\ 
+\hspace*{0.5em} $R_e$ is the event-based rainfall factor $(MJ ~ mm ~ ha^{-1} ~ hr^{-1})$\\
+\hspace*{0.5em} $K$ is the soil erodibility factor $(ton ~ ha ~ hr ~ ha^{-1} ~ MJ^{-1} ~ mm^{-1})$\\ % check units
+\hspace*{0.5em} $C$ is the dimensionless land cover factor\\
+\hspace*{0.5em} $P$ is the dimensionless prevention measures factor.\\
+%\hspace*{0.5em} $LST$ is the topographic sediment transport factor.\\
+}
+
+\subsection{Erosion-deposition at transport capacity}
+Net erosion-deposition is estimated as the divergence of sediment flow: 
+
+%D = ∇ · (T s0) = ∂(T cos α)/∂x + ∂(T sin α)/∂y
+\begin{equation}\label{eq:usped_erdep} 
+d_s(x,y,t) = 
+{\partial (T ~ \cos \alpha) \over \partial x} +
+{\partial (T ~ \sin \alpha) \over \partial y}
+\end{equation}
+%# d_s(x,y,t) = \nabla~T = 
+%
+{\small
+\noindent
+where: \\
+\hspace*{0.5em} $d_s(x,y,t)$ is net erosion-deposition $(kg ~ m^{-2} s^{-1})$\\
+\hspace*{0.5em} $\alpha$ is the aspect of the topography ($\degree$).\\
+}
+
+\subsection{Landscape evolution}
+With USPED the simulated change in elevation $\Delta z(x,y,t)$
+is derived from equation \ref{eq:evolution} for landscape evolution
+and then equation \ref{eq:grav_diffusion}
+for the settling of sediment particles due to gravitational diffusion.
 
 \clearpage
 % -------------------------------- IMPLEMENTATION --------------------------------
@@ -475,7 +791,7 @@ GRASS GIS is an open source project released under the GNU General Public Licens
 
 \clearpage
 % -------------------------------- CASE STUDY--------------------------------
-\section{Case study}
+\section{Case studies}
 \subsection{Fort Bragg}
 \subsection{Patterson Branch Creek}
 %\subsection{Comparison of r.evolution, r.land.evol, r.terradyn}

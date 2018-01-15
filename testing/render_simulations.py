@@ -4,7 +4,7 @@
 """
 AUTHOR:    Brendan Harmon <brendan.harmon@gmail.com>
 
-PURPOSE:   Rendering 2D and 3D maps of landscape evolution model sample data
+PURPOSE:   Rendering 2D and 3D maps of landscape evolution simulations
 
 COPYRIGHT: (C) 2017 Brendan Harmon
 
