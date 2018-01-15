@@ -44,17 +44,6 @@ fontsize = 24
 
 def main():
 
-# # list of mapsets to render
-#     mapsets = gscript.mapsets(False)
-#     mapsets.remove('PERMANENT')
-#
-#     for mapset in mapsets:
-#
-#         # change mapset
-#         gscript.read_command('g.mapset',
-#             mapset=mapset,
-#             location=location)
-
     # render 2d maps
     render_region_2d(mapset)
     render_subregion_2d(mapset)
