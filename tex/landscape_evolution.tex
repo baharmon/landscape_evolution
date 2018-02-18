@@ -70,7 +70,7 @@
 
 \title{Dynamic Landscape Evolution}
 
-\author[cga,la]{Brendan Alexander Harmon\corref{cor1}}
+\author[cga,la]{Brendan Harmon\corref{cor1}}
 \cortext[cor1]{Corresponding author}
 \ead{brendan.harmon@gmail.com}
 %\ead[url]{baharmon@github.io}
@@ -90,13 +90,53 @@
 \address[meas]{Department of Marine, Earth, and Atmospheric Sciences, North Carolina State University, Raleigh, North Carolina, United States of America}
 
 \begin{abstract}
-This is a fine-scale, short term, process-based landscape evolution model using simulated erosion and deposition to generate a time-series of digital elevation models and compute the net change in elevation. This model uses a path sampling method to solve water and sediment flow continuity equations and model mass flows over complex topographies based on topographic, land cover, soil, and rainfall parameters. This either steady state or dynamic model can simulate landscape evolution for a range of hydrologic soil erosion regimes. 
-%The change in elevation is a function of time, net erosion-deposition, and sediment mass density.
+While there are numerical landscape evolution models
+that simulate how steady state flows of water and sediment
+reshape topography over long periods of time, 
+this is the first to simulate topographic change 
+based on dynamic flows. 
+It is a process-based, spatially distributed model
+that uses the water and sediment flow continuity equations
+to simulate how overland sediment mass flows 
+reshape topography. 
+This either steady state or dynamic model can simulate 
+how topography will evolve for a range of hydrologic soil erosion regimes
+based on topographic, land cover, soil, and rainfall parameters. 
+A case study demonstrates how the behavior and results of 
+the dynamic model differ the steady state model. 
+The dynamic model is more accurate and 
+demonstrates cross-scale interactions between 
+topographic form and sediment flow processes.
+%This is a fine-scale, short term, process-based landscape evolution model 
+%using simulated erosion and deposition 
+%to generate a time-series of digital elevation models 
+%and compute the net change in elevation. 
+%This model uses a path sampling method 
+%to solve water and sediment flow continuity equations and 
+%model mass flows over complex topographies 
+%based on topographic, land cover, soil, and rainfall parameters. 
+%This either steady state or dynamic model can simulate landscape evolution 
+%for a range of hydrologic soil erosion regimes. 
+%
+%This process-based, spatially distributed landscape evolution model 
+%simulates mass flows over complex topographies 
+%based on topographic, land cover, soil, and rainfall parameters. 
+%It can simulate landscape evolution for different soil erosion regimes 
+%across a wide range of spatiotemporal scales 
+%using either the simulated water erosion (SIMWE) model, 
+%the unit stream power erosion deposition (USPED) model, 
+%or the 3-dimensional revised universal soil loss equation (RUSLE 3D) model. 
+%SIMWE is a physics-based simulation of water flow and erosion-deposition 
+%based on the continuity equations (Mitasova et al. 2004). 
+%This model has been implemented as an add-on module 
+%for a free, open-source geographic information system – GRASS GIS.  
+%It supports multithreading and parallel processing for the efficient computation 
+%of physics-based simulations with large, high resolution topographic datasets. 
 \end{abstract}
 
 \begin{keyword}
 %% keywords here, in the form: keyword \sep keyword
-landscape evolution \sep dynamic model
+landscape evolution \sep dynamic model \sep continuity equations
 %% MSC codes here, in the form: \MSC code \sep code
 %% or \MSC[2008] code \sep code (2000 is the default)
 \end{keyword}
@@ -109,32 +149,98 @@ landscape evolution \sep dynamic model
 \pagebreak
 
 % -------------- BODY --------------
-\section{Introduction}
-%With process-based simulations we have procedurally modeled how a landscape could evolve as the flow of water erodes the landscape surface and shapes its terrain.
-This process-based, spatially distributed, dynamic model uses a path sampling method to solve the water and sediment flow equations
-\cite{mitasova2004}
-and model mass flows over complex topographies based on topographic, land cover, soil, and rainfall parameters.
-% At each time step %% explain dynamics
-The modeled flow of sediment -- a function of the flow of water and soil detachment and transport parameters -- is then used to estimate the net erosion and deposition rates and the associated short-term evolution of the topography. 
 
-This highly adaptable model can simulate landscape evolution 
+\section{Introduction}
+
+Landscape evolution models represent how the surface of the earth changes over time. 
+Most studies of landscape evolution have been descriptive and qualitative, 
+but a number of quantitative, numerical landscape evolution models 
+have been developed 
+that simulate elevational change over time 
+\cite{Temme2013}. 
+Numerical landscape evolution models
+such as the Channel-Hillslope Integrated Landscape Development (CHILD) model 
+\cite{Tucker2001} 
+% CAESAR
+and SIBERIA \cite{Willgoose2005} 
+simulate steady state flows over long temporal scales. 
+There are still, however, major research questions 
+to address in the theoretical foundations of erosion modeling 
+such as how erosional processes scale over time and space 
+and how sediment detachment and transport interact \cite{Mitasova2013}. 
+A dynamic landscape evolution model is needed to study 
+fine-scale spatial and short-term temporal erosional processes
+such as gully formation. %and morphodynamics.
+
+% high resolution topographic data increasingly available from lidar and uav stereophotogrammetry
+% value of fine scale model 
+
+The dynamic landscape evolution model
+is a process-based, spatially distributed model
+that solves the water and sediment flow equations 
+with Monte Carlo path sampling method
+\cite{Mitasova2004}
+to model mass flows over complex topographies 
+based on topographic, land cover, soil, and rainfall parameters.
+The modeled flow of sediment -- 
+a function of water flow and soil detachment and transport parameters -- 
+is then used to estimate the net erosion and deposition rates 
+and the associated short-term evolution of the topography. 
+During a simulation the model can switch between 
+dynamic and steady state flow regimes. 
+
+The dynamic landscape evolution model
+has been implemented as the add-on module 
+\textit{r.evolution}
+\footnote{\url{https://github.com/baharmon/landscape\_evolution}} 
+% also cite software release doi
+for the free, open source
+Geographic Resources Analysis Support System (GRASS) GIS.
+%
+This highly adaptable
+geographic information system (GIS)-based implementation
+can simulate landscape evolution 
 for different soil erosion regimes
 across a range of spatiotemporal scales
 using either
-the simulated water erosion (SIMWE) model, 
-the unit stream power erosion deposition (USPED) model,
-or the 3-dimensional revised universal soil loss equation (RUSLE 3D) model.  
-
-% Implementation 
-The dynamic landscape evolution %This model 
-has been implemented as the add-on module 
-\textit{r.evolution}
-\footnote{\url{https://github.com/baharmon/landscape\_evolution}}
-for a free, open-source geographic information system (GIS) -- 
-Geographic Resources Analysis Support System (GRASS) GIS. 
+the Simulated Water Erosion (SIMWE) model, 
+the Unit Stream Power Erosion Deposition (USPED) model,
+or the 3-dimensional Revised Universal Soil Loss Equation (RUSLE 3D) model.  
+%
 It supports multithreading and parallel processing
-for the efficient computation of physics-based simulations 
-for large, high resolution topographic datasets.
+to efficiently compute simulations 
+using large, high resolution topographic datasets.
+%
+It was developed as a tool to study 
+the interaction of sediment detachment and transport
+and the scaling erosional processes over time and space. 
+
+%% TESTING & VALIDATION
+%The model has been tested and validated
+%using high resolution lidar time series. 
+
+%a series of tests comparing simulated landscape evolution against recorded elevation change for a highly eroded watershed with active gully formation in Fort Bragg, North Carolina. These  tests will compare the performance of the different erosion models – SIMWE, USPED, and RULSE3D – and dynamic versus steady state models. In 2017 I compiled a geospatial dataset with a time series of high-resolution, lidar-based digital elevation models and a time series landcover based on automatically classified orthoimagery and lidar. Using the lidar time series I computed elevation change at 30 cm resolution to use for validation. 
+
+%% 
+%% RESULTS
+%
+%The tests show that % for ...
+%gullies
+%dynamic behavior at the beginning of a rain event
+%before
+%achieving steady state
+%has a 
+%
+%development of
+%creating microtopography
+%such as ridges beside the gully channel
+%
+%% APPLICATIONS
+%Applications include
+%testing theories, 
+%designing erosion control measures,
+%developing scenarios for land planning and management
+%etc
 
 %
 \subsection{Theory}
@@ -172,30 +278,9 @@ for large, high resolution topographic datasets.
 
 
 
-
-
-
-
-
-% table of landscape evolution models
-\begin{table*}
-\small
-\caption{Select landscape evolution models}
-\begin{tabu} to \textwidth {XXXXXl}
-\toprule
-Model & Spatial scale &  Temporal scale & Representation & Dynamics & GIS\\
-\midrule
-%
-SIBERIA & landscape & continuous & raster & & \\
-CHILD & landscape & continuous & mesh & & \\
-r.landscape.evol  & landscape & continuous & raster &  & \checkmark\\
-r.evolution & watershed -- & event & raster & dynamic \& & \checkmark\\
-& landscape &&& steady state & \\
-%
-\bottomrule
-\end{tabu}
-\label{table:evolution_models} 
-\end{table*}
+\subsection{Aims and objectives}
+% Testing and case studies
+% Research aims and objectives
 
 \subsection{Conceptual model}
 
@@ -207,6 +292,54 @@ r.evolution & watershed -- & event & raster & dynamic \& & \checkmark\\
 %Run erosion model \\
 %Gravitational diffusion \\
 
+
+% table of erosion models
+\begin{table*}
+\small
+\caption{GIS-based soil erosion models}
+\begin{tabu} to \textwidth {XXXXXl}
+\toprule
+Model & Spatial scale &  Temporal scale & Representation & GIS & Reference\\
+\midrule
+%
+%USLE & landscape & annual & raster & map algebra & \cite{Wischmeier1978}\\
+RUSLE3D & landscape & annual & raster & map algebra & \cite{Mitasova1996}\\ % annual -- event?
+USPED & watershed & annual & raster & map algebra & \cite{Mitasova1996}\\ %annual -- event?
+SIMWE & watershed & annual -- event & raster & module & \cite{Mitas1998}\\
+%
+\bottomrule
+\\
+\multicolumn{6}{c}{Adapted from Mitasova et al. \cite{Mitasova2013}}
+\end{tabu}
+\label{table:evolution_models} 
+\end{table*}
+
+% table of landscape evolution models
+\begin{table*}
+\small
+\caption{Numerical landscape evolution models}
+\begin{tabu} to \textwidth {XXXXXXl}
+\toprule
+Model & Spatial scale &  Temporal scale & Representation & Dynamics & GIS & Reference\\
+\midrule
+%
+SIBERIA & landscape & continuous & raster & steady state & & \cite{Willgoose2005}\\
+CHILD & landscape & continuous & mesh & steady state & & \cite{Tucker2001}\\
+r.landscape.evol  & landscape & continuous & raster &  steady state & module & \cite{Barton2010}\\ 
+r.evolution & watershed -- & event -- & raster & dynamic -- & module &\\ %cite software
+& landscape & continuous && steady state & &\\
+%
+\bottomrule
+\\
+\multicolumn{7}{c}{Adapted from Mitasova et al. \cite{Mitasova2013}}
+\end{tabu}
+\label{table:evolution_models} 
+\end{table*}
+
+% r.land.evol uses r.watershed and RUSLE
+
+\clearpage
+
 % --------------------------------EROSION-DEPOSITION --------------------------------
 \section{Simulation of water erosion model} \label{simwel}
 
@@ -214,7 +347,7 @@ SIMWE -- the Simulation of Water Erosion model --
 is a physics-based simulation of shallow overland water and sediment flow
 that uses a path sampling method to solve the continuity and momentum equations 
 with a 2D diffusive wave approximation 
-\cite{mitas1998,mitasova2001,mitasova2004}.
+\cite{Mitas1998,Mitasova2001,Mitasova2004}.
 %
 It has been implemented in GRASS GIS as the modules 
 r.sim.water\footnote{\url{https://grass.osgeo.org/grass75/manuals/r.sim.water.html}} 
@@ -421,7 +554,7 @@ where: \\
 The simulated change in elevation $\Delta z(x,y,t)$ due to water erosion and deposition
 is a function of
 the change in time, the net erosion-deposition rate, and the sediment mass density 
-\cite{mitasova2013}:
+\cite{Mitasova2013}:
 
 % landscape evolution equation
 % change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) / sediment mass density (kg/m^3)
@@ -445,7 +578,7 @@ In a detachment limited erosion regime
 the simulated change in elevation $\Delta z(x,y,t)$
 is a function of
 the change in time, the sediment flow rate, and the mass of water carried sediment per unit area
-\cite{mitasova2013}:
+\cite{Mitasova2013}:
 
 % change in elevation (m) = change in time (s) * sediment flux (kg/ms) / mass of sediment per unit area (kg/m^2)
 \begin{equation}
