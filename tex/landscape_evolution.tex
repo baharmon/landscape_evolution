@@ -107,6 +107,7 @@ the dynamic model differ the steady state model.
 The dynamic model is more accurate and 
 demonstrates cross-scale interactions between 
 topographic form and sediment flow processes.
+%
 %This is a fine-scale, short term, process-based landscape evolution model 
 %using simulated erosion and deposition 
 %to generate a time-series of digital elevation models 
@@ -153,28 +154,126 @@ landscape evolution \sep dynamic model \sep continuity equations
 \section{Introduction}
 
 Landscape evolution models represent how the surface of the earth changes over time. 
-Most studies of landscape evolution have been descriptive and qualitative, 
-but a number of quantitative, numerical landscape evolution models 
-have been developed 
-that simulate elevational change over time 
+Most studies of landscape evolution have been descriptive, 
+but a number of numerical landscape evolution models 
+have been developed that simulate elevational change over time 
 \cite{Temme2013}. 
+% numerical models
 Numerical landscape evolution models
 such as the Channel-Hillslope Integrated Landscape Development (CHILD) model 
 \cite{Tucker2001} 
-% CAESAR
-and SIBERIA \cite{Willgoose2005} 
+and SIBERIA \cite{Willgoose2005}
 simulate steady state flows over long temporal scales. 
 There are still, however, major research questions 
 to address in the theoretical foundations of erosion modeling 
 such as how erosional processes scale over time and space 
 and how sediment detachment and transport interact \cite{Mitasova2013}. 
+% dynamic evolution
 A dynamic landscape evolution model is needed to study 
 fine-scale spatial and short-term temporal erosional processes
-such as gully formation. %and morphodynamics.
+such as gully formation.
+% 
+While most numerical landscape evolution models 
+simulate peak flows at steady state
+(see Table~\ref{table:evolution_models}),
+short-term erosional processes like gully formation can be dynamic
+with significant morphological changes happening within minutes
+before flows reach steady state. 
 
-% high resolution topographic data increasingly available from lidar and uav stereophotogrammetry
-% value of fine scale model 
+% steady state versus dynamic
+% dynamic
+At the beginning of a rainfall event 
+the overland water flow regime is dynamic -- 
+its depth changes at a variable rate over time and space. 
+If the intensity of rainfall continues to change throughout the event
+then the flow regime will remain dynamic. 
+% steady state
+If, however, the overland flow reaches a peak rate
+then the hydrologic regime is considered to be at steady state.
+At steady state:
+% steady state eq.
+\begin{equation}
+\label{eq:steady_state}
+{\partial h(x,y,t) \over \partial t} = 0
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $(x,y)$ is the position ($m$)\\
+\hspace*{0.5em} $t$ is the time ($s$) \\
+\hspace*{0.5em} $h(x,y,t)$ is the depth of overland flow ($m$)\\
+}
+% cite anderson and anderson
 
+% continuity / conservation
+% source and sinks
+
+% implications for erosion modeling
+	% Simple empirical erosion models assume relatively steady erosion over time and estimate long-term, average annual erosion rates based on empirical factors derived from long- term observations. In reality, erosion rates change rapidly due to the highly dynamic nature of the driving forces, such as rainfall and water flow, over multiple temporal scales. The full dynamics of erosion processes are difficult to capture due to complex, multiscale interactions and limited temporal resolution of the input data. Therefore, modeling is commonly performed for the steady state case associated with peak flows during individual erosion events. Sophisticated modeling systems then perform continuous time simulations of several interacting processes that incorporate steady-state impacts of rainfall events over several years. (Mitasova et al. 2013)
+
+
+
+
+
+
+
+% gully formation
+Gullies are eroded, steep banked channels 
+formed by ephemeral, concentrated flows of water.
+A gully forms when overland waterflow
+converges in a knickzone
+-- a concave space with steeper slopes than its surroundings -- 
+during intense rainfall events.  
+When the force of the water flow concentrated in the knickzone
+is enough to detach and transport large amounts of sediment,
+an incision begins to form at the apex of the knickzone 
+-- the knickpoint or headwall.
+As erosion continues the knickpoint begins to migrate upslope
+and the nascent gully channel widens,
+forming steep channel banks. 
+Multiple incisions initiated by different knickpoints 
+may merge into a gully channel
+and multiple channels may merge into a branching gully system. 
+This erosive process is dynamic; 
+the morphological changes drive further changes 
+in a positive feedback loop
+until water flow reaches steady state. 
+When the gully initially forms 
+the soil erosion regime should be detachment capacity limited
+with the concentrated flow of water in the channel of the gully 
+detaching large amounts of sediment and transporting it to the foot of the gully, 
+potentially forming a depositional fan. 
+After the initial formation of the gully
+the soil erosion regime may change.
+If the intensity of the rainfall decreases
+the regime may switch to erosion-deposition. 
+Theoretically in an erosion-deposition regime
+depositional ridges should form around the channel. % why?
+Subsequent rainfall events may trigger further 
+knickpoint formation and upslope migration, channel incision and widening, and
+depositional fan and ridge formation. 
+Between high intensity rainfall events, 
+lower intensity events and gravitational diffusion
+may gradually smooth the shape of the gully. 
+Eventually, if detachment capacity significantly exceeds transport capacity, 
+the gully may fill with sediment. 
+
+% knickpoints: https://pubs.geoscienceworld.org/gsa/geosphere/article/8/2/403/132542/knickpoint-and-knickzone-formation-and-propagation
+
+% high resolution topographic data
+With sub-meter resolution topographic data from airborne lidar 
+and unmanned aerial systems' (UAS) stereophotogrammetry 
+it is now possible to morphometrically analyze and 
+numerically model fine-scale landscape evolution in GIS
+including processes such as gully formation 
+and the development of microtopography. 
+
+% dynamic landscape evolution model
+	% restructure -> implementation as r.evolution
+	% multi-scale model
+	% with simwe mode that can switch between dynamic and steady state
 The dynamic landscape evolution model
 is a process-based, spatially distributed model
 that solves the water and sediment flow equations 
@@ -219,7 +318,7 @@ and the scaling erosional processes over time and space.
 %The model has been tested and validated
 %using high resolution lidar time series. 
 
-%a series of tests comparing simulated landscape evolution against recorded elevation change for a highly eroded watershed with active gully formation in Fort Bragg, North Carolina. These  tests will compare the performance of the different erosion models – SIMWE, USPED, and RULSE3D – and dynamic versus steady state models. In 2017 I compiled a geospatial dataset with a time series of high-resolution, lidar-based digital elevation models and a time series landcover based on automatically classified orthoimagery and lidar. Using the lidar time series I computed elevation change at 30 cm resolution to use for validation. 
+%a series of tests comparing simulated landscape evolution against recorded elevation change for a highly eroded watershed with active gully formation in Fort Bragg, North Carolina. These  tests will compare the performance of the different erosion models – SIMWE, USPED, and RULSE3D – and dynamic versus steady state models. In 2017 we compiled a geospatial dataset with a time series of high-resolution, lidar-based digital elevation models and a time series landcover based on automatically classified orthoimagery and lidar. Using the lidar time series we computed elevation change at 30 cm resolution to use for validation. 
 
 %% 
 %% RESULTS
@@ -242,13 +341,19 @@ and the scaling erosional processes over time and space.
 %developing scenarios for land planning and management
 %etc
 
-%
+
 \subsection{Theory}
 
 %Steady state versus dynamic flows \\
 %
 %Soil erosion regimes \\
-%
+
+%When transport capacity of overland flow exceeds its detach- ment capacity over the entire studied landscape, erosion, and sediment transport is detachment capacity limited (i.e., no deposition occurs). For example, this case is typical for sedi- ment transported by large amount of water over compacted soil. 
+%%If the soil detachment significantly exceeds the sediment transport capacity of overland flow, the sediment flow rate will be at the sediment transport capaci
+% \cite{mitasova2013} 
+
+
+
 %
 %% DETACHMENT LIMITED  - RUSLE
 %%
@@ -279,27 +384,32 @@ and the scaling erosional processes over time and space.
 
 
 \subsection{Aims and objectives}
-% Testing and case studies
 % Research aims and objectives
+% Testing and case studies
 
+\begin{itemize}
+\small
+\item How do erosional processes scale over time and space?
+\item How do sediment detachment and transport interact?
+\item Are dynamic flow regimes needed accurately simulate gully formation?
+\end{itemize}
 
-% RESEARCH QUESTIONS
-%There are still, however, major research questions 
-%to address in the theoretical foundations of erosion modeling 
-%such as how erosional processes scale over time and space 
-%and how sediment detachment and transport interact \cite{Mitasova2013}. 
-
+We compared a series of simulations against a times series of lidar surveys
+to test the hypothesis that
+dynamic models can more accurately simulate gully formation
+than steady state models.
 
 \subsection{Conceptual model}
 
 %Diagram\\
-
 %Dynamic vs steady state \\
-
 %Determine mode \\
 %Run erosion model \\
 %Gravitational diffusion \\
 
+
+% other soil erosion models
+    % list from table 1 or 2 in Brazier2013 Hillslope Soil Erosion Modeling
 
 % table of erosion models
 \begin{table*}
@@ -319,7 +429,7 @@ SIMWE & watershed & annual -- event & raster & module & \cite{Mitas1998}\\
 \\
 \multicolumn{6}{c}{Adapted from Mitasova et al. \cite{Mitasova2013}}
 \end{tabu}
-\label{table:evolution_models} 
+\label{table:erosion_models} 
 \end{table*}
 
 % table of landscape evolution models
@@ -939,7 +1049,21 @@ GRASS GIS is an open source project released under the GNU General Public Licens
 \section{Case studies}
 \subsection{Fort Bragg}
 \subsection{Patterson Branch Creek}
+
+%Morphology from 2004 to 2016 \\
+%
+%To the right of the main channel 
+%a new gully has begun to form from multiple knickpoints (see knickzone as hollow, pits in 2004, and disconnected valleys merging by 2016).\\
+%
+%The main gully channel has developed depositional ridges beside channel.
+%Deep pits have developed where tributary channels 
+%join the main channel and the main channel has a sharp curve.\\
+
+
+% geomorphometry: http://geomorphometry.org/Geomorphometry_for_Geosciences_book.pdf
+
 %\subsection{Comparison of r.evolution, r.land.evol, r.terradyn}
+
 \subsection{Benchmarks}
 % r.evolution, r.land.evol, r.terradyn
 
