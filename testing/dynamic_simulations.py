@@ -28,12 +28,12 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = ['erdep','flux','transport','usped','rusle']
+simulations = ['erdep','flux','transport']
 
 # set parameters
 res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
-nprocs = 5
+nprocs = 3
 threads = 2
 
 def main():
@@ -104,42 +104,6 @@ def main():
     transport_params['env'] = envs['transport']
     # append dictionary to options list
     options_list.append(transport_params)
-
-    # dictionary of parameters for usped simulation
-    usped_params = {}
-    usped_params['elevation'] = 'elevation@usped'
-    usped_params['runs'] = 'event'
-    usped_params['mode'] = 'usped_mode'
-    usped_params['rain_intensity'] = 50.0
-    usped_params['rain_duration'] = 60
-    usped_params['rain_interval'] = 3
-    usped_params['start'] = "2016-01-01 00:00:00"
-    usped_params['grav_diffusion'] = 0.05
-    usped_params['m'] = 1.5
-    usped_params['n'] = 1.2
-    usped_params['c_factor'] = 'c_factor'
-    usped_params['k_factor'] = 'k_factor'
-    usped_params['env'] = envs['usped']
-    # append dictionary to options list
-    options_list.append(usped_params)
-
-    # dictionary of parameters for rusle simulation
-    rusle_params = {}
-    rusle_params['elevation'] = 'elevation@rusle'
-    rusle_params['runs'] = 'event'
-    rusle_params['mode'] = 'rusle_mode'
-    rusle_params['rain_intensity'] = 50.0
-    rusle_params['rain_duration'] = 60
-    rusle_params['rain_interval'] = 3
-    rusle_params['start'] = "2016-01-01 00:00:00"
-    rusle_params['grav_diffusion'] = 0.05
-    rusle_params['m'] = 0.4
-    rusle_params['n'] = 1.3
-    rusle_params['c_factor'] = 'c_factor'
-    rusle_params['k_factor'] = 'k_factor'
-    rusle_params['env'] = envs['rusle']
-    # append dictionary to options list
-    options_list.append(rusle_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)

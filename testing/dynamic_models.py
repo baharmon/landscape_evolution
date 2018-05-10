@@ -1,4 +1,4 @@
-flux#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -28,17 +28,13 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = [
-    'design_erdep',
-    'design_flux']
+simulations = ['usped','rusle']
 
 # set parameters
 res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
 nprocs = 2
 threads = 4
-
-design_storm = os.path.join(gisdbase, location, 'design_storm.txt')
 
 def main():
 
@@ -51,43 +47,41 @@ def main():
     # create list of options for each simulation
     options_list = []
 
-    # dictionary of parameters
-    # for erosion-deposition simulation with a design storm
-    design_erdep_params = {}
-    design_erdep_params['elevation'] = 'elevation@design_erdep'
-    design_erdep_params['runs'] = 'series'
-    design_erdep_params['mode'] = 'simwe_mode'
-    design_erdep_params['precipitation'] = design_storm
-    design_erdep_params['rain_interval'] = 3
-    design_erdep_params['start'] = "2016-01-01 00:00:00"
-    design_erdep_params['walkers'] = 5000000
-    design_erdep_params['grav_diffusion'] = 0.05
-    design_erdep_params['mannings'] = 'mannings'
-    design_erdep_params['runoff'] = 'runoff'
-    design_erdep_params['threads'] = threads
-    design_erdep_params['env'] = envs['design_erdep']
+    # dictionary of parameters for usped simulation
+    usped_params = {}
+    usped_params['elevation'] = 'elevation@usped'
+    usped_params['runs'] = 'event'
+    usped_params['mode'] = 'usped_mode'
+    usped_params['rain_intensity'] = 50.0
+    usped_params['rain_duration'] = 60
+    usped_params['rain_interval'] = 3
+    usped_params['start'] = "2016-01-01 00:00:00"
+    usped_params['grav_diffusion'] = 0.05
+    usped_params['m'] = 1.5
+    usped_params['n'] = 1.2
+    usped_params['c_factor'] = 'c_factor'
+    usped_params['k_factor'] = 'k_factor'
+    usped_params['env'] = envs['usped']
     # append dictionary to options list
-    options_list.append(design_erdep_params)
+    options_list.append(usped_params)
 
-    # dictionary of parameters
-    # for flux simulation with a design storm
-    design_flux_params = {}
-    design_flux_params['elevation'] = 'elevation@design_flux'
-    design_flux_params['runs'] = 'series'
-    design_flux_params['mode'] = 'simwe_mode'
-    design_flux_params['precipitation'] = design_storm
-    design_flux_params['rain_interval'] = 3
-    design_flux_params['start'] = "2016-01-01 00:00:00"
-    design_flux_params['walkers'] = 5000000
-    design_flux_params['grav_diffusion'] = 0.05
-    design_flux_params['detachment_value'] = 0.0001
-    design_flux_params['transport_value'] = 0.01
-    design_flux_params['mannings'] = 'mannings'
-    design_flux_params['runoff'] = 'runoff'
-    design_flux_params['threads'] = threads
-    design_flux_params['env'] = envs['design_flux']
+    # dictionary of parameters for rusle simulation
+    rusle_params = {}
+    rusle_params['elevation'] = 'elevation@rusle'
+    rusle_params['runs'] = 'event'
+    rusle_params['mode'] = 'rusle_mode'
+    rusle_params['rain_intensity'] = 50.0
+    rusle_params['rain_duration'] = 60
+    rusle_params['rain_interval'] = 3
+    rusle_params['start'] = "2016-01-01 00:00:00"
+    rusle_params['grav_diffusion'] = 0.05
+    rusle_params['m'] = 0.4
+    rusle_params['n'] = 1.3
+    rusle_params['c_factor'] = 'c_factor'
+    rusle_params['k_factor'] = 'k_factor'
+    rusle_params['env'] = envs['rusle']
     # append dictionary to options list
-    options_list.append(design_flux_params)
+    options_list.append(rusle_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)
@@ -189,7 +183,7 @@ def render_2d(envs):
     render_multiplier = 1  # multiplier for rendering size
     whitespace = 1.5 # canvas width relative to map for legend
     fontsize = 36 * render_multiplier  # legend font size
-    legend_coord = (10, 50, 1, 4)  # legend display coordinates
+    legend_coord = (5, 45, 2, 5)  # legend display coordinates
     zscale = 1 # vertical exaggeration
 
     # create rendering directory

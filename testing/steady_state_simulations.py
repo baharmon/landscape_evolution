@@ -37,7 +37,7 @@ simulations = [
 # set parameters
 res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
-nprocs = 5
+nprocs = 4
 threads = 2
 
 def main():
