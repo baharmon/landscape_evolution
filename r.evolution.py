@@ -423,7 +423,7 @@ difference_colors = """\
 erosion_colors = """\
 0% 100 0 100
 -100 magenta
--10 redslope and
+-10 red
 -1 orange
 -0.1 yellow
 0 200 255 200
@@ -1709,10 +1709,6 @@ class Evolution:
             type='raster',
             name=['sigma'],
             flags='f')
-
-        # feedback
-        print rain_intensity
-        print regime
 
         return regime
 
