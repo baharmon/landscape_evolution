@@ -212,13 +212,6 @@ def dependencies():
     except CalledModuleError:
         pass
 
-    # try:
-    #     gscript.run_command('g.extension',
-    #         extension='r.sim.water.mp',
-    #         operation='add')
-    # except CalledModuleError:
-    #     pass
-
 def render_2d(envs):
 
     brighten = 0  # percent brightness of shaded relief
