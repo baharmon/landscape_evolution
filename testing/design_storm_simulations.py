@@ -15,12 +15,9 @@ LICENSE:   This program is free software under the GNU General Public
 import os
 import sys
 import atexit
+from multiprocessing import Pool
 import grass.script as gscript
 from grass.exceptions import CalledModuleError
-from multiprocessing import Pool
-
-# set graphics driver
-driver = "cairo"
 
 # set environment
 env = gscript.gisenv()
@@ -41,6 +38,8 @@ threads = 4
 design_storm = os.path.join(gisdbase, location, 'design_storm.txt')
 
 def main():
+    """install dependencies, create mapsets and environments,
+    create dictionaries with params, and then run simulations in parallel"""
 
     # try to install dependencies
     dependencies()
@@ -91,34 +90,27 @@ def main():
 
     # run simulations in parallel
     parallel_simulations(options_list)
-
-    # # render maps
-    # render_2d(envs)
-
     atexit.register(cleanup)
     sys.exit(0)
 
 def simulate(params):
+    """run the dynamic landscape evolution model with the given parameters"""
     gscript.run_command('r.evolution', **params)
 
 def create_environments(simulations):
-
+    """generate environment settings and copy maps"""
     tmp_gisrc_files = {}
     envs = {}
-
     for mapset in simulations:
-
         # create mapset
         gscript.read_command('g.mapset',
             mapset=mapset,
             location=location,
             flags='c')
-
         # create env
         tmp_gisrc_file, env = getEnvironment(gisdbase, location, mapset)
         tmp_gisrc_files[mapset] = tmp_gisrc_file
         envs[mapset] = env
-
         # copy maps
         gscript.run_command('g.copy',
             raster=[region,'elevation'],
@@ -135,12 +127,10 @@ def create_environments(simulations):
         gscript.run_command('g.copy',
             raster=['k_factor@PERMANENT','k_factor'],
             env=envs[mapset])
-
     return envs
 
 def parallel_simulations(options_list):
-
-    # multiprocessing
+    """run simulations in parallel"""
     pool = Pool(nprocs)
     p = pool.map_async(simulate, options_list)
     try:
@@ -149,9 +139,9 @@ def parallel_simulations(options_list):
         return
 
 def getEnvironment(gisdbase, location, mapset):
-    """Creates environment to be passed in run_command for example.
-    Returns tuple with temporary file path and the environment. The user
-    of this function is responsile for deleting the file."""
+    """Creates an environment to be passed in run_command.
+    Returns a tuple with a temporary file path and an environment.
+    The user should delete this temporary file."""
     tmp_gisrc_file = gscript.tempfile()
     with open(tmp_gisrc_file, 'w') as f:
         f.write('MAPSET: {mapset}\n'.format(mapset=mapset))
@@ -176,74 +166,8 @@ def dependencies():
     except CalledModuleError:
         pass
 
-    try:
-        gscript.run_command('g.extension',
-            extension='r.sim.water.mp',
-            operation='add')
-    except CalledModuleError:
-        pass
-
-def render_2d(envs):
-
-    brighten = 0  # percent brightness of shaded relief
-    render_multiplier = 1  # multiplier for rendering size
-    whitespace = 1.5 # canvas width relative to map for legend
-    fontsize = 36 * render_multiplier  # legend font size
-    legend_coord = (10, 50, 1, 4)  # legend display coordinates
-    zscale = 1 # vertical exaggeration
-
-    # create rendering directory
-    render = os.path.join(gisdbase, location, 'rendering')
-    if not os.path.exists(render):
-        os.makedirs(render)
-
-    for mapset in simulations:
-
-        # change mapset
-        gscript.read_command('g.mapset',
-            mapset=mapset,
-            location=location)
-
-        # set region
-        gscript.run_command('g.region', rast=region, res=res)
-
-        # set render size
-        info = gscript.parse_command('r.info',
-            map='elevation',
-            flags='g')
-        width = int(info.cols)*render_multiplier*whitespace
-        height = int(info.rows)*render_multiplier
-
-        # render net difference
-        gscript.run_command('d.mon',
-            start=driver,
-            width=width,
-            height=height,
-            output=os.path.join(render, mapset+'_'+'net_difference'+'.png'),
-            overwrite=1)
-        gscript.run_command('r.relief',
-            input='elevation',
-            output='relief',
-            altitude=90,
-            azimuth=45,
-            zscale=zscale,
-            env=envs[mapset])
-        gscript.run_command('d.shade',
-            shade='relief',
-            color='net_difference',
-            brighten=brighten)
-        gscript.run_command('d.legend',
-            raster='net_difference',
-            fontsize=fontsize,
-            at=legend_coord)
-        gscript.run_command('d.mon', stop=driver)
-
 def cleanup():
-    try:
-        # stop cairo monitor
-        gscript.run_command('d.mon', stop=driver)
-    except CalledModuleError:
-        pass
+    pass
 
 if __name__ == "__main__":
     atexit.register(cleanup)
