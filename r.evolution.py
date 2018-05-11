@@ -1689,7 +1689,7 @@ class Evolution:
             overwrite=True)
         stats = gscript.parse_command(
             'r.univar',
-            map=sigma,
+            map='sigma',
             flags='g')
         mean_sigma = float(stats['mean'])
 

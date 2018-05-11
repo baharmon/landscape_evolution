@@ -42,8 +42,8 @@ threads = 2
 
 def main():
 
-    # try to install dependencies
-    dependencies()
+    # # try to install dependencies
+    # dependencies()
 
     # create mapsets and environments
     envs = create_environments(simulations)
@@ -212,12 +212,12 @@ def dependencies():
     except CalledModuleError:
         pass
 
-    try:
-        gscript.run_command('g.extension',
-            extension='r.sim.water.mp',
-            operation='add')
-    except CalledModuleError:
-        pass
+    # try:
+    #     gscript.run_command('g.extension',
+    #         extension='r.sim.water.mp',
+    #         operation='add')
+    # except CalledModuleError:
+    #     pass
 
 def render_2d(envs):
 

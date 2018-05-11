@@ -48,7 +48,7 @@ def main():
     render_region_2d(mapset)
     render_subregion_2d(mapset)
 
-    # # render 3d maps
+    # render 3d maps
     render_region_3d(mapset)
     render_subregion_3d(mapset)
 
