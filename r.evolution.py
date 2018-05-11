@@ -423,7 +423,7 @@ difference_colors = """\
 erosion_colors = """\
 0% 100 0 100
 -100 magenta
--10 red
+-10 redslope and
 -1 orange
 -0.1 yellow
 0 200 255 200
@@ -1270,7 +1270,7 @@ class Evolution:
         qsy = 'qsy'
         qsydy = 'qsydy'
         grow_slope = 'grow_slope'
-        grow_aspect  = 'grow_aspect'
+        grow_aspect = 'grow_aspect'
         grow_qsxdx = 'grow_qsxdx'
         grow_qsydy = 'grow_qsydy'
         erdep = 'erdep' # kg/m^2s
@@ -1689,23 +1689,16 @@ class Evolution:
             overwrite=True)
         stats = gscript.parse_command(
             'r.univar',
-            map='sigma',
+            map=sigma,
             flags='g')
         mean_sigma = float(stats['mean'])
 
-        # find mean rain intensity
-        stats = gscript.parse_command(
-            'r.univar',
-            map='rain_intensity',
-            flags='g')
-        mean_intensity = float(stats['mean'])
-
         # determine regime
-        if mean_intensity >= 60. or mean_sigma <= 0.01:
+        if rain_intensity >= 60. or mean_sigma <= 0.01:
             regime = 'detachment limited'
-        elif mean_intensity < 60. and 0.01 < mean_sigma < 100.:
+        elif rain_intensity < 60. and 0.01 < mean_sigma < 100.:
             regime = 'erosion deposition'
-        elif mean_intensity < 60. and mean_sigma >= 100.:
+        elif rain_intensity < 60. and mean_sigma >= 100.:
             regime = 'transport limited'
         else:
             raise RuntimeError('regime could not be determined')
@@ -1718,7 +1711,7 @@ class Evolution:
             flags='f')
 
         # feedback
-        print mean_intensity
+        print rain_intensity
         print regime
 
         return regime
@@ -1745,18 +1738,18 @@ class DynamicEvolution:
         self.elevation_timeseries = elevation_timeseries
         self.elevation_title = elevation_title
         self.elevation_description = elevation_description
-        self.depth_timeseries=depth_timeseries
-        self.depth_title=depth_title
-        self.depth_description=depth_description
-        self.erdep_timeseries=erdep_timeseries
-        self.erdep_title=erdep_title
-        self.erdep_description=erdep_description
-        self.flux_timeseries=flux_timeseries
-        self.flux_title=flux_title
-        self.flux_description=flux_description
-        self.difference_timeseries=difference_timeseries
-        self.difference_title=difference_title
-        self.difference_description=difference_description
+        self.depth_timeseries = depth_timeseries
+        self.depth_title = depth_title
+        self.depth_description = depth_description
+        self.erdep_timeseries = erdep_timeseries
+        self.erdep_title = erdep_title
+        self.erdep_description = erdep_description
+        self.flux_timeseries = flux_timeseries
+        self.flux_title = flux_title
+        self.flux_description = flux_description
+        self.difference_timeseries = difference_timeseries
+        self.difference_title = difference_title
+        self.difference_description = difference_description
         self.walkers = walkers
         self.runoff = runoff
         self.mannings = mannings
@@ -1863,9 +1856,9 @@ class DynamicEvolution:
             fluxmax=self.fluxmax,
             k_factor=self.k_factor,
             c_factor=self.c_factor,
-            m = self.m,
-            n = self.n,
-            threads = self.threads)
+            m=self.m,
+            n=self.n,
+            threads=self.threads)
 
         # determine mode and run model
         if self.mode == 'simwe_mode':
@@ -2244,9 +2237,9 @@ class DynamicEvolution:
             fluxmax=self.fluxmax,
             k_factor=self.k_factor,
             c_factor=self.c_factor,
-            m = self.m,
-            n = self.n,
-            threads= self.threads)
+            m=self.m,
+            n=self.n,
+            threads=self.threads)
 
         # open txt file with precipitation data
         with open(evol.precipitation) as csvfile:
