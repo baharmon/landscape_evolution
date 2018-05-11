@@ -284,16 +284,6 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #%end
 
 #%option
-#% key: smoothing
-#% type: double
-#% description: Neighborhood size for smoothing
-#% label: Neighborhood size for smoothing
-#% answer: 3
-#% multiple: no
-#% guisection: Input
-#%end
-
-#%option
 #% key: erdepmin
 #% type: double
 #% description: Minimum values for erosion-deposition in kg/m^2s
@@ -477,7 +467,6 @@ def main():
     mass = options['mass']
     mass_value = options['mass_value']
     grav_diffusion = options['grav_diffusion']
-    smoothing = options['smoothing']
     erdepmin = options['erdepmin']
     erdepmax = options['erdepmax']
     fluxmax = options['fluxmax']
@@ -593,7 +582,6 @@ def main():
         density=density,
         mass=mass,
         grav_diffusion=grav_diffusion,
-        smoothing=smoothing,
         erdepmin=erdepmin,
         erdepmax=erdepmax,
         fluxmax=fluxmax,
@@ -616,7 +604,7 @@ def main():
 class Evolution:
     def __init__(self, elevation, precipitation, start, rain_intensity,
         rain_interval, walkers, runoff, mannings, detachment, transport,
-        shearstress, density, mass, grav_diffusion, smoothing,
+        shearstress, density, mass, grav_diffusion,
         erdepmin, erdepmax, fluxmax, k_factor, c_factor, m, n, threads):
         self.elevation = elevation
         self.precipitation = precipitation
@@ -632,7 +620,6 @@ class Evolution:
         self.density = density
         self.mass = mass
         self.grav_diffusion = grav_diffusion
-        self.smoothing = smoothing
         self.erdepmin = erdepmin
         self.erdepmax = erdepmax
         self.fluxmax = fluxmax
@@ -1721,7 +1708,7 @@ class DynamicEvolution:
         flux_timeseries, flux_title, flux_description, difference_timeseries,
         difference_title, difference_description, start, walkers, runoff,
         mannings, detachment, transport, shearstress, density, mass,
-        grav_diffusion, smoothing, erdepmin, erdepmax, fluxmax,
+        grav_diffusion, erdepmin, erdepmax, fluxmax,
         k_factor, c_factor, m, n, threads):
         self.elevation = elevation
         self.mode = mode
@@ -1755,7 +1742,6 @@ class DynamicEvolution:
         self.density = density
         self.mass = mass
         self.grav_diffusion = grav_diffusion
-        self.smoothing = smoothing
         self.erdepmin = erdepmin
         self.erdepmax = erdepmax
         self.fluxmax = fluxmax
@@ -1846,7 +1832,6 @@ class DynamicEvolution:
             density=self.density,
             mass=self.mass,
             grav_diffusion=self.grav_diffusion,
-            smoothing=self.smoothing,
             erdepmin=self.erdepmin,
             erdepmax=self.erdepmax,
             fluxmax=self.fluxmax,
@@ -2227,7 +2212,6 @@ class DynamicEvolution:
             density=self.density,
             mass=self.mass,
             grav_diffusion=self.grav_diffusion,
-            smoothing=self.smoothing,
             erdepmin=self.erdepmin,
             erdepmax=self.erdepmax,
             fluxmax=self.fluxmax,
