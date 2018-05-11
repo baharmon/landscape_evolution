@@ -778,7 +778,7 @@ class Evolution:
             depth=depth,
             niterations=self.rain_interval,
             nwalkers=self.walkers,
-            threads=self.threads,
+            nprocs=self.threads,
             overwrite=True)
 
         # remove temporary maps
