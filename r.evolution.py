@@ -1696,7 +1696,7 @@ class Evolution:
         # find mean rain intensity
         stats = gscript.parse_command(
             'r.univar',
-            map=rain_intensity,
+            map='rain_intensity',
             flags='g')
         mean_intensity = float(stats['mean'])
 
