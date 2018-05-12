@@ -1006,7 +1006,7 @@ class Evolution:
             erosion_deposition=erdep,
             niterations=self.rain_interval,
             nwalkers=self.walkers,
-            threads=self.threads,
+            nprocs=self.threads,
             overwrite=True)
 
         # filter outliers
@@ -1097,7 +1097,7 @@ class Evolution:
             tlimit_erosion_deposition=erdep,
             niterations=self.rain_interval,
             nwalkers=self.walkers,
-            threads=self.threads,
+            nprocs=self.threads,
             overwrite=True)
 
         # filter outliers
@@ -1188,7 +1188,7 @@ class Evolution:
             sediment_flux=sedflux,
             niterations=self.rain_interval,
             nwalkers=self.walkers,
-            threads=self.threads,
+            nprocs=self.threads,
             overwrite=True)
 
         # filter outliers
