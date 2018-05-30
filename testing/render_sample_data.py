@@ -34,6 +34,7 @@ env['GRASS_MESSAGE_FORMAT'] = 'standard'
 gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 mapset = env['MAPSET']
+res=0.3
 
 # set 2D rendering parameters
 legend_coord = (2, 32, 2, 4)
@@ -71,7 +72,7 @@ def render_region_2d():
         os.makedirs(render)
 
     # set region
-    gscript.run_command('g.region', region='region', res=1)
+    gscript.run_command('g.region', region='region', res=res)
 
     # render shaded relief maps
     for year in years:
@@ -84,11 +85,6 @@ def render_region_2d():
             overwrite=overwrite)
         gscript.run_command('d.rast',
             map='shaded_relief_'+str(year))
-        # gscript.run_command('d.vect',
-        #     map='contours_'+str(year),
-        #     display='shape',
-        #     width=0.5,
-        #     color='white')
         gscript.run_command('d.legend',
             raster='elevation_'+str(year),
             fontsize=fontsize,
@@ -134,8 +130,10 @@ def render_region_2d():
         height=height,
         output=os.path.join(render, 'depth_2016.png'),
         overwrite=overwrite)
-    gscript.run_command('d.rast',
-        map='depth_2016')
+    gscript.run_command('d.shade',
+        shade='skyview_2016',
+        color='depth_2016',
+        brighten=0)
     gscript.run_command('d.legend',
         raster='depth_2016',
         fontsize=fontsize,
@@ -149,8 +147,10 @@ def render_region_2d():
         height=height,
         output=os.path.join(render, 'naip_2014.png'),
         overwrite=overwrite)
-    gscript.run_command('d.rast',
-        map='naip_2014')
+    gscript.run_command('d.shade',
+        shade='skyview_2016',
+        color='naip_2014',
+        brighten=0)
     gscript.run_command('d.mon', stop=driver)
 
     # render landcover
@@ -160,13 +160,32 @@ def render_region_2d():
         height=height,
         output=os.path.join(render, 'landcover.png'),
         overwrite=overwrite)
-    gscript.run_command('d.rast',
-        map='landcover')
+    gscript.run_command('d.shade',
+        shade='skyview_2016',
+        color='landcover',
+        brighten=0)
     gscript.run_command('d.legend',
         raster='landcover',
         fontsize=fontsize,
         at=legend_coord,
         flags='n')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render landforms
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width+border+border,
+        height=height,
+        output=os.path.join(render, 'landforms_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='skyview_2016',
+        color='landforms_2016',
+        brighten=0)
+    gscript.run_command('d.legend',
+        raster='landforms_'+str(year),
+        fontsize=fontsize,
+        at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
 
 
@@ -178,7 +197,7 @@ def render_subregion_2d():
         os.makedirs(render)
 
     # set region
-    gscript.run_command('g.region', region='subregion', res=1)
+    gscript.run_command('g.region', region='subregion', res=res)
 
     # render shaded relief maps
     for year in years:
@@ -206,8 +225,10 @@ def render_subregion_2d():
             height=height,
             output=os.path.join(render, 'gully_landforms_'+str(year)+'.png'),
             overwrite=overwrite)
-        gscript.run_command('d.rast',
-            map='landforms_'+str(year))
+        gscript.run_command('d.shade',
+            shade='skyview_2016',
+            color='landforms_'+str(year),
+            brighten=0)
         gscript.run_command('d.legend',
             raster='landforms_'+str(year),
             fontsize=fontsize,
@@ -278,7 +299,7 @@ def render_region_3d():
     # set region
     gscript.run_command('g.region',
                         region='region',
-                        res=1)
+                        res=res)
 
     # list of rasters to render
     rasters = ['elevation_2016',
@@ -357,7 +378,7 @@ def render_subregion_3d():
     # set region
     gscript.run_command('g.region',
                         region='subregion',
-                        res=1)
+                        res=res)
 
     # list of rasters to render
     rasters = ['elevation_2016',

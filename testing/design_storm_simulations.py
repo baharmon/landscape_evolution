@@ -43,7 +43,7 @@ def main():
     """install dependencies, create mapsets and environments,
     create dictionaries with params, and then run simulations in parallel"""
 
-    # try to install dependencies
+    ## try to install dependencies
     # dependencies()
 
     # create mapsets and environments

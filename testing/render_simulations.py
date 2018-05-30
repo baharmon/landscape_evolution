@@ -34,6 +34,7 @@ env['GRASS_MESSAGE_FORMAT'] = 'standard'
 gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 mapset = env['MAPSET']
+res=0.3
 
 # set 2D rendering parameters
 legend_coord = (2, 32, 2, 4)
@@ -69,7 +70,7 @@ def render_region_2d(mapset):
         s=150580,
         e=597645,
         w=597195,
-        res=1)
+        res=res)
 
     # render net difference with shaded relief
     gscript.run_command('d.mon',
@@ -108,7 +109,7 @@ def render_subregion_2d(mapset):
         s=150720,
         e=597440,
         w=597290,
-        res=1)
+        res=res)
 
     # render net difference with shaded relief
     gscript.run_command('d.mon',
@@ -160,7 +161,7 @@ def render_region_3d(mapset):
         s=150580,
         e=597645,
         w=597195,
-        res=1)
+        res=res)
 
     # list of rasters to render
     rasters = ['net_difference']
@@ -211,7 +212,7 @@ def render_subregion_3d(mapset):
         s=150720,
         e=597440,
         w=597290,
-        res=1)
+        res=res)
 
     # list of rasters to render
     rasters = ['net_difference']
