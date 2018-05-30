@@ -25,13 +25,17 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = ['usped','rusle']
+simulations = [
+    'ss_erdep_150',
+    'ss_flux_150',
+    'ss_transport_150',
+    'ss_usped_150']
 
 # set parameters
 res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
-nprocs = 2
-threads = 4
+nprocs = 4
+threads = 2
 
 def main():
     """install dependencies, create mapsets and environments,
@@ -46,41 +50,82 @@ def main():
     # create list of options for each simulation
     options_list = []
 
-    # dictionary of parameters for usped simulation
-    usped_params = {}
-    usped_params['elevation'] = 'elevation@usped'
-    usped_params['runs'] = 'event'
-    usped_params['mode'] = 'usped_mode'
-    usped_params['rain_intensity'] = 50.0
-    usped_params['rain_duration'] = 60
-    usped_params['rain_interval'] = 3
-    usped_params['start'] = "2016-01-01 00:00:00"
-    usped_params['grav_diffusion'] = 0.05
-    usped_params['m'] = 1.5
-    usped_params['n'] = 1.2
-    usped_params['c_factor'] = 'c_factor'
-    usped_params['k_factor'] = 'k_factor'
-    usped_params['env'] = envs['usped']
+    # dictionary of parameters for steady state erosion-deposition simulation
+    ss_erdep_params = {}
+    ss_erdep_params['elevation'] = 'elevation@ss_erdep_150'
+    ss_erdep_params['runs'] = 'event'
+    ss_erdep_params['mode'] = 'simwe_mode'
+    ss_erdep_params['rain_intensity'] = 150.0
+    ss_erdep_params['rain_duration'] = 60
+    ss_erdep_params['rain_interval'] = 60
+    ss_erdep_params['start'] = "2016-01-01 00:00:00"
+    ss_erdep_params['walkers'] = 5000000
+    ss_erdep_params['grav_diffusion'] = 0.05
+    ss_erdep_params['mannings'] = 'mannings'
+    ss_erdep_params['runoff'] = 'runoff'
+    ss_erdep_params['threads'] = threads
+    ss_erdep_params['env'] = envs['ss_erdep_150']
     # append dictionary to options list
-    options_list.append(usped_params)
+    options_list.append(ss_erdep_params)
 
-    # dictionary of parameters for rusle simulation
-    rusle_params = {}
-    rusle_params['elevation'] = 'elevation@rusle'
-    rusle_params['runs'] = 'event'
-    rusle_params['mode'] = 'rusle_mode'
-    rusle_params['rain_intensity'] = 50.0
-    rusle_params['rain_duration'] = 60
-    rusle_params['rain_interval'] = 3
-    rusle_params['start'] = "2016-01-01 00:00:00"
-    rusle_params['grav_diffusion'] = 0.05
-    rusle_params['m'] = 0.4
-    rusle_params['n'] = 1.3
-    rusle_params['c_factor'] = 'c_factor'
-    rusle_params['k_factor'] = 'k_factor'
-    rusle_params['env'] = envs['rusle']
+
+    # dictionary of parameters for steady state flux simulation
+    ss_flux_params = {}
+    ss_flux_params['elevation'] = 'elevation@ss_flux_150'
+    ss_flux_params['runs'] = 'event'
+    ss_flux_params['mode'] = 'simwe_mode'
+    ss_flux_params['rain_intensity'] = 150.0
+    ss_flux_params['rain_duration'] = 60
+    ss_flux_params['rain_interval'] = 60
+    ss_flux_params['start'] = "2016-01-01 00:00:00"
+    ss_flux_params['walkers'] = 5000000
+    ss_flux_params['grav_diffusion'] = 0.05
+    ss_flux_params['detachment_value'] = 0.0001
+    ss_flux_params['transport_value'] = 0.01
+    ss_flux_params['mannings'] = 'mannings'
+    ss_flux_params['runoff'] = 'runoff'
+    ss_flux_params['threads'] = threads
+    ss_flux_params['env'] = envs['ss_flux_150']
     # append dictionary to options list
-    options_list.append(rusle_params)
+    options_list.append(ss_flux_params)
+
+    # dictionary of parameters for steady state transport simulation
+    ss_transport_params = {}
+    ss_transport_params['elevation'] = 'elevation@ss_transport_150'
+    ss_transport_params['runs'] = 'event'
+    ss_transport_params['mode'] = 'simwe_mode'
+    ss_transport_params['rain_intensity'] = 150.0
+    ss_transport_params['rain_duration'] = 60
+    ss_transport_params['rain_interval'] = 60
+    ss_transport_params['start'] = "2016-01-01 00:00:00"
+    ss_transport_params['walkers'] = 5000000
+    ss_transport_params['grav_diffusion'] = 0.05
+    ss_transport_params['detachment_value'] = 0.01
+    ss_transport_params['transport_value'] = 0.0001
+    ss_transport_params['mannings'] = 'mannings'
+    ss_transport_params['runoff'] = 'runoff'
+    ss_transport_params['threads'] = threads
+    ss_transport_params['env'] = envs['ss_transport_150']
+    # append dictionary to options list
+    options_list.append(ss_transport_params)
+
+    # dictionary of parameters for steady state usped simulation
+    ss_usped_params = {}
+    ss_usped_params['elevation'] = 'elevation@ss_usped_150'
+    ss_usped_params['runs'] = 'event'
+    ss_usped_params['mode'] = 'usped_mode'
+    ss_usped_params['rain_intensity'] = 150.0
+    ss_usped_params['rain_duration'] = 60
+    ss_usped_params['rain_interval'] = 60
+    ss_usped_params['start'] = "2016-01-01 00:00:00"
+    ss_usped_params['grav_diffusion'] = 0.05
+    ss_usped_params['m'] = 1.5
+    ss_usped_params['n'] = 1.2
+    ss_usped_params['c_factor'] = 'c_factor'
+    ss_usped_params['k_factor'] = 'k_factor'
+    ss_usped_params['env'] = envs['ss_usped_150']
+    # append dictionary to options list
+    options_list.append(ss_usped_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)

@@ -1,4 +1,4 @@
-flux#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -25,15 +25,17 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = [
-    'design_erdep',
-    'design_flux']
+simulations = ['design_erdep']
+
+# simulations = [
+#     'design_erdep_3m',
+#     'design_flux_3m']
 
 # set parameters
-res = 1  # resolution of the region
+res = 0.3  # resolution of the region
 region = 'elevation_2012@PERMANENT'
-nprocs = 2
-threads = 4
+nprocs = 1
+threads = 6
 
 design_storm = os.path.join(gisdbase, location, 'design_storm.txt')
 
@@ -42,7 +44,7 @@ def main():
     create dictionaries with params, and then run simulations in parallel"""
 
     # try to install dependencies
-    dependencies()
+    # dependencies()
 
     # create mapsets and environments
     envs = create_environments(simulations)
@@ -53,40 +55,41 @@ def main():
     # dictionary of parameters
     # for erosion-deposition simulation with a design storm
     design_erdep_params = {}
-    design_erdep_params['elevation'] = 'elevation@design_erdep'
+    design_erdep_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[0])
     design_erdep_params['runs'] = 'series'
     design_erdep_params['mode'] = 'simwe_mode'
     design_erdep_params['precipitation'] = design_storm
     design_erdep_params['rain_interval'] = 3
     design_erdep_params['start'] = "2016-01-01 00:00:00"
-    design_erdep_params['walkers'] = 5000000
+    design_erdep_params['walkers'] = 1000000 #5000000
     design_erdep_params['grav_diffusion'] = 0.05
+    design_erdep_params['density_value'] = 1.6
     design_erdep_params['mannings'] = 'mannings'
     design_erdep_params['runoff'] = 'runoff'
     design_erdep_params['threads'] = threads
-    design_erdep_params['env'] = envs['design_erdep']
+    design_erdep_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
     # append dictionary to options list
     options_list.append(design_erdep_params)
 
-    # dictionary of parameters
-    # for flux simulation with a design storm
-    design_flux_params = {}
-    design_flux_params['elevation'] = 'elevation@design_flux'
-    design_flux_params['runs'] = 'series'
-    design_flux_params['mode'] = 'simwe_mode'
-    design_flux_params['precipitation'] = design_storm
-    design_flux_params['rain_interval'] = 3
-    design_flux_params['start'] = "2016-01-01 00:00:00"
-    design_flux_params['walkers'] = 5000000
-    design_flux_params['grav_diffusion'] = 0.05
-    design_flux_params['detachment_value'] = 0.0001
-    design_flux_params['transport_value'] = 0.01
-    design_flux_params['mannings'] = 'mannings'
-    design_flux_params['runoff'] = 'runoff'
-    design_flux_params['threads'] = threads
-    design_flux_params['env'] = envs['design_flux']
-    # append dictionary to options list
-    options_list.append(design_flux_params)
+    # # dictionary of parameters
+    # # for flux simulation with a design storm
+    # design_flux_params = {}
+    # design_flux_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[0])
+    # design_flux_params['runs'] = 'series'
+    # design_flux_params['mode'] = 'simwe_mode'
+    # design_flux_params['precipitation'] = design_storm
+    # design_flux_params['rain_interval'] = 3
+    # design_flux_params['start'] = "2016-01-01 00:00:00"
+    # design_flux_params['walkers'] = 1000000 #5000000
+    # design_flux_params['grav_diffusion'] = 0.05
+    # design_flux_params['detachment_value'] = 0.0001
+    # design_flux_params['transport_value'] = 0.01
+    # design_flux_params['mannings'] = 'mannings'
+    # design_flux_params['runoff'] = 'runoff'
+    # design_flux_params['threads'] = threads
+    # design_flux_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
+    # # append dictionary to options list
+    # options_list.append(design_flux_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)
@@ -150,7 +153,7 @@ def getEnvironment(gisdbase, location, mapset):
         f.write('GUI: text\n')
     env = os.environ.copy()
     env['GISRC'] = tmp_gisrc_file
-    env['GRASS_REGION'] = gscript.region_env(raster=region)
+    env['GRASS_REGION'] = gscript.region_env(raster=region,res=res)
     env['GRASS_OVERWRITE'] = '1'
     env['GRASS_VERBOSE'] = '0'
     env['GRASS_MESSAGE_FORMAT'] = 'standard'

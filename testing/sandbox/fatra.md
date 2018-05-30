@@ -1,9 +1,3 @@
-# EXTENSION
-g.extension r.evolution url=github.com/baharmon/landscape_evolution
-
-# RUN SCRIPT
-/Users/baharmon/landscape_evolution/testing/simulations.py
-
 # FATRA
 ssh -Y baharmon@fatra.cnr.ncsu.edu
 mkdir grassdata
@@ -22,10 +16,3 @@ landscape_evolution/testing/simulations_06_22_2017.py
 top
 scp -r baharmon@fatra.cnr.ncsu.edu:/home/baharmon/grassdata/nc_spm_evolution/rendering /Users/Brendan/grassdata/nc_spm_evolution/
 exit
-
-# TODO
-Run steady state simulations
-Run dynamic simulations
-Run design storm simulations
-Run 3 year simulation (2013-2016)
-Compare with r.landevol and r.terradyn

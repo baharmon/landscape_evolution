@@ -25,20 +25,20 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = ['usped','rusle']
+simulations = ['bare_erdep']
 
 # set parameters
-res = 0.3  # resolution of the region
+res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
-nprocs = 2
-threads = 4
+nprocs = 1
+threads = 6
 
 def main():
     """install dependencies, create mapsets and environments,
     create dictionaries with params, and then run simulations in parallel"""
 
-    # try to install dependencies
-    dependencies()
+    # # try to install dependencies
+    # dependencies()
 
     # create mapsets and environments
     envs = create_environments(simulations)
@@ -46,41 +46,22 @@ def main():
     # create list of options for each simulation
     options_list = []
 
-    # dictionary of parameters for usped simulation
-    usped_params = {}
-    usped_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[0])
-    usped_params['runs'] = 'event'
-    usped_params['mode'] = 'usped_mode'
-    usped_params['rain_intensity'] = 50.0
-    usped_params['rain_duration'] = 60
-    usped_params['rain_interval'] = 3
-    usped_params['start'] = "2016-01-01 00:00:00"
-    usped_params['grav_diffusion'] = 0.05
-    usped_params['m'] = 1.5
-    usped_params['n'] = 1.2
-    usped_params['c_factor'] = 'c_factor'
-    usped_params['k_factor'] = 'k_factor'
-    usped_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
+    # dictionary of parameters for erosion-deposition simulation
+    erdep_params = {}
+    erdep_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[0])
+    erdep_params['runs'] = 'event'
+    erdep_params['mode'] = 'simwe_mode'
+    erdep_params['rain_intensity'] = 300.0
+    erdep_params['rain_duration'] = 60
+    erdep_params['rain_interval'] = 3 # 3
+    erdep_params['start'] = "2016-01-01 00:00:00"
+    erdep_params['walkers'] = 1000000
+    erdep_params['grav_diffusion'] = 0.05
+    erdep_params['runoff'] = 'runoff'
+    erdep_params['threads'] = threads
+    erdep_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
     # append dictionary to options list
-    options_list.append(usped_params)
-
-    # dictionary of parameters for rusle simulation
-    rusle_params = {}
-    rusle_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[1])
-    rusle_params['runs'] = 'event'
-    rusle_params['mode'] = 'rusle_mode'
-    rusle_params['rain_intensity'] = 50.0
-    rusle_params['rain_duration'] = 60
-    rusle_params['rain_interval'] = 3
-    rusle_params['start'] = "2016-01-01 00:00:00"
-    rusle_params['grav_diffusion'] = 0.05
-    rusle_params['m'] = 0.4
-    rusle_params['n'] = 1.3
-    rusle_params['c_factor'] = 'c_factor'
-    rusle_params['k_factor'] = 'k_factor'
-    rusle_params['env'] = envs['{simulation}'.format(simulation=simulations[1])]
-    # append dictionary to options list
-    options_list.append(rusle_params)
+    options_list.append(erdep_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)
@@ -144,7 +125,7 @@ def getEnvironment(gisdbase, location, mapset):
         f.write('GUI: text\n')
     env = os.environ.copy()
     env['GISRC'] = tmp_gisrc_file
-    env['GRASS_REGION'] = gscript.region_env(raster=region,res=res)
+    env['GRASS_REGION'] = gscript.region_env(raster=region)
     env['GRASS_OVERWRITE'] = '1'
     env['GRASS_VERBOSE'] = '0'
     env['GRASS_MESSAGE_FORMAT'] = 'standard'

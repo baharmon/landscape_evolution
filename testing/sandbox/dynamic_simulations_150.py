@@ -25,16 +25,12 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = [
-    'ss_erdep',
-    'ss_flux',
-    'ss_transport',
-    'ss_usped']
+simulations = ['erdep_150','flux_150','transport_150']
 
 # set parameters
-res = 0.3  # resolution of the region
+res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
-nprocs = 4
+nprocs = 3
 threads = 2
 
 def main():
@@ -50,82 +46,63 @@ def main():
     # create list of options for each simulation
     options_list = []
 
-    # dictionary of parameters for steady state erosion-deposition simulation
-    ss_erdep_params = {}
-    ss_erdep_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[0])
-    ss_erdep_params['runs'] = 'event'
-    ss_erdep_params['mode'] = 'simwe_mode'
-    ss_erdep_params['rain_intensity'] = 50.0
-    ss_erdep_params['rain_duration'] = 60
-    ss_erdep_params['rain_interval'] = 60
-    ss_erdep_params['start'] = "2016-01-01 00:00:00"
-    ss_erdep_params['walkers'] = 5000000
-    ss_erdep_params['grav_diffusion'] = 0.05
-    ss_erdep_params['mannings'] = 'mannings'
-    ss_erdep_params['runoff'] = 'runoff'
-    ss_erdep_params['threads'] = threads
-    ss_erdep_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
+    # dictionary of parameters for erosion-deposition simulation
+    erdep_params = {}
+    erdep_params['elevation'] = 'elevation@erdep_150'
+    erdep_params['runs'] = 'event'
+    erdep_params['mode'] = 'simwe_mode'
+    erdep_params['rain_intensity'] = 150.0
+    erdep_params['rain_duration'] = 60
+    erdep_params['rain_interval'] = 3
+    erdep_params['start'] = "2016-01-01 00:00:00"
+    erdep_params['walkers'] = 5000000
+    erdep_params['grav_diffusion'] = 0.05
+    erdep_params['mannings'] = 'mannings'
+    erdep_params['runoff'] = 'runoff'
+    erdep_params['threads'] = threads
+    erdep_params['env'] = envs['erdep_150']
     # append dictionary to options list
-    options_list.append(ss_erdep_params)
+    options_list.append(erdep_params)
 
-
-    # dictionary of parameters for steady state flux simulation
-    ss_flux_params = {}
-    ss_flux_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[1])
-    ss_flux_params['runs'] = 'event'
-    ss_flux_params['mode'] = 'simwe_mode'
-    ss_flux_params['rain_intensity'] = 50.0
-    ss_flux_params['rain_duration'] = 60
-    ss_flux_params['rain_interval'] = 60
-    ss_flux_params['start'] = "2016-01-01 00:00:00"
-    ss_flux_params['walkers'] = 5000000
-    ss_flux_params['grav_diffusion'] = 0.05
-    ss_flux_params['detachment_value'] = 0.0001
-    ss_flux_params['transport_value'] = 0.01
-    ss_flux_params['mannings'] = 'mannings'
-    ss_flux_params['runoff'] = 'runoff'
-    ss_flux_params['threads'] = threads
-    ss_flux_params['env'] = envs['{simulation}'.format(simulation=simulations[1])]
+    # dictionary of parameters for flux simulation
+    flux_params = {}
+    flux_params['elevation'] = 'elevation@flux_150'
+    flux_params['runs'] = 'event'
+    flux_params['mode'] = 'simwe_mode'
+    flux_params['rain_intensity'] = 150.0
+    flux_params['rain_duration'] = 60
+    flux_params['rain_interval'] = 3
+    flux_params['start'] = "2016-01-01 00:00:00"
+    flux_params['walkers'] = 5000000
+    flux_params['grav_diffusion'] = 0.05
+    flux_params['detachment_value'] = 0.0001
+    flux_params['transport_value'] = 0.01
+    flux_params['mannings'] = 'mannings'
+    flux_params['runoff'] = 'runoff'
+    flux_params['threads'] = threads
+    flux_params['env'] = envs['flux_150']
     # append dictionary to options list
-    options_list.append(ss_flux_params)
+    options_list.append(flux_params)
 
-    # dictionary of parameters for steady state transport simulation
-    ss_transport_params = {}
-    ss_transport_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[2])
-    ss_transport_params['runs'] = 'event'
-    ss_transport_params['mode'] = 'simwe_mode'
-    ss_transport_params['rain_intensity'] = 50.0
-    ss_transport_params['rain_duration'] = 60
-    ss_transport_params['rain_interval'] = 60
-    ss_transport_params['start'] = "2016-01-01 00:00:00"
-    ss_transport_params['walkers'] = 5000000
-    ss_transport_params['grav_diffusion'] = 0.05
-    ss_transport_params['detachment_value'] = 0.01
-    ss_transport_params['transport_value'] = 0.0001
-    ss_transport_params['mannings'] = 'mannings'
-    ss_transport_params['runoff'] = 'runoff'
-    ss_transport_params['threads'] = threads
-    ss_transport_params['env'] = envs['{simulation}'.format(simulation=simulations[2])]
+    # dictionary of parameters for transport simulation
+    transport_params = {}
+    transport_params['elevation'] = 'elevation@transport_150'
+    transport_params['runs'] = 'event'
+    transport_params['mode'] = 'simwe_mode'
+    transport_params['rain_intensity'] = 150.0
+    transport_params['rain_duration'] = 60
+    transport_params['rain_interval'] = 3
+    transport_params['start'] = "2016-01-01 00:00:00"
+    transport_params['walkers'] = 5000000
+    transport_params['grav_diffusion'] = 0.05
+    transport_params['detachment_value'] = 0.01
+    transport_params['transport_value'] = 0.0001
+    transport_params['mannings'] = 'mannings'
+    transport_params['runoff'] = 'runoff'
+    transport_params['threads'] = threads
+    transport_params['env'] = envs['transport_150']
     # append dictionary to options list
-    options_list.append(ss_transport_params)
-
-    # dictionary of parameters for steady state usped simulation
-    ss_usped_params = {}
-    ss_usped_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[3])
-    ss_usped_params['runs'] = 'event'
-    ss_usped_params['mode'] = 'usped_mode'
-    ss_usped_params['rain_intensity'] = 50.0
-    ss_usped_params['rain_duration'] = 60
-    ss_usped_params['rain_interval'] = 60
-    ss_usped_params['start'] = "2016-01-01 00:00:00"
-    ss_usped_params['grav_diffusion'] = 0.05
-    ss_usped_params['m'] = 1.5
-    ss_usped_params['n'] = 1.2
-    ss_usped_params['c_factor'] = 'c_factor'
-    ss_usped_params['k_factor'] = 'k_factor'
-    ss_usped_params['env'] = envs['{simulation}'.format(simulation=simulations[3])]
-    # append dictionary to options list
-    options_list.append(ss_usped_params)
+    options_list.append(transport_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)
@@ -189,7 +166,7 @@ def getEnvironment(gisdbase, location, mapset):
         f.write('GUI: text\n')
     env = os.environ.copy()
     env['GISRC'] = tmp_gisrc_file
-    env['GRASS_REGION'] = gscript.region_env(raster=region,res=res)
+    env['GRASS_REGION'] = gscript.region_env(raster=region)
     env['GRASS_OVERWRITE'] = '1'
     env['GRASS_VERBOSE'] = '0'
     env['GRASS_MESSAGE_FORMAT'] = 'standard'

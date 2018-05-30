@@ -51,7 +51,7 @@ def main():
     # dictionary of parameters
     # for erosion-deposition simulation from 2013 to 2016
     erdep_3yr_params = {}
-    erdep_3yr_params['elevation'] = 'elevation@erdep_3yr'
+    erdep_3yr_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[0])
     erdep_3yr_params['runs'] = 'series'
     erdep_3yr_params['mode'] = 'simwe_mode'
     erdep_3yr_params['precipitation'] = precipitation
@@ -62,7 +62,7 @@ def main():
     erdep_3yr_params['mannings'] = 'mannings'
     erdep_3yr_params['runoff'] = 'runoff'
     erdep_3yr_params['threads'] = threads
-    erdep_3yr_params['env'] = envs['erdep_3yr']
+    erdep_3yr_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
     # append dictionary to options list
     options_list.append(erdep_3yr_params)
 
@@ -128,7 +128,7 @@ def getEnvironment(gisdbase, location, mapset):
         f.write('GUI: text\n')
     env = os.environ.copy()
     env['GISRC'] = tmp_gisrc_file
-    env['GRASS_REGION'] = gscript.region_env(raster=region)
+    env['GRASS_REGION'] = gscript.region_env(raster=region,res=res)
     env['GRASS_OVERWRITE'] = '1'
     env['GRASS_VERBOSE'] = '0'
     env['GRASS_MESSAGE_FORMAT'] = 'standard'

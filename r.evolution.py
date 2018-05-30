@@ -1218,12 +1218,12 @@ class Evolution:
             "={elevation}"
             "-({rain_interval}*60"
             "*{sediment_flux}"
-            "/{density})".format(
+            "/{mass})".format(
                 evolved_elevation=evolved_elevation,
                 elevation=self.elevation,
                 rain_interval=self.rain_interval,
                 sediment_flux=sediment_flux,
-                density=self.density),
+                mass=self.mass),
             overwrite=True)
 
         # gravitational diffusion
@@ -1623,12 +1623,12 @@ class Evolution:
             "={elevation}"
             "-({rain_interval}*60"
             "*{sediment_flux}"
-            "/{density})".format(
+            "/{mass})".format(
                 evolved_elevation=evolved_elevation,
                 elevation=self.elevation,
                 rain_interval=self.rain_interval,
                 sediment_flux=sediment_flux,
-                density=self.density),
+                mass=self.mass),
             overwrite=True)
 
         # gravitational diffusion
