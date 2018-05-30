@@ -61,6 +61,7 @@ def main():
     ss_erdep_params['start'] = "2016-01-01 00:00:00"
     ss_erdep_params['walkers'] = 5000000
     ss_erdep_params['grav_diffusion'] = 0.05
+    ss_erdep_params['density_value'] = 1.6
     ss_erdep_params['mannings'] = 'mannings'
     ss_erdep_params['runoff'] = 'runoff'
     ss_erdep_params['threads'] = threads
@@ -100,6 +101,7 @@ def main():
     ss_transport_params['start'] = "2016-01-01 00:00:00"
     ss_transport_params['walkers'] = 5000000
     ss_transport_params['grav_diffusion'] = 0.05
+    ss_transport_params['density_value'] = 1.6
     ss_transport_params['detachment_value'] = 0.01
     ss_transport_params['transport_value'] = 0.0001
     ss_transport_params['mannings'] = 'mannings'
@@ -119,6 +121,7 @@ def main():
     ss_usped_params['rain_interval'] = 60
     ss_usped_params['start'] = "2016-01-01 00:00:00"
     ss_usped_params['grav_diffusion'] = 0.05
+    ss_usped_params['density_value'] = 1.6
     ss_usped_params['m'] = 1.5
     ss_usped_params['n'] = 1.2
     ss_usped_params['c_factor'] = 'c_factor'

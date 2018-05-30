@@ -28,7 +28,7 @@ location = env['LOCATION_NAME']
 simulations = ['erdep_3yr']
 
 # set parameters
-res = 1  # resolution of the region
+res = 0.3  # resolution of the region
 region = 'elevation_2012@PERMANENT'
 nprocs = 1
 threads = 8
@@ -39,8 +39,8 @@ def main():
     """install dependencies, create mapsets and environments,
     create dictionaries with params, and then run simulations in parallel"""
 
-    # try to install dependencies
-    dependencies()
+    # # try to install dependencies
+    # dependencies()
 
     # create mapsets and environments
     envs = create_environments(simulations)
@@ -59,6 +59,7 @@ def main():
     erdep_3yr_params['start'] = "2013-01-01 00:00:00"
     erdep_3yr_params['walkers'] = 5000000
     erdep_3yr_params['grav_diffusion'] = 0.05
+    erdep_3yr_params['density_value'] = 1.6
     erdep_3yr_params['mannings'] = 'mannings'
     erdep_3yr_params['runoff'] = 'runoff'
     erdep_3yr_params['threads'] = threads

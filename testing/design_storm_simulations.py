@@ -27,10 +27,6 @@ location = env['LOCATION_NAME']
 # list of simulations to run
 simulations = ['design_erdep']
 
-# simulations = [
-#     'design_erdep_3m',
-#     'design_flux_3m']
-
 # set parameters
 res = 0.3  # resolution of the region
 region = 'elevation_2012@PERMANENT'
@@ -70,26 +66,6 @@ def main():
     design_erdep_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
     # append dictionary to options list
     options_list.append(design_erdep_params)
-
-    # # dictionary of parameters
-    # # for flux simulation with a design storm
-    # design_flux_params = {}
-    # design_flux_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[0])
-    # design_flux_params['runs'] = 'series'
-    # design_flux_params['mode'] = 'simwe_mode'
-    # design_flux_params['precipitation'] = design_storm
-    # design_flux_params['rain_interval'] = 3
-    # design_flux_params['start'] = "2016-01-01 00:00:00"
-    # design_flux_params['walkers'] = 1000000 #5000000
-    # design_flux_params['grav_diffusion'] = 0.05
-    # design_flux_params['detachment_value'] = 0.0001
-    # design_flux_params['transport_value'] = 0.01
-    # design_flux_params['mannings'] = 'mannings'
-    # design_flux_params['runoff'] = 'runoff'
-    # design_flux_params['threads'] = threads
-    # design_flux_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
-    # # append dictionary to options list
-    # options_list.append(design_flux_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)
