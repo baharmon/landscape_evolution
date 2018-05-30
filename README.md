@@ -11,10 +11,10 @@ change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) 
 ## Installation
 * Launch GRASS GIS
 * Install using the GRASS Console / Command Line Interface (CLI) with *g.extension r.evolution url=github.com/baharmon/landscape_evolution*
-* Launch from the CLI with *r.evolution*
+* Launch from the CLI with *r.evolution --ui*
 
 ## Sample dataset
-Clone or download the 
+Clone or download the
 [sample dataset](https://github.com/baharmon/landscape_evolution_dataset)
 with a time series of lidar-based digital elevation models
 and orthoimagery
