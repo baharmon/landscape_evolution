@@ -25,10 +25,10 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = ['design_erdep']
+simulations = ['design_erdep_1m']
 
 # set parameters
-res = 0.3  # resolution of the region
+res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
 nprocs = 1
 threads = 6
@@ -56,10 +56,13 @@ def main():
     design_erdep_params['mode'] = 'simwe_mode'
     design_erdep_params['precipitation'] = design_storm
     design_erdep_params['rain_interval'] = 3
-    design_erdep_params['start'] = "2016-01-01 00:00:00"
+    design_erdep_params['start'] = "2012-01-01 00:00:00"
     design_erdep_params['walkers'] = 1000000 #5000000
-    design_erdep_params['grav_diffusion'] = 0.05
+    design_erdep_params['grav_diffusion'] = 0.1 #0.05
     design_erdep_params['density_value'] = 1.6
+    design_erdep_params['erdepmin'] = -0.25 #-1
+    design_erdep_params['erdepmax'] = 0.25 #1
+    design_erdep_params['fluxmax'] = 0.25 #3
     design_erdep_params['mannings'] = 'mannings'
     design_erdep_params['runoff'] = 'runoff'
     design_erdep_params['threads'] = threads

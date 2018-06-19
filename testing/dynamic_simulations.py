@@ -28,17 +28,17 @@ location = env['LOCATION_NAME']
 simulations = ['usped','rusle']
 
 # set parameters
-res = 0.3  # resolution of the region
+res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
-nprocs = 2
-threads = 4
+nprocs = 6
+threads = 1
 
 def main():
     """install dependencies, create mapsets and environments,
     create dictionaries with params, and then run simulations in parallel"""
 
-    # try to install dependencies
-    dependencies()
+    # # try to install dependencies
+    # dependencies()
 
     # create mapsets and environments
     envs = create_environments(simulations)
@@ -54,7 +54,7 @@ def main():
     usped_params['rain_intensity'] = 50.0
     usped_params['rain_duration'] = 60
     usped_params['rain_interval'] = 3
-    usped_params['start'] = "2016-01-01 00:00:00"
+    usped_params['start'] = "2012-01-01 00:00:00"
     usped_params['grav_diffusion'] = 0.05
     usped_params['m'] = 1.5
     usped_params['n'] = 1.2
@@ -72,7 +72,7 @@ def main():
     rusle_params['rain_intensity'] = 50.0
     rusle_params['rain_duration'] = 60
     rusle_params['rain_interval'] = 3
-    rusle_params['start'] = "2016-01-01 00:00:00"
+    rusle_params['start'] = "2012-01-01 00:00:00"
     rusle_params['grav_diffusion'] = 0.05
     rusle_params['m'] = 0.4
     rusle_params['n'] = 1.3

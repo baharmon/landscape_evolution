@@ -278,7 +278,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% type: double
 #% description: Gravitational diffusion coefficient in m^2/s
 #% label: Gravitational diffusion coefficient
-#% answer: 0.2
+#% answer: 0.1
 #% multiple: no
 #% guisection: Input
 #%end
@@ -288,7 +288,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% type: double
 #% description: Minimum values for erosion-deposition in kg/m^2s
 #% label: Minimum values for erosion-deposition
-#% answer: -1.0
+#% answer: -0.5
 #% multiple: no
 #% guisection: Input
 #%end
@@ -298,7 +298,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% type: double
 #% description: Maximum values for erosion-deposition in kg/m^2s
 #% label: Maximum values for erosion-deposition
-#% answer: 1.0
+#% answer: 0.5
 #% multiple: no
 #% guisection: Input
 #%end
@@ -308,7 +308,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% type: double
 #% description: Maximum values for sediment flux in kg/ms
 #% label: Maximum values for sediment flux
-#% answer: 3.0
+#% answer: 0.5
 #% multiple: no
 #% guisection: Input
 #%end
@@ -384,6 +384,12 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% required: no
 #% guisection: Output
 #%end
+
+#%flag
+#% key: f
+#% description: Fill depressions
+#%end
+
 
 import os
 import sys
@@ -477,6 +483,7 @@ def main():
     m = options['m']
     n = options['n']
     threads = options['threads']
+    fill_depressions = flags['f']
 
     # check for alternative input parameters
     if not runoff:
@@ -589,7 +596,8 @@ def main():
         c_factor=c_factor,
         m=m,
         n=n,
-        threads=threads)
+        threads=threads,
+        fill_depressions=fill_depressions)
 
     # determine type of model and run
     if runs == "series":
@@ -604,8 +612,8 @@ def main():
 class Evolution:
     def __init__(self, elevation, precipitation, start, rain_intensity,
         rain_interval, walkers, runoff, mannings, detachment, transport,
-        shearstress, density, mass, grav_diffusion,
-        erdepmin, erdepmax, fluxmax, k_factor, c_factor, m, n, threads):
+        shearstress, density, mass, grav_diffusion, erdepmin, erdepmax,
+        fluxmax, k_factor, c_factor, m, n, threads, fill_depressions):
         self.elevation = elevation
         self.precipitation = precipitation
         self.start = start
@@ -628,6 +636,7 @@ class Evolution:
         self.m = m
         self.n = n
         self.threads = threads
+        self.fill_depressions = fill_depressions
 
     def parse_time(self):
         """parse, advance, and stamp time"""
@@ -952,6 +961,42 @@ class Evolution:
 
         return evolved_elevation
 
+    def fill_sinks(self, evolved_elevation):
+        """fill sinks in digital elevation model"""
+
+        # assign variables
+        depressionless_elevation = 'depressionless_elevation'
+        direction = 'flow_direction'
+
+        # fill sinks
+        gscript.run_command('r.fill.dir',
+            input=evolved_elevation,
+            output=depressionless_elevation,
+            direction=direction,
+            overwrite=True)
+
+        # update elevation
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{evolved_elevation} = {depressionless_elevation}".format(
+                evolved_elevation=evolved_elevation,
+                depressionless_elevation=depressionless_elevation),
+            overwrite=True)
+        gscript.run_command(
+            'r.colors',
+            map=evolved_elevation,
+            color='elevation')
+
+        # remove temporary maps
+        gscript.run_command(
+            'g.remove',
+            type='raster',
+            name=['depressionless_elevation',
+                'flow_direction'],
+            flags='f')
+
+        return evolved_elevation
+
     def compute_difference(self, evolved_elevation, difference):
         """compute the change in elevation"""
 
@@ -1047,6 +1092,10 @@ class Evolution:
                 density=self.density),
             overwrite=True)
 
+        # fill sinks
+        if self.fill_depressions:
+            evolved_elevation = self.fill_sinks(evolved_elevation)
+
         # gravitational diffusion
         evolved_elevation = self.gravitational_diffusion(evolved_elevation)
 
@@ -1138,6 +1187,10 @@ class Evolution:
                 density=self.density),
             overwrite=True)
 
+        # fill sinks
+        if self.fill_depressions:
+            evolved_elevation = self.fill_sinks(evolved_elevation)
+
         # gravitational diffusion
         evolved_elevation = self.gravitational_diffusion(evolved_elevation)
 
@@ -1225,6 +1278,10 @@ class Evolution:
                 sediment_flux=sediment_flux,
                 mass=self.mass),
             overwrite=True)
+
+        # fill sinks
+        if self.fill_depressions:
+            evolved_elevation = self.fill_sinks(evolved_elevation)
 
         # gravitational diffusion
         evolved_elevation = self.gravitational_diffusion(evolved_elevation)
@@ -1508,7 +1565,6 @@ class Evolution:
         ls_factor = 'ls_factor'
         slope = 'slope'
         grow_slope = 'grow_slope'
-        erdep = 'erdep' # kg/m^2s
         sedflow = 'sedflow'
         sedflux = 'flux'
 
@@ -1708,8 +1764,8 @@ class DynamicEvolution:
         flux_timeseries, flux_title, flux_description, difference_timeseries,
         difference_title, difference_description, start, walkers, runoff,
         mannings, detachment, transport, shearstress, density, mass,
-        grav_diffusion, erdepmin, erdepmax, fluxmax,
-        k_factor, c_factor, m, n, threads):
+        grav_diffusion, erdepmin, erdepmax, fluxmax, k_factor, c_factor,
+        m, n, threads, fill_depressions):
         self.elevation = elevation
         self.mode = mode
         self.precipitation = precipitation
@@ -1750,6 +1806,7 @@ class DynamicEvolution:
         self.m = m
         self.n = n
         self.threads = threads
+        self.fill_depressions = fill_depressions
 
     def rainfall_event(self):
         """a dynamic, process-based landscape evolution model
@@ -1839,7 +1896,8 @@ class DynamicEvolution:
             c_factor=self.c_factor,
             m=self.m,
             n=self.n,
-            threads=self.threads)
+            threads=self.threads,
+            fill_depressions=self.fill_depressions)
 
         # determine mode and run model
         if self.mode == 'simwe_mode':
@@ -2219,7 +2277,8 @@ class DynamicEvolution:
             c_factor=self.c_factor,
             m=self.m,
             n=self.n,
-            threads=self.threads)
+            threads=self.threads,
+            fill_depressions=self.fill_depressions)
 
         # open txt file with precipitation data
         with open(evol.precipitation) as csvfile:
@@ -2574,6 +2633,8 @@ def cleanup():
                 'c_factor',
                 'k_factor',
                 'settled_elevation',
+                'depressionless_elevation',
+                'flow_direction',
                 'divergence',
                 'rain_energy',
                 'rain_volume',

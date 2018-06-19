@@ -34,7 +34,7 @@ env['GRASS_MESSAGE_FORMAT'] = 'standard'
 gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 mapset = env['MAPSET']
-res=0.3
+res=1
 
 # set 2D rendering parameters
 legend_coord = (2, 32, 2, 4)

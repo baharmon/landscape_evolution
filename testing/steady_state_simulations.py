@@ -41,8 +41,8 @@ def main():
     """install dependencies, create mapsets and environments,
     create dictionaries with params, and then run simulations in parallel"""
 
-    # try to install dependencies
-    dependencies()
+    # # try to install dependencies
+    # dependencies()
 
     # create mapsets and environments
     envs = create_environments(simulations)
@@ -59,7 +59,7 @@ def main():
     ss_erdep_params['rain_duration'] = 60
     ss_erdep_params['rain_interval'] = 60
     ss_erdep_params['start'] = "2016-01-01 00:00:00"
-    ss_erdep_params['walkers'] = 5000000
+    ss_erdep_params['walkers'] = 1000000
     ss_erdep_params['grav_diffusion'] = 0.05
     ss_erdep_params['density_value'] = 1.6
     ss_erdep_params['mannings'] = 'mannings'
@@ -79,7 +79,7 @@ def main():
     ss_flux_params['rain_duration'] = 60
     ss_flux_params['rain_interval'] = 60
     ss_flux_params['start'] = "2016-01-01 00:00:00"
-    ss_flux_params['walkers'] = 5000000
+    ss_flux_params['walkers'] = 1000000
     ss_flux_params['grav_diffusion'] = 0.05
     ss_flux_params['detachment_value'] = 0.0001
     ss_flux_params['transport_value'] = 0.01
@@ -99,7 +99,7 @@ def main():
     ss_transport_params['rain_duration'] = 60
     ss_transport_params['rain_interval'] = 60
     ss_transport_params['start'] = "2016-01-01 00:00:00"
-    ss_transport_params['walkers'] = 5000000
+    ss_transport_params['walkers'] = 1000000
     ss_transport_params['grav_diffusion'] = 0.05
     ss_transport_params['density_value'] = 1.6
     ss_transport_params['detachment_value'] = 0.01
