@@ -57,8 +57,8 @@ def main():
     ss_erdep_params['runs'] = 'event'
     ss_erdep_params['mode'] = 'simwe_mode'
     ss_erdep_params['rain_intensity'] = 50.0
-    ss_erdep_params['rain_duration'] = 120
-    ss_erdep_params['rain_interval'] = 120
+    ss_erdep_params['rain_duration'] = 3
+    ss_erdep_params['rain_interval'] = 3
     ss_erdep_params['start'] = "2016-01-01 00:00:00"
     ss_erdep_params['walkers'] = 1000000
     ss_erdep_params['grav_diffusion'] = 0.1
@@ -80,8 +80,8 @@ def main():
     ss_flux_params['runs'] = 'event'
     ss_flux_params['mode'] = 'simwe_mode'
     ss_flux_params['rain_intensity'] = 50.0
-    ss_flux_params['rain_duration'] = 120
-    ss_flux_params['rain_interval'] = 120
+    ss_flux_params['rain_duration'] = 3
+    ss_flux_params['rain_interval'] = 3
     ss_flux_params['start'] = "2016-01-01 00:00:00"
     ss_flux_params['grav_diffusion'] = 0.1
     ss_flux_params['density_value'] = 1.6
@@ -102,8 +102,8 @@ def main():
     ss_transport_params['runs'] = 'event'
     ss_transport_params['mode'] = 'simwe_mode'
     ss_transport_params['rain_intensity'] = 50.0
-    ss_transport_params['rain_duration'] = 120
-    ss_transport_params['rain_interval'] = 120
+    ss_transport_params['rain_duration'] = 3
+    ss_transport_params['rain_interval'] = 3
     ss_transport_params['start'] = "2016-01-01 00:00:00"
     ss_transport_params['walkers'] = 1000000
     ss_transport_params['grav_diffusion'] = 0.1
@@ -126,8 +126,8 @@ def main():
     ss_usped_params['runs'] = 'event'
     ss_usped_params['mode'] = 'usped_mode'
     ss_usped_params['rain_intensity'] = 50.0
-    ss_usped_params['rain_duration'] = 120
-    ss_usped_params['rain_interval'] = 120
+    ss_usped_params['rain_duration'] = 3
+    ss_usped_params['rain_interval'] = 3
     ss_usped_params['start'] = "2016-01-01 00:00:00"
     ss_usped_params['grav_diffusion'] = 0.1
     ss_usped_params['erdepmin'] = -0.25
@@ -148,8 +148,8 @@ def main():
     ss_rusle_params['runs'] = 'event'
     ss_rusle_params['mode'] = 'rusle_mode'
     ss_rusle_params['rain_intensity'] = 50.0
-    ss_rusle_params['rain_duration'] = 120
-    ss_rusle_params['rain_interval'] = 120
+    ss_rusle_params['rain_duration'] = 3
+    ss_rusle_params['rain_interval'] = 3
     ss_rusle_params['start'] = "2016-01-01 00:00:00"
     ss_rusle_params['grav_diffusion'] = 0.1
     ss_rusle_params['fluxmax'] = 0.25

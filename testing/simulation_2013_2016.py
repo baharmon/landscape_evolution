@@ -58,14 +58,15 @@ def main():
     erdep_3yr_params['rain_interval'] = 1
     erdep_3yr_params['start'] = "2013-01-01 00:00:00"
     erdep_3yr_params['walkers'] = 1000000
-    erdep_3yr_params['grav_diffusion'] = 0.1 #0.05
+    erdep_3yr_params['grav_diffusion'] = 0.1
     erdep_3yr_params['density_value'] = 1.60
-    erdep_3yr_params['erdepmin'] = -0.25 #-1
-    erdep_3yr_params['erdepmax'] = 0.25 #1
-    erdep_3yr_params['fluxmax'] = 0.25 #3
+    erdep_3yr_params['erdepmin'] = -0.25
+    erdep_3yr_params['erdepmax'] = 0.25
+    erdep_3yr_params['fluxmax'] = 0.25
     erdep_3yr_params['mannings'] = 'mannings'
     erdep_3yr_params['runoff'] = 'runoff'
     erdep_3yr_params['threads'] = threads
+    erdep_3yr_params['flags'] = 'f'
     erdep_3yr_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
     # append dictionary to options list
     options_list.append(erdep_3yr_params)

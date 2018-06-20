@@ -49,7 +49,7 @@ def main():
 
     # dictionary of parameters for steady state usped simulation
     ss_usped_params = {}
-    ss_usped_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[3])
+    ss_usped_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[0])
     ss_usped_params['runs'] = 'event'
     ss_usped_params['mode'] = 'usped_mode'
     ss_usped_params['rain_intensity'] = 50.0
@@ -58,9 +58,12 @@ def main():
     ss_usped_params['start'] = "2016-01-01 00:00:00"
     ss_usped_params['grav_diffusion'] = 0.1
     ss_usped_params['density_value'] = 1.6
+    ss_usped_params['erdepmin'] = -0.25
+    ss_usped_params['erdepmax'] = 0.25
     ss_usped_params['m'] = 1.5
     ss_usped_params['n'] = 1.2
-    ss_usped_params['env'] = envs['{simulation}'.format(simulation=simulations[3])]
+    ss_usped_params['flags'] = 'f'
+    ss_usped_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
     # append dictionary to options list
     options_list.append(ss_usped_params)
 
@@ -74,8 +77,10 @@ def main():
     ss_rusle_params['rain_interval'] = 60
     ss_rusle_params['start'] = "2012-01-01 00:00:00"
     ss_rusle_params['grav_diffusion'] = 0.1
+    ss_rusle_params['fluxmax'] = 0.25
     ss_rusle_params['m'] = 0.4
     ss_rusle_params['n'] = 1.3
+    ss_rusle_params['flags'] = 'f'
     ss_rusle_params['env'] = envs['{simulation}'.format(simulation=simulations[1])]
     # append dictionary to options list
     options_list.append(ss_rusle_params)

@@ -54,12 +54,15 @@ def main():
     usped_params['rain_intensity'] = 50.0
     usped_params['rain_duration'] = 60
     usped_params['rain_interval'] = 3
-    usped_params['start'] = "2012-01-01 00:00:00"
-    usped_params['grav_diffusion'] = 0.05
+    usped_params['start'] = "2016-01-01 00:00:00"
+    usped_params['grav_diffusion'] = 0.1
+    usped_params['erdepmin'] = -0.25
+    usped_params['erdepmax'] = 0.25
     usped_params['m'] = 1.5
     usped_params['n'] = 1.2
     usped_params['c_factor'] = 'c_factor'
     usped_params['k_factor'] = 'k_factor'
+    usped_params['flags'] = 'f'
     usped_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
     # append dictionary to options list
     options_list.append(usped_params)
@@ -72,12 +75,14 @@ def main():
     rusle_params['rain_intensity'] = 50.0
     rusle_params['rain_duration'] = 60
     rusle_params['rain_interval'] = 3
-    rusle_params['start'] = "2012-01-01 00:00:00"
-    rusle_params['grav_diffusion'] = 0.05
+    rusle_params['start'] = "2016-01-01 00:00:00"
+    rusle_params['grav_diffusion'] = 0.1
+    rusle_params['fluxmax'] = 0.25
     rusle_params['m'] = 0.4
     rusle_params['n'] = 1.3
     rusle_params['c_factor'] = 'c_factor'
     rusle_params['k_factor'] = 'k_factor'
+    rusle_params['flags'] = 'f'
     rusle_params['env'] = envs['{simulation}'.format(simulation=simulations[1])]
     # append dictionary to options list
     options_list.append(rusle_params)
