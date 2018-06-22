@@ -58,7 +58,7 @@ def main():
     erdep_3yr_params['rain_interval'] = 1
     erdep_3yr_params['start'] = "2013-01-01 00:00:00"
     erdep_3yr_params['walkers'] = 1000000
-    erdep_3yr_params['grav_diffusion'] = 0.1
+    erdep_3yr_params['grav_diffusion'] = 0.05
     erdep_3yr_params['density_value'] = 1.60
     erdep_3yr_params['erdepmin'] = -0.25
     erdep_3yr_params['erdepmax'] = 0.25

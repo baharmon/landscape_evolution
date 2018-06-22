@@ -1664,7 +1664,8 @@ class Evolution:
         gscript.run_command(
             'r.colors',
             map=sediment_flux,
-            raster=sedflux)
+            color='viridis',
+            flags='g')
 
         # evolve landscape
         """

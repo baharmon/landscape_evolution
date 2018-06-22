@@ -53,7 +53,8 @@ def main():
 
     # dictionary of parameters for steady state erosion-deposition simulation
     ss_erdep_params = {}
-    ss_erdep_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[0])
+    ss_erdep_params['elevation'] = 'elevation@{simulation}'.format(
+        simulation=simulations[0])
     ss_erdep_params['runs'] = 'event'
     ss_erdep_params['mode'] = 'simwe_mode'
     ss_erdep_params['rain_intensity'] = 50.0
@@ -61,7 +62,7 @@ def main():
     ss_erdep_params['rain_interval'] = 120
     ss_erdep_params['start'] = "2016-01-01 00:00:00"
     ss_erdep_params['walkers'] = 1000000
-    ss_erdep_params['grav_diffusion'] = 0.1
+    ss_erdep_params['grav_diffusion'] = 0.05
     ss_erdep_params['density_value'] = 1.6
     ss_erdep_params['erdepmin'] = -0.25
     ss_erdep_params['erdepmax'] = 0.25
@@ -73,17 +74,17 @@ def main():
     # append dictionary to options list
     options_list.append(ss_erdep_params)
 
-
     # dictionary of parameters for steady state flux simulation
     ss_flux_params = {}
-    ss_flux_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[1])
+    ss_flux_params['elevation'] = 'elevation@{simulation}'.format(
+        simulation=simulations[1])
     ss_flux_params['runs'] = 'event'
     ss_flux_params['mode'] = 'simwe_mode'
-    ss_flux_params['rain_intensity'] = 50.0
+    ss_flux_params['rain_intensity'] = 5.0
     ss_flux_params['rain_duration'] = 120
     ss_flux_params['rain_interval'] = 120
     ss_flux_params['start'] = "2016-01-01 00:00:00"
-    ss_flux_params['grav_diffusion'] = 0.1
+    ss_flux_params['grav_diffusion'] = 0.05
     ss_flux_params['density_value'] = 1.6
     ss_flux_params['fluxmax'] = 0.25
     ss_flux_params['detachment_value'] = 0.0001
@@ -92,13 +93,15 @@ def main():
     ss_flux_params['runoff'] = 'runoff'
     ss_flux_params['threads'] = threads
     ss_flux_params['flags'] = 'f'
-    ss_flux_params['env'] = envs['{simulation}'.format(simulation=simulations[1])]
+    ss_flux_params['env'] = envs['{simulation}'.format(
+        simulation=simulations[1])]
     # append dictionary to options list
     options_list.append(ss_flux_params)
 
     # dictionary of parameters for steady state transport simulation
     ss_transport_params = {}
-    ss_transport_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[2])
+    ss_transport_params['elevation'] = 'elevation@{simulation}'.format(
+        simulation=simulations[2])
     ss_transport_params['runs'] = 'event'
     ss_transport_params['mode'] = 'simwe_mode'
     ss_transport_params['rain_intensity'] = 50.0
@@ -106,7 +109,7 @@ def main():
     ss_transport_params['rain_interval'] = 120
     ss_transport_params['start'] = "2016-01-01 00:00:00"
     ss_transport_params['walkers'] = 1000000
-    ss_transport_params['grav_diffusion'] = 0.1
+    ss_transport_params['grav_diffusion'] = 0.05
     ss_transport_params['density_value'] = 1.6
     ss_transport_params['erdepmin'] = -0.25
     ss_transport_params['erdepmax'] = 0.25
@@ -116,20 +119,22 @@ def main():
     ss_transport_params['runoff'] = 'runoff'
     ss_transport_params['threads'] = threads
     ss_transport_params['flags'] = 'f'
-    ss_transport_params['env'] = envs['{simulation}'.format(simulation=simulations[2])]
+    ss_transport_params['env'] = envs['{simulation}'.format(
+        simulation=simulations[2])]
     # append dictionary to options list
     options_list.append(ss_transport_params)
 
     # dictionary of parameters for steady state usped simulation
     ss_usped_params = {}
-    ss_usped_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[3])
+    ss_usped_params['elevation'] = 'elevation@{simulation}'.format(
+        simulation=simulations[3])
     ss_usped_params['runs'] = 'event'
     ss_usped_params['mode'] = 'usped_mode'
     ss_usped_params['rain_intensity'] = 50.0
     ss_usped_params['rain_duration'] = 120
     ss_usped_params['rain_interval'] = 120
     ss_usped_params['start'] = "2016-01-01 00:00:00"
-    ss_usped_params['grav_diffusion'] = 0.1
+    ss_usped_params['grav_diffusion'] = 0.05
     ss_usped_params['erdepmin'] = -0.25
     ss_usped_params['erdepmax'] = 0.25
     ss_usped_params['density_value'] = 1.6
@@ -138,27 +143,30 @@ def main():
     ss_usped_params['c_factor'] = 'c_factor'
     ss_usped_params['k_factor'] = 'k_factor'
     ss_usped_params['flags'] = 'f'
-    ss_usped_params['env'] = envs['{simulation}'.format(simulation=simulations[3])]
+    ss_usped_params['env'] = envs['{simulation}'.format(
+        simulation=simulations[3])]
     # append dictionary to options list
     options_list.append(ss_usped_params)
 
     # dictionary of parameters for rusle simulation
     ss_rusle_params = {}
-    ss_rusle_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[4])
+    ss_rusle_params['elevation'] = 'elevation@{simulation}'.format(
+        simulation=simulations[4])
     ss_rusle_params['runs'] = 'event'
     ss_rusle_params['mode'] = 'rusle_mode'
-    ss_rusle_params['rain_intensity'] = 50.0
+    ss_rusle_params['rain_intensity'] = 75.0
     ss_rusle_params['rain_duration'] = 120
     ss_rusle_params['rain_interval'] = 120
     ss_rusle_params['start'] = "2016-01-01 00:00:00"
-    ss_rusle_params['grav_diffusion'] = 0.1
+    ss_rusle_params['grav_diffusion'] = 0.05
     ss_rusle_params['fluxmax'] = 0.25
     ss_rusle_params['m'] = 0.4
     ss_rusle_params['n'] = 1.3
     ss_rusle_params['c_factor'] = 'c_factor'
     ss_rusle_params['k_factor'] = 'k_factor'
     ss_rusle_params['flags'] = 'f'
-    ss_rusle_params['env'] = envs['{simulation}'.format(simulation=simulations[4])]
+    ss_rusle_params['env'] = envs['{simulation}'.format(
+        simulation=simulations[4])]
     # append dictionary to options list
     options_list.append(ss_rusle_params)
 

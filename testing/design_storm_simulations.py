@@ -58,7 +58,7 @@ def main():
     design_erdep_params['rain_interval'] = 3
     design_erdep_params['start'] = "2016-01-01 00:00:00"
     design_erdep_params['walkers'] = 1000000
-    design_erdep_params['grav_diffusion'] = 0.1
+    design_erdep_params['grav_diffusion'] = 0.05
     design_erdep_params['density_value'] = 1.6
     design_erdep_params['erdepmin'] = -0.25
     design_erdep_params['erdepmax'] = 0.25
