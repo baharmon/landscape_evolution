@@ -25,13 +25,17 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = ['usped','rusle']
+simulations = [
+    'erdep',
+    'flux',
+    'usped',
+    'rusle']
 
 # set parameters
 res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
-nprocs = 6
-threads = 1
+nprocs = 4
+threads = 3
 
 def main():
     """install dependencies, create mapsets and environments,
@@ -46,13 +50,60 @@ def main():
     # create list of options for each simulation
     options_list = []
 
+    # dictionary of parameters for steady state erosion-deposition simulation
+    erdep_params = {}
+    erdep_params['elevation'] = 'elevation@{simulation}'.format(
+        simulation=simulations[0])
+    erdep_params['runs'] = 'event'
+    erdep_params['mode'] = 'simwe_mode'
+    erdep_params['rain_intensity'] = 50.0
+    erdep_params['rain_duration'] = 120
+    erdep_params['rain_interval'] = 3
+    erdep_params['start'] = "2016-01-01 00:00:00"
+    erdep_params['walkers'] = 1000000
+    erdep_params['grav_diffusion'] = 0.05
+    erdep_params['density_value'] = 1.6
+    erdep_params['erdepmin'] = -0.25
+    erdep_params['erdepmax'] = 0.25
+    erdep_params['mannings'] = 'mannings'
+    erdep_params['runoff'] = 'runoff'
+    erdep_params['threads'] = threads
+    erdep_params['flags'] = 'f'
+    erdep_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
+    # append dictionary to options list
+    options_list.append(erdep_params)
+
+    # dictionary of parameters for steady state flux simulation
+    flux_params = {}
+    flux_params['elevation'] = 'elevation@{simulation}'.format(
+        simulation=simulations[1])
+    flux_params['runs'] = 'event'
+    flux_params['mode'] = 'simwe_mode'
+    flux_params['rain_intensity'] = 150.0
+    flux_params['rain_duration'] = 120
+    flux_params['rain_interval'] = 3
+    flux_params['start'] = "2016-01-01 00:00:00"
+    flux_params['grav_diffusion'] = 0.05
+    flux_params['density_value'] = 1.6
+    flux_params['fluxmax'] = 0.25
+    flux_params['detachment_value'] = 0.0001
+    flux_params['transport_value'] = 0.01
+    flux_params['mannings'] = 'mannings'
+    flux_params['runoff'] = 'runoff'
+    flux_params['threads'] = threads
+    flux_params['flags'] = 'f'
+    flux_params['env'] = envs['{simulation}'.format(
+        simulation=simulations[1])]
+    # append dictionary to options list
+    options_list.append(flux_params)
+
     # dictionary of parameters for usped simulation
     usped_params = {}
-    usped_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[0])
+    usped_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[2])
     usped_params['runs'] = 'event'
     usped_params['mode'] = 'usped_mode'
     usped_params['rain_intensity'] = 50.0
-    usped_params['rain_duration'] = 60
+    usped_params['rain_duration'] = 120
     usped_params['rain_interval'] = 3
     usped_params['start'] = "2016-01-01 00:00:00"
     usped_params['grav_diffusion'] = 0.05
@@ -63,17 +114,17 @@ def main():
     usped_params['c_factor'] = 'c_factor'
     usped_params['k_factor'] = 'k_factor'
     usped_params['flags'] = 'f'
-    usped_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
+    usped_params['env'] = envs['{simulation}'.format(simulation=simulations[2])]
     # append dictionary to options list
     options_list.append(usped_params)
 
     # dictionary of parameters for rusle simulation
     rusle_params = {}
-    rusle_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[1])
+    rusle_params['elevation'] = 'elevation@{simulation}'.format(simulation=simulations[3])
     rusle_params['runs'] = 'event'
     rusle_params['mode'] = 'rusle_mode'
     rusle_params['rain_intensity'] = 50.0
-    rusle_params['rain_duration'] = 60
+    rusle_params['rain_duration'] = 120
     rusle_params['rain_interval'] = 3
     rusle_params['start'] = "2016-01-01 00:00:00"
     rusle_params['grav_diffusion'] = 0.05
@@ -83,7 +134,7 @@ def main():
     rusle_params['c_factor'] = 'c_factor'
     rusle_params['k_factor'] = 'k_factor'
     rusle_params['flags'] = 'f'
-    rusle_params['env'] = envs['{simulation}'.format(simulation=simulations[1])]
+    rusle_params['env'] = envs['{simulation}'.format(simulation=simulations[3])]
     # append dictionary to options list
     options_list.append(rusle_params)
 

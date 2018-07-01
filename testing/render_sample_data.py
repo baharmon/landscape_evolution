@@ -44,7 +44,7 @@ height = 1600
 fontsize = 24
 
 # set data parameters
-years = [2004, 2016]
+years = [2004, 2012, 2016]
 
 
 def main():
@@ -76,7 +76,6 @@ def render_region_2d():
 
     # render shaded relief maps
     for year in years:
-
         gscript.run_command('d.mon',
             start=driver,
             width=width+border,
@@ -91,24 +90,25 @@ def render_region_2d():
             at=legend_coord)
         gscript.run_command('d.mon', stop=driver)
 
-    # render shaded relief maps
+    # render landforms
     for year in years:
-
         gscript.run_command('d.mon',
             start=driver,
-            width=width+border,
+            width=width+border+border,
             height=height,
-            output=os.path.join(render, 'elevation_'+str(year)+'.png'),
+            output=os.path.join(render, 'landforms_'+str(year)+'.png'),
             overwrite=overwrite)
-        gscript.run_command('d.rast',
-            map='shaded_relief_'+str(year))
+        gscript.run_command('d.shade',
+            shade='skyview_'+str(year),
+            color='landforms_'+str(year),
+            brighten=0)
         gscript.run_command('d.legend',
-            raster='elevation_'+str(year),
+            raster='landforms_'+str(year),
             fontsize=fontsize,
             at=legend_coord)
         gscript.run_command('d.mon', stop=driver)
 
-    # render difference
+    # render differences 2004-2016
     gscript.run_command('d.mon',
         start=driver,
         width=width+border,
@@ -119,6 +119,38 @@ def render_region_2d():
         map='difference_2004_2016')
     gscript.run_command('d.legend',
         raster='difference_2004_2016',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+
+    # render differences 2004-2012
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width+border,
+        height=height,
+        output=os.path.join(render, 'difference_2004_2012.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='difference_2004_2012')
+    gscript.run_command('d.legend',
+        raster='difference_2004_2012',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+
+    # render differences 2012-2016
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width+border,
+        height=height,
+        output=os.path.join(render, 'difference_2012_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='difference_2012_2016')
+    gscript.run_command('d.legend',
+        raster='difference_2012_2016',
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -171,24 +203,6 @@ def render_region_2d():
         flags='n')
     gscript.run_command('d.mon', stop=driver)
 
-    # render landforms
-    gscript.run_command('d.mon',
-        start=driver,
-        width=width+border+border,
-        height=height,
-        output=os.path.join(render, 'landforms_2016.png'),
-        overwrite=overwrite)
-    gscript.run_command('d.shade',
-        shade='skyview_2016',
-        color='landforms_2016',
-        brighten=0)
-    gscript.run_command('d.legend',
-        raster='landforms_'+str(year),
-        fontsize=fontsize,
-        at=legend_coord)
-    gscript.run_command('d.mon', stop=driver)
-
-
 def render_subregion_2d():
 
     # create rendering directory
@@ -201,7 +215,6 @@ def render_subregion_2d():
 
     # render shaded relief maps
     for year in years:
-
         gscript.run_command('d.mon',
             start=driver,
             width=width+border,
@@ -218,7 +231,6 @@ def render_subregion_2d():
 
     # render landforms
     for year in years:
-
         gscript.run_command('d.mon',
             start=driver,
             width=width+border+border,
@@ -226,7 +238,7 @@ def render_subregion_2d():
             output=os.path.join(render, 'gully_landforms_'+str(year)+'.png'),
             overwrite=overwrite)
         gscript.run_command('d.shade',
-            shade='skyview_2016',
+            shade='skyview_'+str(year),
             color='landforms_'+str(year),
             brighten=0)
         gscript.run_command('d.legend',
@@ -235,7 +247,7 @@ def render_subregion_2d():
             at=legend_coord)
         gscript.run_command('d.mon', stop=driver)
 
-    # render difference
+    # render difference 2004-2016
     gscript.run_command('d.mon',
         start=driver,
         width=width+border,
@@ -249,6 +261,37 @@ def render_subregion_2d():
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
+
+    # render difference 2004-2012
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width+border,
+        height=height,
+        output=os.path.join(render, 'gully_difference_2004_2012.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='difference_2004_2012')
+    gscript.run_command('d.legend',
+        raster='difference_2004_2012',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render difference 2012-2016
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width+border,
+        height=height,
+        output=os.path.join(render, 'gully_difference_2012_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='difference_2012_2016')
+    gscript.run_command('d.legend',
+        raster='difference_2012_2016',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
 
 
 def render_fortbragg_2d():

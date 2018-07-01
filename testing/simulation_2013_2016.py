@@ -55,7 +55,7 @@ def main():
     erdep_3yr_params['runs'] = 'series'
     erdep_3yr_params['mode'] = 'simwe_mode'
     erdep_3yr_params['precipitation'] = precipitation
-    erdep_3yr_params['rain_interval'] = 1
+    erdep_3yr_params['rain_interval'] = 60
     erdep_3yr_params['start'] = "2013-01-01 00:00:00"
     erdep_3yr_params['walkers'] = 1000000
     erdep_3yr_params['grav_diffusion'] = 0.05

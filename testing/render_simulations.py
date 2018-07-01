@@ -44,7 +44,20 @@ height = 1600
 fontsize = 24
 
 # temporal paramters
-end_time = '2016_01_01_01_00_00' #'2016_01_01_02_00_00' #'2016_05_05_12_01_00' #'2012_01_01_01_00_00'
+end_time = '2016_01_01_02_00_00'
+
+elevation_colors = """\
+0% 0 132 132
+89 0 191 191
+93.6 0 255 0
+98.2 255 255 0
+102.8 255 127 0
+107.4 191 127 63
+112 200 200 200
+100% 200 200 200
+nv white
+default white
+"""
 
 def main():
 
@@ -78,6 +91,13 @@ def render_region_2d(mapset):
         e=597645,
         w=597195,
         res=res)
+
+    # set elevation color table
+    gscript.write_command(
+        'r.colors',
+        map='elevation_{time}'.format(time=end_time),
+        rules='-',
+        stdin=elevation_colors)
 
     # compute and render shaded relief
     gscript.run_command('d.mon',
@@ -203,6 +223,10 @@ def render_region_2d(mapset):
             height=height,
             output=os.path.join(render, 'flux'+'.png'),
             overwrite=overwrite)
+        gscript.run_command('r.colors',
+            map='flux_{time}'.format(time=end_time),
+            color='viridis',
+            flags='e')
         gscript.run_command('d.shade',
             shade='shaded_relief',
             color='flux_{time}'.format(time=end_time),

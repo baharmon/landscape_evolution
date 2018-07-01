@@ -22,7 +22,7 @@ import os
 # assign variables
 interval = 3 # minutes
 duration = 60 # minutes
-min_precip = 0.3 # mm
+min_precip = 1. # mm
 max_precip = 150. # mm
 year = 2016
 month = 01

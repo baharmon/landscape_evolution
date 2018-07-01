@@ -80,7 +80,7 @@ def main():
         simulation=simulations[1])
     ss_flux_params['runs'] = 'event'
     ss_flux_params['mode'] = 'simwe_mode'
-    ss_flux_params['rain_intensity'] = 5.0
+    ss_flux_params['rain_intensity'] = 25.0
     ss_flux_params['rain_duration'] = 120
     ss_flux_params['rain_interval'] = 120
     ss_flux_params['start'] = "2016-01-01 00:00:00"

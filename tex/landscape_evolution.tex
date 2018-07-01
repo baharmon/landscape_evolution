@@ -45,22 +45,19 @@
 \usepackage{tabulary}
 \usepackage{tabu}
 \usepackage{booktabs}
+\usepackage{tabularx}
 \usepackage{array}
 \usepackage[super]{nth}
 \usepackage{listings}
 \usepackage{float}
 \usepackage{upquote}
+\usepackage[export]{adjustbox}
 \usepackage{hyperref}
 %\usepackage{minted}
 %\usemintedstyle{bw}
+\usepackage{import} %\usepackage{newclude}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
-
-% Special characters
-\usepackage{gensymb}
-\usepackage{amsmath,amssymb}
-\usepackage{pifont}
-\newcommand{\cmark}{\ding{51}}
-\newcommand{\xmark}{\ding{55}}
 
 \journal{Geomorphology}
 
@@ -68,9 +65,9 @@
 
 \begin{frontmatter}
 
-\title{Dynamic Landscape Evolution}
+\title{Gully: a short-term, dynamic landscape evolution model}
 
-\author[cga,la]{Brendan Harmon\corref{cor1}}
+\author[la]{Brendan Harmon\corref{cor1}}
 \cortext[cor1]{Corresponding author}
 \ead{brendan.harmon@gmail.com}
 %\ead[url]{baharmon@github.io}
@@ -349,7 +346,8 @@ and the scaling erosional processes over time and space.
 %Soil erosion regimes \\
 
 %When transport capacity of overland flow exceeds its detach- ment capacity over the entire studied landscape, erosion, and sediment transport is detachment capacity limited (i.e., no deposition occurs). For example, this case is typical for sedi- ment transported by large amount of water over compacted soil. 
-%%If the soil detachment significantly exceeds the sediment transport capacity of overland flow, the sediment flow rate will be at the sediment transport capaci
+%
+%If the soil detachment significantly exceeds the sediment transport capacity of overland flow, the sediment flow rate will be at the sediment transport capaci
 % \cite{mitasova2013} 
 
 
@@ -398,6 +396,14 @@ We compared a series of simulations against a times series of lidar surveys
 to test the hypothesis that
 dynamic models can more accurately simulate gully formation
 than steady state models.
+
+% that the model can accurately simulated measured change in a landscape
+
+We hypothesize that the removal of forest cover
+triggered extensive channelized overland flow,
+gully formation, and sediment transport into the creek. 
+
+
 
 \subsection{Conceptual model}
 
@@ -463,7 +469,13 @@ r.evolution & watershed -- & event -- & raster & dynamic -- & module &\\ %cite s
 \clearpage
 
 % --------------------------------EROSION-DEPOSITION --------------------------------
-\section{Simulation of water erosion model} \label{simwel}
+\section{Simulation of water erosion model} \label{simwe}
+
+%\begin{figure}[h]
+%\includegraphics[width=0.5\textwidth]{../images/sample_data_3d/depth_2016.png}
+%\caption{...}
+%\label{fig:3d}
+%\end{figure}
 
 SIMWE -- the Simulation of Water Erosion model -- 
 is a physics-based simulation of shallow overland water and sediment flow
@@ -1046,9 +1058,139 @@ GRASS GIS is an open source project released under the GNU General Public Licens
 
 \clearpage
 % -------------------------------- CASE STUDY--------------------------------
-\section{Case studies}
-\subsection{Fort Bragg}
-\subsection{Patterson Branch Creek}
+\section{Case study} %\subsection{Fort Bragg}
+
+%\subsection{Patterson Branch Creek}
+\subsection{Study landscape}
+
+\begin{figure}[h]
+\includegraphics[width=0.5\textwidth]{../images/sample_data_3d/naip_2014.png}
+\caption{...}
+\label{fig:3d}
+\end{figure}
+
+To test the effectiveness of Gully's models 
+we compared the simulated evolution
+of a highly eroded subwatershed of 
+Patterson Branch Creek on Fort Bragg, North Carolina
+against a timeseries of lidar surveys.
+%
+The models -- SIMWE, RUSLE3D, and USPED --
+were tested in steady state and dynamic modes
+for constant rainfall, design storms, and recorded rainfall.
+
+
+% --------- STUDY AREA ---------
+
+Fort Bragg, a military installation in the Sandhills region of North Carolina
+with a Longleaf Pine and Wiregrass Ecosystem \citep{Sorrie2006},
+has extensive areas of bare, erodible soils
+on impact areas, firing ranges, landing zones, and dropzones. 
+%
+The study landscape
+-- a subwatershed of Patterson Branch Creek
+in the Coleman Impact Area --
+is pitted with impact craters from artillery and mortar shells
+and has an active, approximately 2 meter deep gully. 
+%
+It is a Pine-Scrub Oak Sandhill community
+composed primarily of longleaf pine -- Pinus palustris --
+and wiregrass -- Aristida stricta --
+on Blaney and Gilead loamy sands 
+\citep{Sorrie2004}. 
+%
+Throughout the Coleman Impact Area
+the frequent fires ignited by live munitions
+drive the ecological disturbance regime
+of this fire adapted ecosystem.
+%
+In 2016 the  450 x 450 meter study site was
+43.24\% bare ground with predominately loamy sands,
+39.54\% covered by the wiregrass community, and
+17.22\% forested with the longleaf pine community 
+(Figure~\ref{fig:study_area}b). 
+%
+We hypothesize that the elimination of forest cover
+in the impact zone
+triggered extensive channelized overland flow,
+gully formation, and sediment transport into the creek. 
+
+% --------- DATA ---------
+We generated a timeseries of 
+digital elevations models and landcover maps 
+of the study landscape for 2004, 2012, and 2016
+from lidar pointclouds and orthophotography
+(Figure~\ref{fig:study_area}). 
+%
+The digital elevations models were interpolated using 
+the regularized spline with tension function \citep{Mitasova1993,Mitasova2005}
+\footnote{https://grass.osgeo.org/grass74/manuals/v.surf.rst.html}
+from 1 meter resolution airborne lidar surveys 
+collected by the NC Floodplain Mapping program and Fort Bragg. 
+%
+Unsupervised image classification was used to identify clusters of spectral reflectance
+\footnote{https://grass.osgeo.org/grass74/manuals/i.cluster.html}
+\footnote{https://grass.osgeo.org/grass74/manuals/i.maxlik.html}
+in a timeseries of 1 meter resolution orthoimagery 
+collected by the National Agriculture Imagery Program.
+%
+The landcover maps were derived by fusing the
+classified lidar point clouds with the classified orthoimagery.
+%
+Spatially variable soil erosion factors -- k-factor, c-factor, mannings, and runoff rates --
+were derived from the landcover and soil maps.
+%
+The dataset for this study is hosted at 
+\url{https://github.com/baharmon/landscape\_evolution_dataset}
+under the ODC Open Database License (ODbL).
+%
+The data is derived from publicly available data from
+the US Army, USGS, USDA, Wake County GIS, NC Floodplain
+Mapping Program, and the NC State Climate Office.
+
+\begin{figure*}[h]
+\small\sf\centering
+\ra{1.3}
+\begin{tabular}{m{0.5\textwidth} m{0.5\textwidth}}
+%
+%\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/naip_2014.png}} &
+%\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/landcover.png}}\\
+%\multicolumn{1}{c}{a. Orthophotograph} & \multicolumn{1}{c}{b. Landcover}\\
+%
+\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/elevation_2004.png}} &
+\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/elevation_2016.png}}\\
+\multicolumn{1}{c}{a. Elevation 2004} & \multicolumn{1}{c}{b. Elevation 2016}\\
+%
+\includegraphics[height=60mm,center]{../images/sample_data/landforms_2004.png} &
+\includegraphics[height=60mm,center]{../images/sample_data/landforms_2016.png}\\
+\multicolumn{1}{c}{c. Landforms 2004} & \multicolumn{1}{c}{d. Landforms 2016}\\
+%
+\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/depth_2016.png}} &
+\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/difference_2004_2016.png}}\\
+\multicolumn{1}{c}{e. Water depth for 10 min event with 50mm/hr} & \multicolumn{1}{c}{f. Difference 2004-2016}\\
+%
+\end{tabular}
+\caption{Study Landscape, Patterson Branch Creek, Fort Bragg, NC, USA}
+\label{fig:study_area}
+\end{figure*}
+
+
+% --------- MORPHOLGY ---------
+
+By computing the difference between the digital elevation models
+and by automated classification of landforms using
+the geomorphons method...
+
+
+Geomorphons is 
+a pattern recognition method for landform classification 
+based on the openness of the terrain \citep{Jasiewicz2013}.
+It is implemented in GRASS GIS as the module \textit{r.geomorphon}
+\footnote{https://grass.osgeo.org/grass74/manuals/r.geomorphon.html}.
+
+
+
+% microtopography / morphology
 
 %Morphology from 2004 to 2016 \\
 %
@@ -1060,150 +1202,27 @@ GRASS GIS is an open source project released under the GNU General Public Licens
 %join the main channel and the main channel has a sharp curve.\\
 
 
+
+Landform evolution...
+(Figure~\ref{fig:study_area}c-d). 
+
+
+Difference...
+(Figure~\ref{fig:study_area}f).
+
+
+
 % geomorphometry: http://geomorphometry.org/Geomorphometry_for_Geosciences_book.pdf
 
-%\subsection{Comparison of r.evolution, r.land.evol, r.terradyn}
 
-\subsection{Benchmarks}
-% r.evolution, r.land.evol, r.terradyn
 
-%\section{Results}
 
-%\begin{figure}
-%\centering
-%%   
-%\begin{subfigure}[b]{0.3\textwidth}
-%\includegraphics[width=\textwidth]{images/lrwoods_elevation.png}
-%%[trim={0 0 0 1cm},clip,width=\textwidth]
-%\label{fig_1_1}
-%\textbf{a} \\
-%\end{subfigure}
-%%
-%~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-%%
-%\begin{subfigure}[b]{0.3\textwidth}
-%\includegraphics[width=\textwidth]{images/lrwoods_dynamics_flux_5m_30m.png}
-%\label{fig_1_2}
-%\textbf{b} \\
-%\end{subfigure}
-%%
-%~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-%%
-%\begin{subfigure}[b]{0.3\textwidth}
-%\includegraphics[width=\textwidth]{images/lrwoods_dynamics_erdep_5m_30m_flux.png} % REPLACE IMAGE
-%\label{fig_1_3}
-%\textbf{c} \\
-%\end{subfigure}
-%%
-%\caption{{\bf Sediment flux based gully evolution.}
-%\textbf{a)}
-%A bare earth digital elevation model of gully in Lake Raleigh Woods, North Carolina derived from lidar data.
-%\textbf{b)}
-%The simulated evolution of the gully based on a detachment limited soil erosion regime.
-%The landscape evolution model was run as a dynamic simulation with 155 mm/hr rainfall intensity for 5 minutes intervals over a 30 min period.
-%This run of model carved deep pits along the center of the channel.
-%\textbf{c)}
-%Simulated sediment flux. 
-%}
-%\label{fig_1}
-%\end{figure}
-%
-%\begin{figure}
-%\centering
-%%   
-%\begin{subfigure}[b]{0.3\textwidth}
-%\includegraphics[width=\textwidth]{images/lrwoods_elevation.png}
-%%[trim={0 0 0 1cm},clip,width=\textwidth]
-%\label{fig_2_1}
-%\textbf{a} \\
-%\end{subfigure}
-%%
-%~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-%%
-%\begin{subfigure}[b]{0.3\textwidth}
-%\includegraphics[width=\textwidth]{images/lrwoods_dynamics_erdep_5m_30m.png}
-%\label{fig_2_2}
-%\textbf{b} \\
-%\end{subfigure}
-%%
-%~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-%%
-%\begin{subfigure}[b]{0.3\textwidth}
-%\includegraphics[width=\textwidth]{images/lrwoods_dynamics_erdep_5m_30m_erdep.png} % REPLACE IMAGE
-%\label{fig_2_3}
-%\textbf{c} \\
-%\end{subfigure}
-%%
-%\caption{{\bf Erosion - deposition based gully evolution.}
-%\textbf{a)}
-%A bare earth digital elevation model of gully in Lake Raleigh Woods, North Carolina derived from lidar data.
-%\textbf{b)}
-%The simulated evolution of the gully based on a transport capacity limited  soil erosion regime.
-%The landscape evolution model was run as a dynamic simulation with 155 mm/hr rainfall intensity for 5 minutes intervals over a 30 min period.
-%This run of model carved a deeper channel, accumulated deposited sediment along the centerline of the channel, and accumulated deposited sediments along the banks of the channel.
-%\textbf{c)}
-%Simulated erosion-deposition. 
-%}
-%\label{fig_1}
-%\end{figure}
-%
-%\begin{figure}
-%\centering
-%%   
-%\begin{subfigure}[b]{0.4\textwidth}
-%\includegraphics[width=\textwidth]{images/dem.png}
-%%[trim={0 0 0 1cm},clip,width=\textwidth]
-%\label{fig_2_1}
-%\textbf{a} \\
-%\end{subfigure}
-%%
-%~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-%%
-%\begin{subfigure}[b]{0.4\textwidth}
-%\includegraphics[width=\textwidth]{images/evolved_dem.png}
-%\label{fig_2_2}
-%\textbf{b} \\
-%\end{subfigure}
-%%
-%\caption{{\bf Sediment flux based gully evolution.}
-%\textbf{a)}
-%A gully in Lake Raleigh Woods, North Carolina.
-%\textbf{b)}
-%The simulated evolution of the gully based on a detachment limited soil erosion regime. 
-%The landscape evolution model was run as a steady state simulation with 155 mm/hr rainfall intensity for 10 minutes to model a 10-year storm event. 
-%This run of the model carved a deep incision along the centerline of the channel.
-%}
-%\label{fig_2}
-%\end{figure}
-%
-%\begin{figure}
-%\centering
-%%   
-%\begin{subfigure}[b]{0.4\textwidth}
-%\includegraphics[width=\textwidth]{images/elevation_render.png}
-%%[trim={0 0 0 1cm},clip,width=\textwidth]
-%\label{fig_3_1}
-%\textbf{a} \\
-%\end{subfigure}
-%%
-%~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-%%
-%\begin{subfigure}[b]{0.4\textwidth}
-%\includegraphics[width=\textwidth]{images/evolved_elevation_render.png}
-%\label{fig_3_2}
-%\textbf{b} \\
-%\end{subfigure}
-%%
-%\caption{{\bf Erosion-deposition based gully evolution.}
-%\textbf{a)}
-%A gully in Lake Raleigh Woods, North Carolina.
-%\textbf{b)}
-%The simulated evolution of the gully based on a transport capacity limited  soil erosion regime.
-%The landscape evolution model was run as a dynamic simulation with 155 mm/hr rainfall intensity for 5 minutes intervals over a 30 min period.
-%This run of model carved a deeper channel, accumulated deposited sediment along the centerline of the channel, and accumulated deposited sediments along the banks of the channel.
-%}
-%\label{fig_3}
-%\end{figure}
+
+
+
+%\subsection{Benchmarks}
+
+
 
 \clearpage
 % -------------------------------- TANGIBLE --------------------------------
