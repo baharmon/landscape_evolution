@@ -69,9 +69,9 @@ def main():
     render_subregion_2d(mapset)
     # render_fortbragg_2d()
 
-    # # render 3d maps
-    # render_region_3d(mapset)
-    # render_subregion_3d(mapset)
+    # render 3d maps
+    render_region_3d(mapset)
+    render_subregion_3d(mapset)
 
     atexit.register(cleanup)
     sys.exit(0)
@@ -404,7 +404,7 @@ def render_region_3d(mapset):
     position = 1.0, 1.0
     light_position = (0.68, -0.68, 0.95)
     fringe = "se"
-    fringe_color = "255:255:245" #"244:244:244" #"254:246:232"
+    fringe_color = "255:255:255"
     fringe_elevation = 85
     size = (1600, 1200)
     zexag = 3
@@ -423,28 +423,39 @@ def render_region_3d(mapset):
         res=res)
 
     # list of rasters to render
-    rasters = ['net_difference']
+    rasters = ['elevation_'+end_time,
+        'colorized_skyview',
+        'landforms',
+        'depth_'+end_time,
+        'flux_'+end_time,
+        'erdep_'+end_time,
+        'net_difference']
 
     for raster in rasters:
-        # 3D render raster
-        gscript.run_command('m.nviz.image',
-            elevation_map='elevation',
-            color_map=raster,
-            resolution_fine=1,
-            height=camera_height,
-            position=position,
-            perspective=perspective,
-            zexag=zexag,
-            light_position=light_position,
-            fringe=fringe,
-            fringe_color=fringe_color,
-            fringe_elevation=fringe_elevation,
-            output=os.path.join(render,raster),
-            format='tif',
-            size=size,
-            errors='ignore'
-            )
 
+        # check if raster exists
+        find_raster = gscript.find_file(raster,
+            element='cell')
+        if find_raster['file']:
+
+            # 3D render raster
+            gscript.run_command('m.nviz.image',
+                elevation_map='elevation_'+end_time,
+                color_map=raster,
+                resolution_fine=1,
+                height=camera_height,
+                position=position,
+                perspective=perspective,
+                zexag=zexag,
+                light_position=light_position,
+                fringe=fringe,
+                fringe_color=fringe_color,
+                fringe_elevation=fringe_elevation,
+                output=os.path.join(render,raster),
+                format='tif',
+                size=size,
+                errors='ignore'
+                )
 
 def render_subregion_3d(mapset):
     """3D rendering of subregion with nviz"""
@@ -455,7 +466,7 @@ def render_subregion_3d(mapset):
     position = 1.0, 1.0
     light_position = (0.68, -0.68, 0.99)
     fringe = "se"
-    fringe_color = "255:255:245" #"244:244:244" #"254:250:236"
+    fringe_color = "255:255:255"
     fringe_elevation = 94
     size = (1600, 1200)
     zexag = 3
@@ -474,27 +485,39 @@ def render_subregion_3d(mapset):
         res=res)
 
     # list of rasters to render
-    rasters = ['net_difference']
+    rasters = ['elevation_'+end_time,
+        'colorized_skyview',
+        'landforms',
+        'depth_'+end_time,
+        'flux_'+end_time,
+        'erdep_'+end_time,
+        'net_difference']
 
     for raster in rasters:
-        # 3D render raster
-        gscript.run_command('m.nviz.image',
-            elevation_map='elevation',
-            color_map=raster,
-            resolution_fine=1,
-            height=camera_height,
-            position=position,
-            perspective=perspective,
-            zexag=zexag,
-            light_position=light_position,
-            fringe=fringe,
-            fringe_color=fringe_color,
-            fringe_elevation=fringe_elevation,
-            output=os.path.join(render,'gully_'+raster),
-            format='tif',
-            size=size,
-            errors='ignore'
-            )
+
+        # check if raster exists
+        find_raster = gscript.find_file(raster,
+            element='cell')
+        if find_raster['file']:
+
+            # 3D render raster
+            gscript.run_command('m.nviz.image',
+                elevation_map='elevation_'+end_time,
+                color_map=raster,
+                resolution_fine=1,
+                height=camera_height,
+                position=position,
+                perspective=perspective,
+                zexag=zexag,
+                light_position=light_position,
+                fringe=fringe,
+                fringe_color=fringe_color,
+                fringe_elevation=fringe_elevation,
+                output=os.path.join(render,'gully_'+raster),
+                format='tif',
+                size=size,
+                errors='ignore'
+                )
 
 def dependencies():
     """try to install required add-ons"""
