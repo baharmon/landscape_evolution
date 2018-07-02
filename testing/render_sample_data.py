@@ -49,7 +49,7 @@ years = [2004, 2012, 2016]
 
 def main():
 
-    # # render 2d maps
+    # render 2d maps
     render_region_2d()
     render_subregion_2d()
     render_fortbragg_2d()
@@ -344,39 +344,23 @@ def render_region_3d():
                         region='region',
                         res=res)
 
-    # list of rasters to render
-    rasters = ['elevation_2016',
-        'colorized_skyview_2016',
+    # list of 2004 rasters to render
+    rasters_2004 = ['colorized_skyview_2004',
+        'landforms_2004']
+
+    # list of 2012 rasters to render
+    rasters_2012 = ['colorized_skyview_2012',
+        'landforms_2012',
+        'difference_2004_2012']
+
+    # list of 2016 rasters to render
+    rasters_2016 = ['colorized_skyview_2016',
         'depth_2016',
         'landforms_2016',
         'naip_2014',
         'landcover',
-        'difference_2004_2016']
-
-    # list of 2004 rasters to render
-    rasters_2004 = ['elevation_2004',
-        'colorized_skyview_2004',
-        'landforms_2004']
-
-    for raster in rasters:
-        # 3D render raster
-        gscript.run_command('m.nviz.image',
-            elevation_map='elevation_2016',
-            color_map=raster,
-            resolution_fine=1,
-            height=camera_height,
-            position=position,
-            perspective=perspective,
-            zexag=zexag,
-            light_position=light_position,
-            fringe=fringe,
-            fringe_color=fringe_color,
-            fringe_elevation=fringe_elevation,
-            output=os.path.join(render,raster),
-            format='tif',
-            size=size,
-            errors='ignore'
-            )
+        'difference_2004_2016',
+        'difference_2012_2016']
 
     for raster in rasters_2004:
         # 3D render raster
@@ -398,6 +382,45 @@ def render_region_3d():
             errors='ignore'
             )
 
+    for raster in rasters_2012:
+        # 3D render raster
+        gscript.run_command('m.nviz.image',
+            elevation_map='elevation_2012',
+            color_map=raster,
+            resolution_fine=1,
+            height=camera_height,
+            position=position,
+            perspective=perspective,
+            zexag=zexag,
+            light_position=light_position,
+            fringe=fringe,
+            fringe_color=fringe_color,
+            fringe_elevation=fringe_elevation,
+            output=os.path.join(render,raster),
+            format='tif',
+            size=size,
+            errors='ignore'
+            )
+
+    for raster in rasters_2016:
+        # 3D render raster
+        gscript.run_command('m.nviz.image',
+            elevation_map='elevation_2016',
+            color_map=raster,
+            resolution_fine=1,
+            height=camera_height,
+            position=position,
+            perspective=perspective,
+            zexag=zexag,
+            light_position=light_position,
+            fringe=fringe,
+            fringe_color=fringe_color,
+            fringe_elevation=fringe_elevation,
+            output=os.path.join(render,raster),
+            format='tif',
+            size=size,
+            errors='ignore'
+            )
 
 def render_subregion_3d():
     """3D rendering of subregion with nviz"""
@@ -423,39 +446,23 @@ def render_subregion_3d():
                         region='subregion',
                         res=res)
 
-    # list of rasters to render
-    rasters = ['elevation_2016',
-        'colorized_skyview_2016',
+    # list of 2004 rasters to render
+    rasters_2004 = ['colorized_skyview_2004',
+        'landforms_2004']
+
+    # list of 2012 rasters to render
+    rasters_2012 = ['colorized_skyview_2012',
+        'landforms_2012',
+        'difference_2004_2012']
+
+    # list of 2016 rasters to render
+    rasters_2016 = ['colorized_skyview_2016',
         'depth_2016',
         'landforms_2016',
         'naip_2014',
         'landcover',
-        'difference_2004_2016']
-
-    # list of 2004 rasters to render
-    rasters_2004 = ['elevation_2004',
-        'colorized_skyview_2004',
-        'landforms_2004']
-
-    for raster in rasters:
-        # 3D render raster
-        gscript.run_command('m.nviz.image',
-            elevation_map='elevation_2016',
-            color_map=raster,
-            resolution_fine=1,
-            height=camera_height,
-            position=position,
-            perspective=perspective,
-            zexag=zexag,
-            light_position=light_position,
-            fringe=fringe,
-            fringe_color=fringe_color,
-            fringe_elevation=fringe_elevation,
-            output=os.path.join(render,'gully_'+raster),
-            format='tif',
-            size=size,
-            errors='ignore'
-            )
+        'difference_2004_2016',
+        'difference_2012_2016']
 
     for raster in rasters_2004:
         # 3D render raster
@@ -477,6 +484,45 @@ def render_subregion_3d():
             errors='ignore'
             )
 
+    for raster in rasters_2012:
+        # 3D render raster
+        gscript.run_command('m.nviz.image',
+            elevation_map='elevation_2012',
+            color_map=raster,
+            resolution_fine=1,
+            height=camera_height,
+            position=position,
+            perspective=perspective,
+            zexag=zexag,
+            light_position=light_position,
+            fringe=fringe,
+            fringe_color=fringe_color,
+            fringe_elevation=fringe_elevation,
+            output=os.path.join(render,'gully_'+raster),
+            format='tif',
+            size=size,
+            errors='ignore'
+            )
+
+    for raster in rasters_2016:
+        # 3D render raster
+        gscript.run_command('m.nviz.image',
+            elevation_map='elevation_2016',
+            color_map=raster,
+            resolution_fine=1,
+            height=camera_height,
+            position=position,
+            perspective=perspective,
+            zexag=zexag,
+            light_position=light_position,
+            fringe=fringe,
+            fringe_color=fringe_color,
+            fringe_elevation=fringe_elevation,
+            output=os.path.join(render,'gully_'+raster),
+            format='tif',
+            size=size,
+            errors='ignore'
+            )
 
 def render_fortbragg_3d():
     """3D rendering of fort bragg region with nviz"""
