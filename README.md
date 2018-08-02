@@ -1,6 +1,6 @@
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
-# r.evolution
+# r.sim.terrain
 A short term landscape evolution using a path sampling method to solve water and sediment flow continuity equations to model mass flows over complex topographies. Implemented as an add-on for [GRASS GIS](https://grass.osgeo.org/), a free open source GIS.
 
 ## About
@@ -10,8 +10,8 @@ change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) 
 
 ## Installation
 * Launch GRASS GIS
-* Install using the GRASS Console / Command Line Interface (CLI) with *g.extension r.evolution url=github.com/baharmon/landscape_evolution*
-* Launch from the CLI with *r.evolution --ui*
+* Install using the GRASS Console / Command Line Interface (CLI) with *g.extension r.sim.terrain url=github.com/baharmon/landscape_evolution*
+* Launch from the CLI with *r.sim.terrain --ui*
 
 ## Sample dataset
 Clone or download the

@@ -49,15 +49,15 @@ years = [2004, 2012, 2016]
 
 def main():
 
-    # render 2d maps
-    render_region_2d()
-    render_subregion_2d()
-    render_fortbragg_2d()
+    # # render 2d maps
+    # render_region_2d()
+    # render_subregion_2d()
+    # render_fortbragg_2d()
 
     # render 3d maps
     render_region_3d()
     render_subregion_3d()
-    render_fortbragg_3d()
+    # render_fortbragg_3d()
 
     atexit.register(cleanup)
     sys.exit(0)
@@ -326,10 +326,10 @@ def render_region_3d():
     # set 3d rendering parameters
     camera_height = 750
     perspective = 15
-    position = 1.0, 1.0
+    position = 1.0,1.0
     light_position = (0.68, -0.68, 0.95)
     fringe = "se"
-    fringe_color = "255:255:255"
+    fringe_color = "255:255:245" #"244:244:244" #"254:246:232"
     fringe_elevation = 85
     size = (1600, 1200)
     zexag = 3
@@ -428,10 +428,10 @@ def render_subregion_3d():
     # set 3d rendering parameters
     camera_height = 300
     perspective = 16
-    position = 1.0, 1.0
+    position = 1.0,1.0
     light_position = (0.68, -0.68, 0.99)
     fringe = "se"
-    fringe_color = "255:255:255"
+    fringe_color = "255:255:245" #"244:244:244" #"254:250:236"
     fringe_elevation = 94
     size = (1600, 1200)
     zexag = 3

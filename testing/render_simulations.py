@@ -64,10 +64,10 @@ def main():
     # # try to install dependencies
     # dependencies()
 
-    # render 2d maps
+    # # render 2d maps
     render_region_2d(mapset)
     render_subregion_2d(mapset)
-    # render_fortbragg_2d()
+    # # render_fortbragg_2d()
 
     # render 3d maps
     render_region_3d(mapset)

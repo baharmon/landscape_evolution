@@ -96,7 +96,7 @@ def main():
 
 def simulate(params):
     """run the dynamic landscape evolution model with the given parameters"""
-    gscript.run_command('r.evolution', **params)
+    gscript.run_command('r.sim.terrain', **params)
 
 def create_environments(simulations):
     """generate environment settings and copy maps"""
@@ -149,7 +149,7 @@ def dependencies():
     """try to install required add-ons"""
     try:
         gscript.run_command('g.extension',
-            extension='r.evolution',
+            extension='r.sim.terrain',
             operation='add',
             url='github.com/baharmon/landscape_evolution')
     except CalledModuleError:

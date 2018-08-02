@@ -1,6 +1,6 @@
 MODULE_TOPDIR = ../..
 
-PGM = r.evolution
+PGM = r.sim.terrain
 
 include $(MODULE_TOPDIR)/include/Make/Script.make
 
