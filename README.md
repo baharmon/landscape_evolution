@@ -1,4 +1,5 @@
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/baharmon/landscape_evolution/master)
 
 # r.sim.terrain
 A short term landscape evolution using a path sampling method to solve water and sediment flow continuity equations to model mass flows over complex topographies. Implemented as an add-on for [GRASS GIS](https://grass.osgeo.org/), a free open source GIS.
@@ -19,6 +20,9 @@ Clone or download the
 with a time series of lidar-based digital elevation models
 and orthoimagery
 for a highly eroded watershed near Patterson Branch Creek, Fort Bragg, NC, USA.
+
+## Tutorial
+[Jupyter Notebook](https://mybinder.org/v2/gh/baharmon/landscape_evolution/master)
 
 ## License
 GNU General Public License >= version 2
