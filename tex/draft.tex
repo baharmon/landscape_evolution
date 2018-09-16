@@ -1,0 +1,1333 @@
+% !TEX encoding = UTF-8 Unicode
+
+%%
+%% Copyright 2007, 2008, 2009 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
+%% Template article for Elsevier's document class `elsarticle'
+%% with numbered style bibliographic references
+%% SP 2008/03/01
+%%
+%% $Id: elsarticle-template-num.tex 4 2009-10-24 08:22:58Z rishi $
+%%
+%% \documentclass[preprint,12pt,3p]{elsarticle}
+%% \documentclass[preprint,review,12pt]{elsarticle}
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+\documentclass[final,3p,times,twocolumn]{elsarticle}
+
+% Packages
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp,marvosym}
+\usepackage{gensymb}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[super]{nth}
+\usepackage[inline]{enumitem}
+\usepackage{moreenum}
+\usepackage{tabulary}
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[super]{nth}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{upquote}
+\usepackage[export]{adjustbox}
+\usepackage{hyperref}
+%\usepackage{minted}
+%\usemintedstyle{bw}
+\usepackage{import} %\usepackage{newclude}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+
+\journal{Geomorphology}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{\lowercase{r.sim.terrain}: a dynamic landscape evolution model} % in open source GIS
+
+\author[la]{Brendan Harmon\corref{cor1}}
+\cortext[cor1]{Corresponding author}
+\ead{brendan.harmon@gmail.com}
+%\ead[url]{baharmon@github.io}
+%\ead[url]{https://github.com/baharmon/landscape_evolution}
+
+\author[cga,meas]{Helena Mitasova}
+\ead{hmitaso@ncsu.edu}
+
+\author[cga,meas]{Vaclav Petras}
+\ead{vpetras@ncsu.edu}
+
+\author[cga,meas]{Anna Petrasova}
+\ead{akratoc@ncsu.edu}
+
+\address[cga]{Center for Geospatial Analytics, North Carolina State University, Raleigh, North Carolina, United States of America}
+\address[la]{Robert Reich School of Landscape Architecture, Louisiana State University, Baton Rouge, Louisiana}
+\address[meas]{Department of Marine, Earth, and Atmospheric Sciences, North Carolina State University, Raleigh, North Carolina, United States of America}
+
+\begin{abstract}
+While there are numerical landscape evolution models
+that simulate how steady state flows of water and sediment
+reshape topography over long periods of time, 
+this is the first to simulate short-term topographic change 
+for both steady state and dynamic flow regimes. 
+It is a process-based, spatially distributed model
+that uses the water and sediment flow continuity equations
+to simulate how overland sediment mass flows 
+reshape topography. 
+This either steady state or dynamic model can simulate 
+how topography will evolve for a range of hydrologic soil erosion regimes
+based on topographic, land cover, soil, and rainfall parameters. 
+A case study demonstrates how the behavior and results of 
+the dynamic model differ the steady state model. 
+The dynamic model is more accurate and 
+demonstrates cross-scale interactions between 
+topographic form and sediment flow processes.
+%
+%This is a fine-scale, short term, process-based landscape evolution model 
+%using simulated erosion and deposition 
+%to generate a time-series of digital elevation models 
+%and compute the net change in elevation. 
+%This model uses a path sampling method 
+%to solve water and sediment flow continuity equations and 
+%model mass flows over complex topographies 
+%based on topographic, land cover, soil, and rainfall parameters. 
+%This either steady state or dynamic model can simulate landscape evolution 
+%for a range of hydrologic soil erosion regimes. 
+%
+%This process-based, spatially distributed landscape evolution model 
+%simulates mass flows over complex topographies 
+%based on topographic, land cover, soil, and rainfall parameters. 
+%It can simulate landscape evolution for different soil erosion regimes 
+%across a wide range of spatiotemporal scales 
+%using either the simulated water erosion (SIMWE) model, 
+%the unit stream power erosion deposition (USPED) model, 
+%or the 3-dimensional revised universal soil loss equation (RUSLE 3D) model. 
+%SIMWE is a physics-based simulation of water flow and erosion-deposition 
+%based on the continuity equations (Mitasova et al. 2004). 
+%This model has been implemented as an add-on module 
+%for a free, open-source geographic information system – GRASS GIS.  
+%It supports multithreading and parallel processing for the efficient computation 
+%of physics-based simulations with large, high resolution topographic datasets. 
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+landscape evolution \sep erosion \sep dynamic \sep continuity equations \sep gully
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+\end{keyword}
+%
+\end{frontmatter}
+
+% -------------- TOC --------------
+\tableofcontents
+\vfil
+\pagebreak
+
+% -------------- BODY --------------
+
+
+% -------------- 3D RENDERINGS --------------
+
+% BEFORE and AFTER
+
+% -------------- INTRO --------------
+
+\section{Introduction}
+
+%\subsection{Theory}
+Landscape evolution models represent how the surface of the earth changes over time. 
+Most studies of landscape evolution have been descriptive, 
+but a number of numerical landscape evolution models 
+have been developed that simulate elevational change over time 
+\cite{Temme2013}. 
+% numerical models
+Numerical landscape evolution models
+such as the Channel-Hillslope Integrated Landscape Development (CHILD) model 
+\cite{Tucker2001} 
+and SIBERIA \cite{Willgoose2005}
+simulate steady state flows over long temporal scales. 
+% recent development
+Landlab,
+\footnote{\url{http://landlab.github.io/}}
+a new Python library for numerically modeling Earth surface processes
+\cite{Hobley2017},
+has components for simulating landscape evolution such as the 
+Stream Power with Alluvium Conservation and Entrainment (SPACE) 
+model \cite{Shobe2017}.
+% research questions
+There are still, however, major research questions 
+to address in the theoretical foundations of erosion modeling 
+such as how erosional processes scale over time and space 
+and how sediment detachment and transport interact \cite{Mitasova2013}. 
+% dynamic evolution
+A dynamic landscape evolution model is needed to study
+fine-scale spatial and short-term temporal erosional processes
+such as gully formation and the development of microtopography. 
+While most numerical landscape evolution models 
+simulate peak flows at steady state
+(see Table~\ref{table:evolution_models}),
+short-term erosional processes like gully formation can be dynamic
+with significant morphological changes happening within minutes
+before flows reach steady state. 
+
+% steady state versus dynamic
+At the beginning of a rainfall event 
+the overland water flow regime is dynamic -- 
+its depth changes at a variable rate over time and space. 
+If the intensity of rainfall continues to change throughout the event
+then the flow regime will remain dynamic. 
+% steady state
+If, however, the overland flow reaches a peak rate
+then the hydrologic regime is considered to be at steady state.
+At steady state:
+% steady state eq.
+\begin{equation}
+\label{eq:steady_state}
+{\partial h(x,y,t) \over \partial t} = 0 %frac
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $(x,y)$ is the position ($m$)\\
+\hspace*{0.5em} $t$ is the time ($s$) \\
+\hspace*{0.5em} $h(x,y,t)$ is the depth of overland flow ($m$)\\
+}
+
+% gully formation
+Gullies are eroded, steep banked channels 
+formed by ephemeral, concentrated flows of water.
+A gully forms when overland waterflow
+converges in a knickzone
+-- a concave space with steeper slopes than its surroundings -- 
+during intense rainfall events.  
+When the force of the water flow concentrated in the knickzone
+is enough to detach and transport large amounts of sediment,
+an incision begins to form at the apex of the knickzone 
+-- the knickpoint or headwall.
+As erosion continues the knickpoint begins to migrate upslope
+and the nascent gully channel widens,
+forming steep channel banks. 
+Multiple incisions initiated by different knickpoints 
+may merge into a gully channel
+and multiple channels may merge into a branching gully system. 
+This erosive process is dynamic; 
+the morphological changes drive further changes 
+in a positive feedback loop
+until water flow reaches steady state. 
+When the gully initially forms 
+the soil erosion regime should be detachment capacity limited
+with the concentrated flow of water in the channel of the gully 
+detaching large amounts of sediment and transporting it to the foot of the gully, 
+potentially forming a depositional fan. 
+After the initial formation of the gully
+the soil erosion regime may change.
+If the intensity of the rainfall decreases
+the regime may switch to erosion-deposition. 
+Subsequent rainfall events may trigger further 
+knickpoint formation and upslope migration, channel incision and widening, and
+depositional fan and ridge formation. 
+Between high intensity rainfall events, 
+lower intensity events and gravitational diffusion
+may gradually smooth the shape of the gully. 
+Eventually, if detachment capacity significantly exceeds transport capacity, 
+the gully may fill with sediment. 
+
+% gully monitoring
+Gully erosion rates and evolution
+can be monitored in the field 
+or modeled on the computer. 
+% field methods
+Field methods include
+dendrogeomorphology \cite{Malik2008} and 
+permanent monitoring stakes for recording erosion rates, 
+extensometers for recording mass wasting events, 
+weirs for recording water and suspended sediment discharge rates, 
+and time series of surveys using 
+total station theodolites \cite{Thomas2004},
+unmanned aerial systems (UAS),
+airborne lidar, and terrestrial lidar \cite{Starek2011,Bechet2016}.
+
+% high resolution topographic data
+With terrestrial lidar, airborne lidar and 
+UAS photogrammetry
+there is now high enough resolution topographic data 
+to morphometrically analyze and 
+numerically model fine-scale landscape evolution in GIS
+including processes such as gully formation 
+and the development of microtopography. 
+% gully simulation
+Gully erosion has been simulated with 
+the Revised Universal Soil Loss Equation Version 2 (RUSLER)
+in conjunction with the Ephemeral Gully Erosion Estimator (EphGEE)
+\cite{Dabney2014},
+while gully evolution
+has been simulation for detachment capacity limited erosion regimes
+with the Simulation of Water Erosion (SIMWE) model
+\cite{Koco2011, Mitasova2013}. 
+% what is needed?
+Now numerical landscape evolution models 
+that can simulate 
+steady state and dynamic flow regimes
+and can dynamically switch between soil erosion regimes 
+are needed to study 
+fine-scale spatial and short-term temporal erosional processes.
+
+%\subsection{Aim and objectives} 
+
+% aim
+The numerical landscape evolution model 
+\lowercase{r.sim.terrain} was developed to 
+simulate the spatiotemporal evolution of landforms
+caused by shallow overland water and sediment flows
+at spatial scales ranging from
+square meters to thousands of kilometers
+and temporal scales ranging from minutes to years. 
+% objectives
+This open source, GIS-based landscape evolution model can
+simulate either steady state or dynamic flow regimes, 
+dynamically switch between soil erosion regimes, and
+simulate the evolution of fine-scale morphological features 
+such as ephemeral gullies.
+% questions
+It was designed as a research tool for
+studying how erosional processes scale over time and space,
+comparing empirical and process-based models, 
+comparing steady state and dynamic flow regimes, and
+studying the role of dynamic flow regimes in fine-scale morphological change. 
+% testing
+\lowercase{r.sim.terrain} was tested with a regional scale ($650 km^{2}$) case study
+and a subwatershed scale ($450 m^{2}$) case study. 
+At the subwatershed scale simulations were compared against 
+a time-series of lidar surveys.
+% novelty
+
+\section{r.sim.terrain}
+\lowercase{r.sim.terrain}
+is a process-based, spatially distributed landscape evolution model
+that simulates topographic changes
+caused by shallow, overland water flow
+across a range of spatiotemporal scales and soil erosion regimes
+using either
+the Simulated Water Erosion (SIMWE) model, 
+the 3-Dimensional Revised Universal Soil Loss Equation (RUSLE 3D) model,
+or the Unit Stream Power Erosion Deposition (USPED) model.  
+% simwe
+SIMWE is a physics-based simulation
+that uses a Monte Carlo path sampling method
+to solve the water and sediment flow equations 
+for detachment limited, transport limited, and erosion-deposition 
+soil erosion regimes \cite{Mitasova2004}. 
+With SIMWE 
+\lowercase{r.sim.terrain}
+uses the modeled flow of sediment 
+-- a function of water flow and soil detachment and transport parameters -- 
+to estimate the net erosion and deposition rates. 
+% rusle3d
+RUSLE3D is an empirical equation for sediment flows 
+in detachment capacity limited soil erosion regimes \cite{Mitasova1996}. 
+With RUSLE3D
+\lowercase{r.sim.terrain}
+uses an event-based erosivity factor, 
+the slope, the flow accumulation, and a 3D topographic factor
+to model sediment flow. 
+% usped
+USPED is an empirical equation for net erosion and deposition 
+in transport capacity limited soil erosion regimes. 
+With USPED 
+\lowercase{r.sim.terrain}
+uses an event-based erosivity factor, 
+the slope and aspect, the flow accumulation, and a 3D topographic factor
+to model erosion-deposition as the
+the divergence of sediment flows. 
+% evolution
+For each of the models 
+topographic change is derived at each time step
+from the sediment flow or net erosion-deposition rate
+and gravitational diffusion.
+% regimes
+\lowercase{r.sim.terrain} 
+can simulate steady state or dynamic flow regimes.
+During simulations with SIMWE %for dynamic flow regimes 
+\lowercase{r.sim.terrain}
+can switch between 
+detachment limited, transport limited, and erosion-deposition 
+soil erosion regimes.
+
+% capabilities
+\lowercase{r.sim.terrain}
+can simulate the evolution of gullies
+including processes such as 
+knickpoint migration,
+channel incision, 
+channel widening, and
+scour pool and depositional riffle formation
+along the thalweg of the gully. 
+% applications
+Applications include 
+geomorphological research,
+erosion control, 
+landscape restoration, 
+and scenario development 
+for landscape planning and management.
+% scale
+r.sim.terrain can simulate landscape evolution 
+over a wide range of spatial scales from small watersheds 
+less than ten square kilometers
+with SIMWE
+to regional watersheds
+of thousands of square kilometers
+with USPED or RULSE3D. 
+
+% implementation
+This model has been implemented 
+as a Python add-on module 
+for the free, open source
+Geographic Resources Analysis Support System (GRASS) GIS
+\footnote{\url{https://grass.osgeo.org/}}. 
+The source code is available at 
+\url{https://github.com/baharmon/landscape\_evolution} 
+under the GNU General Public License v2. % cite software release doi
+%
+This highly adaptable
+geographic information system (GIS)-based implementation
+was developed as a research tool for studying 
+the interaction of sediment detachment and transport
+and the scaling erosional processes over time and space. % <--- revise
+% parallel processing
+It supports multithreading and parallel processing
+to efficiently compute simulations 
+using large, high resolution topographic datasets.
+	% see landlab paper and others on implementation and dev
+
+% design principles
+
+	% features 
+		% in table
+		% multiprocessing / parallel processing, dynamics, scales, models, etc
+
+
+%\subsection{Conceptual model}
+%Diagram\\
+%Dynamic vs steady state \\
+%Determine mode \\
+%Run erosion model \\
+%Gravitational diffusion \\
+
+% table of erosion models
+\begin{table*}
+\small
+\caption{GIS-based soil erosion models}
+\begin{tabu} to \textwidth {XXXXXl}
+\toprule
+Model & Spatial scale &  Temporal scale & Representation & Implementation & Reference\\
+\midrule
+GeoWEPP & watershed & continuous & raster & \href{http://geowepp.geog.buffalo.edu/}{ArcGIS module} & \cite{Flanagan2013}\\
+AGWA  & watershed & continuous -- event & vector & \href{https://www.tucson.ars.ag.gov/agwa/}{ArcGIS module} & \cite{Guertin2015}\\
+RUSLE3D & regional & continuous & raster & map algebra & \cite{Mitasova1996}\\
+USPED & watershed & continuous & raster & map algebra & \cite{Mitasova1996}\\
+SIMWE & watershed & continuous -- event & raster & \href{https://grass.osgeo.org/grass74/manuals/r.sim.sediment.html}{GRASS modules} & \cite{Mitas1998}\\
+\bottomrule
+\\
+%\multicolumn{6}{c}{Adapted from Mitasova et al. \cite{Mitasova2013}}
+\end{tabu}
+\label{table:erosion_models} 
+\end{table*}
+
+% table of landscape evolution models
+\begin{table*}
+\small
+\caption{Numerical landscape evolution models}
+\begin{tabu} to \textwidth {XXXXXXl}
+\toprule
+Model & Spatial scale &  Temporal scale & Representation & Dynamics & Implementation & Reference\\
+\midrule
+% GOLEM
+SIBERIA & regional & continuous & raster & steady state & \href{https://csdms.colorado.edu/wiki/Model:SIBERIA}{Fortran prog.} & \cite{Willgoose2005}\\
+CHILD & regional & continuous & mesh & steady state & \href{https://csdms.colorado.edu/wiki/Model:CHILD}{C++ program} & \cite{Tucker2001}\\
+Landlab & regional & continuous & raster \& mesh & steady state & \href{https://github.com/landlab/}{Python library} & \cite{Hobley2017}\\
+r.landscape.evol  & regional & continuous & raster &  steady state & \href{https://grass.osgeo.org/grass74/manuals/addons/r.landscape.evol.html}{GRASS module} & \cite{Barton2010}\\
+r.sim.terrain & watershed -- & event -- & raster & dynamic -- & \href{https://github.com/baharmon/landscape_evolution}{GRASS module} &\\ % cite software
+& regional & continuous && steady state & &\\
+\bottomrule
+\\
+%\multicolumn{7}{c}{Adapted from Mitasova et al. \cite{Mitasova2013}}
+\end{tabu}
+\label{table:evolution_models} 
+\end{table*}
+
+% regional --->  >10 km2 watershed  $>10^{2}km$
+% watershed --->  < 10 km2 watershed  $<10^{2}km$
+
+% --------------------------------EROSION-DEPOSITION --------------------------------
+\subsection{Simulation of water erosion model} \label{simwe}
+% simwe intro
+SIMWE -- the Simulation of Water Erosion model -- 
+is a physics-based simulation of shallow overland water and sediment flow
+that uses a path sampling method to solve the continuity and momentum equations 
+with a 2D diffusive wave approximation 
+\cite{Mitas1998,Mitasova2001,Mitasova2004}.
+% implementation
+It has been implemented in GRASS GIS as the modules 
+r.sim.water\footnote{\url{https://grass.osgeo.org/grass75/manuals/r.sim.water.html}} 
+and r.sim.sediment\footnote{\url{https://grass.osgeo.org/grass75/manuals/r.sim.sediment.html}}.
+
+% water flow figure
+\begin{figure}[h]
+\includegraphics[width=0.5\textwidth]{../images/sample_data_3d/depth_2016.png}
+\caption{Shallow overland water flow simulated by SIMWE}
+\label{fig:3d}
+\end{figure}
+
+% overview
+In SIMWE mode 
+for each time step
+\lowercase{r.sim.terrain}
+determines the soil erosion regime,
+simulates water and sediment flows, 
+and then evolves the topography. 
+% erdep
+In an erosion-deposition regime 
+the model 
+computes the partial derivatives of the topography,
+simulates shallow water flow and erosion-deposition,
+and then evolves the topography based on the erosion-deposition rate
+and gravitational diffusion.
+% transport limited
+The same process is used in
+a transport capacity limited regime
+except that the topography is evolved based on 
+the transport limited erosion-deposition rate
+and gravitational diffusion.
+% detachment  limited
+In a detachment capacity limited regime
+the model instead
+computes the partial derivatives of the topography,
+simulates shallow water flow and sediment flow,
+and then evolves the topography based on the sediment flow rate
+and gravitational diffusion.
+% dynamic versus steady state
+The model simulates dynamic landscape evolution 
+when the time step is less than the travel time 
+for a drop of water or a particle of sediment to cross the landscape.
+With longer time steps the model simulates steady state dynamics. 
+
+\subsubsection{Erosion regime}
+This model can switch erosion regimes at each time step
+based on the rainfall intensity $i_r$
+and the balance of the sediment detachment capacity $D_c$
+and the sediment transport capacity $T_c$
+represented by the first order reaction term $\sigma$ 
+which depends on soil and landcover properties.
+The detachment capacity is the maximum potential detachment rate by overland flow, while
+the sediment transport capacity is the maximum potential sediment flow rate.
+%Both are functions of shear stress.
+
+% erosion regime eq.
+\begin{equation}
+\label{eq:regime}
+\sigma = {D_c \over T_c}
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $\sigma$  is a first order reaction term ($m^{-1}$)\\
+\hspace*{0.5em} $D_c$ is the sediment detachment capacity ($kg~m^{-1}s^{-1}$)\\
+\hspace*{0.5em} $T_c$ is the sediment transport capacity ($kg~m^{-1}s^{-1}$)\\
+}
+
+%% erosion regime eq.
+%\begin{equation}
+%\label{eq:regime}
+%\sigma({x,y})={D_c({x,y}) \over T_c({x,y})}
+%\end{equation}
+%
+%{\small
+%\noindent
+%where: \\
+%\noindent
+%\hspace*{0.5em} $D_c({x,y})$ is the sediment detachment capacity ($kg~m^{-1}s^{-1}$)\\
+%\hspace*{0.5em} $T_c({x,y})$ is the sediment transport capacity ($kg~m^{-1}s^{-1}$)\\
+%\hspace*{0.5em} $\sigma({x,y})$  is a first order reaction term ($m^{-1}$) \\
+%}
+
+When rainfall intensity is very high ($i_r \geq 60 mm~hr^{-1}$)
+or $\sigma$ is low ($\sigma \leq 0.01 m^{-1}$),
+then the regime is detachment capacity limited. 
+%
+When rainfall intensity is not very high ($i_r < 60 mm~hr^{-1} $)
+and $\sigma$ is high ($\sigma \geq 100 m^{-1}$),
+then the regime is transport capacity limited. 
+%
+When rainfall intensity is not very high ($i_r<60 mm~hr^{-1}$)
+and $\sigma$ is neither high nor low ($ 0.01 m^{-1}< \sigma < 100 m^{-1}$),
+then there is an erosion-deposition regime. \\
+
+\subsubsection{Shallow water flow}
+The SIMWE model
+simulates shallow overland water flow 
+controlled by spatially variable topographic, soil, landcover, and rainfall parameters
+by solving the continuity and momentum equations 
+for steady state water flow with a path sampling method. 
+Shallow water flow $q(x,y,t)$ can be approximated by
+the bivariate form of the St.~Venant equation:
+
+% shallow water flow eq.
+\begin{equation}
+\label{eq:water}
+{\partial h(x,y,t) \over \partial t} =
+ i_e(x,y,t) - \nabla ~ q(x,y,t)
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $(x,y)$ is the position ($m$)\\
+\hspace*{0.5em} $t$ is the time ($s$) \\
+\hspace*{0.5em} $h(x,y,t)$ is the depth of overland flow ($m$)\\
+\hspace*{0.5em} $i_e(x,y,t)$ is the rainfall excess ($m~s^{-1}$) \\
+\hspace*{0.5em} (i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)\\
+\hspace*{0.5em} $\nabla$ is the divergence of the flow vector field\\
+\hspace*{0.5em} $q(x,y,t)$ is the water flow per unit width ($m^2~s^{-1}$). \\
+}
+
+Diffusive wave effects can be approximated
+so that water can flow through depressions 
+by integrating a diffusion term $ \propto \nabla^2 [h^{5/3}(x,y)]$ 
+into the solution of the continuity and momentum equations 
+for steady state water flow.
+This equation is solved using a 
+Green's function Monte Carlo path sampling method. 
+
+%  diffuse wave eq.
+\begin{equation}
+\label{eq:difwater}
+-{\varepsilon(x,y)\over 2 }\nabla^2 [h^{5/3}(x,y)]
++\nabla ~ [ h(x,y)~v(x,y)] = i_e(x,y)
+\end{equation}
+%
+{\small
+\noindent
+ where: \\
+ \noindent
+ \hspace*{0.5em} $\varepsilon(x,y)$ is a spatially variable diffusion coefficient. \\
+}
+
+\subsubsection{Sediment flow}
+In SIMWE the sediment flow rate $q_s(x,y,t)$ is estimated 
+as a function of water flow and sediment concentration:
+
+%sediment flow equation
+\begin{equation}\label{eq:sedflow} 
+q_s(x,y,t) = \rho_s(x,y,t) ~ q(x,y,t)
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\hspace*{0.5em} $q_s(x,y,t)$ is the sediment flow rate per unit width ($kg~m^{-1}s^{-1}$)\\
+\hspace*{0.5em} $\rho_s(x,y,t)$ is sediment mass density ($kg~m^{-3}$).\\
+%\hspace*{0.5em} $q(x,y,t)$ is unit flow discharge vector ($m^{2} s^{-1}$) \\
+%\hspace*{0.5em} (i.e.~ the direction and rate of water flow per unit width)\\
+}
+
+\subsubsection{Erosion-deposition}
+In SIMWE 
+the net erosion-deposition rate is estimated
+using the bivariate form of sediment continuity equation
+to model sediment storage and flow 
+based on effective sources and sinks.
+Net erosion-deposition $d_s(x,y,t)$
+-- the difference between sources and sinks --
+is approximated by
+the steady state sediment flow equation with diffusion:
+
+% erosion-deposition equation
+\begin{equation}\label{eq:sediment} 
+d_s(x,y,t) = 
+{\partial [\rho_sc(x,y,t)h(x,y,t)] \over \partial t} +
+\nabla ~ q_s(x,y,t)
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\hspace*{0.5em} $d_s(x,y,t)$ is net erosion-deposition $(kg ~ m^{-2} s^{-1})$.\\
+%\hspace*{0.5em} $q_s(x,y,t)$ is the sediment flow rate per unit width ($kg~m^{-1}s^{-1}$)\\
+%\hspace*{0.5em} $\rho_s(x,y,t)$ is sediment mass density ($kg~m^{-3}$).\\
+}
+
+%\begin{equation}\label{eq:sediment} 
+%D(x,y,t) = \mathrm{source - sinks} =
+%{\partial [\rho_sc(x,y,t)h(x,y,t)] \over \partial t} +
+%\nabla ~ q_s(x,y,t)
+%\end{equation}
+
+%Sources and sinks of sediment are assumed to be proportional to
+%the difference between sediment transport capacity
+%and the sediment flow rate: 
+%\begin{equation}\label{eq:sources_sinks} 
+%d_s = \sigma [T_c  - |q_s|]
+%\end{equation}
+
+% ADD transport limited erosion-deposition
+
+\subsubsection{Landscape evolution}
+The simulated change in elevation $\Delta z(x,y,t)$ due to water erosion and deposition
+is a function of
+the change in time, the net erosion-deposition rate, and the sediment mass density 
+\cite{Mitasova2013}:
+
+% landscape evolution equation
+% change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) / sediment mass density (kg/m^3)
+\begin{equation}
+\label{eq:evolution} 
+{\Delta z(x,y,t) = \Delta t ~ d_s(x,y,t) ~ \rho_s^{-1} }
+\end{equation}
+
+%{\small
+%\noindent
+%where: \\
+%\noindent
+%\hspace*{0.5em} $\Delta z =$ change in elevation $(m)$ \\
+%\hspace*{0.5em} $d_s =$ net erosion-deposition $(kg ~ m^{-2} s^{-1})$ \\
+%\hspace*{0.5em} $\rho_s c(x,y,t)$ = sediment mass density $(kg ~m^{-3})$\\ %[kg/m$^3$]
+%\hspace*{0.5em} $\rho_s =$ sediment mass density $(kg ~m^{-3})$ \\
+%}
+
+% detachment limited landscape evolution
+In a detachment limited erosion regime
+the simulated change in elevation $\Delta z(x,y,t)$
+is a function of
+the change in time, the sediment flow rate, and the mass of water carried sediment per unit area
+\cite{Mitasova2013}:
+
+% change in elevation (m) = change in time (s) * sediment flux (kg/ms) / mass of sediment per unit area (kg/m^2)
+\begin{equation}
+\label{eq:flux_evolution} 
+{\Delta z(x,y,t) = \Delta t ~ q_s(x,y,t) ~ \varrho_s^{-1} } 
+\end{equation}
+% \varrho_s(r)^{-1}
+%
+{\small
+\noindent
+where: \\
+\noindent
+%\hspace*{0.5em} $\Delta z =$ change in elevation $(m)$ \\
+%\hspace*{0.5em} $q_s =$ sediment flux $(kg ~ m^{-1} s^{-1})$ \\
+\hspace*{0.5em} $\varrho_s$ is the mass of sediment per unit area $(kg ~ m^{-2})$.\\
+}
+
+% gravitational diffusion
+\noindent
+Gravitational diffusion is then applied to the evolved topography
+to simulate the settling of sediment particles. 
+The simulated change in elevation $\Delta z(x,y,t) $ due to gravitational diffusion 
+is a function of the change in time, the sediment mass density, 
+the gravitational diffusion coefficient, and topographic divergence 
+-- i.e.~the sum of the second order derivatives of elevation
+\cite{thaxton2004}:
+
+%gravitional diffusion eq.
+% change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
+\begin{equation}
+\label{eq:grav_diffusion} 
+{\Delta z(x,y,t) = \Delta t ~ \rho_s^{-1} ~ \varepsilon_g ~ \nabla(x,y,t)}
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+%\hspace*{0.5em} $\Delta z =$ change in elevation $(m)$ \\
+%\hspace*{0.5em} $\rho_s c(x,y,t)$ = sediment mass density $(kg ~m^{-3})$\\ %[kg/m$^3$]
+%\hspace*{0.5em} $\rho_s =$ sediment mass density $(kg ~m^{-3})$ \\
+\hspace*{0.5em} $\varepsilon_g$ is the gravitational diffusion coefficient $(m^{2} s^{-1})$\\ %$(m^{-2} s^{-1})$
+\hspace*{0.5em} $\nabla(x,y,t)$ is the topographic divergence $(m^{-1})$.\\
+}
+
+% -------------------------------- RUSLE --------------------------------
+\subsection{Revised universal soil loss equation 3D model}
+\label{rusle_model} % detachment limited
+%RUSLE
+The Revised Universal Soil Loss Equation for Complex Terrain (RUSLE3D) 
+is an empirical equation for computing erosion 
+in a detachment-capacity limited soil erosion regime
+for watersheds with complex topography \cite{Mitasova1996}. 
+% USLE
+It is based on 
+the Universal Soil Loss Equation (USLE),
+an empirical equation for estimating the average
+sheet and rill soil erosion from rainfall and runoff
+on agricultural fields and rangelands with simple topography 
+\cite{Wischmeier1978}. 
+It models erosion dominated regimes without deposition
+in which sediment transport capacity is uniformly greater than detachment capacity.
+As an empirical equation the predicted soil loss 
+is spatially and temporally averaged. 
+In USLE soil loss per unit area is determined by 
+an erosivity factor $R$,
+a soil erodibility factor $K$, 
+a slope length factor $L$,
+a slope steepness factor $S$,
+a cover management factor $C$,
+and a prevention measures factor $P$.
+These factors are empirical constants derived 
+from an extensive collection of measurements 
+%22.13m with 9\% slope
+on 22.1m standard plots with an average slope of 0.09$\degree$.  
+%
+RUSLE3D was designed to account for more complex, 3D topography 
+with converging and diverging flows. 
+In RUSLE3D the topographic potential for erosion at any given point 
+is represented by a 3D topographic factor $LS_{3D}$,
+which is a function of the upslope contributing area %flow accumulation
+and the angle of the slope. 
+
+% <-------------------- ADD FIG with flow accumulation or sedflow
+
+In this spatially and temporally distributed model 
+RUSLE3D is modified by the use of a 
+event-based r-factor derived from the rainfall intensity at each time step.
+%
+For each time step
+this model computes the parameters for RUSLE3D -- 
+an event-based erosivity factor,
+the slope of the topography, the flow accumulation, and
+the 3D topographic factor -- and then
+solves the RUSLE3D equation for sediment flow. 
+The sediment flow is used to simulate landscape evolution 
+in a detachment capacity limited soil erosion regime.
+
+% RESOURCES
+% https://ncsu-geoforall-lab.github.io/erosion-modeling-tutorial/erdep_theory.html
+% http://www4.ncsu.edu/~hmitaso/gmslab/reports/CerlErosionTutorial/denix/denixstart.html
+
+\subsubsection{Event-based erosivity factor} 
+In USLE and RUSLE the erosivity factor $R$ % (MJ mm ha^-1 hr^-1)
+is the combination of the total energy and peak intensity of a rainfall event,
+representing the interaction between the detachment of sediment particles
+and the transport capacity of the flow. 
+It can be calculated as the product of the 
+the kinetic energy of the rainfall event $E$
+and its maximum 30-minute intensity $I_{30}$
+\cite{Brown1987,Renard1997}.
+%
+In this model, however, the erosivity factor
+is derived at each time step as a function of
+kinetic energy, rainfall volume, rainfall intensity, and time.
+%
+First rain energy is derived from rainfall intensity \cite{Brown1987}:
+% rain energy eq.
+\begin{equation}
+\label{eq:rain_energy}
+{e_r = 0.29 ~ (1.-0.72 ~ exp(-0.05 ~ i_r))}
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $e_r$is unit rain energy $(MJ ~ ha^{-1} ~ mm{^-1})$\\
+\hspace*{0.5em} $i_r$ is rainfall intensity $(mm ~ h^{-1})$.\\
+}
+
+\noindent
+Then the event-based erosivity index $R_e$ is calculated as:
+%the product of unit rain energy, rainfall volume, rainfall intensity, and time: 
+% event erosivity index (MJ mm ha^-1 hr^-1)
+\begin{equation}
+\label{eq:erosivity_index}
+{R_e = e_r ~ v_r ~ i_r ~ t_r}
+\end{equation}
+%
+{\small
+\noindent
+\hspace*{0.5em} $R_e$ is the event-based erosivity index $(MJ ~ mm ~ ha^{-1} ~ hr^{-1})$\\
+%\hspace*{0.5em} $e_r$ is unit rain energy $(MJ ~ ha^{-1} ~ mm{^-1})$\\
+\hspace*{0.5em} $v_r$ is rainfall volume $(mm)$ derived from ${v_r = i_r ~ t_r}$\\
+%\hspace*{0.5em} $i_r$ is rainfall intensity $(mm ~ h^{-1})$\\
+\hspace*{0.5em} $t_r$ is time interval $s$\\ 
+}
+%derive event erosivity index (MJ mm ha^-1 hr^-1)
+%then multiply by rainfall interval in seconds (MJ mm ha^-1 hr^-1 s^-1)
+
+\subsubsection{Flow accumulation}
+The upslope contributing area is determined by flow accumulation. 
+Flow accumulation is calculated using a multiple flow direction algorithm \cite{Metz2009} 
+based on $A^{T}$ least cost paths \cite{Ehlschlaeger1989}. 
+The multiple flow direction algorithm 
+implemented in GRASS GIS as the module 
+\textit{r.watershed}\footnote{https://grass.osgeo.org/grass72/manuals/r.watershed.html}
+is computationally efficient and can
+navigate nested depressions and other obstacles. 
+
+
+\subsubsection{3D topographic factor}
+The 3D topographic factor $LS_{3D}(x,y)$
+is calculated as a function of 
+the flow accumulation,
+representing the upslope contributing area,
+and the slope. 
+%
+The empirical coefficients $m$ and $n$
+for the upslope contributing area 
+and the slope
+can range from $0.2$ to $0.6$
+and $1.0$ to $1.3$ respectively
+with low values representing dominant sheet flow
+and high values representing dominant rill flow.
+%http://www4.ncsu.edu/~hmitaso/gmslab/papers/erijgis.html
+
+%with the higher values reflecting the pattern for prevailing rill erosion with more turbulent flow when erosion sharply increases with the amount of water. Lower exponent values close to m = n = 1 better reflect the pattern of compounded, long term impact of both rill and sheet erosion and averaging over a long term sequence of large and small events.
+
+\begin{equation}
+\label{eq:ls_factor}
+{LS_{3D}(x,y) = (m+1.0) ~ (a(x,y) ~ a_0^{-1})^{m} ~ (sin(\beta) ~ \beta_0^{-1})^{n}}
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $LS_{3D}$ is the dimensionless topographic (length-slope) factor\\
+\hspace*{0.5em} $a$ is flow accumulation $(m)$\\
+\hspace*{0.5em} $a_0$ is the length of the standard USLE plot $(22.1 m)$\\
+\hspace*{0.5em} $\beta$ is the slope angle $(\degree)$\\
+\hspace*{0.5em} $m$ is an empirical coefficient\\
+\hspace*{0.5em} $n$ is an empirical coefficient\\
+\hspace*{0.5em} $\beta_0$ is the slope of the standard USLE plot $(0.09 \degree)$\\
+}
+
+\subsubsection{Sediment flow} 
+The sediment flow is a function of the event-based erosivity factor, 
+the soil erodibility factor, the 3D topographic factor, cover factor, and the prevention measures factor:
+%
+\begin{equation}
+\label{eq:rusle}
+{E = R_e ~ K ~ LS_{3D} ~ C ~ P}
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $E$ is soil loss $(kg ~ m^{-2} ~ min^{-1})$\\
+\hspace*{0.5em} $R_e$ is the event-based erosivity factor $(MJ ~ mm ~ ha^{-1} ~ hr^{-1})$\\ %~  s{^-1}
+\hspace*{0.5em} $K$ is the soil erodibility factor $(ton ~ ha ~ hr ~ ha^{-1} ~ MJ^{-1} ~ mm^{-1})$\\
+\hspace*{0.5em} $LS_{3D}$ is the dimensionless topographic (length-slope) factor\\
+\hspace*{0.5em} $C$ is the dimensionless land cover factor\\
+\hspace*{0.5em} $P$ is the dimensionless prevention measures factor\\
+}
+
+\subsubsection{Landscape evolution}
+With RUSLE3D the simulated change in elevation $\Delta z(x,y,t)$
+is derived from 
+equation \ref{eq:flux_evolution}
+for landscape evolution in an detachment limited soil erosion regime
+and then equation \ref{eq:grav_diffusion}
+for the settling of sediment particles due to gravitational diffusion.
+
+% -------------------------------- USPED --------------------------------
+
+\subsection{Unit streampower erosion deposition model} \label{usped_model}
+The Unit Stream Power Erosion Deposition (USPED) model 
+estimates net erosion-deposition as the divergence of sediment flow
+in transport capacity limited soil erosion regimes.
+At transport capacity 
+shallow flows of water are carrying as much sediment possible 
+-- more sediment is being detached 
+than can be transported.
+As a transport capacity limited model
+USPED predicts erosion where transport capacity increases
+and deposition where transport capacity decreases. 
+In USPED the influence of topography on erosion and deposition
+is represented by a topographic sediment transport factor,
+while the influence of soil and landcover are represented by 
+factors adopted from USLE and RUSLE
+\cite{Mitasova1996}.
+
+With USPED net erosion-deposition is estimated by computing
+the event-based erosivity factor $R_e$ using Eq.~\ref{eq:erosivity_index},
+the slope and aspect of the topography,
+the flow accumulation with a multiple flow direction algorithm,
+the topographic sediment transport factor,
+the sediment flow at transport capacity,
+and the divergence of the sediment flow. 
+
+% <-------------------- ADD FIG with flow accumulation or sedflow
+
+\subsubsection{Topographic sediment transport factor}
+For USPED
+the 3D topographic factor (Eq.~\ref{eq:ls_factor} for RUSLE3D 
+is adapted to represent the topographic sediment transport factor $LST$ --
+the topographic component 
+of overland flow at sediment transport capacity:
+
+\begin{equation}
+\label{eq:lst_factor}
+{LST = U^{m} ~ (\sin \beta)^{n}}
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $LST$ is the topographic sediment transport factor\\
+\hspace*{0.5em} $U$ is the flow accumulation $(m)$\\
+\hspace*{0.5em} $\beta$ is the angle of the slope $(\degree)$\\
+\hspace*{0.5em} $m$ is an empirical coefficient\\
+\hspace*{0.5em} $n$ is an empirical coefficient.\\
+}
+
+\subsubsection{Sediment flow at transport capacity} 
+The sediment flow at transport capacity is a function of 
+the event-based rainfall factor, the soil erodibility factor, 
+the topographic component of overland flow,
+tje landcover factor, and the prevention measures factor:
+%
+\begin{equation}
+\label{eq:usped}
+{T = R_e ~ K ~ C ~ P ~ LST}
+\end{equation}
+%
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $T$ is sediment flow at transport capacity $(kg ~ m^{-1} ~ s^{-1})$\\ 
+\hspace*{0.5em} $R_e$ is the event-based rainfall factor $(MJ ~ mm ~ ha^{-1} ~ hr^{-1})$\\
+\hspace*{0.5em} $K$ is the soil erodibility factor $(ton ~ ha ~ hr ~ ha^{-1} ~ MJ^{-1} ~ mm^{-1})$\\ % check units
+\hspace*{0.5em} $C$ is the dimensionless land cover factor\\
+\hspace*{0.5em} $P$ is the dimensionless prevention measures factor.\\
+%\hspace*{0.5em} $LST$ is the topographic sediment transport factor.\\
+}
+
+\subsubsection{Erosion-deposition at transport capacity}
+Net erosion-deposition is estimated as the divergence of sediment flow: 
+
+%D = ∇ · (T s0) = ∂(T cos α)/∂x + ∂(T sin α)/∂y
+\begin{equation}\label{eq:usped_erdep} 
+d_s(x,y,t) = 
+{\partial (T ~ \cos \alpha) \over \partial x} +
+{\partial (T ~ \sin \alpha) \over \partial y}
+\end{equation}
+%# d_s(x,y,t) = \nabla~T = 
+%
+{\small
+\noindent
+where: \\
+\hspace*{0.5em} $d_s(x,y,t)$ is net erosion-deposition $(kg ~ m^{-2} s^{-1})$\\
+\hspace*{0.5em} $\alpha$ is the aspect of the topography ($\degree$).\\
+}
+
+\subsubsection{Landscape evolution}
+With USPED the simulated change in elevation $\Delta z(x,y,t)$
+is derived from equation \ref{eq:evolution} for landscape evolution
+and then equation \ref{eq:grav_diffusion}
+for the settling of sediment particles due to gravitational diffusion.
+
+\clearpage
+
+% -------------------------------- CASE STUDY--------------------------------
+\section{Case study} 
+
+\subsection{Fort Bragg}
+
+% map of fort bragg with shaded landcover and watersheds
+
+% map of fort bragg with shaded relief and watersheds
+
+% map of fort bragg erosion with rusle3d
+
+% map of difference for fort bragg
+
+\subsection{Patterson Branch Creek}
+
+\begin{figure}[h]
+\includegraphics[width=0.5\textwidth]{../images/sample_data_3d/naip_2014.png}
+\caption{Study landscape, Patterson Branch Creek, Fort Bragg, NC, USA}
+\label{fig:3d}
+\end{figure}
+
+To test the effectiveness of Gully's models 
+we compared the simulated evolution
+of a highly eroded subwatershed of 
+Patterson Branch Creek on Fort Bragg, North Carolina
+against a timeseries of lidar surveys.
+%
+The models -- SIMWE, RUSLE3D, and USPED --
+were tested in steady state and dynamic modes
+for constant rainfall, design storms, and recorded rainfall.
+
+\subsubsection{Study area}
+% --------- STUDY AREA ---------
+Fort Bragg, a military installation in the Sandhills region of North Carolina % sq meters? 650 km2
+with a Longleaf Pine and Wiregrass Ecosystem \citep{Sorrie2006},
+has extensive areas of bare, erodible soils
+on impact areas, firing ranges, landing zones, and dropzones. 
+%
+The study landscape
+-- a subwatershed of Patterson Branch Creek % how many square meters is the subwatershed?
+in the Coleman Impact Area --
+is pitted with impact craters from artillery and mortar shells
+and has an active, approximately 2 meter deep gully. 
+%
+It is a Pine-Scrub Oak Sandhill community
+composed primarily of longleaf pine -- Pinus palustris --
+and wiregrass -- Aristida stricta --
+on Blaney and Gilead loamy sands 
+\citep{Sorrie2004}. 
+%
+Throughout the Coleman Impact Area
+the frequent fires ignited by live munitions
+drive the ecological disturbance regime
+of this fire adapted ecosystem.
+%
+In 2016 the  $450 m^{2}$ study site was
+43.24\% bare ground with predominately loamy sands,
+39.54\% covered by the wiregrass community, and
+17.22\% forested with the longleaf pine community 
+(Figure~\ref{fig:study_area}b). 
+%
+We hypothesize that the elimination of forest cover
+in the impact zone
+triggered extensive channelized overland flow,
+gully formation, and sediment transport into the creek. 
+
+\subsubsection{Data}
+% --------- DATA ---------
+We generated a timeseries of 
+digital elevations models and landcover maps 
+of the study landscape for 2004, 2012, and 2016
+from lidar pointclouds and orthophotography
+(Figure~\ref{fig:study_area}). 
+%
+The digital elevations models were interpolated using 
+the regularized spline with tension function \citep{Mitasova1993,Mitasova2005}
+\footnote{https://grass.osgeo.org/grass74/manuals/v.surf.rst.html}
+from 1 meter resolution airborne lidar surveys 
+collected by the NC Floodplain Mapping program and Fort Bragg. 
+%
+Unsupervised image classification was used to identify clusters of spectral reflectance
+\footnote{https://grass.osgeo.org/grass74/manuals/i.cluster.html}
+\footnote{https://grass.osgeo.org/grass74/manuals/i.maxlik.html}
+in a timeseries of 1 meter resolution orthoimagery 
+collected by the National Agriculture Imagery Program.
+%
+The landcover maps were derived by fusing the
+classified lidar point clouds with the classified orthoimagery.
+%
+Spatially variable soil erosion factors -- k-factor, c-factor, mannings, and runoff rates --
+were derived from the landcover and soil maps.
+%
+The dataset for this study is hosted at 
+\url{https://github.com/baharmon/landscape\_evolution_dataset}
+under the ODC Open Database License (ODbL).
+%
+The data is derived from publicly available data from
+the US Army, USGS, USDA, Wake County GIS, NC Floodplain
+Mapping Program, and the NC State Climate Office.
+
+%\begin{figure*}[h]
+%\small\sf\centering
+%\ra{1.3}
+%\begin{tabular}{m{0.5\textwidth} m{0.5\textwidth}}
+%%
+%%\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/naip_2014.png}} &
+%%\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/landcover.png}}\\
+%%\multicolumn{1}{c}{a. Orthophotograph} & \multicolumn{1}{c}{b. Landcover}\\
+%%
+%\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/elevation_2012.png}} &
+%\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/elevation_2016.png}}\\
+%\multicolumn{1}{c}{a. Elevation 2012} & \multicolumn{1}{c}{b. Elevation 2016}\\
+%%
+%\includegraphics[height=60mm,center]{../images/sample_data/landforms_2012.png} &
+%\includegraphics[height=60mm,center]{../images/sample_data/landforms_2016.png}\\
+%\multicolumn{1}{c}{c. Landforms 2012} & \multicolumn{1}{c}{d. Landforms 2016}\\
+%%
+%\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/depth_2016.png}} &
+%\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/difference_2012_2016.png}}\\
+%\multicolumn{1}{c}{e. Water depth for 10 min event with 50mm/hr} & \multicolumn{1}{c}{f. Difference 2012-2016}\\
+%%
+%\end{tabular}
+%\caption{Study Landscape, Patterson Branch Creek, Fort Bragg, NC, USA}
+%\label{fig:study_area}
+%\end{figure*}
+
+\begin{figure*}[h]
+\small\sf\centering
+\ra{1.3}
+\begin{tabular}{m{0.5\textwidth} m{0.5\textwidth}}
+%
+%\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/naip_2014.png}} &
+%\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/landcover.png}}\\
+%\multicolumn{1}{c}{a. Orthophotograph} & \multicolumn{1}{c}{b. Landcover}\\
+%
+\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/gully_elevation_2012.png}} &
+\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/gully_elevation_2016.png}}\\
+\multicolumn{1}{c}{a. Elevation 2012} & \multicolumn{1}{c}{b. Elevation 2016}\\
+%
+\includegraphics[height=60mm,center]{../images/sample_data/gully_landforms_2012.png} &
+\includegraphics[height=60mm,center]{../images/sample_data/gully_landforms_2016.png}\\
+\multicolumn{1}{c}{c. Landforms 2012} & \multicolumn{1}{c}{d. Landforms 2016}\\
+%
+\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/depth_2016.png}} &
+\multicolumn{1}{c}{\includegraphics[height=60mm]{../images/sample_data/gully_difference_2012_2016.png}}\\
+\multicolumn{1}{c}{e. Water depth for 10 min event with 50mm/hr} & \multicolumn{1}{c}{f. Difference 2012-2016}\\
+%
+\end{tabular}
+\caption{Study Landscape, Patterson Branch Creek, Fort Bragg, NC, USA}
+\label{fig:study_area}
+\end{figure*}
+
+
+% --------- MORPHOLGY ---------
+
+By computing the difference between the digital elevation models
+and by automated classification of landforms using
+the geomorphons method...
+
+
+Geomorphons is 
+a pattern recognition method for landform classification 
+based on the openness of the terrain \citep{Jasiewicz2013}.
+It is implemented in GRASS GIS as the module \textit{r.geomorphon}
+\footnote{https://grass.osgeo.org/grass74/manuals/r.geomorphon.html}.
+
+
+
+% microtopography / morphology
+
+%Morphology from 2004 to 2016 \\
+%
+%To the right of the main channel 
+%a new gully has begun to form from multiple knickpoints (see knickzone as hollow, pits in 2004, and disconnected valleys merging by 2016).\\
+%
+%The main gully channel has developed depositional ridges beside channel.
+%Deep pits have developed where tributary channels 
+%join the main channel and the main channel has a sharp curve.\\
+
+
+
+Landform evolution...
+(Figure~\ref{fig:study_area}c-d). 
+
+
+Difference...
+(Figure~\ref{fig:study_area}f).
+
+
+
+% geomorphometry: http://geomorphometry.org/Geomorphometry_for_Geosciences_book.pdf
+
+
+
+
+
+
+
+%\subsection{Benchmarks}
+
+
+
+\clearpage
+% -------------------------------- RENDERING --------------------------------
+\section{Visualization}
+
+% -------------------------------- TANGIBLE --------------------------------
+\section{Tangible landscape evolution}
+
+%Tangible Landscape -- a tangible user interface tightly integrated with a geographic information system for intuitively sketching in 3D \cite{petrasova2015}. Conceptually, Tangible Landscape couples a physical model with a digital model in a real-time feedback cycle of 3D scanning, geospatial modeling and simulation, and projection in order to physically manifest digital data as tangible bits. With tangible bits users can directly, physically feel and manipulate data with their bodies -- naturally, intuitively understanding space, form, and process. Tangible Landscape is available on Github at \url{https://github.com/ncsu-osgeorel/grass-tangible-landscape}.
+%
+%%\paragraph{Testing}
+%We coupled Tangible Landscape with the landscape evolution model to test the model and experiment with strategies for restoration. 
+%We used Tangible Landscape to computationally steer the landscape evolution model and interactively explore the relationship between overland flow patterns and changes in topography. By manually changing the physical model of the landscape 
+%we change the topography used by the model.
+
+%\begin{figure*}
+%\centering
+%\includegraphics[width=\textwidth]{images/cnc_sand.jpg}
+%\caption{{\bf Rapid prototyping.}
+%3-axis CNC fabrication of the evolved landscape in polymer-enriched sand using a plunge cut.}
+%\label{fig:cnc_sand}
+%\end{figure*}
+
+% -------------------------------- DISCUSSION --------------------------------
+\section{Discussion}
+
+\subsection{Future work}
+%\begin{enumerate}
+%\item Test the model on historical data
+%\item Test the model with UAS Sfm time-series
+%\item Implement as a Tangible Landscape analysis
+%\item Live, in-situ fabrication in polymer-enriched sand with a robotic arm
+%\end{enumerate}
+
+\section{Conclusion}
+
+% -------------------------------- APPENDIX --------------------------------
+\appendix
+
+\section{Supporting information}
+
+\subsection{Code}\label{code}
+{\bf Github repository}
+
+\subsection{Data}\label{data}
+{\bf GRASS GIS Mapset}
+
+\subsection{3D models}\label{3d_models}
+{\bf \ldots}
+
+\subsection{Tangible Landscape}\label{tangible_landscape}
+{\bf \ldots}
+
+% -------------------------------- BIBLIOGRAPHY --------------------------------
+
+% \bibliographystyle{elsarticle-num}
+ \bibliographystyle{elsarticle-harv}
+% \bibliographystyle{elsarticle-num-names}
+% \bibliographystyle{model1a-num-names}
+% \bibliographystyle{model1b-num-names}
+% \bibliographystyle{model1c-num-names}
+% \bibliographystyle{model1-num-names}
+% \bibliographystyle{model2-names}
+% \bibliographystyle{model3a-num-names}
+% \bibliographystyle{model3-num-names}
+% \bibliographystyle{model4-names}
+% \bibliographystyle{model5-names}
+% \bibliographystyle{model6-num-names}
+
+\bibliography{landscape_evolution.bib}
+
+
+\end{document}
+
