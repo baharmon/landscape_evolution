@@ -1609,7 +1609,7 @@ class Evolution:
             expression="{ls_factor}"
             "=({m}+1.0)"
             "*(({flowacc}/22.1)^{m})"
-            "*((sin({slope})/0.09)^{n})".format(
+            "*((sin({slope})/5.14)^{n})".format(
                 ls_factor=ls_factor,
                 m=self.m,
                 flowacc=depth,
