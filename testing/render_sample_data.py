@@ -42,6 +42,7 @@ border = 400
 width = 1600
 height = 1600
 fontsize = 24
+vector_width = 3
 
 # set data parameters
 years = [2004, 2012, 2016]
@@ -49,15 +50,15 @@ years = [2004, 2012, 2016]
 
 def main():
 
-    # # render 2d maps
-    # render_region_2d()
-    # render_subregion_2d()
-    # render_fortbragg_2d()
+    # render 2d maps
+    render_region_2d()
+    render_subregion_2d()
+    render_fortbragg_2d()
 
     # render 3d maps
     render_region_3d()
     render_subregion_3d()
-    # render_fortbragg_3d()
+    render_fortbragg_3d()
 
     atexit.register(cleanup)
     sys.exit(0)
@@ -74,11 +75,14 @@ def render_region_2d():
     # set region
     gscript.run_command('g.region', region='region', res=res)
 
+    # set mask
+    gscript.run_command('r.mask', vector='watershed')
+
     # render shaded relief maps
     for year in years:
         gscript.run_command('d.mon',
             start=driver,
-            width=width+border,
+            width=width,
             height=height,
             output=os.path.join(render, 'elevation_'+str(year)+'.png'),
             overwrite=overwrite)
@@ -88,13 +92,17 @@ def render_region_2d():
             raster='elevation_'+str(year),
             fontsize=fontsize,
             at=legend_coord)
+        # gscript.run_command('d.vect',
+        #     map='watershed',
+        #     fill_color="none",
+        #     width=vector_width)
         gscript.run_command('d.mon', stop=driver)
 
     # render landforms
     for year in years:
         gscript.run_command('d.mon',
             start=driver,
-            width=width+border+border,
+            width=width,
             height=height,
             output=os.path.join(render, 'landforms_'+str(year)+'.png'),
             overwrite=overwrite)
@@ -111,7 +119,7 @@ def render_region_2d():
     # render differences 2004-2016
     gscript.run_command('d.mon',
         start=driver,
-        width=width+border,
+        width=width,
         height=height,
         output=os.path.join(render, 'difference_2004_2016.png'),
         overwrite=overwrite)
@@ -123,11 +131,10 @@ def render_region_2d():
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
 
-
     # render differences 2004-2012
     gscript.run_command('d.mon',
         start=driver,
-        width=width+border,
+        width=width,
         height=height,
         output=os.path.join(render, 'difference_2004_2012.png'),
         overwrite=overwrite)
@@ -139,11 +146,10 @@ def render_region_2d():
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
 
-
     # render differences 2012-2016
     gscript.run_command('d.mon',
         start=driver,
-        width=width+border,
+        width=width,
         height=height,
         output=os.path.join(render, 'difference_2012_2016.png'),
         overwrite=overwrite)
@@ -158,7 +164,7 @@ def render_region_2d():
     # render water depth
     gscript.run_command('d.mon',
         start=driver,
-        width=width+border,
+        width=width,
         height=height,
         output=os.path.join(render, 'depth_2016.png'),
         overwrite=overwrite)
@@ -203,6 +209,99 @@ def render_region_2d():
         flags='n')
     gscript.run_command('d.mon', stop=driver)
 
+    # render flow accumulation
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'flow_accumulation_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='skyview_2016',
+        color='flow_accumulation_2016',
+        brighten=0)
+    gscript.run_command('d.legend',
+        raster='flow_accumulation_2016',
+        fontsize=fontsize,
+        at=legend_coord,
+        flags='n')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render ls factor
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'ls_factor.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='skyview_2016',
+        color='ls_factor',
+        brighten=0)
+    gscript.run_command('d.legend',
+        raster='ls_factor',
+        fontsize=fontsize,
+        at=legend_coord,
+        flags='n')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render sediment flow
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'sediment_flow_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='skyview_2016',
+        color='sediment_flow_2016',
+        brighten=0)
+    gscript.run_command('d.legend',
+        raster='sediment_flow_2016',
+        fontsize=fontsize,
+        at=legend_coord,
+        flags='n')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render sediment flux
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'sediment_flux_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='skyview_2016',
+        color='sediment_flux_2016',
+        brighten=0)
+    gscript.run_command('d.legend',
+        raster='sediment_flux_2016',
+        fontsize=fontsize,
+        at=legend_coord,
+        flags='n')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render erosion deposition
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'erosion_deposition_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='skyview_2016',
+        color='erosion_deposition_2016',
+        brighten=0)
+    gscript.run_command('d.legend',
+        raster='erosion_deposition_2016',
+        fontsize=fontsize,
+        at=legend_coord,
+        flags='n')
+    gscript.run_command('d.mon', stop=driver)
+
+    # remove mask
+    gscript.run_command('r.mask', flags='r')
+
 def render_subregion_2d():
 
     # create rendering directory
@@ -233,7 +332,7 @@ def render_subregion_2d():
     for year in years:
         gscript.run_command('d.mon',
             start=driver,
-            width=width+border+border,
+            width=width+border,
             height=height,
             output=os.path.join(render, 'gully_landforms_'+str(year)+'.png'),
             overwrite=overwrite)
@@ -293,7 +392,6 @@ def render_subregion_2d():
     gscript.run_command('d.mon', stop=driver)
 
 
-
 def render_fortbragg_2d():
 
     # create rendering directory
@@ -333,6 +431,7 @@ def render_region_3d():
     fringe_elevation = 85
     size = (1600, 1200)
     zexag = 3
+    vwidth = 3
 
     # create rendering directory
     render = os.path.join(gisdbase, 'images', 'sample_data_3d')
@@ -356,6 +455,11 @@ def render_region_3d():
     # list of 2016 rasters to render
     rasters_2016 = ['colorized_skyview_2016',
         'depth_2016',
+        'erosion_deposition_2016',
+        'flow_accumulation_2016',
+        'ls_factor',
+        'sediment_flow_2016',
+        'sediment_flux_2016',
         'landforms_2016',
         'naip_2014',
         'landcover',
@@ -368,6 +472,9 @@ def render_region_3d():
             elevation_map='elevation_2004',
             color_map=raster,
             resolution_fine=1,
+            vline='watershed',
+            vline_width=vwidth,
+            vline_color='black',
             height=camera_height,
             position=position,
             perspective=perspective,
@@ -388,6 +495,9 @@ def render_region_3d():
             elevation_map='elevation_2012',
             color_map=raster,
             resolution_fine=1,
+            vline='watershed',
+            vline_width=vwidth,
+            vline_color='black',
             height=camera_height,
             position=position,
             perspective=perspective,
@@ -408,6 +518,9 @@ def render_region_3d():
             elevation_map='elevation_2016',
             color_map=raster,
             resolution_fine=1,
+            vline='watershed',
+            vline_width=vwidth,
+            vline_color='black',
             height=camera_height,
             position=position,
             perspective=perspective,
