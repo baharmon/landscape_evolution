@@ -1,0 +1,44 @@
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass{standalone}
+
+% packages
+\usepackage{float}
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[export]{adjustbox}
+\usepackage[utf8]{inputenc}
+%\usepackage[active,pdftex,tightpage]{preview}
+\usepackage{newtxtext,newtxmath}
+
+\begin{document}
+
+%\sf
+\scriptsize
+\centering 
+
+% Steady state SIMWE simulations
+
+\begin{tabular}{m{0.5\textwidth} m{0.5\textwidth}}
+% 
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_erdep_3d/depth_2016_01_01_02_00_00.png}} % replace with erosion-deposition map $(kg~m^{-2}~s^{-1})$
+& \multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_flux_3d/flux_2016_01_01_02_00_00.png}}\\
+\multicolumn{1}{c}{a. Erosion-deposition simulation water depth $(m)$} 
+& \multicolumn{1}{c}{d. Detachment limited simulation flux $(kg~m^{-1}~s^{-1})$}\\
+%
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_erdep_3d/landforms.png}} &
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_flux_3d/landforms.png}}\\
+\multicolumn{1}{c}{b. Erosion-deposition simulation landforms}
+& \multicolumn{1}{c}{e. Detachment limited landforms}\\
+%
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_erdep_3d/net_difference.png}} &
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_flux_3d/net_difference.png}}\\
+\multicolumn{1}{c}{c. Erosion-deposition simulation net difference $(m)$} & \multicolumn{1}{c}{f. Detachment limited simulation net difference $(m)$}\\
+%
+\end{tabular}
+
+% add legends
+
+\end{document}

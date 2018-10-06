@@ -1,0 +1,48 @@
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass{standalone}
+
+% packages
+\usepackage{float}
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[export]{adjustbox}
+\usepackage[utf8]{inputenc}
+%\usepackage[active,pdftex,tightpage]{preview}
+\usepackage{newtxtext,newtxmath}
+
+\begin{document}
+
+%\sf
+\scriptsize
+\centering 
+
+\begin{tabular}{m{0.5\textwidth} m{0.5\textwidth}}
+%
+%\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/rusle_3d/flux_2016_01_01_02_00_00.png}} &
+%\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/usped_3d/flux_2016_01_01_02_00_00.png}}\\
+%\multicolumn{1}{c}{a. Dynamic RUSLE3D sediment flow $(kg ~ m^{-2} ~ s^{-1})$} &
+%\multicolumn{1}{c}{d. Dynamic USPED sediment flow $(kg ~ m^{-2} ~ s^{-1})$}\\
+%
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/rusle_3d/landforms.png}} &
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/usped_3d/landforms.png}}\\
+\multicolumn{1}{c}{a. Dynamic RUSLE3D landforms} &
+\multicolumn{1}{c}{d. Dynamic USPED landforms}\\
+%
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/rusle_3d/net_difference.png}} &
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/usped_3d/net_difference.png}}\\
+\multicolumn{1}{c}{b. Dynamic RUSLE3D net difference $(m)$} & 
+\multicolumn{1}{c}{e. Dynamic USPED net difference $(m)$}\\
+%
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_rusle_3d/net_difference.png}} &
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_usped_3d/net_difference.png}}\\
+\multicolumn{1}{c}{c. Steady state RUSLE3D net difference $(m)$} & 
+\multicolumn{1}{c}{f. Steady state USPED net difference $(m)$}\\
+%
+\end{tabular}
+
+% add legend
+
+\end{document}

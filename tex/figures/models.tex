@@ -1,0 +1,52 @@
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass{standalone}
+
+% packages
+\usepackage{float}
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[export]{adjustbox}
+\usepackage[utf8]{inputenc}
+%\usepackage[active,pdftex,tightpage]{preview}
+\usepackage{newtxtext,newtxmath}
+
+\begin{document}
+
+%\sf
+\scriptsize
+\centering 
+
+%Shallow overland water depth $(m)$ simulated by SIMWE for a $10 min$ event with $50~mm~hr^{-1}$}
+
+\begin{tabular}{m{0.5\textwidth} m{0.5\textwidth}}
+% simwe depth
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/sample_data/depth_2016.png}}&
+% rusle flow acc
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/sample_data/flow_accumulation_2016.png}}\\
+% simwe depth caption
+\multicolumn{1}{c}{a. Water depth $(m)$ simulated by SIMWE}&
+% rusle flow acc caption
+\multicolumn{1}{c}{d. Flow accumulation for RUSLE3D}\\
+%simwe flux
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/sample_data/sediment_flux_2016.png}}&
+% rusle lsfactor
+\multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/sample_data/ls_factor.png}}\\
+% simwe flux caption
+\multicolumn{1}{c}{b. Sediment flux $(kg~m^{-1}~s^{-1})$ simulated by SIMWE}&
+% rusle lsfactor caption
+\multicolumn{1}{c}{e. LS3D topographic factor for RUSLE3D}\\
+% simwe erdep
+\includegraphics[height=50mm,center]{../../images/sample_data/erosion_deposition_2016.png}&
+% rusle sedflow caption
+\includegraphics[height=50mm,center]{../../images/sample_data/sediment_flow_2016.png}\\
+% simwe erdep caption
+\multicolumn{1}{c}{c. Erosion and deposition $(kg~m^{-2}~s^{-1})$ simulated by SIMWE}&
+% rusle sedflow caption
+\multicolumn{1}{c}{f. Sediment flow modeled by RUSLE3D $(kg ~ m^{-2} ~ s^{-1})$}\\
+%
+\end{tabular}
+
+\end{document}

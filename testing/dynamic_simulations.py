@@ -109,6 +109,7 @@ def main():
     usped_params['grav_diffusion'] = 0.05
     usped_params['erdepmin'] = -0.25
     usped_params['erdepmax'] = 0.25
+    usped_params['density_value'] = 1.6
     usped_params['m'] = 1.5
     usped_params['n'] = 1.2
     usped_params['c_factor'] = 'c_factor'
