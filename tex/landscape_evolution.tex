@@ -1004,7 +1004,7 @@ d_s(x,y,t) =
 {\small
 \noindent
 where: \\
-\hspace*{0.5em} $d_s(x,y,t)$ is net erosion-deposition $(kg ~ m^{-2} s^{-1})$\\
+\hspace*{0.5em} $d_s(x,y,t)$ is net erosion-deposition $(kg ~ m^{-2} ~ s^{-1})$\\
 \hspace*{0.5em} $\alpha$ is the aspect of the topography ($\degree$).\\
 }
 
@@ -1016,27 +1016,8 @@ for the settling of sediment particles due to gravitational diffusion.
 
 % -------------------------------- CASE STUDIES --------------------------------
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.75\textwidth]{../images/sample_data_3d/naip_2014.png}
-\caption{Study landscape, Patterson Branch Creek, Fort Bragg, NC, USA}
-\label{fig:3d}
-\end{figure}
+\section{Case study} 
 
-\section{Case studies} 
-
-%\subsection{Fort Bragg}
-%...
-% map of fort bragg with shaded landcover and watersheds
-
-% map of fort bragg with shaded relief and watersheds
-
-% map of fort bragg erosion with rusle3d
-
-% map of difference for fort bragg
-
-\subsection{Patterson Branch Creek}
-%
 To test the effectiveness of r.sim.terrain's models 
 we compared the simulated evolution
 of a highly eroded subwatershed of 
@@ -1046,16 +1027,23 @@ The models -- SIMWE, RUSLE3D, and USPED --
 were tested in steady state and dynamic modes
 for constant rainfall, design storms, and recorded rainfall.
 
-% --------- STUDY AREA ---------
+\subsection{Patterson Branch Creek}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{../images/sample_data_3d/naip_2014.png}
+\caption{Subwatershed with 2014 orthoimagery draped over 2016 digital elevation model, Patterson Branch Creek, Fort Bragg, NC, USA}
+\label{fig:3d}
+\end{figure}
+
 Fort Bragg, a military installation 
-in the Sandhills region of North Carolina % sq meters? 650 km2
+in the Sandhills region of North Carolina % 650 km2
 with a Longleaf Pine and Wiregrass Ecosystem \citep{Sorrie2006},
 has extensive areas of bare, erodible soils
 on impact areas, firing ranges, landing zones, and dropzones. 
 %
 The study landscape
 -- a subwatershed of Patterson Branch Creek 
-% how many square meters is the subwatershed?
 in the Coleman Impact Area --
 is pitted with impact craters from artillery and mortar shells
 and has an active, approximately $2~m$ deep gully. 
@@ -1088,7 +1076,6 @@ digital elevations models and landcover maps
 of the study landscape
 from lidar pointclouds and orthophotography
 (Figure~\ref{fig:study_area}a-c). 
-%
 The digital elevations models for 2004, 2012, and 2016
 were interpolated at $0.3~m$ resolution
 using the regularized spline with tension function \citep{Mitasova1993,Mitasova2005}
@@ -1103,18 +1090,14 @@ was used to identify clusters of spectral reflectance
 \footnote{https://grass.osgeo.org/grass74/manuals/i.cluster.html}
 in a timeseries of 1 meter resolution orthoimagery 
 collected by the National Agriculture Imagery Program.
-%
 The landcover maps were derived by fusing the
 classified lidar point clouds with the classified orthoimagery.
-%
 Spatially variable soil erosion factors 
 -- k-factor, c-factor, mannings, and runoff rates --
 were derived from the landcover and soil maps.
-%
 The dataset for this study is hosted at 
 \url{https://github.com/baharmon/landscape\_evolution_dataset}
 under the ODC Open Database License (ODbL).
-%
 The data is derived from publicly available data from
 the US Army, USGS, USDA, Wake County GIS, NC Floodplain
 Mapping Program, and the NC State Climate Office.
@@ -1155,19 +1138,17 @@ and the scours pits
 by approximately $1~m$,
 while depositional ridges have formed and grown up to
 approximately $1~m$ or more.
-% add figure with labeled features
 
 % study area figure
-\begin{figure}[H]
+\begin{figure}%[H]
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/study_area.pdf}
-\caption{Study Landscape, Patterson Branch Creek, Fort Bragg, NC, USA}
+\caption{Subwatershed, Patterson Branch Creek, Fort Bragg, NC, USA}
 \label{fig:study_area}
 \end{figure}
 
-
 % --------- SIMULATIONS ---------
-\subsubsection{Simulations}
+\subsection{Simulations}
 %
 We ran a sequence of simulations 
 for the Patterson Branch Creek subwatershed study area
@@ -1234,13 +1215,6 @@ when compiled with OpenMP.
 
 % results
 
-% rusle works great and fast!
-% overly incised channel compared to simwe flux
-% detachment limited vs. detachment limited models
-
-% flux works well, causes 
-
-
 % --------- SIMULATION TABLE ---------
 
 % table of simulations
@@ -1251,10 +1225,8 @@ when compiled with OpenMP.
 \toprule
 Dynamics & Model & Intensity & Duration & Interval & $D_c$ & $T_c$ & m & n & $\rho_s$ & Threads & Runtime\\
 \midrule
-Dynamic & RUSLE3D & $50~mm~hr^{-1}$ & $120~min$ & $3~min$ &  &  & 0.4 & 1.3 & & & $3~min~14~s$\\
+Dynamic & RUSLE3D & $50~mm~hr^{-1}$ & $120~min$ & $3~min$ &  &  & 0.4 & 1.3 & & & $2~min~36~s$\\
 Dynamic & USPED & $50~mm~hr^{-1}$ & $120~min$ & $3~min$ &  &  & 1.5 & 1.2 & 1.6 & & $3~min~14~s$\\
-Steady state & RUSLE3D & $75~mm~hr^{-1}$ & $120~min$ & $120~min$ &  &  & 0.4 & 1.3 & \\
-Steady state & USPED & $50~mm~hr^{-1}$ & $120~min$ & $120~min$ &  &  & 1.5 & 1.2 & 1.6\\
 Steady state & SIMWE & $50~mm~hr^{-1}$ & $120~min$ & $120~min$ & 0.001 & & & & 1.6 & 6 & $84~min~13~s$\\
 Steady state & SIMWE & $25~mm~hr^{-1}$ & $120~min$ & $120~min$ & 0.0001 & 0.01 & & & 1.6 & 6 & $84~min~13~s$\\
 \bottomrule
@@ -1263,34 +1235,25 @@ Steady state & SIMWE & $25~mm~hr^{-1}$ & $120~min$ & $120~min$ & 0.0001 & 0.01 &
 \label{table:simulations} 
 \end{table*}
 
-% add runtimes for steady state rusle3d and usped
-
 % --------- SIMULATION FIGURES ---------
 
-% dynamic vs steady state figure
-\begin{figure}[H]
+% dynamic figure
+\begin{figure}%[H]
 \center
 \includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/simulations.pdf}
-\caption{Dynamic and steady state RUSLE3D and USPED simulations
-for a $120~min$ event} % with a rainfall intensity of $50~mm~hr^{-1}$}
+\caption{Dynamic RUSLE3D and USPED simulations
+for a $120~min$ event with a rainfall intensity of $50~mm~hr^{-1}$}
 \label{fig:simulations}
 \end{figure}
 
 % steady state simwe figure
-\begin{figure}[H]
+\begin{figure}%[H]
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/simwe.pdf}
 \caption{Steady state SIMWE simulations
 for a $120~min$ event with a rainfall intensity of $50~mm~hr^{-1}$}
 \label{fig:simwe_simulations}
 \end{figure}
-
-% rerun RUSLE3D and USPED with 50 mm/hr
-% add legends and watershed to 3D renderings
-% add mask to 2D renderings
-% check landform params
-% check rusle 3d sedflow in min or sec
-
 
 % -------------------- DISCUSSION ---------------------------------
 %\section{Discussion}
