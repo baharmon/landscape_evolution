@@ -59,7 +59,30 @@ demonstrates cross-scale interactions between
 topographic form and sediment flow processes.
 \end{abstract}
 
+% add graphical abstract with erdep and flux difference
+
 \copyrightstatement{...}
+
+% --------- INTRO FIGURE ---------
+
+\begin{figure}%[H]
+\center
+\includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/evolution.pdf}
+\caption{
+The digital elevation model (DEM) 
+before (a.) and after (b.)
+simulated landscape evolution with
+\lowercase{r.sim.terrain}. 
+This simulation used the SIMWE model
+for a $120~min$ rainfall event with $25~mm~hr^{-1}$
+in a transport limited soil erosion regime at steady state.
+In the evolved DEM (b.)
+the gully channel has widened 
+with depositional ridges forming along its centerline.}
+\label{fig:evolution}
+\end{figure}
+
+% --------- SIMULATION FIGURES ---------
 
 \introduction  %% \introduction[modified heading if necessary]
 Landscape evolution models represent how the surface of the earth changes over time. 
@@ -214,7 +237,8 @@ This open source, GIS-based landscape evolution model can
 simulate either steady state or dynamic flow regimes, 
 dynamically switch between soil erosion regimes, and
 simulate the evolution of fine-scale morphological features 
-such as ephemeral gullies.
+such as ephemeral gullies
+(Figure~\ref{fig:evolution}).
 % questions
 It was designed as a research tool for
 studying how erosional processes scale over time and space,
@@ -398,7 +422,7 @@ r.sim.terrain & watershed -- & event -- & raster & dynamic -- & \href{https://gi
 % -------------------------- MODEL FIGURE -----------------------------
 
 % model figure
-\begin{figure}[H]
+\begin{figure}%[H]
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/models.pdf}
 \caption{Water and sediment flows simulated by SIMWE 
@@ -1199,21 +1223,86 @@ on a desktop computer
 with 64-bit Ubuntu 16.04.4 LTS,
 8 x 4.20 GHz Intel Core i7 7700K CPUs,
 and 32 GB RAM. 
+% multithreading
+Simulations using SIMWE 
+are far more computationally intensive
+than RULSE3D or USPED, 
+but support multi-threading 
+when compiled with OpenMP. 
 % runtime
 Dynamic simulations of RUSLE3D and USPED each took
 $3~min~14~s$ to run on a single thread, 
 while steady state simulations for SIMWE each took 
 $84~min~13~s$ running on 6 threads
 (Table~\ref{table:simulations}).
-% multithreading
-Simulations using SIMWE 
-are far more computationally intensive
-and thus take much more time to run
-than RULSE3D or USPED, 
-but support multi-threading 
-when compiled with OpenMP. 
 
-% results
+
+% --------- RESULTS ---------
+
+% dynamic model results
+The dynamic RUSLE3D simulation
+deepened the main channel of the gully,
+while the dynamic USPED simulation
+eroded the banks of the gully
+and deposited in channels
+causing the gully grow wider and shallower
+(Figure~\ref{fig:simulations}). 
+%
+As a detachment capacity limited model
+RUSLE3D's results were
+dominated by erosion and 
+thus negative elevation change.
+%
+RUSLE3D carved a deep incision 
+in the main gully channel
+where water and sediment flow accumulated
+(Figure~\ref{fig:simulations}c). 
+%
+As a transport capacity limited model
+USPED generated a distributed pattern
+with both erosion and deposition and thus
+negative and positive elevation change. 
+%
+While USPED's pattern of elevation change
+was grainy and fragmented, 
+it clearly captured the process of channel 
+filing and widening expected for 
+transport capacity limited soil erosion regime
+(Figure~\ref{fig:simulations}f). 
+
+% steady state model results
+The steady state SIMWE simulations 
+predicted more realistic patterns 
+of landscape evolution
+(Figure~\ref{fig:simwe_simulations}). 
+%
+For transport limited and
+erosion-deposition regimes
+SIMWE simulated
+channel widening 
+and the formation of depositional ridges
+along the centerline of the channel
+(Figure~\ref{fig:simwe_simulations}c).
+%
+For a detachment limited soil erosion regime
+SIMWE simulated major erosion
+driving the development of the gully network
+(Figure~\ref{fig:simwe_simulations}f). 
+%
+The development of the nascent branch
+into a full fledged channel
+clearly demonstrated the process of gully formation. 
+
+% comparison of dynamic and steady state results
+
+
+
+% this landscape is dominated by a detachment limited regime
+% shown by the formation of the gully
+% and the development of the depositional ridges 
+% beside its channel
+
+
 
 % --------- SIMULATION TABLE ---------
 
@@ -1251,7 +1340,8 @@ for a $120~min$ event with a rainfall intensity of $50~mm~hr^{-1}$}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/simwe.pdf}
 \caption{Steady state SIMWE simulations
-for a $120~min$ event with a rainfall intensity of $50~mm~hr^{-1}$}
+for $120~min$ events with rainfall intensities of $50~mm~hr^{-1}$
+and $25~mm~hr^{-1}$}
 \label{fig:simwe_simulations}
 \end{figure}
 
