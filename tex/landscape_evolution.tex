@@ -43,7 +43,7 @@
 While there are numerical landscape evolution models
 that simulate how steady state flows of water and sediment
 reshape topography over long periods of time, 
-this is the first to simulate short-term topographic change 
+r.sim.terrain is the first to simulate short-term topographic change 
 for both steady state and dynamic flow regimes. 
 It is a process-based, spatially distributed model
 that uses the water and sediment flow continuity equations
@@ -54,9 +54,9 @@ how topography will evolve for a range of hydrologic soil erosion regimes
 based on topographic, land cover, soil, and rainfall parameters. 
 A case study demonstrates how the behavior and results of 
 the dynamic model differ the steady state model. 
-The dynamic model is more accurate and 
-demonstrates cross-scale interactions between 
-topographic form and sediment flow processes.
+%The dynamic model is more accurate and 
+%demonstrates cross-scale interactions between 
+%topographic form and sediment flow processes.
 \end{abstract}
 
 % add graphical abstract with erdep and flux difference
@@ -78,7 +78,7 @@ for a $120~min$ rainfall event with $25~mm~hr^{-1}$
 in a transport limited soil erosion regime at steady state.
 In the evolved DEM (b.)
 the gully channel has widened 
-with depositional ridges forming along its centerline.}
+with depositional ridges forming along its thalweg.}
 \label{fig:evolution}
 \end{figure}
 
@@ -310,8 +310,10 @@ can simulate the evolution of gullies
 including processes such as 
 knickpoint migration,
 channel incision, 
-channel widening, and
-scour pool and depositional riffle formation
+channel widening, 
+aggradation, and
+scour pool and 
+depositional ridge formation
 along the thalweg of the gully. 
 % applications
 Applications include 
@@ -328,7 +330,7 @@ with SIMWE
 to regional watersheds
 of thousands of square kilometers
 with USPED or RULSE3D. 
-
+%
 % implementation
 This model has been implemented 
 as a Python add-on module 
@@ -338,12 +340,6 @@ Geographic Resources Analysis Support System (GRASS) GIS
 The source code is available at 
 \url{https://github.com/baharmon/landscape\_evolution} 
 under the GNU General Public License v2. % cite software release doi
-%
-This highly adaptable
-geographic information system (GIS)-based implementation
-was developed as a research tool for studying 
-the interaction of sediment detachment and transport
-and the scaling of erosional processes over time and space. % <--- revise
 % parallel processing
 It supports multithreading and parallel processing
 to efficiently compute simulations 
@@ -356,19 +352,18 @@ with the command:
 g.extension r.sim.terrain url=github.com/baharmon/landscape_evolution
 \end{lstlisting}
 
-	% see landlab paper and others on implementation and dev
+%% research tool
+%This highly adaptable
+%geographic information system (GIS)-based implementation
+%was developed as a tool to support research, conservation, and planning tool \ 
+%for studying the interaction of sediment detachment and transport
+%and the scaling of erosional processes over time and space.
+
+% see landlab paper and others on implementation and dev
 
 % design principles
-	% features 
-		% in table
+	% features as a table
 		% multiprocessing / parallel processing, dynamics, scales, models, etc
-
-%\subsection{Conceptual model}
-%Diagram\\
-%Dynamic vs steady state \\
-%Determine mode \\
-%Run erosion model \\
-%Gravitational diffusion \\
 
 % -------------------------- TABLE OF MODELS -----------------------------
 
@@ -1238,6 +1233,7 @@ $84~min~13~s$ running on 6 threads
 
 
 % --------- RESULTS ---------
+\subsection{Results}
 
 % dynamic model results
 The dynamic RUSLE3D simulation
@@ -1265,9 +1261,9 @@ negative and positive elevation change.
 %
 While USPED's pattern of elevation change
 was grainy and fragmented, 
-it clearly captured the process of channel 
+it captured the process of channel 
 filing and widening expected for 
-transport capacity limited soil erosion regime
+a transport capacity limited soil erosion regime
 (Figure~\ref{fig:simulations}f). 
 
 % steady state model results
@@ -1281,19 +1277,17 @@ erosion-deposition regimes
 SIMWE simulated
 channel widening 
 and the formation of depositional ridges
-along the centerline of the channel
+along the thalweg of the channel
 (Figure~\ref{fig:simwe_simulations}c).
 %
 For a detachment limited soil erosion regime
 SIMWE simulated major erosion
 driving the continued development 
 of the gully network
-(Figure~\ref{fig:simwe_simulations}f). 
-%
-The development of the nascent branch
+including the spread of rills and
+the evolution of the nascent branch
 into a full fledged channel
-clearly demonstrated the process 
-of gully formation. 
+(Figure~\ref{fig:simwe_simulations}f). 
 %
 The detachment limited simulation
 also formed extensive ridges
@@ -1305,12 +1299,11 @@ observed in the 2012 and 2016 landform maps
 (Figure~\ref{fig:study_area}e-f). 
 
 % comparison of dynamic and steady state results
-While we simulated different soil erosion regimes, 
-this landscape is dominated by a detachment limited regime
-as demonstrated by the formation of the gully
-and the development of the depositional ridges 
-beside its channel. 
-% 
+Given the presence of an active gully 
+with ridges along its banks,
+this landscape is dominated by 
+a detachment limited soil erosion regime.
+%
 The detachment limited SIMWE simulation 
 generated the morphological features
 -- the deeply incised gully channels, 
@@ -1322,21 +1315,31 @@ realistically simulating landscape evolution
 at the scale of a subwatershed. 
 %
 The erosion-deposition and transport limited 
-SIMWE simulations generated 
+SIMWE simulations also generated 
 the morphological processes and features
 that would be expected in these regimes
--- gradual channel filling 
+-- gradual aggradation
 and the formation of a depositional ridge 
-along the centerline the of the channel.
+along the thalweg of the channel.
 
-% vs USPED and RUSLE3D
-	% less accurate morphological results
-	% but much faster
-	% appropriate for landscape to regional scale
-	% for ex:
-	% cite Fort Bragg report with doi on researchgate
-
-
+While RUSLE3D and USPED
+produced less realistic patterns of landscape evolution
+than SIMWE,
+these models were much faster and still generated
+the key morphological patterns and processes -- 
+channel incision, filling, and widening. 
+%
+Given their speed
+and approximate modeling of erosive processes, 
+RUSLE3D and USPED 
+are effective for simulating landscape evolution
+at regional scales, 
+i.e.~for landscapes greater than $10~km^{2}$. 
+%
+RUSLE3D for example has been used to
+model erosion for the entire $650~km^{2}$ 
+Fort Bragg installation at $9~m$ resolution
+\citep{Levine2018}. 
 
 % --------- SIMULATION TABLE ---------
 
@@ -1382,10 +1385,63 @@ and $25~mm~hr^{-1}$}
 % -------------------- DISCUSSION ---------------------------------
 %\section{Discussion}
 
-% -------------------- CONCLUSIONS ---------------------------------
+	% Usability: implemented in an open source GIS
 
-\conclusions %[modified heading if necessary]
-...
+\subsection{Reproducibility}
+
+	% open source code
+	% for open source software
+	% open data repository
+
+	% for replicability, repeatability, and recomputability
+
+% -------------------- CONCLUSIONS ---------------------------------
+\conclusions
+
+The short-term landscape evolution model 
+\emph{r.sim.terrain} 
+can realistically simulate the development of 
+gullies, rills, and hillslopes by overland water erosion
+for a range of hydrologic and soil erosion regimes.
+%
+The landscape evolution model was tested
+with a series of simulations for different 
+hydrologic and soil erosion regimes
+for a highly eroded sub-watershed on Fort Bragg
+with an active gully.
+For each regime it generated the 
+morphological processes and features expected.
+%
+% physics based models
+The physics-based SIMWE model 
+realistically simulated short-term topographic change
+for steady state hydrologic regimes
+at sub-watershed to watershed scales. 
+For detachment limited soil erosion regimes
+it simulated morphological processes including
+channel incision, channel widening, and 
+the development of knickzones, rills, and scour pits.
+For transport limited and erosion-deposition regimes,
+it simulated processes such as channel aggradation,
+scouring, and the development of
+depositional ridges along the thalweg.
+% empirical models
+The empirical RUSLE3D and USPED models
+approximated short-term topographic change
+at watershed to regional scales. 
+For detachment limited soil erosion regimes 
+RUSLE3D simulated channel incision,
+while for transport limited regimes
+USPED simulated channel widening and filling. 
+% uses & implications
+Since it is a GIS-based model 
+that realistically simulates 
+fine-scale morphological processes and features
+\emph{r.sim.terrain} can easily and effectively be used 
+in conjunction with other GIS-based tools
+for geomorphological research,
+land management and conservation,
+erosion control, and landscape restoration. 
 
 % --------------------CODE AND DATA------------------------
 
@@ -1398,7 +1454,7 @@ under the GNU General Public License version 2.
 This repository also includes Python scripts 
 for running and reproducing the simulations in this paper. 
 % Docker
-%
+% ...
 % Data
 The geospatial dataset for the study area is available on GitHub at
 \url{https://github.com/baharmon/landscape_evolution_dataset}
