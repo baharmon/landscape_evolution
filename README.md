@@ -31,9 +31,9 @@ It is an add-on module for
 
 <p align="center">
   <img src="images/ss_flux_3d/legend_flux.png" height="200">
-  <img src="images/ss_flux_3d/flux.png" height="400">
+  <img src="images/ss_flux_3d/flux.png" height="360">
   <img src="images/ss_flux_3d/legend_difference.png" height="200">
-  <img src="images/ss_flux_3d/difference.png" height="400">
+  <img src="images/ss_flux_3d/difference.png" height="360">
 </p>
 Sediment flux (kg*m/s)and net difference (m)
 for a steady state, detachment limited SIMWE simulation
