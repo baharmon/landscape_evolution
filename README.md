@@ -2,12 +2,32 @@
 [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/baharmon/landscape_evolution/master)
 
 # r.sim.terrain
-A short term landscape evolution using a path sampling method to solve water and sediment flow continuity equations to model mass flows over complex topographies. Implemented as an add-on for [GRASS GIS](https://grass.osgeo.org/), a free open source GIS.
-
-## About
-A dynamic, process-based landscape evolution model using simulated erosion and deposition to generate a timeseries of digital elevation models in GRASS GIS. This is a simple, fine-scale, short term landscape evolution model using a path sampling method to solve water and sediment flow continuity equations and model mass flows over complex topographies based on topographic, land cover, soil, and rainfall parameters. This either steady state or dynamic model can simulate landscape evolution for a range of hydrologic soil erosion regimes. The GRASS modules [r.sim.water](https://grass.osgeo.org/grass73/manuals/r.sim.water.html) and [r.sim.sediment](https://grass.osgeo.org/grass73/manuals/r.sim.sediment.html) are used to simulate erosion and deposition. The change in elevation is a function of time, net erosion-deposition, and sediment mass density. This module can also simulate landscape evolution based on the RUSLE3D and USPED soil erosion models.
-
-change in elevation (m) = change in time (s) * net erosion-deposition (kg/m^2s) / sediment mass density (kg/m^3)
+A short-term  landscape evolution model 
+that simulates topographic change 
+for both steady state and dynamic flow regimes
+across a range of spatial scales.
+This free and open source, 
+GIS-based landscape evolution model
+uses empirical models (RUSLE3D & USPED)
+for soil erosion at watershed to regional scales 
+and a physics-based model (SIMWE)
+for shallow overland water flow and soil erosion 
+at subwatershed scales
+to compute short-term topographic change. 
+This either steady state or dynamic model simulates
+how overland sediment mass flows reshape topography
+for a range of hydrologic soil erosion regimes
+based on topographic, land cover, soil, and rainfall parameters. 
+As demonstrated by a case study 
+for Patterson Branch subwatershed
+on the Fort Bragg military installation in North Carolina,
+*r.sim.terrain* can realistically simulate the development of 
+fine-scale morphological features including 
+ephemeral gullies, rills, and hillslopes.
+Applications include land management, erosion control,
+landscape planning, and landscape restoration. 
+It is an add-on module for 
+[GRASS GIS](https://grass.osgeo.org/).
 
 ## Installation
 * Launch GRASS GIS
@@ -19,7 +39,7 @@ Clone or download the
 [sample dataset](https://github.com/baharmon/landscape_evolution_dataset)
 with a time series of lidar-based digital elevation models
 and orthoimagery
-for a highly eroded watershed near Patterson Branch Creek, Fort Bragg, NC, USA.
+for a highly eroded subwatershed of Patterson Branch Creek, Fort Bragg, NC, USA.
 
 ## Tutorial
 [Jupyter Notebook](https://mybinder.org/v2/gh/baharmon/landscape_evolution/master)
