@@ -147,11 +147,11 @@ r.mapcalc "ls_factor=(0.4+1.0)*((accumulation_2016/22.1)^0.4)*((sin(slope_2016)/
 r.colors map=ls_factor color=viridis -e
 ```
 
-<p align="center"><img src="../images/erosion/flow_accumulation_2016.png"></p>
+<p align="center"><img src="images/erosion/flow_accumulation_2016.png"></p>
 
 **Flow accumulation**
 
-<p align="center"><img src="../images/erosion/ls_factor.png"></p>
+<p align="center"><img src="images/erosion/ls_factor.png"></p>
 
 **LS3D factor**
 
@@ -185,7 +185,7 @@ r.colors map=sediment_flow color=viridis -e
 g.remove -f type=raster name=r_factor
 ```
 
-<p align="center"><img src="../images/erosion/sediment_flow_2016.png"></p>
+<p align="center"><img src="images/erosion/sediment_flow_2016.png"></p>
 
 **Sediment flow**
 
@@ -248,7 +248,7 @@ and move the raster elevation or the shaded relief map below the depth map
 to better visualize the relationship between topography and water.
 
 Display the legend for the water depth map with either the
-![legend](../images/grass-gui/legend-add.png)
+![legend](images/grass-gui/legend-add.png)
 `Add raster legend` button
 or
 the command [d.legend](https://grass.osgeo.org/grass74/manuals/d.legend.html).
@@ -266,7 +266,7 @@ add the latest orthophotograph `naip_2014` and
 the landcover, mannings, and infiltration maps
 to your map display.
 Display their legends with either the
-![legend](../images/grass-gui/legend-add.png)
+![legend](images/grass-gui/legend-add.png)
 `Add raster legend` button
 or
 the command [d.legend](https://grass.osgeo.org/grass74/manuals/d.legend.html).
@@ -284,7 +284,7 @@ because you are rerunning the simulation.
 r.sim.water elevation=elevation_2016 dx=dx dy=dy rain_value=50.0 man=mannings infil=infiltration depth=depth_2016 nwalkers=10000 niterations=10 --overwrite
 ```
 
-<p align="center"><img src="../images/erosion/depth_2016.png"></p>
+<p align="center"><img src="images/erosion/depth_2016.png"></p>
 
 **Water depth**
 
@@ -308,12 +308,12 @@ Simulate net erosion-deposition (kg/m^2^s) with
 r.sim.sediment elevation=elevation_2016 water_depth=depth_2016 dx=dx dy=dy detachment_coeff=detachment transport_coeff=transport shear_stress=shear_stress man=mannings erosion_deposition=erosion_deposition_2016 nwalkers=10000
 ```
 Display the legend for the erosion-deposition map with either the
-![legend](../images/grass-gui/legend-add.png)
+![legend](images/grass-gui/legend-add.png)
 `Add raster legend` button
 or
 the command [d.legend](https://grass.osgeo.org/grass74/manuals/d.legend.html).
 
-<p align="center"><img src="../images/erosion/erosion_deposition_2016.png"></p>
+<p align="center"><img src="images/erosion/erosion_deposition_2016.png"></p>
 
 **Erosion deposition**
 
@@ -340,7 +340,7 @@ in a detachment limited soil erosion regime with
 r.sim.sediment elevation=elevation_2016 water_depth=depth_2016 dx=dx dy=dy detachment_coeff=detachment transport_coeff=transport shear_stress=shear_stress man=mannings sediment_flux=sediment_flux_2016 nwalkers=10000
 ```
 
-<p align="center"><img src="../images/erosion/sediment_flux_2016.png"></p>
+<p align="center"><img src="images/erosion/sediment_flux_2016.png"></p>
 
 **Sediment flux**
 
@@ -376,8 +376,8 @@ g.gui.animation raster=depth.01,depth.02,depth.03,depth.04,depth.05,depth.06,dep
 ```
 
 <p align="center">
-  <img src="../images/erosion/water-flow.gif" height="250">
-  <img src="../images/erosion/water-flow-3d.gif" height="250">
+  <img src="images/erosion/water-flow.gif" height="250">
+  <img src="images/erosion/water-flow-3d.gif" height="250">
 </p>
 
 # Landscape evolution
