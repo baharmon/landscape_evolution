@@ -452,18 +452,17 @@ g.mapset -c mapset=transport location=nc_spm_evolution
 
 <p align="center">
   <img src="images/ss_transport_3d/legend_erosion_deposition.png" height="100">
-  <img src="images/ss_transport_3d/erosion_deposition.png" height="250">
+  <img src="images/ss_transport_3d/erosion_deposition.png" height="360">
   <img src="images/ss_transport_3d/legend_difference.png" height="100">
-  <img src="images/ss_transport_3d/difference.png" height="250">
+  <img src="images/ss_transport_3d/difference.png" height="360">
 </p>
 Erosion-deposition (kg*m/s^2)and net difference (m)
 for a steady state, transport limited SIMWE simulation
 of a 120 min event with a rainfall intensity of 50 mm/hr
 
 <p align="center">
-  <img src="images/sample_data/elevation_2016.png" height="250">
-  <img src="images/ss_transport/legend_elevation.png" height="100">
-  <img src="images/ss_transport/elevation.png" height="250">
+  <img src="images/sample_data/elevation_2016.png" height="360">
+  <img src="images/ss_transport/shaded_relief.png" height="360">
 </p>
 Elevation from 2016 airborne lidar survey
 and elevation after a steady state, transport limited SIMWE simulation
