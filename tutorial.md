@@ -451,9 +451,9 @@ g.mapset -c mapset=transport location=nc_spm_evolution
 ```
 
 <p align="center">
-  <img src="images/ss_transport_3d/legend_erosion_deposition.png" height="100">
+  <img src="images/ss_transport_3d/legend_erosion_deposition.png" height="200">
   <img src="images/ss_transport_3d/erosion_deposition.png" height="360">
-  <img src="images/ss_transport_3d/legend_difference.png" height="100">
+  <img src="images/ss_transport_3d/legend_difference.png" height="200">
   <img src="images/ss_transport_3d/difference.png" height="360">
 </p>
 Erosion-deposition (kg*m/s^2)and net difference (m)
