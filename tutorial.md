@@ -417,6 +417,7 @@ Create a new mapset called `rusle` with the module
 g.mapset -c mapset=rusle location=nc_spm_evolution
 ```
 
+*Under development...*
 
 ## USPED evolution model
 Create a new mapset called `usped` with the module
@@ -425,6 +426,7 @@ Create a new mapset called `usped` with the module
 g.mapset -c mapset=usped location=nc_spm_evolution
 ```
 
+*Under development...*
 
 ## SIMWE evolution model
 
@@ -436,6 +438,8 @@ Create a new mapset called `erdep` with the module
 g.mapset -c mapset=erdep location=nc_spm_evolution
 ```
 
+*Under development...*
+
 ## Detachment limited regime
 Create a new mapset called `flux` with the module
 [g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
@@ -443,11 +447,26 @@ Create a new mapset called `flux` with the module
 g.mapset -c mapset=flux location=nc_spm_evolution
 ```
 
+*Under development...*
+
 ## Transport limited regime
 Create a new mapset called `transport` with the module
 [g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
 ```
 g.mapset -c mapset=transport location=nc_spm_evolution
+```
+
+Run *r.sim.terrain* with the simwe model
+for a 120 min event with a rainfall intensity of 50 mm/hr.
+Use a transport value lower than the detachment value
+to trigger a transport limited erosion regime.
+Optionally use the `-f` flag to fill depressions
+in order to reduce the effect of positive feedback loops.
+```
+r.sim.terrain -f runs=event mode=simwe_mode rain_intensity=50.0 \
+rain_interval=120 rain_duration=10 walkers=1000000 \
+detachment_value=0.01 transport_value=0.0001 manning=mannings \
+runoff=runoff
 ```
 
 <p align="center">
