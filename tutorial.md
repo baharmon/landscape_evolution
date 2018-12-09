@@ -463,10 +463,8 @@ to trigger a transport limited erosion regime.
 Optionally use the `-f` flag to fill depressions
 in order to reduce the effect of positive feedback loops.
 ```
-r.sim.terrain -f runs=event mode=simwe_mode rain_intensity=50.0 \
-rain_interval=120 rain_duration=10 walkers=1000000 \
-detachment_value=0.01 transport_value=0.0001 manning=mannings \
-runoff=runoff
+r.sim.terrain -f runs=event mode=simwe_mode rain_intensity=50.0 rain_interval=120 rain_duration=10 \
+walkers=1000000 detachment_value=0.01 transport_value=0.0001 manning=mannings runoff=runoff
 ```
 
 <p align="center">
