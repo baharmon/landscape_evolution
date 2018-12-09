@@ -248,7 +248,6 @@ and move the raster elevation or the shaded relief map below the depth map
 to better visualize the relationship between topography and water.
 
 Display the legend for the water depth map with either the
-![legend](images/grass-gui/legend-add.png)
 `Add raster legend` button
 or
 the command [d.legend](https://grass.osgeo.org/grass74/manuals/d.legend.html).
@@ -266,7 +265,6 @@ add the latest orthophotograph `naip_2014` and
 the landcover, mannings, and infiltration maps
 to your map display.
 Display their legends with either the
-![legend](images/grass-gui/legend-add.png)
 `Add raster legend` button
 or
 the command [d.legend](https://grass.osgeo.org/grass74/manuals/d.legend.html).
@@ -308,7 +306,6 @@ Simulate net erosion-deposition (kg/m^2^s) with
 r.sim.sediment elevation=elevation_2016 water_depth=depth_2016 dx=dx dy=dy detachment_coeff=detachment transport_coeff=transport shear_stress=shear_stress man=mannings erosion_deposition=erosion_deposition_2016 nwalkers=10000
 ```
 Display the legend for the erosion-deposition map with either the
-![legend](images/grass-gui/legend-add.png)
 `Add raster legend` button
 or
 the command [d.legend](https://grass.osgeo.org/grass74/manuals/d.legend.html).
