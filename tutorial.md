@@ -377,6 +377,8 @@ g.gui.animation raster=depth.01,depth.02,depth.03,depth.04,depth.05,depth.06,dep
   <img src="images/erosion/water-flow-3d.gif" height="250">
 </p>
 
+---
+
 # Landscape evolution
 
 In this section you will learn about
@@ -407,6 +409,8 @@ g.region region=region res=0.3
 r.mask vector=watershed
 ```
 
+---
+
 ## RULSE evolution model
 Create a new mapset called `rusle` with the module
 [g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
@@ -416,6 +420,8 @@ g.mapset -c mapset=rusle location=nc_spm_evolution
 
 *Under development...*
 
+---
+
 ## USPED evolution model
 Create a new mapset called `usped` with the module
 [g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
@@ -424,6 +430,8 @@ g.mapset -c mapset=usped location=nc_spm_evolution
 ```
 
 *Under development...*
+
+---
 
 ## SIMWE evolution model
 
@@ -437,6 +445,8 @@ g.mapset -c mapset=erdep location=nc_spm_evolution
 
 *Under development...*
 
+---
+
 ## Detachment limited regime
 Create a new mapset called `flux` with the module
 [g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
@@ -445,6 +455,8 @@ g.mapset -c mapset=flux location=nc_spm_evolution
 ```
 
 *Under development...*
+
+---
 
 ## Transport limited regime
 Create a new mapset called `transport` with the module
