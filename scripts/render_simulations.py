@@ -221,7 +221,7 @@ def render_region_2d(mapset):
         gscript.run_command('r.colors',
             map='flux_{time}'.format(time=end_time),
             color='viridis',
-            flags='e')
+            flags='g')
         gscript.run_command('d.shade',
             shade='shaded_relief',
             color='flux_{time}'.format(time=end_time),
@@ -229,7 +229,9 @@ def render_region_2d(mapset):
         gscript.run_command('d.legend',
             raster='flux_{time}'.format(time=end_time),
             fontsize=fontsize,
-            at=legend_coord)
+            labelnum='2',
+            at=legend_coord,
+            flags='l')
         gscript.run_command('d.mon', stop=driver)
 
     # remove mask
@@ -371,18 +373,6 @@ def render_region_3d(mapset):
                 size=size,
                 errors='ignore'
                 )
-
-            # render legend
-            gscript.run_command('r.out.legend',
-                raster=raster,
-                file=os.path.join(render,'legend_'+raster+'.png'),
-                dimensions=[50,400],
-                unit='px',
-                resolution='300',
-                color='none',
-                digits=4,
-                fontsize=6,
-                overwrite=overwrite)
 
     # remove temporary maps
     gscript.run_command(

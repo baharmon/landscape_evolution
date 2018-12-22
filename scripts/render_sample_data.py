@@ -52,10 +52,11 @@ def main():
 
     """render 2d maps"""
     # render_region_2d()
-    render_fortbragg_2d()
+    render_map_elements()
+    # render_fortbragg_2d()
 
     """render 3d maps"""
-    # render_region_3d()
+    render_region_3d()
     # render_fortbragg_3d()
 
     atexit.register(cleanup)
@@ -218,7 +219,7 @@ def render_region_2d():
         raster='flow_accumulation_2016',
         fontsize=fontsize,
         at=legend_coord,
-        flags='n')
+        flags='nl')
     gscript.run_command('d.mon', stop=driver)
 
     # render ls factor
@@ -236,7 +237,8 @@ def render_region_2d():
         raster='ls_factor',
         fontsize=fontsize,
         at=legend_coord,
-        flags='n')
+        labelnum='2',
+        flags='nl')
     gscript.run_command('d.mon', stop=driver)
 
     # render sediment flow
@@ -254,7 +256,8 @@ def render_region_2d():
         raster='sediment_flow_2016',
         fontsize=fontsize,
         at=legend_coord,
-        flags='n')
+        labelnum='2',
+        flags='nl')
     gscript.run_command('d.mon', stop=driver)
 
     # render sediment flux
@@ -272,6 +275,8 @@ def render_region_2d():
         raster='sediment_flux_2016',
         fontsize=fontsize,
         at=legend_coord,
+        range='0,1',
+        digits='2',
         flags='n')
     gscript.run_command('d.mon', stop=driver)
 
@@ -290,6 +295,7 @@ def render_region_2d():
         raster='erosion_deposition_2016',
         fontsize=fontsize,
         at=legend_coord,
+        range='-0.1,0.1',
         flags='n')
     gscript.run_command('d.mon', stop=driver)
 
@@ -566,6 +572,33 @@ def render_fortbragg_3d():
         errors='ignore'
         )
 
+def render_map_elements():
+    """render a scale bar and north arrow"""
+
+    # create rendering directory
+    render = os.path.join(gisdbase, 'images', 'sample_data')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    # set region
+    gscript.run_command('g.region', region='region', res=res)
+
+    # render map scale bar and north arrow
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'map_elements'+'.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.northarrow',
+        style='6',
+        at='90.0,10.0',
+        flags='t')
+    gscript.run_command('d.barscale',
+        at='63,5.0',
+        segment=2,
+        fontsize=fontsize)
+    gscript.run_command('d.mon', stop=driver)
 
 def cleanup():
     try:
