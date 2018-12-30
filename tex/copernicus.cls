@@ -16,7 +16,7 @@
 %% -----------------------------------------------------------------
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesClass{copernicus}
-    [2018/05/16 8.72 Copernicus papers]
+    [2018/10/08 8.82 Copernicus papers]
 \frenchspacing
 \clubpenalty10000
 \widowpenalty10000
@@ -86,6 +86,8 @@
                                 \edef\@journalnameabbreviation{\@journalnameabbreviation\space Discuss.}%
                                 \expandafter\jurl@splitter\@journalurl\@nil
                                 \edef\@journalurl{\jurl@first-discuss.net}}}
+\newif\if@preface%ask Lupino
+\DeclareOption{preface}  {\@prefacetrue}
 \newif\if@corrigendum%ask Jasch
 \newif\if@editorialnotetwoc%ask Jasch
 \newif\if@editorialnoted%ask Jasch
@@ -286,7 +288,11 @@
   \@journalnameabbreviation
   \ifcopyediting\else\if@noref,\space\@msnumber\else,\space\@pvol, \@fpage\if@nolastpage\else{--\@lpage}\fi\fi, \@pyear\fi}
 \def\@journalurlInfo{%
-  \@journalurl\ifcopyediting\else/\if@noref\@msnumber\else\@pvol/\@fpage/\@pyear\fi/\fi}
+  \if@preface
+    \@journalurl\ifcopyediting\else/\preface@abbrev.pdf\fi
+  \else
+    \@journalurl\ifcopyediting\else/\if@noref\@msnumber\else\@pvol/\@fpage/\@pyear\fi/\fi
+  \fi}
 \def\runningheaderfont{%
   \if@stage@final%spec. obsolete ?
     \if@sansserifheader
@@ -295,6 +301,34 @@
       \bfseries
     \fi
   \fi}
+\def\prefacetype#1{%
+  \if@preface
+  \def\@argi{#1}%
+  \def\1{volume}\ifx\@argi\1
+    \ifx\v@num\@undefined\CopernicusError{\string\prefacetype{} is "volume", but no {\string\vnumber} was given!}{\string\prefacetype{} is "volume", but no {\string\vnumber} was given!}\fi
+    \gdef\preface@abbrev{\@journalnameshortlower-volume\v@num-preface}%
+  \else
+    \def\1{issue}\ifx\@argi\1
+      \ifx\i@num\@undefined\CopernicusError{\string\prefacetype{} is "issue", but no {\string\inumber} was given!}{\string\prefacetype{} is "isue", but no {\string\inumber} was given!}\fi
+      \ifx\v@num\@undefined\CopernicusError{\string\prefacetype{} is "issue", but no {\string\vnumber} was given!}{\string\prefacetype{} is "issue", but no {\string\vnumber} was given!}\fi
+      \gdef\preface@abbrev{\@journalnameshortlower-volume\v@num-issue\i@num-preface}%
+    \else
+      \def\1{SI}\ifx\@argi\1
+        \ifx\SI@num\@undefined\CopernicusError{\string\prefacetype{} is "SI", but no {\string\sinumber} was given!}{\string\prefacetype{} is "issue", but no {\string\sinumber} was given!}\fi
+        \gdef\preface@abbrev{\@journalnameshortlower-special\_issue\SI@num-preface}%
+      \else
+        \CopernicusError{Empty \string\prefacetype{} not allowed!}
+        {\string\prefacetype{} must be on of: "volume", "issue", or "SI"}
+      \fi
+    \fi
+  \fi
+  \else
+    \CopernicusError{Found \string\prefacetype{#1} in an article without the preface class option!}{Please do not use \string\prefacetype\space unless you chose preface^^Jas class option to \string\documentclass{copernicus}}%
+  \fi
+}%
+\def\vnumber#1{\if@preface\gdef\v@num{#1}\else\CopernicusError{\string\vnumber\space is only available in preface papers!}{Omit \string\vnumber\space and use \string\publvol\space or \string\origpublvol\space instread.}\fi}
+\def\sinumber#1{\if@preface\gdef\SI@num{#1}\else\CopernicusError{\string\sinumber\space is only available in preface papers!}{Omit \string\sinumber\space when articly type is not preface.}\fi}
+\def\inumber#1{\if@preface\gdef\i@num{#1}\else\CopernicusError{\string\inumber\space is only available in preface papers!}{Omit \string\inumber\space and use \string\articlenumber\space instread.}\fi}
 \def\@manuscriptInfo{%
   % Manuscript prepared for \@journalnameabbreviation\\
   % with version \csname ver@\@classfilename.cls\endcsname\ %
@@ -329,8 +363,8 @@
       \runningheaderfont
       \rlap{\thepage}\hfil\@runhd}
     \if@cop@home
-      \def\@oddfoot{\edit@rnotereminder\runningheaderfont\@journalurlInfo\hfil\ifx\specialp@perstring\@undefined\@journalInfo\else\specialp@perstring\fi}
-      \def\@evenfoot{\edit@rnotereminder\runningheaderfont\ifx\specialp@perstring\@undefined\@journalInfo\else\specialp@perstring\fi\hfil\@journalurlInfo}
+      \def\@oddfoot{\edit@rnotereminder\runningheaderfont\if@preface \@journalurlInfo\hfil Preface\else\@journalurlInfo\hfil\ifx\specialp@perstring\@undefined\@journalInfo\else\specialp@perstring\fi\fi}
+      \def\@evenfoot{\edit@rnotereminder\runningheaderfont\if@preface Preface\hfil\@journalurlInfo\else\ifx\specialp@perstring\@undefined\@journalInfo\else\specialp@perstring\fi\hfil\@journalurlInfo\fi}
     \else
       \let\@oddfoot\@empty
       \let\@evenfoot\@empty
@@ -383,14 +417,18 @@
           \parbox[t]
             {0.6\textwidth}
             {\if@sansserifheader\leavevmode\runningheaderfont\fi
-             \@journalInfo\\
-             %\@journalurlInfo\\ %raus laut Ticket 4529
-             https://doi.org/10.5194/%
-             \if@noref
-               \@msnumber
+             \if@preface
+               doi:10.5194/\preface@abbrev%
              \else
-               \@journalnameshortlower
-               -\@pvol-\@fpage-\@pyear
+               \@journalInfo\\
+               %\@journalurlInfo\\ %raus laut Ticket 4529
+               https://doi.org/10.5194/%
+               \if@noref
+                 \@msnumber
+               \else
+                 \@journalnameshortlower
+                 -\@pvol-\@fpage-\@pyear
+               \fi
              \fi
              \ifx\specialp@perstring\@undefined\else-\def\1{Corrigendum}\ifx\specialp@perstring\1corrigendum\else editorial-note\fi\fi
              \\
@@ -1166,6 +1204,7 @@
   \def\sampleavailabilityname{Sample availability}%
   \def\authorcontributionname{Author contributions}%
   \def\competinginterestsname{Competing interests}%
+  \def\videosupplementname{Video supplement}%
   \def\teamlistname{Team list}%
   \def\disclaimername{Disclaimer}%
   \def\sistatementname{Special issue statement}%
@@ -1193,6 +1232,7 @@
   \def\sampleavailabilityname{Probenverfügbarkeit}%
   \def\authorcontributionname{Autorenmitwirkung}%
   \def\competinginterestsname{Interessenkonflikt}%
+  \def\videosupplementname{Videoanhang}%
   \def\teamlistname{Gruppenautorenschaft}%
   \def\disclaimername{Haftungsausschluss}%
   \def\sistatementname{Erklärung zum Sonderheft}%
@@ -1217,6 +1257,7 @@
   \def\codedataavailabilityname{Disponibilité du code et des données}%
   \def\authorcontributionname{Collaborateurs}%
   \def\competinginterestsname{Intérêts concurrents}%
+  \def\videosupplementname{Annexes vidéo}%
   \def\teamlistname{Liste d'auteurs}%
   \def\disclaimername{Clause de non-responsabilité}%
   \def\sistatementname{Déclaration de la numéro special}%
@@ -2057,7 +2098,7 @@
 \def\published#1{\if@cop@home\gdef\@published{#1}\fi}  \if@stage@final\else\def\@published{}\fi%+1,+2,+d
 \def\firstpage#1{\if@cop@home\ifx\specialp@perstring\@undefined\ifx\citati@nbyarticlenumber\@undefined\gdef\@fpage{#1}\fi\fi\fi}
                                                        \def\@fpage{1}%+1,+2,+d
-\def\articlenumber#1{\if@cop@home\ifx\specialp@perstring\@undefined\ifx\citati@nbyarticlenumber\relax\gdef\@fpage{#1}\fi\fi\fi}
+\def\articlenumber#1{\if@cop@home\ifx\specialp@perstring\@undefined\ifx\citati@nbyarticlenumber\relax\gdef\@fpage{#1}\gdef\article@number{#1}\fi\fi\fi}
 \def\citationbyarticlenumber{%
   \@nolastpagetrue
   \let\citati@nbyarticlenumber\relax
@@ -2077,7 +2118,11 @@
   \ifx\@tempa\@empty
     \gdef\@howtocite{}%
   \else
-    \gdef\@howtocite{#1, \@journalnameabbreviation, \@pvol, \@fpage--\@lpage, \expandafter\url{\@@doi}, \@pyear.}%
+    \ifcopyediting
+      \gdef\@howtocite{}%
+    \else
+      \gdef\@howtocite{#1, \@journalnameabbreviation, \@pvol, \@fpage--\@lpage, \expandafter\url{\@@doi}, \@pyear.}%
+    \fi
   \fi
 }\def\@howtocite{}%+1,+2,+d
 \def\msnumber#1{\if@cop@home\gdef\@msnumber{#1}\fi}
@@ -2251,9 +2296,9 @@
     \rightskip\@rightskip
     \parindent\z@
   \fi
-  \item The Supplement related to this article is available online at
+  \item The Supplement related to this article is available online at:
     \if@stage@final\else\\\fi
-    \supplement{#1}.\ifdim\wd\longtwo@box<220\p@\\~\fi
+    \supplement{#1}\ifdim\wd\longtwo@box<220\p@\\~\fi
   \end{trivlist}%
   }}
 \def\generateCommand#1#2{%
@@ -2292,6 +2337,7 @@
 \generateCommand{sampleavailability}{\endlist\egroup}
 \generateCommand{competinginterests}{\endlist\egroup}
 \generateCommand{teamlist}          {\endlist\egroup}
+\generateCommand{videosupplement}   {\endlist\egroup}
 \generateCommand{disclaimer}        {\endlist\egroup}
 \generateCommand{sistatement}       {\endlist\egroup}
 \generateCommand{acknowledgement}   {}        \def\endacknowledgement{\endlist\egroup}

@@ -1,6 +1,7 @@
 % !TEX encoding = UTF-8 Unicode
 
-\documentclass[esurf, manuscript]{copernicus}
+% Geoscientific Model Development (gmd)
+\documentclass[gmd, manuscript]{copernicus}
 
 % packages
 \usepackage{tabu}
@@ -30,7 +31,7 @@
 \correspondence{Brendan Harmon (baharmon@lsu.edu)}
 
 \received{}
-\pubdiscuss{} %% only important for two-stage journals
+\pubdiscuss{}
 \revised{}
 \accepted{}
 \published{}
@@ -69,8 +70,6 @@ Applications include land management, erosion control,
 landscape planning, and landscape restoration. 
 \end{abstract}
 
-% add graphical abstract with erdep and flux difference
-
 \copyrightstatement{...}
 
 % --------- INTRO FIGURE ---------
@@ -82,7 +81,7 @@ landscape planning, and landscape restoration.
 The digital elevation model (DEM) 
 before (a.) and after (b.)
 simulated landscape evolution with
-\lowercase{r.sim.terrain}. 
+\emph{r.sim.terrain}. 
 This simulation used the SIMWE model
 for a $120~min$ rainfall event with $25~mm~hr^{-1}$
 in a transport limited soil erosion regime at steady state.
@@ -95,7 +94,7 @@ with depositional ridges forming along its thalweg.}
 % --------- SIMULATION FIGURES ---------
 
 \introduction
-Landscape evolution models represent how the surface of the earth changes over time. 
+Landscape evolution models represent how the surface of the earth changes over time in response to physical processes. 
 Most studies of landscape evolution have been descriptive, 
 but a number of numerical landscape evolution models 
 have been developed that simulate elevational change over time 
@@ -182,16 +181,17 @@ with the concentrated flow of water in the channel of the gully
 detaching large amounts of sediment and transporting it to the foot of the gully, 
 potentially forming a depositional fan. 
 After the initial formation of the gully
-the soil erosion regime may change.
-If the intensity of the rainfall decreases
-the regime may switch to erosion-deposition. 
+the soil erosion regime may switch
+to erosion-deposition if the intensity of rainfall decreases.
 Subsequent rainfall events may trigger further 
-knickpoint formation and upslope migration, channel incision and widening, and
+knickpoint formation and upslope migration, 
+channel incision and widening, and
 depositional fan and ridge formation. 
 Between high intensity rainfall events, 
 lower intensity events and gravitational diffusion
 may gradually smooth the shape of the gully. 
-Eventually, if detachment capacity significantly exceeds transport capacity, 
+Eventually, if detachment capacity 
+significantly exceeds transport capacity, 
 the gully may fill with sediment. 
 
 % gully monitoring
@@ -212,7 +212,7 @@ airborne lidar, and terrestrial lidar \citep{Starek2011,Bechet2016}.
 % high resolution topographic data
 With terrestrial lidar, airborne lidar and 
 UAS photogrammetry
-there is now high enough resolution topographic data 
+there is now sufficient resolution topographic data 
 to morphometrically analyze and 
 numerically model fine-scale landscape evolution in GIS
 including processes such as gully formation 
@@ -223,7 +223,7 @@ the Revised Universal Soil Loss Equation Version 2 (RUSLER)
 in conjunction with the Ephemeral Gully Erosion Estimator (EphGEE)
 \citep{Dabney2014},
 while gully evolution
-has been simulation for detachment capacity limited erosion regimes
+has been simulated for detachment capacity limited erosion regimes
 with the Simulation of Water Erosion (SIMWE) model
 \citep{Koco2011, Mitasova2013}. 
 % what is needed?
@@ -236,7 +236,7 @@ fine-scale spatial and short-term temporal erosional processes.
 
 % aim
 The numerical landscape evolution model 
-\lowercase{r.sim.terrain} was developed to 
+\emph{r.sim.terrain} was developed to 
 simulate the spatiotemporal evolution of landforms
 caused by shallow overland water and sediment flows
 at spatial scales ranging from
@@ -257,16 +257,16 @@ comparing steady state and dynamic flow regimes, and
 studying the role of dynamic flow regimes 
 in fine-scale morphological change. 
 % testing
-\lowercase{r.sim.terrain} was tested with 
+\emph{r.sim.terrain} was tested with 
 a regional scale ($650 \unit{km}^{2}$) case study
 and a subwatershed scale ($450 \unit{m}^{2}$) case study. 
 At the subwatershed scale simulations were compared against 
 a time-series of lidar surveys.
 
 \section{r.sim.terrain}
-\lowercase{r.sim.terrain}
-is a process-based, spatially distributed landscape evolution model
-that simulates topographic changes
+The process-based, spatially distributed 
+landscape evolution model \emph{r.sim.terrain} 
+simulates topographic changes
 caused by shallow, overland water flow
 across a range of spatiotemporal scales and soil erosion regimes
 using either
@@ -280,7 +280,7 @@ to solve the water and sediment flow equations
 for detachment limited, transport limited, and erosion-deposition 
 soil erosion regimes \citep{Mitasova2004}. 
 With SIMWE 
-\lowercase{r.sim.terrain}
+\emph{r.sim.terrain}
 uses the modeled flow of sediment 
 -- a function of water flow and soil detachment and transport parameters -- 
 to estimate the net erosion and deposition rates. 
@@ -288,7 +288,7 @@ to estimate the net erosion and deposition rates.
 RUSLE3D is an empirical equation for sediment flows 
 in detachment capacity limited soil erosion regimes \citep{Mitasova1996}. 
 With RUSLE3D
-\lowercase{r.sim.terrain}
+\emph{r.sim.terrain}
 uses an event-based erosivity factor, 
 the slope, the flow accumulation, and a 3D topographic factor
 to model sediment flow. 
@@ -296,7 +296,7 @@ to model sediment flow.
 USPED is an empirical equation for net erosion and deposition 
 in transport capacity limited soil erosion regimes. 
 With USPED 
-\lowercase{r.sim.terrain}
+\emph{r.sim.terrain}
 uses an event-based erosivity factor, 
 the slope and aspect, the flow accumulation, and a 3D topographic factor
 to model erosion-deposition as the
@@ -307,16 +307,16 @@ topographic change is derived at each time step
 from the sediment flow or net erosion-deposition rate
 and gravitational diffusion.
 % regimes
-\lowercase{r.sim.terrain} 
-can simulate steady state or dynamic flow regimes.
+The \emph{r.sim.terrain} model
+can simulate either steady state or dynamic flow regimes.
 During simulations with SIMWE 
-\lowercase{r.sim.terrain}
+\emph{r.sim.terrain}
 can switch between 
 detachment limited, transport limited, and erosion-deposition 
 soil erosion regimes.
 
 % capabilities
-\lowercase{r.sim.terrain}
+The \emph{r.sim.terrain} model
 can simulate the evolution of gullies
 including processes such as 
 knickpoint migration,
@@ -334,8 +334,9 @@ landscape restoration,
 and scenario development 
 for landscape planning and management.
 % scale
-r.sim.terrain can simulate landscape evolution 
-over a wide range of spatial scales from small watersheds 
+This model can simulate landscape evolution 
+over a wide range of spatial scales 
+from small watersheds 
 less than ten square kilometers
 with SIMWE
 to regional watersheds
@@ -437,7 +438,7 @@ and r.sim.sediment\footnote{\url{https://grass.osgeo.org/grass75/manuals/r.sim.s
 % overview
 In SIMWE mode 
 for each time step
-\lowercase{r.sim.terrain}
+\emph{r.sim.terrain}
 determines the soil erosion regime,
 simulates water and sediment flows, 
 and then evolves the topography. 
@@ -450,7 +451,7 @@ and then evolves the topography based on the erosion-deposition rate
 and gravitational diffusion.
 % transport limited
 The same process is used in
-a transport capacity limited regime
+a transport capacity limited regime,
 except that the topography is evolved based on 
 the transport limited erosion-deposition rate
 and gravitational diffusion.
@@ -473,10 +474,10 @@ With longer time steps the model simulates steady state dynamics.
 
 % Erosion regime
 This model can switch erosion regimes at each time step
-based on the rainfall intensity $i_r$
-and the balance of the sediment detachment capacity $D_c$
-and the sediment transport capacity $T_c$
-represented by the first order reaction term $\sigma$ 
+based on the rainfall intensity ($i_r$)
+and the balance of the sediment detachment capacity ($D_c$)
+and the sediment transport capacity ($T_c$)
+represented by the first order reaction term $\sigma$, 
 which depends on soil and landcover properties.
 The detachment capacity is the maximum potential 
 detachment rate by overland flow, while
@@ -728,7 +729,8 @@ in a detachment capacity limited soil erosion regime.
 
 \subsubsection{Event-based erosivity factor}
 
-In USLE and RUSLE the erosivity factor $R$ 
+The erosivity factor $R$ 
+in USLE and RUSLE 
 is the combination of the total energy and peak intensity of a rainfall event,
 representing the interaction between the detachment of sediment particles
 and the transport capacity of the flow. 
@@ -826,7 +828,7 @@ where: \\
 
 \subsubsection{Sediment flow}
 
-The sediment flow is a function of the event-based erosivity factor, 
+Sediment flow is a function of the event-based erosivity factor, 
 the soil erodibility factor, the 3D topographic factor, cover factor, and the prevention measures factor 
 (Fig.~\ref{fig:models}f).
 %
@@ -848,7 +850,7 @@ where: \\
 }
 
 % Landscape evolution
-With RUSLE3D the simulated change in elevation $\Delta z(x,y,t)$
+For RUSLE3D the simulated change in elevation $\Delta z(x,y,t)$
 is derived from 
 equation \ref{eq:flux_evolution}
 for landscape evolution in an detachment limited soil erosion regime
@@ -868,14 +870,15 @@ than can be transported.
 As a transport capacity limited model
 USPED predicts erosion where transport capacity increases
 and deposition where transport capacity decreases. 
-In USPED the influence of topography on erosion and deposition
+The influence of topography on erosion and deposition in USPED 
 is represented by a topographic sediment transport factor,
 while the influence of soil and landcover are represented by 
 factors adopted from USLE and RUSLE
 \citep{Mitasova1996}.
-
-With USPED net erosion-deposition is estimated by computing
-the event-based erosivity factor $R_e$ using Eq.~\ref{eq:erosivity_index},
+%
+Net erosion-deposition is estimated by computing
+the event-based erosivity factor ($R_e$) 
+using Eq.~\ref{eq:erosivity_index},
 the slope and aspect of the topography,
 the flow accumulation with a multiple flow direction algorithm,
 the topographic sediment transport factor,
@@ -883,9 +886,9 @@ the sediment flow at transport capacity,
 and the divergence of the sediment flow. 
 
 % Topographic sediment transport factor
-For USPED
-the 3D topographic factor (Eq.~\ref{eq:ls_factor} for RUSLE3D 
-is adapted to represent the topographic sediment transport factor $LST$ --
+The 3D topographic factor (Eq.~\ref{eq:ls_factor}) 
+for RUSLE3D is adapted to represent 
+the topographic sediment transport factor ($LST$) --
 the topographic component 
 of overland flow at sediment transport capacity:
 %
@@ -951,11 +954,36 @@ for the settling of sediment particles due to gravitational diffusion.
 
 \section{Case study} 
 
-To test the effectiveness of r.sim.terrain's models 
+Military activity is a high-impact land use 
+that can cause significant physical alteration to the landscape. 
+Erosion is a major concern for military installations, 
+particularly at training bases, 
+where the land surface is disturbed by 
+off-road vehicles, foot traffic, and munitions. 
+Off-road vehicles and foot traffic by soldiers 
+cause the loss of vegetative cover, 
+disruption of soil structure, soil compaction, 
+and increased runoff due to 
+reduced soil capacity for water infiltration 
+\citep{Webb1983, McDonald2004}
+Gullies -- ephemeral channels with steep headwalls 
+that incise into unconsolidated soil to depths of meters -- 
+are a manifestation of erosion common to 
+military training installations like Ft. Bragg in North Carolina 
+and the Piñon Canyon Maneuver Site in Colorado. 
+While the local development of gullies can restrict 
+the maneuverability of troops and vehicles during training exercises 
+\citep{Huang2014}, 
+pervasive gullying across a landscape 
+can degrade an entire training area 
+\citep{Huang2014}.
+
+To test the effectiveness of the different models 
+in \emph{r.sim.terrain}
 we compared the simulated evolution
 of a highly eroded subwatershed of 
 Patterson Branch Creek on Fort Bragg, North Carolina
-against a timeseries of lidar surveys.
+against a timeseries of airborne lidar surveys.
 The models -- SIMWE, RUSLE3D, and USPED --
 were tested in steady state and dynamic modes
 for constant rainfall, design storms, and recorded rainfall.
@@ -969,11 +997,12 @@ for constant rainfall, design storms, and recorded rainfall.
 \label{fig:3d}
 \end{figure}
 
-Fort Bragg, a military installation 
-in the Sandhills region of North Carolina % 650 km2
-with a Longleaf Pine and Wiregrass Ecosystem \citep{Sorrie2006},
-has extensive areas of bare, erodible soils
+With $650~km^{2}$ of land
+Fort Bragg is the largest military installation in the US
+and has extensive areas of bare, erodible soils
 on impact areas, firing ranges, landing zones, and dropzones. 
+It is located in the Sandhills region of North Carolina 
+with a Longleaf Pine and Wiregrass Ecosystem \citep{Sorrie2006}.
 %
 The study landscape
 -- a subwatershed of Patterson Branch Creek 
@@ -982,13 +1011,13 @@ is pitted with impact craters from artillery and mortar shells
 and has an active, approximately $2~m$ deep gully. 
 %
 It is a Pine-Scrub Oak Sandhill community
-composed primarily of Longleaf Pine -- Pinus palustris --
-and Wiregrass -- Aristida stricta --
+composed primarily of Longleaf Pine (Pinus palustris)
+and Wiregrass (Aristida stricta)
 on Blaney and Gilead loamy sands 
 \citep{Sorrie2004}. 
 %
 Throughout the Coleman Impact Area
-the frequent fires ignited by live munitions
+frequent fires ignited by live munitions
 drive the ecological disturbance regime
 of this fire adapted ecosystem.
 %
@@ -1004,10 +1033,9 @@ triggered extensive channelized overland flow,
 gully formation, and sediment transport into the creek. 
 
 % --------- DATA ---------
-We generated a timeseries of 
-digital elevations models and landcover maps 
-of the study landscape
-from lidar pointclouds and orthophotography
+Timeseries of digital elevations models 
+and landcover maps for the study landscape
+were generated from lidar pointclouds and orthophotography
 (Figure~\ref{fig:study_area}a-c). 
 The digital elevations models for 2004, 2012, and 2016
 were interpolated at $0.3~m$ resolution
@@ -1021,7 +1049,7 @@ Unsupervised image classification
 \footnote{https://grass.osgeo.org/grass74/manuals/i.maxlik.html}
 was used to identify clusters of spectral reflectance
 \footnote{https://grass.osgeo.org/grass74/manuals/i.cluster.html}
-in a timeseries of 1 meter resolution orthoimagery 
+in a timeseries of $1~m$ resolution orthoimagery 
 collected by the National Agriculture Imagery Program.
 The landcover maps were derived by fusing the
 classified lidar point clouds with the classified orthoimagery.
@@ -1083,26 +1111,26 @@ approximately $1~m$ or more.
 % --------- SIMULATIONS ---------
 \subsection{Simulations}
 %
-We ran a sequence of simulations 
+We ran a sequence of \emph{r.sim.terrain} simulations 
 for the Patterson Branch Creek subwatershed study area
 to test dynamic and steady state flow regimes
 in the SIMWE, RUSLE3D, and USPED models
 (Table~\ref{table:simulations}).
 %
-We used RUSLE3D to simulate $120~min$ events
+RUSLE3D was used to simulate $120~min$ events
 with rainfall intensities of $50~mm~hr^{-1}$
 for detachment capacity limited soil erosion regimes
 for both dynamic and steady state flow regimes
 using RUSLE3D
 (Figure~\ref{fig:simulations}a-c).
 % 
-We used USPED to simulate $120~min$ events
+USPED was used to simulate $120~min$ events
 with rainfall intensities of $50~mm~hr^{-1}$
 for transport capacity limited soil erosion regimes
 for both dynamic and steady state flow regimes
 (Figure~\ref{fig:simulations}d-f).
 %
-We used SIMWE to simulate $120~min$ events 
+SIMWE was used to simulate $120~min$ events 
 with rainfall intensities of $50~mm~hr^{-1}$
 for erosion-deposition 
 and detachment limited soil erosion regimes 
@@ -1110,9 +1138,9 @@ in steady state flow regimes
 (Figure~\ref{fig:simwe_simulations}).
 %
 In all of the simulations 
-we used a sink filling algorithm 
--- an optional parameter in r.sim.terrain --  
-to reduce the effects of positive feedback loops
+a sink filling algorithm
+-- an optional parameter in \emph{r.sim.terrain} -- 
+was used to reduce the effects of positive feedback loops
 that cause the over-development of scour pits. 
 
 % scripts
@@ -1176,7 +1204,7 @@ negative and positive elevation change.
 While USPED's pattern of elevation change
 was grainy and fragmented, 
 it captured the process of channel 
-filing and widening expected for 
+filling and widening expected with 
 a transport capacity limited soil erosion regime
 (Figure~\ref{fig:simulations}f). 
 
@@ -1335,7 +1363,7 @@ USPED simulated channel widening and filling.
 % uses & implications
 Since it is a GIS-based model 
 that realistically simulates 
-fine-scale morphological processes and features
+fine-scale morphological processes and features,
 \emph{r.sim.terrain} can easily and effectively be used 
 in conjunction with other GIS-based tools
 for geomorphological research,
