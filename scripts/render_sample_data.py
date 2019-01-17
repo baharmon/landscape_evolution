@@ -51,8 +51,8 @@ years = [2004, 2012, 2016]
 def main():
 
     """render 2d maps"""
-    # render_region_2d()
-    render_map_elements()
+    render_region_2d()
+    # render_map_elements()
     # render_fortbragg_2d()
 
     """render 3d maps"""

@@ -26,7 +26,6 @@ gscript.use_temp_region()
 
 # set environment
 env = gscript.gisenv()
-
 overwrite = True
 env['GRASS_OVERWRITE'] = overwrite
 env['GRASS_VERBOSE'] = False
@@ -45,7 +44,8 @@ fontsize = 24
 
 # temporal paramters
 end_time = '2016_01_01_02_00_00'
-# end_time = '2012_01_01_02_00_00'  # params for fort braggw
+
+# color tables
 elevation_colors = """\
 0% 0 132 132
 89 0 191 191
@@ -57,6 +57,15 @@ elevation_colors = """\
 100% 200 200 200
 nv white
 default white
+"""
+flux_colors = """\
+0 255:255:255
+0.0001 255:255:0
+0.125 255:127:0
+0.25 191:127:63
+100% 0:0:0
+nv 255:255:255
+default 255:255:255
 """
 
 def main():
@@ -79,18 +88,21 @@ def render_region_2d(mapset):
     if not os.path.exists(render):
         os.makedirs(render)
 
-    # set region
+    # set region and mask
     gscript.run_command('g.region', region='region', res=res)
-
-    # set mask
     gscript.run_command('r.mask', vector='watershed')
 
-    # set elevation color table
+    # set color tables
     gscript.write_command(
         'r.colors',
         map='elevation_{time}'.format(time=end_time),
         rules='-',
         stdin=elevation_colors)
+    gscript.write_command(
+        'r.colors',
+        map='flux_{time}'.format(time=end_time),
+        rules='-',
+        stdin=flux_colors)
 
     # compute and render shaded relief
     gscript.run_command('d.mon',
@@ -218,14 +230,12 @@ def render_region_2d(mapset):
             height=height,
             output=os.path.join(render, 'flux'+'.png'),
             overwrite=overwrite)
-        gscript.run_command('r.colors',
-            map='flux_{time}'.format(time=end_time),
-            color='viridis',
-            flags='g')
-        gscript.run_command('d.shade',
-            shade='shaded_relief',
-            color='flux_{time}'.format(time=end_time),
-            brighten=20)
+        # gscript.run_command('d.shade',
+        #     shade='shaded_relief',
+        #     color='flux_{time}'.format(time=end_time),
+        #     brighten=20)
+        gscript.run_command('d.rast',
+            map='flux_{time}'.format(time=end_time))
         gscript.run_command('d.legend',
             raster='flux_{time}'.format(time=end_time),
             fontsize=fontsize,
