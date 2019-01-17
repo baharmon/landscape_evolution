@@ -10,6 +10,7 @@
 \usepackage[export]{adjustbox}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
+\usepackage[percent]{overpic}
 
 \begin{document}
 
@@ -94,7 +95,8 @@ with depositional ridges forming along its thalweg.}
 % --------- BODY ---------
 
 \introduction
-Landscape evolution models represent how the surface of the earth changes over time in response to physical processes. 
+Landscape evolution models represent how the surface of the earth changes 
+over time in response to physical processes. 
 Most studies of landscape evolution have been descriptive, 
 but a number of numerical landscape evolution models 
 have been developed that simulate elevational change over time 
@@ -112,21 +114,29 @@ a new Python library for numerically modeling Earth surface processes
 has components for simulating landscape evolution such as the 
 Stream Power with Alluvium Conservation and Entrainment (SPACE) 
 model \citep{Shobe2017}.
+% gis-based models
+While Geographic Information Systems (GIS)
+support efficient data management, 
+spatial and statistical modeling and analysis, 
+and visualization,
+there are few GIS-based soil erosion models or landscape evolution models
+(see Table~\ref{table:erosion_models}-\ref{table:evolution_models}).
 % research questions
-There are still, however, major research questions 
+Furthermore there are still major research questions 
 to address in the theoretical foundations of erosion modeling 
 such as how erosional processes scale over time and space 
 and how sediment detachment and transport interact \citep{Mitasova2013}. 
 % dynamic evolution
-A dynamic landscape evolution model is needed to study
-fine-scale spatial and short-term temporal erosional processes
-such as gully formation and the development of microtopography. 
 While most numerical landscape evolution models 
 simulate peak flows at steady state
 (see Table~\ref{table:evolution_models}),
 short-term erosional processes like gully formation can be dynamic
 with significant morphological changes happening within minutes
 before flows reach steady state. 
+A dynamic landscape evolution model is needed to study
+fine-scale spatial and short-term temporal erosional processes
+such as gully formation and the development of microtopography. 
+
 
 % steady state versus dynamic
 At the beginning of a rainfall event 
@@ -208,7 +218,6 @@ and time series of surveys using
 total station theodolites \citep{Thomas2004},
 unmanned aerial systems (UAS),
 airborne lidar, and terrestrial lidar \citep{Starek2011,Bechet2016}.
-
 % high resolution topographic data
 With terrestrial lidar, airborne lidar and 
 UAS photogrammetry
@@ -340,8 +349,9 @@ from small watersheds
 less than ten square kilometers
 with SIMWE
 to regional watersheds
-of thousands of square kilometers
-with USPED or RULSE3D. 
+of hundreds of square kilometers
+with USPED or RULSE3D,
+although it does not model fluvial processes. 
 % implementation
 This model has been implemented 
 as a Python add-on module 
@@ -384,7 +394,7 @@ AGWA  & watershed & event -- & vector & \href{https://www.tucson.ars.ag.gov/agwa
 \\
 %\multicolumn{6}{c}{Adapted from Mitasova et al. \citep{Mitasova2013}}
 \end{tabu}
-\label{table:erosion_models} 
+\label{table:erosion_models}
 \end{table*}
 
 % table of landscape evolution models
@@ -1003,7 +1013,9 @@ for constant rainfall, design storms, and recorded rainfall.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{../images/sample_data_3d/naip_2014_carto.png}
+\begin{overpic}[width=0.75\textwidth]{../images/sample_data_3d/naip_2014.png}
+\put(0,0){\includegraphics[height=65mm,center]{../images/sample_data_3d/map_elements.png}}  
+\end{overpic} \\
 \caption{Subwatershed with 2014 orthoimagery draped over 2016 digital elevation model, Patterson Branch Creek, Fort Bragg, NC, USA}
 \label{fig:3d}
 \end{figure}

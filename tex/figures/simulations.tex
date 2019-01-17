@@ -12,6 +12,7 @@
 \usepackage[utf8]{inputenc}
 %\usepackage[active,pdftex,tightpage]{preview}
 \usepackage{newtxtext,newtxmath}
+\usepackage[percent]{overpic}
 
 \begin{document}
 
@@ -42,7 +43,9 @@
 \multicolumn{1}{c}{\includegraphics[height=25mm]{../../images/rusle_3d/legend_difference.png}}
 & \multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/rusle_3d/difference.png}}
 & \multicolumn{1}{c}{\includegraphics[height=25mm]{../../images/usped_3d/legend_difference.png}}
-& \multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/usped_3d/difference_carto.png}}\\
+& \multicolumn{1}{c}{\begin{overpic}[height=50mm]{../../images/usped_3d/difference.png}
+\put(0,0){\includegraphics[height=40mm]{../../images/sample_data_3d/map_elements.png}}  
+\end{overpic}}\\
 \multicolumn{1}{c}{} 
 & \multicolumn{1}{c}{c. Dynamic RUSLE3D net difference [m]}
 & \multicolumn{1}{c}{} 
