@@ -1,0 +1,122 @@
+% erosion regime eq.
+\begin{equation}
+\label{eq:regime}
+\sigma = {D_c \over T_c}
+\end{equation}
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $\sigma$  is a first order reaction term [$\unit{m}^{-1}$]\\
+\hspace*{0.5em} $D_c$ is the sediment detachment capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
+\hspace*{0.5em} $T_c$ is the sediment transport capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
+
+% shallow water flow eq.
+\begin{equation}
+\label{eq:water}
+{\partial h(x,y,t) \over \partial t} =
+ i_e(x,y,t) - \nabla ~ q(x,y,t)
+\end{equation}
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $(x,y)$ is the position [\unit{m}]\\
+\hspace*{0.5em} $t$ is the time [\unit{s}] \\
+\hspace*{0.5em} $h(x,y,t)$ is the depth of overland flow [\unit{m}]\\
+\hspace*{0.5em} $i_e(x,y,t)$ is the rainfall excess [\unit{m~s^{-1}}] \\
+\hspace*{0.5em} (i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)\\
+\hspace*{0.5em} $\nabla$ is the divergence of the flow vector field\\
+\hspace*{0.5em} $q(x,y,t)$ is the water flow per unit width [$\unit{m}^2~\unit{s}^{-1}$]. \\
+}
+
+% diffusion term
+$ \propto \nabla^2 [h^{5/3}(x,y)]$ 
+
+%  diffuse wave eq.
+\begin{equation}
+\label{eq:difwater}
+-{\varepsilon(x,y)\over 2 }\nabla^2 [h^{5/3}(x,y)]
++\nabla ~ [ h(x,y)~v(x,y)] = i_e(x,y)
+\end{equation}
+{\small
+\noindent
+ where: \\
+ \noindent
+ \hspace*{0.5em} $\varepsilon(x,y)$ is a spatially variable diffusion coefficient. \\
+}
+
+%sediment flow eq.
+\begin{equation}\label{eq:sedflow} 
+q_s(x,y,t) = \rho_s(x,y,t) ~ q(x,y,t)
+\end{equation}
+{\small
+\noindent
+where: \\
+\hspace*{0.5em} $q_s(x,y,t)$ is the sediment flow rate per unit width [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
+\hspace*{0.5em} $\rho_s(x,y,t)$ is sediment mass density [\unit{kg~m}$^{-3}$].\\
+\hspace*{0.5em} $q(x,y,t)$ is unit flow discharge vector ($m^{2} s^{-1}$) \\
+\hspace*{0.5em} (i.e.~ the direction and rate of water flow per unit width)\\
+}
+
+% erosion-deposition eq.
+\begin{equation}\label{eq:sediment} 
+d_s(x,y,t) = 
+{\partial [\rho_s(x,y,t)h(x,y,t)] \over \partial t} +
+\nabla ~ q_s(x,y,t)
+\end{equation}
+{\small
+\noindent
+where: \\
+\hspace*{0.5em} $d_s(x,y,t)$ is net erosion-deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$].\\
+\hspace*{0.5em} $q_s(x,y,t)$ is the sediment flow rate per unit width ($kg~m^{-1}s^{-1}$)\\
+\hspace*{0.5em} $\rho_s(x,y,t)$ is sediment mass density ($kg~m^{-3}$).\\
+}
+
+% landscape evolution eq.
+\begin{equation}
+\label{eq:evolution} 
+{\Delta z(x,y,t) = \Delta t ~ d_s(x,y,t) ~ \rho_s^{-1} }
+\end{equation}
+
+% detachment limited landscape evolution eq.
+\begin{equation}
+\label{eq:flux_evolution} 
+{\Delta z(x,y,t) = \Delta t ~ q_s(x,y,t) ~ \varrho_s^{-1} } 
+\end{equation}
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $\Delta z =$ change in elevation $(m)$ \\
+\hspace*{0.5em} $q_s =$ sediment flux $(kg ~ m^{-1} s^{-1})$ \\
+\hspace*{0.5em} $\varrho_s$ is the mass of sediment per unit area [\unit{kg ~ m}$^{-2}$].\\
+}
+
+% gravitational diffusion eq.
+\begin{equation}
+\label{eq:grav_diffusion} 
+{\Delta z(x,y,t) = \Delta t ~ \rho_s^{-1} ~ \varepsilon_g ~ \nabla(x,y,t)}
+\end{equation}
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $\varepsilon_g$ is the gravitational diffusion coefficient [\unit{m}$^{2}$~\unit{s}$^{-1}$]\\ %$(m^{-2} s^{-1})$
+\hspace*{0.5em} $\nabla(x,y,t)$ is the topographic divergence [\unit{m}$^{-1}$].\\
+}
+
+% erosion-deposition at transport capacity eq.
+\begin{equation}\label{eq:usped_erdep} 
+d_s(x,y,t) = 
+{\partial (T ~ \cos \alpha) \over \partial x} +
+{\partial (T ~ \sin \alpha) \over \partial y}
+\end{equation}
+{\small
+\noindent
+where: \\
+\hspace*{0.5em} $d_s(x,y,t)$ is net erosion-deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]\\
+\hspace*{0.5em} $\alpha$ is the aspect of the topography [$\degree$].\\
+}
+
+

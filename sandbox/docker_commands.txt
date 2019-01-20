@@ -1,2 +1,0 @@
-docker build -t landscape_evolution .
-docker run --rm -p 8080:8080  -it landscape_evolution
