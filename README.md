@@ -3,7 +3,7 @@
 [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/baharmon/landscape_evolution/master)
 
 # r.sim.terrain
-A short-term  landscape evolution model
+A short-term landscape evolution model
 that simulates topographic change
 for both steady state and dynamic flow regimes
 across a range of spatial scales.

@@ -399,16 +399,6 @@ g.extension extension=r.sim.terrain url=github.com/baharmon/landscape_evolution
 r.sim.terrain --ui*
 ```
 
-Set your region to the study area with 0.3 meter resolution
-using the module
-[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
-Optionally set the watershed as a mask using the modules
-[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html).
-```
-g.region region=region res=0.3
-r.mask vector=watershed
-```
-
 ---
 
 ## RULSE evolution model
@@ -463,6 +453,16 @@ Create a new mapset called `transport` with the module
 [g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
 ```
 g.mapset -c mapset=transport location=nc_spm_evolution
+```
+
+Set your region to the study area with 0.3 meter resolution
+using the module
+[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
+Optionally set the watershed as a mask using the module
+[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html).
+```
+g.region region=region res=0.3
+r.mask vector=watershed
 ```
 
 Run *r.sim.terrain* with the simwe model
