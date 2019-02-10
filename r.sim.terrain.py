@@ -1309,6 +1309,7 @@ class Evolution:
         ls_factor = 'ls_factor'
         slope = 'slope'
         aspect = 'aspect'
+        flowacc = 'flowacc'
         qsx = 'qsx'
         qsxdx = 'qsxdx'
         qsy = 'qsy'
@@ -1363,11 +1364,23 @@ class Evolution:
         gscript.run_command(
             'r.watershed',
             elevation=self.elevation,
-            accumulation=depth,
+            accumulation=flowacc,
             flags="a",
+            overwrite=True)
+        region = gscript.parse_command(
+            'g.region', flags='g')
+        res = region['nsres']
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{depth}"
+            "=({flowacc}*{res})".format(
+                depth=depth,
+                flowacc=flowacc,
+                res=res),
             overwrite=True)
         # add depression parameter to r.watershed
         # derive from landcover class
+
 
         # compute dimensionless topographic factor
         gscript.run_command(
@@ -1540,6 +1553,7 @@ class Evolution:
             type='raster',
             name=['slope',
                 'aspect',
+                'flowacc',
                 'qsx',
                 'qsy',
                 'qsxdx',
@@ -1565,6 +1579,7 @@ class Evolution:
         ls_factor = 'ls_factor'
         slope = 'slope'
         grow_slope = 'grow_slope'
+        flowacc = 'flowacc'
         sedflow = 'sedflow'
         sedflux = 'flux'
 
@@ -1599,8 +1614,19 @@ class Evolution:
         gscript.run_command(
             'r.watershed',
             elevation=self.elevation,
-            accumulation=depth,
+            accumulation=flowacc,
             flags="a",
+            overwrite=True)
+        region = gscript.parse_command(
+            'g.region', flags='g')
+        res = region['nsres']
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{depth}"
+            "=({flowacc}*{res})".format(
+                depth=depth,
+                flowacc=flowacc,
+                res=res),
             overwrite=True)
 
         # compute dimensionless topographic factor
@@ -1700,6 +1726,7 @@ class Evolution:
             type='raster',
             name=['slope',
                 'grow_slope',
+                'flowacc',
                 'sedflow',
                 'flux',
                 'settled_elevation',
@@ -2636,6 +2663,7 @@ def cleanup():
                 'settled_elevation',
                 'depressionless_elevation',
                 'flow_direction',
+                'flowacc',
                 'divergence',
                 'rain_energy',
                 'rain_volume',
