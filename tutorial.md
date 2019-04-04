@@ -433,9 +433,10 @@ g.copy raster=elevation_2016@PERMANENT,elevation_2016
 Run *r.sim.terrain* with the RUSLE model
 for a 120 min event with a rainfall intensity of 50 mm/hr
 at a 3 minute interval.
-The interval should be set to the time it takes a
+The interval should be set to the travel time it takes a
 particle of water to cross the region.
-Set the empirical coefficients m and n
+To calculate the travel time see section [Travel time](#travel-time).
+The empirical coefficients m and n
 for the upslope contributing area and the slope can range
 from 0.2 to 0.6 and 1.0 to 1.3 respectively
 with low values representing dominant sheet flow
@@ -444,8 +445,7 @@ Optionally use the `-f` flag to fill depressions
 in order to reduce the effect of positive feedback loops.
 This simulation may take approximately 2 minutes to run.
 ```
-r.sim.terrain -f elevation=elevation_2016 runs=event mode=rusle_mode \
-rain_intensity=50.0 rain_duration=120 rain_interval=3 m=0.4 n=1.3
+r.sim.terrain -f elevation=elevation_2016 runs=event mode=rusle_mode rain_intensity=50.0 rain_duration=120 rain_interval=3 m=0.4 n=1.3
 ```
 
 To simulate landscape evolution using RUSLE with
@@ -508,8 +508,7 @@ Optionally use the `-f` flag to fill depressions
 in order to reduce the effect of positive feedback loops.
 This simulation may take approximately 3 minutes to run.
 ```
-r.sim.terrain -f elevation=elevation_2016 runs=event mode=usped_mode \
-rain_intensity=50.0 rain_duration=120 rain_interval=3 m=1.5 n=1.2
+r.sim.terrain -f elevation=elevation_2016 runs=event mode=usped_mode rain_intensity=50.0 rain_duration=120 rain_interval=3 m=1.5 n=1.2
 ```
 
 To simulate landscape evolution using RUSLE with
@@ -517,10 +516,7 @@ spatially variable landcover and soil erodibility factors
 use `c_factor` and `k_factor` raster maps.
 Rerun the model with the `--overwrite` flag.
 ```
-r.sim.terrain -f elevation=elevation_2016 runs=event mode=usped_mode \
-rain_intensity=50.0 rain_duration=120 rain_interval=3 m=1.5 n=1.2 \
-c_factor=c_factor k_factor=k_factor erdepmin=-0.25 erdepmax=0.25 \
-density_value=1.6 grav_diffusion=0.05 --overwrite
+r.sim.terrain -f elevation=elevation_2016 runs=event mode=usped_mode rain_intensity=50.0 rain_duration=120 rain_interval=3 m=1.5 n=1.2 c_factor=c_factor k_factor=k_factor erdepmin=-0.25 erdepmax=0.25 density_value=1.6 grav_diffusion=0.05 --overwrite
 ```
 
 Display the results with the raster map `net_difference` and a raster legend.
@@ -555,14 +551,11 @@ g.mapset -c mapset=erdep location=nc_spm_evolution
 Set your region to the study area with 1 meter resolution
 using the module
 [g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
-Optionally set the watershed as a mask using the module
-[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html).
 Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
 using the module
 [g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
 ```
 g.region region=region res=1
-r.mask vector=watershed
 g.copy raster=elevation_2016@PERMANENT,elevation_2016
 ```
 
@@ -570,11 +563,26 @@ Run *r.sim.terrain* with the SIMWE model
 for a 120 min event with a rainfall intensity of 50 mm/hr.
 Optionally use the `-f` flag to fill depressions
 in order to reduce the effect of positive feedback loops.
+This simulation may take hours to run.
 ```
-r.sim.terrain -f  elevation=elevation_2016@erdep runs=event mode=simwe_mode \
-rain_intensity=50.0 rain_interval=120 rain_duration=10 walkers=1000000 \
-manning=mannings runoff=runoff
+r.sim.terrain -f  elevation=elevation_2016 runs=event mode=simwe_mode rain_intensity=50.0 rain_interval=120 rain_duration=120 walkers=1000000 manning=mannings runoff=runoff grav_diffusion=0.05 erdepmin=-0.25 erdepmax=0.25
 ```
+
+Set the watershed as a mask using the module
+[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html) and then
+display the results with the raster map `net_difference` and a raster legend.
+```
+r.mask vector=watershed
+d.rast map=net_difference
+d.legend raster=net_difference range=-2,2
+```
+
+<p align="center"><images/tutorial/erdep.png"></p>
+<p>
+Net difference (m)for a steady state SIMWE simulation
+in a variable erosion-deposition regime
+of a 120 min event with a rainfall intensity of 50 mm/hr
+</p>
 
 ---
 
@@ -585,7 +593,32 @@ Create a new mapset called `flux` with the module
 g.mapset -c mapset=flux location=nc_spm_evolution
 ```
 
-*Under development...*
+Set your region to the study area with 1 meter resolution
+using the module
+[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
+Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
+using the module
+[g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+```
+g.region region=region res=1
+g.copy raster=elevation_2016@PERMANENT,elevation_2016
+```
+
+Run *r.sim.terrain* with the SIMWE model
+for a 120 min event with a rainfall intensity of 50 mm/hr.
+Use a detachment value lower than the transport value
+to trigger a detachment limited erosion regime.
+Optionally use the `-f` flag to fill depressions
+in order to reduce the effect of positive feedback loops.
+```
+r.sim.terrain -f  elevation=elevation_2016 runs=event mode=simwe_mode rain_intensity=50.0 rain_interval=120 rain_duration=120 walkers=1000000 manning=mannings runoff=runoff grav_diffusion=0.05 erdepmin=-0.25 erdepmax=0.25 detachment_value=0.0001 transport_value=0.01
+```
+
+<p align="center"><images/tutorial/flux.png"></p>
+<p>
+Net difference (m)for a steady state, detachment limited  SIMWE simulation
+of a 120 min event with a rainfall intensity of 50 mm/hr
+</p>
 
 ---
 
@@ -596,14 +629,15 @@ Create a new mapset called `transport` with the module
 g.mapset -c mapset=transport location=nc_spm_evolution
 ```
 
-Set your region to the study area with 0.3 meter resolution
+Set your region to the study area with 1 meter resolution
 using the module
 [g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
-Optionally set the watershed as a mask using the module
-[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html).
+Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
+using the module
+[g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
 ```
-g.region region=region res=0.3
-r.mask vector=watershed
+g.region region=region res=1
+g.copy raster=elevation_2016@PERMANENT,elevation_2016
 ```
 
 Run *r.sim.terrain* with the SIMWE model
@@ -613,9 +647,7 @@ to trigger a transport limited erosion regime.
 Optionally use the `-f` flag to fill depressions
 in order to reduce the effect of positive feedback loops.
 ```
-r.sim.terrain -f elevation=elevation_2016@erdep runs=event mode=simwe_mode \
-rain_intensity=50.0 rain_interval=120 rain_duration=10 walkers=1000000 \
-detachment_value=0.01 transport_value=0.0001 manning=mannings runoff=runoff
+r.sim.terrain -f elevation=elevation_2016 runs=event mode=simwe_mode rain_intensity=50.0 rain_interval=120 rain_duration=120 walkers=1000000 manning=mannings runoff=runoff grav_diffusion=0.05 erdepmin=-0.25 erdepmax=0.25 detachment_value=0.01 transport_value=0.0001
 ```
 
 <p align="center">
@@ -637,10 +669,43 @@ and elevation after a steady state, transport limited SIMWE simulation
 of a 120 min event with a rainfall intensity of 50 mm/hr
 
 ## Parallel processing
-*Under development...*
+In GRASS GIS on Ubuntu turn on
+[OpenMP](https://grasswiki.osgeo.org/wiki/OpenMP) support with:
+
+```
+./configure --with-openmp
+```
+
+Then you use the `threads` flag when running *r.sim.terrain* in SIMWE mode
+for parallel processing. In another terminal use `htop` to see CPU usage.
+```
+r.sim.terrain -f  elevation=elevation_2016 runs=event mode=simwe_mode rain_intensity=50.0 rain_interval=120 rain_duration=120 walkers=1000000 manning=mannings runoff=runoff grav_diffusion=0.05 erdepmin=-0.25 erdepmax=0.25 threads=8
+```
 
 ## Travel time
-*Under development...*
+For a dynamic landscape evolution simulation the `rain_interval` parameter
+should be set to the approximate travel time
+for a particle of water to cross the study region. To calculate this
+use [r.sim.water](https://grass.osgeo.org/grass74/manuals/r.sim.water.html)
+to compute the discharge rate.
+Calculate the mean velocity with
+[r.info](https://grass.osgeo.org/grass74/manuals/r.info).
+```
+r.slope.aspect elevation=elevation_2016 dx=dx dy=dy
+r.sim.water elevation=elevation_2016 dx=dx dy=dy depth=depth discharge=discharge nwalkers=1000000
+r.info map=discharge
+```
+
+Then calculate the travel time as a function of mean velocity and distance.
+```
+travel time = mean velocity (m/s) * distance (m)
+184.165 s = 0.36833 m/s * 500 m
+```
+
+Alternatively travel time could also be computed using the add-on
+[r.stream.distance](https://grass.osgeo.org/grass74/manuals/addons/r.stream.distance.html)
+or the add-on
+[r.traveltime](https://grass.osgeo.org/grass74/manuals/addons/r.traveltime.html).
 
 ## Animation
 *Under development...*
