@@ -611,7 +611,7 @@ in order to reduce the effect of positive feedback loops.
 r.sim.terrain -f  elevation=elevation_2016 runs=event mode=simwe_mode rain_intensity=50.0 rain_interval=120 rain_duration=120 walkers=1000000 manning=mannings runoff=runoff grav_diffusion=0.05 erdepmin=-0.25 erdepmax=0.25 detachment_value=0.0001 transport_value=0.01
 ```
 
-<p align="center"><img src="images/tutorial/flux.png"></p>
+<p align="center"><img src="images/ss_flux/net_difference.png"></p>
 Net difference (m)for a steady state, detachment limited  SIMWE simulation
 of a 120 min event with a rainfall intensity of 50 mm/hr
 
