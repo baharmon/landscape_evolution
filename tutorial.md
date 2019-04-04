@@ -15,6 +15,9 @@
       1. [Erosion-deposition regime](#erosion-deposition-regime)
       2. [Detachment limited regime](#detachment-limited-regime)
       3. [Transport limited regime](#transport-limited-regime)
+    4. [Parallel processing](#parallel-processing)
+    5. [Travel time](#travel-time)
+    6. [Animation](#animation)
 
 ---
 
@@ -22,8 +25,7 @@
 In this section you will learn about
 the RUSLE, USPED, and SIMWE erosion models
 in [GRASS GIS](https://grass.osgeo.org/).
-You will use SIMWE to simulate overland water flow
-and then the resulting erosion and deposition.
+
 
 Start GRASS GIS in the `nc_spm_evolution` location
 and create an `erosion` mapset.
@@ -394,9 +396,15 @@ Install the add-on module *r.sim.terrain*
 with [g.extension](https://grass.osgeo.org/grass74/manuals/g.extension.html)
 using the url for this repository.
 Launch from the Command Line Interface (CLI) with the `ui` flag.
+To install the stable release from the GRASS GIS add-ons repository use:
+```
+g.extension extension=r.sim.terrain
+r.sim.terrain --ui
+```
+To install the development release from this GitHub repository use:
 ```
 g.extension extension=r.sim.terrain url=github.com/baharmon/landscape_evolution
-r.sim.terrain --ui*
+r.sim.terrain --ui
 ```
 
 ---
@@ -408,7 +416,64 @@ Create a new mapset called `rusle` with the module
 g.mapset -c mapset=rusle location=nc_spm_evolution
 ```
 
-*Under development...*
+Set your region to the study area with 1 meter resolution
+using the module
+[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
+Optionally set the watershed as a mask using the module
+[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html).
+Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
+using the module
+[g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+```
+g.region region=region res=1
+r.mask vector=watershed
+g.copy raster=elevation_2016@PERMANENT,elevation_2016
+```
+
+Run *r.sim.terrain* with the RUSLE model
+for a 120 min event with a rainfall intensity of 50 mm/hr
+at a 3 minute interval.
+The interval should be set to the time it takes a
+particle of water to cross the region.
+Set the empirical coefficients m and n
+for the upslope contributing area and the slope can range
+from 0.2 to 0.6 and 1.0 to 1.3 respectively
+with low values representing dominant sheet flow
+and high values representing dominant rill flow.
+Optionally use the `-f` flag to fill depressions
+in order to reduce the effect of positive feedback loops.
+This simulation may take approximately 2 minutes to run.
+```
+r.sim.terrain -f elevation=elevation_2016 runs=event mode=rusle_mode \
+rain_intensity=50.0 rain_duration=120 rain_interval=3 m=0.4 n=1.3
+```
+
+To simulate landscape evolution using RUSLE with
+spatially variable landcover and soil erodibility factors
+use `c_factor` and `k_factor` raster maps.
+Rerun the model with the `--overwrite` flag.
+```
+r.sim.terrain -f elevation=elevation_2016 runs=event mode=rusle_mode \
+rain_intensity=50.0 rain_duration=120 rain_interval=3 m=0.4 n=1.3 \
+c_factor=c_factor k_factor=k_factor fluxmax=0.25 grav_diffusion=0.05 --overwrite
+```
+
+Display the results with the raster map `net_difference` and a raster legend.
+```
+d.rast map=net_difference
+d.legend raster=net_difference range=-2,0
+```
+
+<p align="center">
+  <img src="images/tutorial/rusle_difference_1m.png" height="360">
+  <img src="images/tutorial/rusle_variable_difference_1m.png" height="360">
+</p>
+Net differences (m) for dynamic RUSLE simulations with
+**(a)** constant versus **(b)** spatially variable
+landcover and soil erodibility factors.
+Both were simulated for a 120 min event
+with a rainfall intensity of 50 mm/hr
+at 3 minute interval at 1 meter resolution.
 
 ---
 
@@ -419,25 +484,101 @@ Create a new mapset called `usped` with the module
 g.mapset -c mapset=usped location=nc_spm_evolution
 ```
 
-*Under development...*
+Set your region to the study area with 1 meter resolution
+using the module
+[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
+Optionally set the watershed as a mask using the module
+[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html).
+Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
+using the module
+[g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+```
+g.region region=region res=1
+r.mask vector=watershed
+g.copy raster=elevation_2016@PERMANENT,elevation_2016
+```
+
+Run *r.sim.terrain* with the USPED model
+for a 120 min event with a rainfall intensity of 50 mm/hr
+at a 3 minute interval.
+Set the empirical coefficients m and n
+for the upslope contributing area and the slope to
+1.5 and 1.2 respectively.
+Optionally use the `-f` flag to fill depressions
+in order to reduce the effect of positive feedback loops.
+This simulation may take approximately 3 minutes to run.
+```
+r.sim.terrain -f elevation=elevation_2016 runs=event mode=usped_mode \
+rain_intensity=50.0 rain_duration=120 rain_interval=3 m=1.5 n=1.2
+```
+
+To simulate landscape evolution using RUSLE with
+spatially variable landcover and soil erodibility factors
+use `c_factor` and `k_factor` raster maps.
+Rerun the model with the `--overwrite` flag.
+```
+r.sim.terrain -f elevation=elevation_2016 runs=event mode=usped_mode \
+rain_intensity=50.0 rain_duration=120 rain_interval=3 m=1.5 n=1.2 \
+c_factor=c_factor k_factor=k_factor erdepmin=-0.25 erdepmax=0.25 \
+density_value=1.6 grav_diffusion=0.05 --overwrite
+```
+
+Display the results with the raster map `net_difference` and a raster legend.
+```
+d.rast map=net_difference
+d.legend raster=net_difference range=-2,2
+```
+
+<p align="center">
+  <img src="images/tutorial/usped_difference_1m.png" height="360">
+  <img src="images/tutorial/usped_variable_difference_1m.png" height="360">
+</p>
+Net differences (m) for dynamic USPED simulations with
+**(a)** constant versus **(b)** spatially variable
+landcover and soil erodibility factors.
+Both were simulated for a 120 min event
+with a rainfall intensity of 50 mm/hr
+at 3 minute interval at 1 meter resolution.
 
 ---
 
 ## SIMWE evolution model
 
 
-## Erosion-deposition regime
+### Erosion-deposition regime
 Create a new mapset called `erdep` with the module
 [g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
 ```
 g.mapset -c mapset=erdep location=nc_spm_evolution
 ```
 
-*Under development...*
+Set your region to the study area with 1 meter resolution
+using the module
+[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
+Optionally set the watershed as a mask using the module
+[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html).
+Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
+using the module
+[g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+```
+g.region region=region res=1
+r.mask vector=watershed
+g.copy raster=elevation_2016@PERMANENT,elevation_2016
+```
+
+Run *r.sim.terrain* with the SIMWE model
+for a 120 min event with a rainfall intensity of 50 mm/hr.
+Optionally use the `-f` flag to fill depressions
+in order to reduce the effect of positive feedback loops.
+```
+r.sim.terrain -f  elevation=elevation_2016@erdep runs=event mode=simwe_mode \
+rain_intensity=50.0 rain_interval=120 rain_duration=10 walkers=1000000 \
+manning=mannings runoff=runoff
+```
 
 ---
 
-## Detachment limited regime
+### Detachment limited regime
 Create a new mapset called `flux` with the module
 [g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
 ```
@@ -448,7 +589,7 @@ g.mapset -c mapset=flux location=nc_spm_evolution
 
 ---
 
-## Transport limited regime
+### Transport limited regime
 Create a new mapset called `transport` with the module
 [g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
 ```
@@ -465,15 +606,16 @@ g.region region=region res=0.3
 r.mask vector=watershed
 ```
 
-Run *r.sim.terrain* with the simwe model
+Run *r.sim.terrain* with the SIMWE model
 for a 120 min event with a rainfall intensity of 50 mm/hr.
 Use a transport value lower than the detachment value
 to trigger a transport limited erosion regime.
 Optionally use the `-f` flag to fill depressions
 in order to reduce the effect of positive feedback loops.
 ```
-r.sim.terrain -f runs=event mode=simwe_mode rain_intensity=50.0 rain_interval=120 rain_duration=10 \
-walkers=1000000 detachment_value=0.01 transport_value=0.0001 manning=mannings runoff=runoff
+r.sim.terrain -f elevation=elevation_2016@erdep runs=event mode=simwe_mode \
+rain_intensity=50.0 rain_interval=120 rain_duration=10 walkers=1000000 \
+detachment_value=0.01 transport_value=0.0001 manning=mannings runoff=runoff
 ```
 
 <p align="center">
@@ -493,3 +635,12 @@ of a 120 min event with a rainfall intensity of 50 mm/hr
 Elevation from 2016 airborne lidar survey
 and elevation after a steady state, transport limited SIMWE simulation
 of a 120 min event with a rainfall intensity of 50 mm/hr
+
+## Parallel processing
+*Under development...*
+
+## Travel time
+*Under development...*
+
+## Animation
+*Under development...*

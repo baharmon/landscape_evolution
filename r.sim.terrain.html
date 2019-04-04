@@ -34,10 +34,12 @@ in order to reduce the effect of positive feedback loops.
 
 <div class="code"><pre>
 g.mapset -c mapset=transport location=nc_spm_evolution
-g.region region=region res=0.3
+g.region region=region res=1
 r.mask vector=watershed
-r.sim.terrain -f runs=event mode=simwe_mode rain_intensity=50.0 rain_interval=120 rain_duration=10 \
-walkers=1000000 detachment_value=0.01 transport_value=0.0001 manning=mannings runoff=runoff
+g.copy raster=elevation_2016@PERMANENT,elevation_2016
+r.sim.terrain -f elevation=elevation_2016 runs=event mode=simwe_mode \
+rain_intensity=50.0 rain_interval=120 rain_duration=10 walkers=1000000 \
+detachment_value=0.01 transport_value=0.0001 manning=mannings runoff=runoff
 </pre></div>
 
 <div align="center" style="margin: 10px">
@@ -50,7 +52,7 @@ for a steady state, transport limited SIMWE simulation
 of a 120 min event with a rainfall intensity of 50 mm/hr.</i>
 </div>
 
-For more examples see this in-depth
+For more detailed instructions and examples see this in-depth
 <a href="https://github.com/baharmon/landscape_evolution/blob/master/tutorial.md">tutorial</a>.
 
 <h2>ERROR MESSAGES</h2>
