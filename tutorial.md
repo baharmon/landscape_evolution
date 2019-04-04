@@ -530,7 +530,7 @@ d.legend raster=net_difference range=-2,2
   <img src="images/tutorial/usped_variable_difference_1m.png" height="360">
 </p>
 Net differences (m) for dynamic USPED simulations with
-**(a)** constant versus **(b)** spatially variable
+(a) constant versus (b) spatially variable
 landcover and soil erodibility factors.
 Both were simulated for a 120 min event
 with a rainfall intensity of 50 mm/hr
@@ -577,12 +577,11 @@ d.rast map=net_difference
 d.legend raster=net_difference range=-2,2
 ```
 
-<p align="center"><images/tutorial/erdep.png"></p>
-<p>
+<p align="center"><img src="images/tutorial/erdep.png"></p>
 Net difference (m)for a steady state SIMWE simulation
 in a variable erosion-deposition regime
 of a 120 min event with a rainfall intensity of 50 mm/hr
-</p>
+
 
 ---
 
@@ -614,11 +613,9 @@ in order to reduce the effect of positive feedback loops.
 r.sim.terrain -f  elevation=elevation_2016 runs=event mode=simwe_mode rain_intensity=50.0 rain_interval=120 rain_duration=120 walkers=1000000 manning=mannings runoff=runoff grav_diffusion=0.05 erdepmin=-0.25 erdepmax=0.25 detachment_value=0.0001 transport_value=0.01
 ```
 
-<p align="center"><images/tutorial/flux.png"></p>
-<p>
+<p align="center"><img src="images/tutorial/flux.png"></p>
 Net difference (m)for a steady state, detachment limited  SIMWE simulation
 of a 120 min event with a rainfall intensity of 50 mm/hr
-</p>
 
 ---
 
