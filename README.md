@@ -59,19 +59,17 @@ and create a new mapset `rusle`
 * Install the stable release
 using the GRASS Console / Command Line Interface (CLI) with
 `g.extension  extension=r.sim.terrain`
-* Set your region to the study area with 0.3 meter resolution
+* Set your region to the study area with 1 meter resolution
 using the module
 [g.region](https://grass.osgeo.org/grass74/manuals/g.region.html):
-`g.region region=region res=0.3`
-* Optionally set the watershed as a mask using the module
-[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html):
-`r.mask vector=watershed`
+`g.region region=region res=1`
 * Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset with
 `g.copy raster=elevation_2016@PERMANENT,elevation_2016`
 * Run *r.sim.terrain* with the RUSLE model
-for a 120 min event with a rainfall intensity of 50 mm/hr.
+for a 120 min event with a rainfall intensity of 50 mm/hr
+at a 3 minute interval.
 ```
-r.sim.terrain -f --overwrite elevation=elevation_2016@erdep runs=event rain_interval=10
+r.sim.terrain -f elevation=elevation_2016 runs=event mode=rusle_mode rain_intensity=50.0 rain_duration=120 rain_interval=3 m=0.4 n=1.3
 ```
 * For more detailed instructions see the [Tutorial](tutorial.md)
 
