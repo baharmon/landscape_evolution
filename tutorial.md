@@ -17,8 +17,6 @@
       3. [Transport limited regime](#transport-limited-regime)
     4. [Parallel processing](#parallel-processing)
     5. [Travel time](#travel-time)
-    6. [Animation](#animation)
-
 ---
 
 # Erosion modeling
@@ -703,6 +701,3 @@ Alternatively travel time could also be computed using the add-on
 [r.stream.distance](https://grass.osgeo.org/grass74/manuals/addons/r.stream.distance.html)
 or the add-on
 [r.traveltime](https://grass.osgeo.org/grass74/manuals/addons/r.traveltime.html).
-
-## Animation
-*Under development...*
