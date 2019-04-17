@@ -14,7 +14,8 @@
 
 \begin{document}
 
-\title{\lowercase{r.sim.terrain 1.0}: a dynamic landscape evolution model} 
+%\title{\lowercase{r.sim.terrain 1.0}: a dynamic landscape evolution model} 
+\title{\lowercase{r.sim.terrain 1.0}: a landscape evolution model with dynamic hydrology} 
 
 \Author[1]{Brendan Alexander}{Harmon}
 \Author[2,3]{Helena}{Mitasova}
@@ -25,7 +26,8 @@
 \affil[2]{Center for Geospatial Analytics, North Carolina State University, Raleigh, North Carolina, USA}
 \affil[3]{Department of Marine, Earth, and Atmospheric Sciences, North Carolina State University, Raleigh, North Carolina, USA}
 
-\runningtitle{\lowercase{r.sim.terrain 1.0}: a dynamic landscape evolution model}
+%\runningtitle{\lowercase{r.sim.terrain 1.0}: a dynamic landscape evolution model}
+\runningtitle{\lowercase{r.sim.terrain 1.0}: a landscape evolution model with dynamic hydrology} 
 
 \runningauthor{Brendan Harmon}
 
@@ -57,8 +59,8 @@ and a physics-based model
 for shallow overland water flow and soil erosion 
 at subwatershed scales
 to compute short-term topographic change. 
-This either steady state or dynamic model simulates
-how overland sediment mass flows reshape topography
+This model uses either a steady state or dynamic representation of overland flow
+to simulate how overland sediment mass flows reshape topography
 for a range of hydrologic soil erosion regimes
 based on topographic, land cover, soil, and rainfall parameters. 
 As demonstrated by a case study 
@@ -133,10 +135,9 @@ simulate peak flows at steady state
 short-term erosional processes like gully formation can be dynamic
 with significant morphological changes happening within minutes
 before flows reach steady state. 
-A dynamic landscape evolution model is needed to study
-fine-scale spatial and short-term temporal erosional processes
+A landscape evolution model with dynamic water and sediment flow
+is needed to study fine-scale spatial and short-term temporal erosional processes
 such as gully formation and the development of microtopography. 
-
 
 % steady state versus dynamic
 At the beginning of a rainfall event 
@@ -182,19 +183,25 @@ Multiple incisions initiated by different knickpoints
 may merge into a gully channel
 and multiple channels may merge 
 into a branching gully system \citep{Mitasova2013}. 
+% detachment limited
 This erosive process is dynamic; 
 the morphological changes drive further changes 
-in a positive feedback loop
-until water flow reaches steady state. 
+in a positive feedback loop.
 When the gully initially forms 
 the soil erosion regime should be detachment capacity limited
 with the concentrated flow of water in the channel of the gully 
 detaching large amounts of sediment 
 and transporting it to the foot of the gully, 
-potentially forming a depositional fan. 
-After the initial formation of the gully
-the soil erosion regime may switch
-to erosion-deposition if the intensity of rainfall decreases.
+potentially forming a depositional fan.
+% variable erosion-deposition
+If the intensity of rainfall decreases
+and transport and detachment capacity 
+approach a balance, 
+then the soil erosion regime may switch to 
+a variable erosion-deposition regime,
+in which soil is eroded and deposited 
+in a spatially variable pattern.
+% 
 Subsequent rainfall events may trigger further 
 knickpoint formation and upslope migration, 
 channel incision and widening, and
@@ -202,9 +209,12 @@ depositional fan and ridge formation.
 Between high intensity rainfall events, 
 lower intensity events and gravitational diffusion
 may gradually smooth the shape of the gully. 
+% transport limited
 Eventually, if detachment capacity 
-significantly exceeds transport capacity, 
-the gully may fill with sediment. 
+significantly exceeds transport capacity
+and the regime switches to transport capacity limited, 
+the gully may fill with sediment,
+as soil continues to be eroded, but is not transported far. 
 
 % gully monitoring
 Gully erosion rates and evolution
@@ -230,7 +240,7 @@ including processes such as gully formation
 and the development of microtopography. 
 % gully simulation
 Gully erosion has been simulated with 
-the Revised Universal Soil Loss Equation Version 2 (RUSLER)
+RUSLE2-Raster (RUSLER)
 in conjunction with the Ephemeral Gully Erosion Estimator (EphGEE)
 \citep{Dabney2014},
 while gully evolution
@@ -430,49 +440,87 @@ and by RUSLE3D with a R-factor of 310
 \end{figure}
 
 % -------------------------- EROSION-DEPOSITION -----------------------------
-\subsection{Simulation of water erosion model} \label{simwe}
+\subsection{Simulation of Water Erosion (SIMWE)} \label{simwe}
 % simwe intro
-SIMWE -- the Simulation of Water Erosion model -- 
-is a physics-based simulation of shallow overland water and sediment flow
+SIMWE is a physics-based simulation 
+of shallow overland water and sediment flow
 that uses a path sampling method to solve the continuity and momentum equations 
 with a 2D diffusive wave approximation 
 \citep{Mitas1998,Mitasova2004}.
 SIMWE has been implemented in GRASS GIS as the modules 
 r.sim.water
-and r.sim.sediment.
-
+and r.sim.sediment. % <-------------------------------------- ADD sediment continuity equation? 
 % overview
 In SIMWE mode 
 for each time step
 r.sim.terrain
 determines the soil erosion regime,
+computes the first order partial derivatives of elevation,
+i.e.~the slope in the East-West direction ($dx$)
+and the slope in the North-South direction ($dy$),
 simulates water and sediment flows, 
 and then evolves the topography. 
+%
+% <-------------------------- EDITING
+% 
+% if the regime is ... then...
+% 
 % erdep
-In an variable erosion-deposition regime 
-the model 
-computes the partial derivatives of the topography,
-simulates shallow water flow and erosion-deposition,
+In a variable erosion-deposition regime,
+the model simulates shallow water flow and net erosion-deposition ($d_s$),
 and then evolves the topography based on the erosion-deposition rate
 and gravitational diffusion.
 % transport limited
 The same process is used in
 a transport capacity limited regime,
 except that the topography is evolved based on 
-the transport limited erosion-deposition rate
+the net transport limited erosion-deposition rate
 and gravitational diffusion.
 % detachment  limited
 In a detachment capacity limited regime
-the model instead
-computes the partial derivatives of the topography,
-simulates shallow water flow and sediment flow,
+the model instead simulates shallow water flow and sediment flow ($q_s$),
 and then evolves the topography based on the sediment flow rate
 and gravitational diffusion.
 % dynamic versus steady state
-The model simulates dynamic landscape evolution 
+The model simulates dynamic flow regimes
 when the time step is less than the travel time 
 for a drop of water or a particle of sediment to cross the landscape.
-With longer time steps the model simulates steady state dynamics. 
+With longer time steps the model simulates a steady state regime. 
+
+%% terms
+%
+%% erdep
+%The net erosion-deposition rate ($d_s$) 
+%is the change in sediment storage over time 
+%based on the difference between sources and sinks of sediment. 
+% 
+%% flux
+%The  sediment flow rate per unit width ($q_s$)
+%...
+
+% <------------------------------------------- EDITS HERE
+%
+% "Often, authors presenting a set of governing equations 
+% will start with the high-level conservation law(s), 
+% and then define each term more precisely. 
+% There’s an opportunity to do this at least partly in subsection 2.1.1."
+% 
+% "So we need a definition for ds, which as suggested above, you could provide in section 2.1.1."
+% 
+% $q_s$ is the sediment flow rate per unit width [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]
+%
+% $d_s$ is net erosion-deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]
+%
+% "Net erosion-deposition $d_s$ -- the difference between sources and sinks --"
+
+% "The basic relationship describing sediment transport by overland flow
+% is the sediment continuity equation, 
+% which relates the change in sediment storage over time, 
+% and the change in sediment flow rate along the
+% hillslope to effective sources and sinks 
+% (e.g., Haan et al., 1994; Govindaraju and Kavvas, 1991; Foster and Meyer, 1972; Bennet, 1974)."
+
+
 
 % ------------------------------------------------------------------------------
 
@@ -488,7 +536,8 @@ which depends on soil and landcover properties.
 The detachment capacity is the maximum potential 
 detachment rate by overland flow, while
 the sediment transport capacity 
-is the maximum potential sediment flow rate.
+is the maximum potential sediment flow rate 
+\citep{Mitasova2001}.
 When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
 or $\sigma$ is low ($\sigma \leq 0.01 \unit{m}^{-1}$),
 then the regime is detachment capacity limited. 
@@ -588,7 +637,7 @@ q_s = \rho_s ~ q
 \noindent
 where: \\
 \hspace*{0.5em} $q_s$ is the sediment flow rate per unit width [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
-\hspace*{0.5em} $\rho_s$ is sediment mass density [\unit{kg~m}$^{-3}$].\\
+\hspace*{0.5em} $\rho_s$ is sediment mass density in the water column [\unit{kg~m}$^{-3}$].\\
 }
 
 % ------------------------------------------------------------------------------
@@ -679,9 +728,9 @@ where: \\
 }
 
 % -------------------------------- RUSLE --------------------------------
-\subsection{Revised universal soil loss equation 3D model}
+\subsection{Revised Universal Soil Loss Equation for Complex Terrain (RUSLE3D)}
 \label{rusle_model}
-The Revised Universal Soil Loss Equation for Complex Terrain (RUSLE3D) 
+RUSLE3D
 is an empirical equation for computing erosion 
 in a detachment capacity limited soil erosion regime
 for watersheds with complex topography \citep{Mitasova1996}. 
@@ -802,7 +851,7 @@ navigate nested depressions and other obstacles.
 The 3D topographic factor $LS_{3D}(x,y)$
 is calculated as a function of 
 the flow accumulation,
-representing the upslope contributing area,
+representing the upslope contributing area
 and the slope 
 (Fig.~\ref{fig:models}e). 
 %
@@ -870,9 +919,8 @@ for the settling of sediment particles due to gravitational diffusion.
 
 % -------------------------------- USPED --------------------------------
 
-\subsection{Unit streampower erosion deposition model} \label{usped_model}
-The Unit Stream Power Erosion Deposition (USPED) model 
-estimates net erosion-deposition as the divergence of sediment flow
+\subsection{Unit Streampower Erosion Deposition (USPED)} \label{usped_model}
+USPED estimates net erosion-deposition as the divergence of sediment flow
 in transport capacity limited soil erosion regimes.
 At transport capacity 
 shallow flows of water are carrying as much sediment possible 
@@ -1027,8 +1075,8 @@ is pitted with impact craters from artillery and mortar shells
 and has an active, approximately 2~\unit{m} deep gully. 
 %
 It is a Pine-Scrub Oak Sandhill community
-composed primarily of Longleaf Pine (Pinus palustris)
-and Wiregrass (Aristida stricta)
+composed primarily of Longleaf Pine (\emph{Pinus palustris})
+and Wiregrass (\emph{Aristida stricta})
 on Blaney and Gilead loamy sands 
 \citep{Sorrie2004}. 
 %
