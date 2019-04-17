@@ -1,0 +1,68 @@
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass{standalone}
+
+% packages
+\usepackage{float}
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[export]{adjustbox}
+\usepackage[utf8]{inputenc}
+%\usepackage[active,pdftex,tightpage]{preview}
+\usepackage{newtxtext,newtxmath}
+\usepackage[percent]{overpic}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,calc}
+
+\begin{document}
+
+\tikzstyle{block} = [rectangle, draw, fill=black!10,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, very thick, color=black!50, -latex']
+
+\sf
+\scriptsize
+\centering 
+
+\begin{tikzpicture}[scale=2, node distance = 2.5cm, auto]
+    % place nodes
+    \node [block] (input) {input data};
+    \node [block, below of=input] (model) {determine model};
+    \node [block, below of=model] (simwe) {SIMWE};
+    \node [block, left of=simwe, node distance=5.5cm] (rusle) {RUSLE3D};
+    \node [block, right of=simwe, node distance=5.5cm] (usped) {USPED};
+    \node [block, below of=simwe] (regime) {determine regime};
+    \node [block, below of=regime] (erdep) {variable erosion-deposition};
+    \node [block, left of=erdep, node distance=2.5cm] (detachment) {detachment limited};
+    \node [block, right of=erdep, node distance=2.5cm] (transport) {transport limited};
+    \node [block, below of=erdep] (output) {output data};
+
+
+    % draw edges
+    \path [line] (input) -- (model);
+    \path [line] (model) -- (rusle);
+    \path [line] (model) -- (simwe);
+    \path [line] (model) -- (usped);
+    \path [line,dashed,rounded corners] (rusle) |- ($(rusle.south west) + (-0.25,-0.25)$) |- (rusle) node [pos=-.05, below] (TextNode) {iterate};
+    \path [line,dashed,rounded corners] (usped) |- ($(usped.south east) + (0.25,-0.25)$) |- (usped) node [pos=-.05, below] (TextNode) {iterate};
+    \path [line] (simwe) -- (regime);
+    \path [line] (regime) -- (detachment);
+    \path [line] (regime) -- (erdep);
+    \path [line] (regime) -- (transport);
+    \path [line,dashed,rounded corners] (erdep) |- ($(erdep.south west) + (-1.5,-0.25)$) |- (simwe);
+	\path [line,dashed,rounded corners] (detachment) |- ($(detachment.south west) + (-0.25,-0.25)$) |- (simwe) node [pos=-0.01, below] (TextNode) {iterate};
+    \path [line,dashed,rounded corners] (transport) |- ($(transport.south west) + (-2.75,-0.25)$) |- (simwe);
+    \path [line] (erdep) -- (output);
+    \path [line] (detachment) -- (output);
+    \path [line] (transport) -- (output);
+    \path [line,rounded corners] (rusle) |- (output);
+    \path [line,rounded corners] (usped) |- (output);
+
+	% title
+	\node[above,font=\large\bfseries] at ($(current bounding box.north) + (0,0.25)$) {r.sim.terrain};
+
+\end{tikzpicture}
+
+\end{document}
