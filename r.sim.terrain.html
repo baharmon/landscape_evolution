@@ -93,12 +93,18 @@ For more detailed instructions and examples see this in-depth
 <h2>ERROR MESSAGES</h2>
 
 If the module fails with
-
 <div class="code"><pre>
 ERROR: nwalk (7000001) &gt; maxw (7000000)!
 </pre></div>
-
 then a lower <b>nwalkers</b> parameter value has to be selected.
+
+If the module fails with
+<div class="code"><pre>
+ERROR: Unable to insert dataset of type raster in the temporal database. The mapset of the dataset does not match the current mapset.
+</pre></div>
+check that the input  <b>elevation</b> map is in the current mapset.
+The input <b>elevation</b> map must be in the current mapset
+so that it can be registered in the temporal datasbase.
 
 <h2>REFERENCES</h2>
 

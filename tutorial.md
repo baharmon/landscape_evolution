@@ -422,6 +422,8 @@ Optionally set the watershed as a mask using the module
 Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
 using the module
 [g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+The input elevation map must be in the current mapset
+so that it can be registered in the temporal datasbase.
 ```
 g.region region=region res=1
 r.mask vector=watershed
@@ -490,6 +492,8 @@ Optionally set the watershed as a mask using the module
 Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
 using the module
 [g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+The input elevation map must be in the current mapset
+so that it can be registered in the temporal datasbase.
 ```
 g.region region=region res=1
 r.mask vector=watershed
@@ -552,6 +556,8 @@ using the module
 Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
 using the module
 [g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+The input elevation map must be in the current mapset
+so that it can be registered in the temporal datasbase.
 ```
 g.region region=region res=1
 g.copy raster=elevation_2016@PERMANENT,elevation_2016

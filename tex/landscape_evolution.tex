@@ -82,13 +82,13 @@ landscape planning, and landscape restoration.
 \includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/evolution.pdf}
 \caption{
 The digital elevation model (DEM) 
-before (a.) and after (b.)
-simulated landscape evolution with
-r.sim.terrain. 
+before (a) and after (b)
+simulated landscape evolution with r.sim.terrain 
+for a subwatershed of Patterson Branch Creek, Fort Bragg, NC, USA. 
 This simulation used the SIMWE model
 for a 120~\unit{min} rainfall event with 25~\unit{mm~hr}$^{-1}$
 in a transport limited soil erosion regime at steady state.
-In the evolved DEM (b.)
+In the evolved DEM (b)
 the gully channel has widened 
 with depositional ridges forming along its thalweg.}
 \label{fig:evolution}
@@ -288,7 +288,7 @@ a time-series of airborne lidar surveys.
 
 \begin{figure}%[H]
 \center
-\includegraphics[width=0.5\textwidth,keepaspectratio]{figures/concept.pdf}
+\includegraphics[width=0.75\textwidth,keepaspectratio]{figures/concept.pdf}
 \caption{Conceptual diagram for r.sim.terrain.}
 \label{fig:evolution}
 \end{figure}
@@ -422,16 +422,16 @@ USPED & watershed & continuous & raster & map algebra & \citep{Mitasova1996}\\
 \begin{table*}
 \small
 \caption{Topographic evolution models}
-\begin{tabu} to \textwidth {XXXXXll}
+\begin{tabu} to \textwidth {lXXXXll}
 \toprule
-Model & Spatial scale &  Temporal scale & Representation & Dynamics & Implementation & Reference\\
+Model &  Temporal scale & Representation & Dynamics & Implementation & Reference\\
 \midrule
-\href{https://csdms.colorado.edu/wiki/Model:CHILD}{CHILD} & regional & continuous & mesh & steady state & \href{https://csdms.colorado.edu/wiki/Model:CHILD}{C++ program} & \citep{Tucker2001}\\
-\href{https://csdms.colorado.edu/wiki/Model:SIBERIA}{SIBERIA} & regional & continuous & raster & steady state & \href{https://csdms.colorado.edu/wiki/Model:SIBERIA}{Fortran prog.} & \citep{Willgoose2005}\\
-\href{https://grass.osgeo.org/grass74/manuals/addons/r.landscape.evol.html}{r.landscape.evol}  & regional & continuous & raster &  steady state & \href{https://grass.osgeo.org/grass74/manuals/addons/r.landscape.evol.html}{GRASS module} & \citep{Barton2010}\\
-\href{https://github.com/landlab/}{Landlab} & regional & continuous & raster + mesh & steady state & \href{https://github.com/landlab/}{Python library} & \citep{Hobley2017}\\
-\href{https://github.com/baharmon/landscape_evolution}{r.sim.terrain} & watershed -- & event -- & raster & dynamic -- & \href{https://github.com/baharmon/landscape_evolution}{GRASS module} &\\
-& regional & continuous && steady state & &\\
+\href{https://csdms.colorado.edu/wiki/Model:CHILD}{CHILD} & continuous & mesh & steady state & \href{https://csdms.colorado.edu/wiki/Model:CHILD}{C++ program} & \citep{Tucker2001}\\
+\href{https://csdms.colorado.edu/wiki/Model:SIBERIA}{SIBERIA} & continuous & raster & steady state & \href{https://csdms.colorado.edu/wiki/Model:SIBERIA}{Fortran prog.} & \citep{Willgoose2005}\\
+\href{https://grass.osgeo.org/grass74/manuals/addons/r.landscape.evol.html}{r.landscape.evol} & continuous & raster &  steady state & \href{https://grass.osgeo.org/grass74/manuals/addons/r.landscape.evol.html}{GRASS module} & \citep{Barton2010}\\
+\href{https://github.com/landlab/}{Landlab built models} & continuous & raster + mesh & steady state & \href{https://github.com/landlab/}{Python library} & \citep{Hobley2017}\\
+\href{https://github.com/baharmon/landscape_evolution}{r.sim.terrain}  & event -- & raster & dynamic -- & \href{https://github.com/baharmon/landscape_evolution}{GRASS module} &\\
+& continuous && steady state & &\\
 \bottomrule
 \\
 \end{tabu}
@@ -445,8 +445,8 @@ Model & Spatial scale &  Temporal scale & Representation & Dynamics & Implementa
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/models.pdf}
 \caption{Water and sediment flows simulated by SIMWE 
-for a 10~\unit{min} event with 50~\unit{mm~hr}$^{-1}$
-and by RUSLE3D with a R-factor of 310
+for a 10~\unit{min} event with 50~\unit{mm~hr}$^{-1}$ (a-c)
+and by RUSLE3D with a R-factor of 310 (d-f)
 }
 \label{fig:models}
 \end{figure}
@@ -1380,7 +1380,7 @@ Steady state & SIMWE & 25~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 120~\unit{min} 
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/simulations.pdf}
-\caption{Dynamic RUSLE3D and USPED simulations
+\caption{Dynamic RUSLE3D (a-c) and USPED (d-f) simulations
 for a 120~\unit{min} event with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$}
 \label{fig:simulations}
 \end{figure}
@@ -1390,8 +1390,8 @@ for a 120~\unit{min} event with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/simwe.pdf}
 \caption{Steady state SIMWE simulations
-for 120~\unit{min} events with rainfall intensities of 50~\unit{mm~hr}$^{-1}$
-and 25~\unit{mm~hr}$^{-1}$}
+for 120~\unit{min} events with rainfall intensities of 50~\unit{mm~hr}$^{-1}$ (a-c)
+and 25~\unit{mm~hr}$^{-1}$(d-f)}
 \label{fig:simwe_simulations}
 \end{figure}
 
