@@ -26,13 +26,13 @@
 \scriptsize
 \centering 
 
-\begin{tikzpicture}[scale=2, node distance = 2.5cm, auto]
+\begin{tikzpicture}[scale=2, node distance = 1.75cm, auto]
     % place nodes
     \node [block] (input) {input data};
-    \node [block, below of=input] (model) {determine model};
-    \node [block, below of=model] (simwe) {SIMWE};
-    \node [block, left of=simwe, node distance=5.5cm] (rusle) {RUSLE3D};
-    \node [block, right of=simwe, node distance=5.5cm] (usped) {USPED};
+    \node [block, below of=input, node distance=1.5cm] (model) {determine model};
+    \node [block, below of=model, node distance=1.5cm] (simwe) {SIMWE};
+    \node [block, left of=simwe, node distance=5.25cm] (rusle) {RUSLE3D};
+    \node [block, right of=simwe, node distance=5.25cm] (usped) {USPED};
     \node [block, below of=simwe] (regime) {determine regime};
     \node [block, below of=regime] (erdep) {variable erosion-deposition};
     \node [block, left of=erdep, node distance=2.5cm] (detachment) {detachment limited};
