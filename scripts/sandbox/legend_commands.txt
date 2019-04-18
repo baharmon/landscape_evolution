@@ -1,0 +1,15 @@
+r.out.legend --overwrite raster=elevation_2016@PERMANENT file=/home/baharmon/landscape_evolution_dataset/images/sample_data_3d/legend_elevation.png filetype=cairo dimensions=0.8,6 resolution=300 color=none digits=3 font=Lato-Regular
+
+r.out.legend --overwrite raster=erosion_deposition_2016@PERMANENT file=/home/baharmon/landscape_evolution_dataset/images/sample_data_3d/legend_erosion_deposition.png filetype=cairo dimensions=0.8,6 resolution=300 color=none range=-0.25,0.25 digits=4 font=Lato-Regular
+
+r.out.legend --overwrite raster=difference_2012_2016@PERMANENT file=/home/baharmon/landscape_evolution_dataset/images/sample_data_3d/legend_difference.png filetype=cairo dimensions=0.8,6 resolution=300 color=none range=-1,1 digits=4 font=Lato-Regular
+
+r.out.legend --overwrite raster=depth_2016@PERMANENT file=/home/baharmon/landscape_evolution_dataset/images/sample_data_3d/legend_depth.png filetype=cairo dimensions=0.8,6 resolution=300 color=none range=0,1 digits=3 font=Lato-Regular
+
+r.out.legend --overwrite raster=sediment_flow_2016@PERMANENT file=/home/baharmon/landscape_evolution_dataset/images/sample_data_3d/legend_flow.png filetype=cairo dimensions=0.8,6 resolution=300 color=none range=0,2.5 digits=3 font=Lato-Regular
+
+r.out.legend --overwrite raster=sediment_flux_2016@PERMANENT file=/home/baharmon/landscape_evolution_dataset/images/sample_data_3d/legend_flux.png filetype=cairo dimensions=0.8,6 resolution=300 color=none range=0,25 digits=3 font=Lato-Regular
+
+r.out.legend --overwrite raster=slope_2016@PERMANENT file=/home/baharmon/landscape_evolution_dataset/images/sample_data_3d/legend_slope.png filetype=cairo dimensions=0.8,6 resolution=300 color=none range=0,90 digits=3 font=Lato-Regular
+
+r.out.legend --overwrite raster=landforms_2016@PERMANENT file=/home/baharmon/landscape_evolution_dataset/images/sample_data_3d/legend_landforms.png filetype=cairo dimensions=0.8,6 resolution=300 color=none digits=3 font=Lato-Regular

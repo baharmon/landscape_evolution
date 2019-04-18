@@ -68,17 +68,21 @@ nv 255:255:255
 default 255:255:255
 """
 
+
 def main():
     """try to install dependencies"""
     # dependencies()
 
     """render maps"""
     render_region_2d(mapset)
-    render_region_3d(mapset)
+    # render_region_3d(mapset)
+    # render_legends(mapset)
+    render_subregion_2d(mapset)
     # render_fortbragg_2d()
 
     atexit.register(cleanup)
     sys.exit(0)
+
 
 def render_region_2d(mapset):
     """2D rendering of region"""
@@ -98,11 +102,6 @@ def render_region_2d(mapset):
         map='elevation_{time}'.format(time=end_time),
         rules='-',
         stdin=elevation_colors)
-    gscript.write_command(
-        'r.colors',
-        map='flux_{time}'.format(time=end_time),
-        rules='-',
-        stdin=flux_colors)
 
     # compute and render shaded relief
     gscript.run_command('d.mon',
@@ -111,29 +110,41 @@ def render_region_2d(mapset):
         height=height,
         output=os.path.join(render, 'shaded_relief'+'.png'),
         overwrite=overwrite)
+    # gscript.run_command('r.relief',
+    #     input='elevation_{time}'.format(time=end_time),
+    #     output='relief',
+    #     altitude=90,
+    #     azimuth=45,
+    #     zscale=3,
+    #     overwrite=overwrite)
+    # gscript.run_command('r.skyview',
+    #     input='elevation_{time}'.format(time=end_time),
+    #     output='skyview',
+    #     ndir=16,
+    #     colorized_output='colorized_skyview',
+    #     overwrite=overwrite)
+    # gscript.run_command('r.shade',
+    #     shade='relief',
+    #     color='skyview',
+    #     output='shaded_relief',
+    #     brighten=50,
+    #     overwrite=overwrite)
+    # gscript.run_command('d.shade',
+    #     shade='relief',
+    #     color='colorized_skyview',
+    #     brighten=10,
+    #     overwrite=overwrite)
     gscript.run_command('r.relief',
         input='elevation_{time}'.format(time=end_time),
-        output='relief',
+        output='shaded_relief',
         altitude=90,
         azimuth=45,
         zscale=3,
         overwrite=overwrite)
-    gscript.run_command('r.skyview',
-        input='elevation_{time}'.format(time=end_time),
-        output='skyview',
-        ndir=16,
-        colorized_output='colorized_skyview',
-        overwrite=overwrite)
-    gscript.run_command('r.shade',
-        shade='relief',
-        color='skyview',
-        output='shaded_relief',
-        brighten=50,
-        overwrite=overwrite)
     gscript.run_command('d.shade',
-        shade='relief',
-        color='colorized_skyview',
-        brighten=10,
+        shade='shaded_relief',
+        color='elevation_{time}'.format(time=end_time),
+        brighten=5,
         overwrite=overwrite)
     gscript.run_command('d.legend',
         raster='elevation_{time}'.format(time=end_time),
@@ -230,10 +241,11 @@ def render_region_2d(mapset):
             height=height,
             output=os.path.join(render, 'flux'+'.png'),
             overwrite=overwrite)
-        # gscript.run_command('d.shade',
-        #     shade='shaded_relief',
-        #     color='flux_{time}'.format(time=end_time),
-        #     brighten=20)
+        gscript.write_command(
+            'r.colors',
+            map='flux_{time}'.format(time=end_time),
+            rules='-',
+            stdin=flux_colors)
         gscript.run_command('d.rast',
             map='flux_{time}'.format(time=end_time))
         gscript.run_command('d.legend',
@@ -246,6 +258,159 @@ def render_region_2d(mapset):
 
     # remove mask
     gscript.run_command('r.mask', flags='r')
+
+
+def render_subregion_2d(mapset):
+    """2D rendering of region"""
+
+    # create rendering directory
+    render = os.path.join(gisdbase, 'images',  mapset+'_detail')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    # set region and mask
+    gscript.run_command('g.region', region='subregion', res=res)
+    gscript.run_command('r.mask', vector='subwatershed')
+
+    # set color tables
+    gscript.write_command(
+        'r.colors',
+        map='elevation_{time}'.format(time=end_time),
+        rules='-',
+        stdin=elevation_colors)
+
+    # compute and render shaded relief
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'shaded_relief'+'.png'),
+        overwrite=overwrite)
+    gscript.run_command('r.relief',
+        input='elevation_{time}'.format(time=end_time),
+        output='shaded_relief',
+        altitude=90,
+        azimuth=45,
+        zscale=3,
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='shaded_relief',
+        color='elevation_{time}'.format(time=end_time),
+        brighten=5,
+        overwrite=overwrite)
+    gscript.run_command('d.legend',
+        raster='elevation_{time}'.format(time=end_time),
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render net difference
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'net_difference'+'.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='net_difference')
+    gscript.run_command('d.legend',
+        raster='net_difference',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+# compute and render landforms
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'landforms'+'.png'),
+        overwrite=overwrite)
+    gscript.run_command('r.geomorphon',
+        elevation='elevation_{time}'.format(time=end_time),
+        forms='landforms',
+        search=64,
+        skip=0,
+        flat=1,
+        dist=0,
+        step=0,
+        start=0,
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='landforms')
+    gscript.run_command('d.legend',
+        raster='landforms',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render water depth with shaded relief
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'depth'+'.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='shaded_relief',
+        color='depth_{time}'.format(time=end_time),
+        brighten=20)
+    gscript.run_command('d.legend',
+        raster='depth_{time}'.format(time=end_time),
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+    # check for erosion-deposition
+    find_raster = gscript.find_file('erosion_deposition_{time}'.format(time=end_time),
+        element='cell')
+    if find_raster['file']:
+        # render erosion-deposition
+        gscript.run_command('d.mon',
+            start=driver,
+            width=width,
+            height=height,
+            output=os.path.join(render, 'erdep'+'.png'),
+            overwrite=overwrite)
+        gscript.run_command('d.shade',
+            shade='shaded_relief',
+            color='erosion_deposition_{time}'.format(time=end_time),
+            brighten=20)
+        gscript.run_command('d.legend',
+            raster='erosion_deposition_{time}'.format(time=end_time),
+            fontsize=fontsize,
+            at=legend_coord)
+        gscript.run_command('d.mon', stop=driver)
+
+    # check for flux
+    find_raster = gscript.find_file('flux_{time}'.format(time=end_time),
+        element='cell')
+    if find_raster['file']:
+        # render flux
+        gscript.run_command('d.mon',
+            start=driver,
+            width=width,
+            height=height,
+            output=os.path.join(render, 'flux'+'.png'),
+            overwrite=overwrite)
+        gscript.write_command(
+            'r.colors',
+            map='flux_{time}'.format(time=end_time),
+            rules='-',
+            stdin=flux_colors)
+        gscript.run_command('d.rast',
+            map='flux_{time}'.format(time=end_time))
+        gscript.run_command('d.legend',
+            raster='flux_{time}'.format(time=end_time),
+            fontsize=fontsize,
+            labelnum='2',
+            at=legend_coord,
+            flags='l')
+        gscript.run_command('d.mon', stop=driver)
+
+    # remove mask
+    gscript.run_command('r.mask', flags='r')
+
 
 def render_fortbragg_2d():
 
@@ -298,6 +463,7 @@ def render_fortbragg_2d():
 
     # remove mask
     gscript.run_command('r.mask', flags='r')
+
 
 def render_region_3d(mapset):
     """3D rendering of region with nviz"""
@@ -393,6 +559,88 @@ def render_region_3d(mapset):
             'flux',
             'difference'],
         flags='f')
+
+
+def render_legends(mapset):
+    """render raster map legends"""
+
+    # create rendering directory
+    render = os.path.join(gisdbase, 'images', mapset+'_3d')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    # set region
+    gscript.run_command('g.region',
+        region='region',
+        res=res)
+
+    # mask rasters
+    gscript.run_command('r.mask', vector='watershed')
+
+    # export legends
+    gscript.run_command('r.out.legend',
+        raster='elevation_'+end_time,
+        file=os.path.join(render,'legend_elevation.png'),
+        filetype='cairo',
+        dimensions=[0.8,6],
+        resolution=300,
+        color='none',
+        digits=3,
+        font='Lato-Regular',
+        overwrite=overwrite)
+    gscript.run_command('r.out.legend',
+        raster='depth_'+end_time,
+        file=os.path.join(render,'legend_depth.png'),
+        filetype='cairo',
+        dimensions=[0.8,6],
+        resolution=300,
+        color='none',
+        range=[0,1],
+        digits=3,
+        font='Lato-Regular',
+        overwrite=overwrite)
+    gscript.run_command('r.out.legend',
+        raster='net_difference',
+        file=os.path.join(render,'legend_difference.png'),
+        filetype='cairo',
+        dimensions=[0.8,6],
+        resolution=300,
+        color='none',
+        digits=4,
+        font='Lato-Regular',
+        overwrite=overwrite)
+    find_raster = gscript.find_file('erosion_deposition_{time}'.format(time=end_time),
+        element='cell')
+    if find_raster['file']:
+        gscript.run_command('r.out.legend',
+            raster='erosion_deposition_'+end_time,
+            file=os.path.join(render,'legend_erosion_deposition.png'),
+            filetype='cairo',
+            dimensions=[0.8,6],
+            resolution=300,
+            color='none',
+            range=[-0.25,0.25],
+            digits=4,
+            font='Lato-Regular',
+            overwrite=overwrite)
+    find_raster = gscript.find_file('flux_{time}'.format(time=end_time),
+        element='cell')
+    if find_raster['file']:
+        gscript.run_command('r.out.legend',
+            raster='flux_'+end_time,
+            file=os.path.join(render,'legend_flux.png'),
+            filetype='cairo',
+            dimensions=[0.8,6],
+            resolution=300,
+            color='none',
+            range=[0,25],
+            digits=3,
+            font='Lato-Regular',
+            overwrite=overwrite)
+
+    # remove mask
+    gscript.run_command('r.mask', flags='r')
+
 
 def dependencies():
     """try to install required add-ons"""

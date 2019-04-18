@@ -52,11 +52,13 @@ def main():
 
     """render 2d maps"""
     render_region_2d()
+    render_subregion_2d()
     # render_map_elements()
     # render_fortbragg_2d()
 
     """render 3d maps"""
-    render_region_3d()
+    # render_region_3d()
+    # render_legends()
     # render_fortbragg_3d()
 
     atexit.register(cleanup)
@@ -302,6 +304,250 @@ def render_region_2d():
     # remove mask
     gscript.run_command('r.mask', flags='r')
 
+
+def render_subregion_2d():
+    """2D rendering of region"""
+
+    # create rendering directory
+    render = os.path.join(gisdbase, 'images', 'sample_data_detail')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    # set region
+    gscript.run_command('g.region', region='subregion', res=res)
+
+    # set mask
+    gscript.run_command('r.mask', vector='subwatershed')
+
+    # render shaded relief maps
+    for year in years:
+        gscript.run_command('d.mon',
+            start=driver,
+            width=width,
+            height=height,
+            output=os.path.join(render, 'elevation_'+str(year)+'.png'),
+            overwrite=overwrite)
+        gscript.run_command('d.shade',
+            shade='relief_'+str(year),
+            color='elevation_'+str(year),
+            brighten=50)
+        gscript.run_command('d.legend',
+            raster='elevation_'+str(year),
+            fontsize=fontsize,
+            at=legend_coord)
+        gscript.run_command('d.mon', stop=driver)
+
+    # render landforms
+    for year in years:
+        gscript.run_command('d.mon',
+            start=driver,
+            width=width,
+            height=height,
+            output=os.path.join(render, 'landforms_'+str(year)+'.png'),
+            overwrite=overwrite)
+        gscript.run_command('d.shade',
+            shade='relief_'+str(year),
+            color='landforms_'+str(year),
+            brighten=50)
+        gscript.run_command('d.legend',
+            raster='landforms_'+str(year),
+            fontsize=fontsize,
+            at=legend_coord)
+        gscript.run_command('d.mon', stop=driver)
+
+    # render differences 2004-2016
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'difference_2004_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='difference_2004_2016')
+    gscript.run_command('d.legend',
+        raster='difference_2004_2016',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render differences 2004-2012
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'difference_2004_2012.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='difference_2004_2012')
+    gscript.run_command('d.legend',
+        raster='difference_2004_2012',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render differences 2012-2016
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'difference_2012_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='difference_2012_2016')
+    gscript.run_command('d.legend',
+        raster='difference_2012_2016',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render water depth
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'depth_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='relief_2016',
+        color='depth_2016',
+        brighten=50)
+    gscript.run_command('d.legend',
+        raster='depth_2016',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render imagery
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'naip_2014.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='relief_2016',
+        color='naip_2014',
+        brighten=50)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render landcover
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'landcover.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='relief_2016',
+        color='landcover',
+        brighten=50)
+    gscript.run_command('d.legend',
+        raster='landcover',
+        fontsize=fontsize,
+        at=legend_coord,
+        flags='n')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render flow accumulation
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'flow_accumulation_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='relief_2016',
+        color='flow_accumulation_2016',
+        brighten=50)
+    gscript.run_command('d.legend',
+        raster='flow_accumulation_2016',
+        fontsize=fontsize,
+        at=legend_coord,
+        flags='nl')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render ls factor
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'ls_factor.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='relief_2016',
+        color='ls_factor',
+        brighten=50)
+    gscript.run_command('d.legend',
+        raster='ls_factor',
+        fontsize=fontsize,
+        at=legend_coord,
+        labelnum='2',
+        flags='nl')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render sediment flow
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'sediment_flow_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='relief_2016',
+        color='sediment_flow_2016',
+        brighten=50)
+    gscript.run_command('d.legend',
+        raster='sediment_flow_2016',
+        fontsize=fontsize,
+        at=legend_coord,
+        labelnum='2',
+        flags='nl')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render sediment flux
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'sediment_flux_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='relief_2016',
+        color='sediment_flux_2016',
+        brighten=50)
+    gscript.run_command('d.legend',
+        raster='sediment_flux_2016',
+        fontsize=fontsize,
+        at=legend_coord,
+        range='0,1',
+        digits='2',
+        flags='n')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render erosion deposition
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'erosion_deposition_2016.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='relief_2016',
+        color='erosion_deposition_2016',
+        brighten=50)
+    gscript.run_command('d.legend',
+        raster='erosion_deposition_2016',
+        fontsize=fontsize,
+        at=legend_coord,
+        range='-0.1,0.1',
+        flags='n')
+    gscript.run_command('d.mon', stop=driver)
+
+    # remove mask
+    gscript.run_command('r.mask', flags='r')
+
+
+
 def render_fortbragg_2d():
 
     # create rendering directory
@@ -411,6 +657,7 @@ def render_fortbragg_2d():
 
     # remove mask
     gscript.run_command('r.mask', flags='r')
+
 
 def render_region_3d():
     """3D rendering of region with nviz"""
@@ -529,6 +776,7 @@ def render_region_3d():
             errors='ignore'
             )
 
+
 def render_fortbragg_3d():
     """3D rendering of fort bragg region with nviz"""
 
@@ -572,6 +820,114 @@ def render_fortbragg_3d():
         errors='ignore'
         )
 
+
+def render_legends():
+    """render raster map legends"""
+
+    # create rendering directory
+    render = os.path.join(gisdbase, 'images', 'sample_data_3d')
+    if not os.path.exists(render):
+        os.makedirs(render)
+
+    # set region
+    gscript.run_command('g.region',
+        region='region',
+        res=res)
+
+    # mask rasters
+    gscript.run_command('r.mask', vector='watershed')
+
+    # export legends
+    gscript.run_command('r.out.legend',
+        raster='elevation_2016',
+        file=os.path.join(render,'legend_elevation.png'),
+        filetype='cairo',
+        dimensions=[0.8,6],
+        resolution=300,
+        color='none',
+        digits=3,
+        font='Lato-Regular',
+        overwrite=overwrite)
+    gscript.run_command('r.out.legend',
+        raster='depth_2016',
+        file=os.path.join(render,'legend_depth.png'),
+        filetype='cairo',
+        dimensions=[0.8,6],
+        resolution=300,
+        color='none',
+        range=[0,1],
+        digits=3,
+        font='Lato-Regular',
+        overwrite=overwrite)
+    gscript.run_command('r.out.legend',
+        raster='difference_2012_2016',
+        file=os.path.join(render,'legend_difference.png'),
+        filetype='cairo',
+        dimensions=[0.8,6],
+        resolution=300,
+        color='none',
+        digits=4,
+        font='Lato-Regular',
+        overwrite=overwrite)
+    gscript.run_command('r.out.legend',
+        raster='erosion_deposition_2016',
+        file=os.path.join(render,'legend_erosion_deposition.png'),
+        filetype='cairo',
+        dimensions=[0.8,6],
+        resolution=300,
+        color='none',
+        range=[-0.25,0.25],
+        digits=4,
+        font='Lato-Regular',
+        overwrite=overwrite)
+    gscript.run_command('r.out.legend',
+        raster='sediment_flux_2016',
+        file=os.path.join(render,'legend_flux.png'),
+        filetype='cairo',
+        dimensions=[0.8,6],
+        resolution=300,
+        color='none',
+        range=[0,25],
+        digits=3,
+        font='Lato-Regular',
+        overwrite=overwrite)
+    gscript.run_command('r.out.legend',
+        raster='sediment_flow_2016',
+        file=os.path.join(render,'legend_flux.png'),
+        filetype='cairo',
+        dimensions=[0.8,6],
+        resolution=300,
+        color='none',
+        range=[0,0.25],
+        digits=3,
+        font='Lato-Regular',
+        overwrite=overwrite)
+    gscript.run_command('r.out.legend',
+        raster='slope_2016',
+        file=os.path.join(render,'legend_slope.png'),
+        filetype='cairo',
+        dimensions=[0.8,6],
+        resolution=300,
+        color='none',
+        range=[0,90],
+        digits=3,
+        font='Lato-Regular',
+        overwrite=overwrite)
+    gscript.run_command('r.out.legend',
+        raster='landforms_2016',
+        file=os.path.join(render,'legend_landforms.png'),
+        filetype='cairo',
+        dimensions=[0.8,6],
+        resolution=300,
+        color='none',
+        digits=3,
+        font='Lato-Regular',
+        overwrite=overwrite)
+
+    # remove mask
+    gscript.run_command('r.mask', flags='r')
+
+
 def render_map_elements():
     """render a scale bar and north arrow"""
 
@@ -599,6 +955,7 @@ def render_map_elements():
         segment=2,
         fontsize=fontsize)
     gscript.run_command('d.mon', stop=driver)
+
 
 def cleanup():
     try:
