@@ -1,5 +1,12 @@
 # Contents
-1. [**Erosion modeling**](#erosion-modeling)
+1. [**Data Preparation**](#data-preparation)
+    1. [Lidar reprojection](#lidar-reprojection)
+    2. [Lidar binning](#lidar-binning)
+    3. [Lidar interpolation](#lidar-interpolation)
+    4. [Import orthophotography](#import-orthophotography)
+    5. [Unsupervised image classification](#unsupervised-image-classification)
+    6. [Parameter derivation](#parameter-derivation)
+2. [**Erosion modeling**](#erosion-modeling)
     1. [RULSE](#rusle)
     2. [USPED](#usped)
     3. [SIMWE](#simwe)
@@ -8,7 +15,7 @@
       3. [Erosion-deposition](#erosion-deposition)
       4. [Sediment flow](#sediment-flow)
       5. [Water flow animation](#water-flow-animation)
-2. [**Landscape evolution**](#landscape-evolution)
+3. [**Landscape evolution**](#landscape-evolution)
     1. [RULSE evolution model](#rusle-model)
     2. [USPED evolution model](#usped-model)
     3. [SIMWE evolution model](#simwe-model)
@@ -18,6 +25,182 @@
     4. [Parallel processing](#parallel-processing)
     5. [Travel time](#travel-time)
 ---
+
+# Data preparation
+
+In this section you will learn how to prepare
+input data for the landscape evolution model
+[r.sim.terrain](https://grass.osgeo.org/grass76/manuals/addons/r.sim.terrain.html)
+in [GRASS GIS](https://grass.osgeo.org/).
+You will process lidar point clouds,
+classify othoimagery,
+and then fuse these into a landcover map.
+
+Start GRASS GIS in the `nc_spm_evolution` location
+and create a new mapset.
+Set your region to our study area with 1 meter resolution
+using the module
+[g.region](https://grass.osgeo.org/grass76/manuals/g.region.html).
+```
+g.region region=region res=1
+```
+
+## Lidar reprojection
+Download the lidar point clouds for this study landscape
+from the Open Science Framework
+[repository](https://osf.io/r5kbn/).
+Extract the zip archive and then
+in the GRASS terminal
+reproject the lidar data from NAD83 NC Survey Feet (EPSG 6543)
+to NC State Plane Meters (EPSG 33580)
+using the [liblas](https://www.liblas.org/) library.
+```
+las2las --a_srs=EPSG:6543 --t_srs=EPSG:3358 -i I-08.las -o ncspm_I-08.las
+```
+
+Set your region to our study area with 1 meter resolution
+using the module
+[g.region](https://grass.osgeo.org/grass76/manuals/g.region.html).
+```
+g.region n=151030 s=150580 w=597195 e=597645 save=region res=1
+```
+
+## Lidar binning
+Create a raster map of vegetation by importing the lidar dataset
+using binning to convert points into a regular raster grid with the module
+[r.in.lidar](https://grass.osgeo.org/grass76/manuals/r.in.lidar.html)
+at 2 meter resolution.
+Filter the point cloud for low, medium, and high vegetation points
+in classes 3, 4, and 5 using the option `class_filter=3,4,5`
+and for the first return using the option `return_filter=first`.
+Use the `max` statistic.
+See the [ASPRS LAS Specification](http://www.asprs.org/wp-content/uploads/2010/12/LAS_1_4_r13.pdf)
+for the definitive list of classes.
+```
+r.in.lidar input=ncspm_I-08.las output=vegetation_2012 method=max resolution=2 class_filter=3,4,5 return_filter=first
+r.colors map=vegetation_2012 color=viridis
+```
+
+## Lidar interpolation
+Import the lidar datasets as vector points using the module
+[v.in.lidar](https://grass.osgeo.org/grass76/manuals/v.in.lidar.html).
+Limit the import to the current region with flag `-r`.
+Filter the point cloud for ground points in class 2
+using the option `class_filter=2`.
+Interpolate the point cloud
+as a bare earth digital elevation model (DEM)
+using the regularized spline with tension (RST) method
+implemented as the module
+[v.surf.rst](https://grass.osgeo.org/grass76/manuals/v.surf.rst.html).
+```
+v.in.lidar -r -t input=I-08_spm.las output=points_2012 class_filter=2
+v.surf.rst input=points_2012 elevation=elevation_2012 tension=10 smooth=1
+```
+
+## Import orthophotography
+Install the add-on module
+[r.in.usgs](https://grass.osgeo.org/grass76/manuals/addons/r.in.usgs.html)
+and import the National Agriculture Imagery Program (NAIP)
+orthophotograph from 2014 for the study area.
+Then composite the red, green, and blue channels
+to generate a natural color map using
+[r.composite](https://grass.osgeo.org/grass76/manuals/r.composite.html).
+```
+g.extension extension=r.in.usgs operation=add
+r.in.usgs product=naip output_name=imagery output_directory=/usgs
+r.composite red=imagery.1 green=imagery.2 blue=imagery.3 output=imagery
+```
+
+Alternatively,
+download the National Agriculture Imagery Program (NAIP)
+orthophotograph from 2014 for the study area
+[here](https://datagateway.nrcs.usda.gov/GDGHome_DirectDownLoad.aspx)
+and then
+import with [r.import](https://grass.osgeo.org/grass76/manuals/r.import.html).
+Set the extent to the region.
+Then composite the red, green, and blue channels
+to generate a natural color map using
+[r.composite](https://grass.osgeo.org/grass76/manuals/r.composite.html).
+```
+r.import input=m_3507963_ne_17_1_20140517.tif output=imagery_2014 title=imagery_2014 resample=nearest resolution=value resolution_value=1 extent=region
+r.composite red=imagery_2014.1 green=imagery_2014.2 blue=imagery_2014.3 output=imagery_2014
+```
+
+## Unsupervised image classification
+Start GRASS GIS in the `nc_spm_evolution` location
+and open the `imagery` mapset.
+Set your region to our study area with 1 meter resolution
+using the module
+[g.region](https://grass.osgeo.org/grass76/manuals/g.region.html).
+Create a imagery group using the red, green, and blue channels
+of the 2014 NAIP orthophotograph with
+[i.group](https://grass.osgeo.org/grass76/manuals/i.group.html).
+Generate a spectral signatures for landcover based on clustering using
+[i.cluster](https://grass.osgeo.org/grass76/manuals/i.cluster.html).
+In the settings tab set the initial number of classes to 2,
+i.e. bare ground vs vegetation.
+Use the spectral signature to classify the landcover
+based on maximum-likelihood discriminant analysis
+with the module
+[i.maxlik](https://grass.osgeo.org/grass76/manuals/i.maxlik.html).
+
+```
+g.region region=region res=1
+i.group group=imagery subgroup=imagery_2014 input=imagery_2014.1,imagery_2014.2,imagery_2014.3
+i.cluster group=imagery subgroup=imagery_2014 signaturefile=signature_imagery_2014 classes=2
+i.maxlik group=imagery subgroup=imagery_2014 signaturefile=signature_imagery_2014 output=classification_imagery_2014
+```
+
+Use the module [r.recode](https://grass.osgeo.org/grass76/manuals/r.recode.html)
+to recode the classified imagery using the rules file
+`imagery_to_landcover.txt` stored in the `nc_spm_evolution` location.
+This will reassign class 1 to the National Landcover Dataset's (NLCD)
+class 71, i.e. *Grassland/Herbaceuous*.
+And it will reassign class 2 to NCLD's class 31, i.e. *Barren Land*.
+You should have created a map of vegetation
+based on classified lidar data called `vegetation_2012`
+in the [Lidar](#lidar) tutorial.
+Run `g.mapset` and check the `lidar` mapset to access that data.
+If you did not create `vegetation_2012`
+you can use the copy in the `PERMANENT` mapset.
+Use map algebra with
+[r.mapcalc](https://grass.osgeo.org/grass76/manuals/r.mapcalc.html)
+to combine the lidar based trees and shrub
+(reassigned as NLCD class 43, i.e. Mixed Forest)
+with the imagery based grass and barren land.
+Then assign the NLCD color table from the
+`color_landcover.txt` rules file with
+[r.color](https://grass.osgeo.org/grass76/manuals/r.colors.html).
+Finally assign text labels to the class numbers
+based on the rules file `landcover_categories.txt` using
+[r.category](https://grass.osgeo.org/grass76/manuals/r.category.html)
+```
+r.recode input=classification_imagery_2014 output=recode_imagery_2014 rules=imagery_to_landcover.txt
+r.mapcalc "landcover = if(isnull(vegetation_2012), recode_imagery_2014, 43)"
+r.colors map=landcover rules=color_landcover.txt
+r.category map=landcover separator=pipe rules=landcover_categories.txt
+```
+
+## Parameter derivation
+Use the module
+[g.recode](https://grass.osgeo.org/grass76/manuals/r.recode.html).
+to derive the k factor, c factor, mannings, and runoff
+with the recode tables stored in the `nc_spm_evolution` location.
+```
+v.to.rast input=soils output=soil_types use=cat memory=3000
+r.recode input=soil_types output=soils rules=soil_classification.txt
+r.category map=soils separator=pipe rules=soil_categories.txt
+r.colors map=soils color=sepia
+r.recode input=soils output=k_factor rules=soil_to_kfactor.txt
+r.colors map=k_factor color=sepia
+g.remove -f type=raster name=soil_types
+r.recode input=landcover output=c_factor rules=landcover_to_cfactor.txt
+r.colors map=c_factor color=sepia
+r.recode input=landcover output=mannings rules=landcover_to_mannings.txt
+r.colors map=mannings color=sepia
+r.recode input=landcover output=runoff rules=landcover_to_runoff.txt
+r.colors map=runoff color=water
+```
 
 # Erosion modeling
 In this section you will learn about
@@ -30,9 +213,9 @@ and create an `erosion` mapset.
 
 Set your region to our study area with 1 meter resolution
 using the module
-[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
+[g.region](https://grass.osgeo.org/grass76/manuals/g.region.html).
 Optionally set the watershed as a mask using the module
-[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html).
+[r.mask](https://grass.osgeo.org/grass76/manuals/r.mask.html).
 ```
 g.region region=region res=1
 r.mask vector=watershed
@@ -117,23 +300,23 @@ beta_0 is the slope of the standard USLE plot (5.14 degrees)
 ```
 
 Compute the angle of the slope with the module
-[r.slope.aspect](https://grass.osgeo.org/grass74/manuals/r.slope.aspect.html).
+[r.slope.aspect](https://grass.osgeo.org/grass76/manuals/r.slope.aspect.html).
 Then grow border to fix edge effects of moving window computations
 with the module
-[r.grow.distance](https://grass.osgeo.org/grass74/manuals/r.grow.distance.html)
+[r.grow.distance](https://grass.osgeo.org/grass76/manuals/r.grow.distance.html)
 and the raster calculator
-[r.mapcalc](https://grass.osgeo.org/grass74/manuals/r.mapcalc.html).
+[r.mapcalc](https://grass.osgeo.org/grass76/manuals/r.mapcalc.html).
 Remove the temporary map generated by r.grow.distance with
-[g.remove](https://grass.osgeo.org/grass74/manuals/g.remove).
+[g.remove](https://grass.osgeo.org/grass76/manuals/g.remove).
 Compute flow accumulation with
-[r.watershed](https://grass.osgeo.org/grass74/manuals/r.watershed)
+[r.watershed](https://grass.osgeo.org/grass76/manuals/r.watershed)
 with the `a` flag for positive flow accumulation.
 Finally compute the dimensionless 3D topographic factor LS3D
 with the raster calculator
-[r.mapcalc](https://grass.osgeo.org/grass74/manuals/r.mapcalc.html)
+[r.mapcalc](https://grass.osgeo.org/grass76/manuals/r.mapcalc.html)
 as a function of slope and flow accumulation.
 Then use the module
-[r.colors](https://grass.osgeo.org/grass74/manuals/r.colors.html)
+[r.colors](https://grass.osgeo.org/grass76/manuals/r.colors.html)
 to assign a sequential, perceptually uniform color table such as viridis
 with either histogram equalization or logarithmic scaling
 with `e` or `g` flag.
@@ -162,7 +345,7 @@ The R-factor for our study landscape in Fort Bragg will be 310
 ([Fogleman 2009](http://www.geomodeler.com/Documents/bragg_Main_optimized.pdf)
 and [Renard et al. 1997](https://www.ars.usda.gov/ARSUserFiles/64080530/rusle/ah_703.pdf)).
 Use the raster calculator
-[r.mapcalc](https://grass.osgeo.org/grass74/manuals/r.mapcalc.html)
+[r.mapcalc](https://grass.osgeo.org/grass76/manuals/r.mapcalc.html)
 to create a raster named `r_factor`
 with a constant floating point value of 310.0.
 The K-factor is derived from the soil map
@@ -172,7 +355,7 @@ Compute flow using the equation `E = R * K * LS3D * C` without the P-factor.
 Then convert sediment flow from tons/ha to kg/ms using the equation
 `E = E * ton_to_kg / ha_to_m^2`.
 Finally use the module
-[r.colors](https://grass.osgeo.org/grass74/manuals/r.colors.html)
+[r.colors](https://grass.osgeo.org/grass76/manuals/r.colors.html)
 to set the viridis color table
 with the `e` flag for histogram equalization..
 
@@ -214,13 +397,13 @@ simulates overland hydrologic and sediment flows using a path sampling method.
 
 ### Shallow water flow
 Compute the partial derivatives of the topography using the module
-[r.slope.aspect](https://grass.osgeo.org/grass74/manuals/r.slope.aspect.html).
+[r.slope.aspect](https://grass.osgeo.org/grass76/manuals/r.slope.aspect.html).
 ```
 r.slope.aspect elevation=elevation_2016 dx=dx dy=dy
 ```
 
 Simulate shallow overland water flow with
-[r.sim.water](https://grass.osgeo.org/grass74/manuals/r.sim.water.html).
+[r.sim.water](https://grass.osgeo.org/grass76/manuals/r.sim.water.html).
 for a 10 minute rain event
 with a rainfall intensity of 50 mm/hr.
 Walkers are the simulated particles of water in the computation.
@@ -250,7 +433,7 @@ to better visualize the relationship between topography and water.
 Display the legend for the water depth map with either the
 `Add raster legend` button
 or
-the command [d.legend](https://grass.osgeo.org/grass74/manuals/d.legend.html).
+the command [d.legend](https://grass.osgeo.org/grass76/manuals/d.legend.html).
 Optionally use the range parameter set to `range=100-0.03`
 to show only the concentrated flow values.
 
@@ -267,7 +450,7 @@ to your map display.
 Display their legends with either the
 `Add raster legend` button
 or
-the command [d.legend](https://grass.osgeo.org/grass74/manuals/d.legend.html).
+the command [d.legend](https://grass.osgeo.org/grass76/manuals/d.legend.html).
 Use the `-n` flag to hide categories
 that are not represented in the data.
 See the [Image classification](#image-classification) section
@@ -292,7 +475,7 @@ r.sim.water elevation=elevation_2016 dx=dx dy=dy rain_value=50.0 man=mannings in
 To simulate erosion-deposition you first need to compute
 the detachment coefficient, transport coefficient, and shear stress.
 Use map algebra with
-[r.mapcalc](https://grass.osgeo.org/grass74/manuals/r.mapcalc.html)
+[r.mapcalc](https://grass.osgeo.org/grass76/manuals/r.mapcalc.html)
 to create new maps with constant values for these parameters.
 ```
 r.mapcalc "detachment = 0.001"
@@ -301,14 +484,14 @@ r.mapcalc "shear_stress = 0.0"
 ```
 
 Simulate net erosion-deposition (kg/m^2^s) with
-[r.sim.sediment](https://grass.osgeo.org/grass74/manuals/r.sim.sediment.html).
+[r.sim.sediment](https://grass.osgeo.org/grass76/manuals/r.sim.sediment.html).
 ```
 r.sim.sediment elevation=elevation_2016 water_depth=depth_2016 dx=dx dy=dy detachment_coeff=detachment transport_coeff=transport shear_stress=shear_stress man=mannings erosion_deposition=erosion_deposition_2016 nwalkers=10000
 ```
 Display the legend for the erosion-deposition map with either the
 `Add raster legend` button
 or
-the command [d.legend](https://grass.osgeo.org/grass74/manuals/d.legend.html).
+the command [d.legend](https://grass.osgeo.org/grass76/manuals/d.legend.html).
 
 <p align="center"><img src="images/erosion/erosion_deposition_2016.png"></p>
 
@@ -324,7 +507,7 @@ In this regime erosion is only limited
 by the water flow's capacity to detach sediment.
 
 Overwrite the detachment and transport coefficients
-with [r.mapcalc](https://grass.osgeo.org/grass74/manuals/r.mapcalc.html)
+with [r.mapcalc](https://grass.osgeo.org/grass76/manuals/r.mapcalc.html)
 ```
 r.mapcalc "detachment = 0.0001" --overwrite
 r.mapcalc "transport = 0.01" --overwrite
@@ -332,7 +515,7 @@ r.mapcalc "transport = 0.01" --overwrite
 
 Simulate sediment flow (kg/ms)
 in a detachment limited soil erosion regime with
-[r.sim.sediment](https://grass.osgeo.org/grass74/manuals/r.sim.sediment.html).
+[r.sim.sediment](https://grass.osgeo.org/grass76/manuals/r.sim.sediment.html).
 ```
 r.sim.sediment elevation=elevation_2016 water_depth=depth_2016 dx=dx dy=dy detachment_coeff=detachment transport_coeff=transport shear_stress=shear_stress man=mannings sediment_flux=sediment_flux_2016 nwalkers=10000
 ```
@@ -345,7 +528,7 @@ r.sim.sediment elevation=elevation_2016 water_depth=depth_2016 dx=dx dy=dy detac
 
 ## Water flow animation
 To create a water flow animation first run the module
-[r.sim.water](https://grass.osgeo.org/grass74/manuals/r.sim.water.html)
+[r.sim.water](https://grass.osgeo.org/grass76/manuals/r.sim.water.html)
 with the parameter `output_step=1` and the flag `-t` to
 create a time series of water depth rasters.
 With these settings this will output a water depth raster map
@@ -356,7 +539,7 @@ r.sim.water elevation=elevation_2016 dx=dx dy=dy rain_value=50.0 man=mannings in
 ```
 
 List this time series of rasters with the module
-[g.list](https://grass.osgeo.org/grass74/manuals/g.list.html).
+[g.list](https://grass.osgeo.org/grass76/manuals/g.list.html).
 Use the wildcard notation `*` to list all raster maps
 with `depth.` in their names.
 Use the flag `-m` to include the mapset names in the output.
@@ -366,7 +549,7 @@ g.list type=raster pattern=depth.* separator=comma -m
 ```
 
 Launch the animation tool
-[g.gui.animation](https://grass.osgeo.org/grass74/manuals/g.gui.animation.html)
+[g.gui.animation](https://grass.osgeo.org/grass76/manuals/g.gui.animation.html)
 and paste the list of depth maps into the raster parameter.
 ```
 g.gui.animation raster=depth.01,depth.02,depth.03,depth.04,depth.05,depth.06,depth.07,depth.08,depth.09,depth.10
@@ -391,7 +574,7 @@ caused by shallow, overland water and sediment flows.
 Start GRASS GIS in the `nc_spm_evolution` location
 and select the `PERMANENT` mapset.
 Install the add-on module *r.sim.terrain*
-with [g.extension](https://grass.osgeo.org/grass74/manuals/g.extension.html)
+with [g.extension](https://grass.osgeo.org/grass76/manuals/g.extension.html)
 using the url for this repository.
 Launch from the Command Line Interface (CLI) with the `ui` flag.
 To install the stable release from the GRASS GIS add-ons repository use:
@@ -409,19 +592,19 @@ r.sim.terrain --ui
 
 ## RULSE evolution model
 Create a new mapset called `rusle` with the module
-[g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
+[g.mapset](https://grass.osgeo.org/grass76/manuals/g.mapset.html).
 ```
 g.mapset -c mapset=rusle location=nc_spm_evolution
 ```
 
 Set your region to the study area with 1 meter resolution
 using the module
-[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
+[g.region](https://grass.osgeo.org/grass76/manuals/g.region.html).
 Optionally set the watershed as a mask using the module
-[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html).
+[r.mask](https://grass.osgeo.org/grass76/manuals/r.mask.html).
 Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
 using the module
-[g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+[g.copy](https://grass.osgeo.org/grass76/manuals/g.copy.html).
 The input elevation map must be in the current mapset
 so that it can be registered in the temporal datasbase.
 ```
@@ -479,19 +662,19 @@ at 3 minute interval at 1 meter resolution.
 
 ## USPED evolution model
 Create a new mapset called `usped` with the module
-[g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
+[g.mapset](https://grass.osgeo.org/grass76/manuals/g.mapset.html).
 ```
 g.mapset -c mapset=usped location=nc_spm_evolution
 ```
 
 Set your region to the study area with 1 meter resolution
 using the module
-[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
+[g.region](https://grass.osgeo.org/grass76/manuals/g.region.html).
 Optionally set the watershed as a mask using the module
-[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html).
+[r.mask](https://grass.osgeo.org/grass76/manuals/r.mask.html).
 Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
 using the module
-[g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+[g.copy](https://grass.osgeo.org/grass76/manuals/g.copy.html).
 The input elevation map must be in the current mapset
 so that it can be registered in the temporal datasbase.
 ```
@@ -545,17 +728,17 @@ at 3 minute interval at 1 meter resolution.
 
 ### Erosion-deposition regime
 Create a new mapset called `erdep` with the module
-[g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
+[g.mapset](https://grass.osgeo.org/grass76/manuals/g.mapset.html).
 ```
 g.mapset -c mapset=erdep location=nc_spm_evolution
 ```
 
 Set your region to the study area with 1 meter resolution
 using the module
-[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
+[g.region](https://grass.osgeo.org/grass76/manuals/g.region.html).
 Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
 using the module
-[g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+[g.copy](https://grass.osgeo.org/grass76/manuals/g.copy.html).
 The input elevation map must be in the current mapset
 so that it can be registered in the temporal datasbase.
 ```
@@ -573,7 +756,7 @@ r.sim.terrain -f  elevation=elevation_2016 runs=event mode=simwe_mode rain_inten
 ```
 
 Set the watershed as a mask using the module
-[r.mask](https://grass.osgeo.org/grass74/manuals/r.mask.html) and then
+[r.mask](https://grass.osgeo.org/grass76/manuals/r.mask.html) and then
 display the results with the raster map `net_difference` and a raster legend.
 ```
 r.mask vector=watershed
@@ -591,17 +774,17 @@ of a 120 min event with a rainfall intensity of 50 mm/hr
 
 ### Detachment limited regime
 Create a new mapset called `flux` with the module
-[g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
+[g.mapset](https://grass.osgeo.org/grass76/manuals/g.mapset.html).
 ```
 g.mapset -c mapset=flux location=nc_spm_evolution
 ```
 
 Set your region to the study area with 1 meter resolution
 using the module
-[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
+[g.region](https://grass.osgeo.org/grass76/manuals/g.region.html).
 Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
 using the module
-[g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+[g.copy](https://grass.osgeo.org/grass76/manuals/g.copy.html).
 ```
 g.region region=region res=1
 g.copy raster=elevation_2016@PERMANENT,elevation_2016
@@ -625,17 +808,17 @@ of a 120 min event with a rainfall intensity of 50 mm/hr
 
 ### Transport limited regime
 Create a new mapset called `transport` with the module
-[g.mapset](https://grass.osgeo.org/grass74/manuals/g.mapset.html).
+[g.mapset](https://grass.osgeo.org/grass76/manuals/g.mapset.html).
 ```
 g.mapset -c mapset=transport location=nc_spm_evolution
 ```
 
 Set your region to the study area with 1 meter resolution
 using the module
-[g.region](https://grass.osgeo.org/grass74/manuals/g.region.html).
+[g.region](https://grass.osgeo.org/grass76/manuals/g.region.html).
 Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
 using the module
-[g.copy](https://grass.osgeo.org/grass74/manuals/g.copy.html).
+[g.copy](https://grass.osgeo.org/grass76/manuals/g.copy.html).
 ```
 g.region region=region res=1
 g.copy raster=elevation_2016@PERMANENT,elevation_2016
@@ -687,10 +870,10 @@ r.sim.terrain -f  elevation=elevation_2016 runs=event mode=simwe_mode rain_inten
 For a dynamic landscape evolution simulation the `rain_interval` parameter
 should be set to the approximate travel time
 for a particle of water to cross the study region. To calculate this
-use [r.sim.water](https://grass.osgeo.org/grass74/manuals/r.sim.water.html)
+use [r.sim.water](https://grass.osgeo.org/grass76/manuals/r.sim.water.html)
 to compute the discharge rate.
 Calculate the mean velocity with
-[r.info](https://grass.osgeo.org/grass74/manuals/r.info).
+[r.info](https://grass.osgeo.org/grass76/manuals/r.info).
 ```
 r.slope.aspect elevation=elevation_2016 dx=dx dy=dy
 r.sim.water elevation=elevation_2016 dx=dx dy=dy depth=depth discharge=discharge nwalkers=1000000
@@ -704,6 +887,6 @@ travel time = mean velocity (m/s) * distance (m)
 ```
 
 Alternatively travel time could also be computed using the add-on
-[r.stream.distance](https://grass.osgeo.org/grass74/manuals/addons/r.stream.distance.html)
+[r.stream.distance](https://grass.osgeo.org/grass76/manuals/addons/r.stream.distance.html)
 or the add-on
-[r.traveltime](https://grass.osgeo.org/grass74/manuals/addons/r.traveltime.html).
+[r.traveltime](https://grass.osgeo.org/grass76/manuals/addons/r.traveltime.html).

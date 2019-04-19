@@ -1065,12 +1065,10 @@ for constant rainfall, design storms, and recorded rainfall.
 \subsection{Patterson Branch Creek}
 
 \begin{figure}
-\centering
-\begin{overpic}[width=0.75\textwidth]{../images/sample_data_3d/naip_2014.png}
-\put(0,0){\includegraphics[height=65mm,center]{../images/sample_data_3d/map_elements.png}}  
-\end{overpic} \\
-\caption{Subwatershed with 2014 orthoimagery draped over 2016 digital elevation model, Patterson Branch Creek, Fort Bragg, NC, USA}
-\label{fig:3d}
+\center
+\includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/watershed.pdf}
+\caption{Subwatershed with 2014 orthoimagery draped over 2016 digital elevation model (a) and drainage areas with 2014 orthoimagery (b), Patterson Branch Creek, Fort Bragg, NC, USA}
+\label{fig:watershed}
 \end{figure}
 
 With 650~\unit{km}$^{2}$ of land
@@ -1080,8 +1078,8 @@ on impact areas, firing ranges, landing zones, and dropzones.
 It is located in the Sandhills region of North Carolina 
 with a Longleaf Pine and Wiregrass Ecosystem \citep{Sorrie2006}.
 %
-The study landscape
--- a subwatershed of Patterson Branch Creek 
+The study landscape 
+-- a subwatershed of Patterson Branch Creek (Figure~\ref{fig:watershed}a) 
 in the Coleman Impact Area --
 is pitted with impact craters from artillery and mortar shells
 and has an active, approximately 2~\unit{m} deep gully. 
@@ -1134,6 +1132,12 @@ under the ODC Open Database License (ODbL).
 The data is derived from publicly available data from
 the US Army, USGS, USDA, Wake County GIS, NC Floodplain
 Mapping Program, and the NC State Climate Office.
+There are detailed instructions for preparing the input data in the 
+\href{https://github.com/baharmon/landscape_evolution/blob/master/tutorial.md}{tutorial}
+and a complete record of the commands used to process the sample data in the
+\href{https://github.com/baharmon/landscape_evolution_dataset/blob/master/nc_spm_evolution/DATA.md}{data log}.
+
+
 
 % --------- MORPHOLGY ---------
 We used the geomorphons method 
@@ -1185,7 +1189,7 @@ approximately 1~\unit{m} or more.
 We ran a sequence of r.sim.terrain simulations 
 for the Patterson Branch Creek subwatershed study area
 to test dynamic and steady state flow regimes
-in the SIMWE, RUSLE3D, and USPED models
+using the RUSLE3D, USPED, and SIMWE models
 (Table~\ref{table:simulations}).
 %
 RUSLE3D was used to simulate 120~\unit{min} events
@@ -1461,6 +1465,10 @@ for running and reproducing the simulations in this paper.
 The digital object identifier (DOI) 
 for the version of the software documented in this paper is:
 \url{https://doi.org/10.5281/zenodo.2542921}.
+There are detailed instructions for running this model in the manual at
+\url{https://grass.osgeo.org/grass76/manuals/addons/r.sim.terrain.html}
+and the tutorial at
+\url{https://github.com/baharmon/landscape_evolution/blob/master/tutorial.md}.
 % data
 The geospatial dataset for the study area is available on GitHub at
 \url{https://github.com/baharmon/landscape_evolution_dataset}
@@ -1468,13 +1476,18 @@ under the
 \href{https://opendatacommons.org/licenses/odbl/}{Open Database License} 
 with the DOI:
 \url{https://doi.org/10.5281/zenodo.2542929}.
+The
+\href{https://github.com/baharmon/landscape_evolution_dataset/blob/master/nc_spm_evolution/DATA.md}{data log} has a complete record of the commands used to process the sample data.
 % osf
 The source code, scripts, data, and results are also hosted
 on the Open Science Framework at 
 \url{https://osf.io/tf6yb/}
 with the DOI:
 \url{https://doi.org/10.17605/osf.io/tf6yb}.
-} 
+}
+
+
+
 
 % ----------------------------------------------------------------------------
 
