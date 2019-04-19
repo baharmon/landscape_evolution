@@ -52,7 +52,7 @@ def main():
 
     """render 2d maps"""
     render_region_2d()
-    render_subregion_2d()
+    # render_subregion_2d()
     # render_map_elements()
     # render_fortbragg_2d()
 
@@ -78,6 +78,29 @@ def render_region_2d():
 
     # set mask
     gscript.run_command('r.mask', vector='watershed')
+
+    # render map with imagery and subwatersheds
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'subwatersheds'+'.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.rast',
+        map='naip_2014')
+    gscript.run_command('d.vect',
+        map='subwatersheds',
+        fill_color='none',
+        width=1)
+    gscript.run_command('d.vect',
+        map='subwatershed',
+        fill_color='none',
+        width=6)
+    gscript.run_command('d.vect',
+        map='watershed',
+        fill_color='none',
+        width=3)
+    gscript.run_command('d.mon', stop=driver)
 
     # render shaded relief maps
     for year in years:
