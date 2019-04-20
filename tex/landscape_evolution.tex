@@ -84,7 +84,7 @@ landscape planning, and landscape restoration.
 The digital elevation model (DEM) 
 before (a) and after (b)
 simulated landscape evolution with r.sim.terrain 
-for a subwatershed of Patterson Branch Creek, Fort Bragg, NC, USA. 
+for a subwatershed of Patterson Branch, Fort Bragg, NC, USA. 
 This simulation used the SIMWE model
 for a 120~\unit{min} rainfall event with 25~\unit{mm~hr}$^{-1}$
 in a transport limited soil erosion regime at steady state.
@@ -1056,18 +1056,18 @@ To test the effectiveness of the different models
 in r.sim.terrain
 we compared the simulated evolution
 of a highly eroded subwatershed of 
-Patterson Branch Creek on Fort Bragg, North Carolina
+Patterson Branch on Fort Bragg, North Carolina
 against a timeseries of airborne lidar surveys.
 The models -- SIMWE, RUSLE3D, and USPED --
 were tested in steady state and dynamic modes
 for constant rainfall, design storms, and recorded rainfall.
 
-\subsection{Patterson Branch Creek}
+\subsection{Patterson Branch}
 
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/watershed.pdf}
-\caption{Subwatershed with 2014 orthoimagery draped over 2016 digital elevation model (a) and drainage areas with 2014 orthoimagery (b), Patterson Branch Creek, Fort Bragg, NC, USA}
+\caption{Subwatershed with 2014 orthoimagery draped over 2016 digital elevation model (a) and drainage areas with 2014 orthoimagery (b), Patterson Branch, Fort Bragg, NC, USA}
 \label{fig:watershed}
 \end{figure}
 
@@ -1079,7 +1079,7 @@ It is located in the Sandhills region of North Carolina
 with a Longleaf Pine and Wiregrass Ecosystem \citep{Sorrie2006}.
 %
 The study landscape 
--- a subwatershed of Patterson Branch Creek (Figure~\ref{fig:watershed}a) 
+-- a subwatershed of Patterson Branch (Figure~\ref{fig:watershed}a) 
 in the Coleman Impact Area --
 is pitted with impact craters from artillery and mortar shells
 and has an active, approximately 2~\unit{m} deep gully. 
@@ -1137,8 +1137,6 @@ There are detailed instructions for preparing the input data in the
 and a complete record of the commands used to process the sample data in the
 \href{https://github.com/baharmon/landscape_evolution_dataset/blob/master/nc_spm_evolution/DATA.md}{data log}.
 
-
-
 % --------- MORPHOLGY ---------
 We used the geomorphons method 
 of automated landform classification
@@ -1179,7 +1177,7 @@ approximately 1~\unit{m} or more.
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/study_area.pdf}
-\caption{Subwatershed, Patterson Branch Creek, Fort Bragg, NC, USA}
+\caption{Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC, USA}
 \label{fig:study_area}
 \end{figure}
 
@@ -1187,7 +1185,7 @@ approximately 1~\unit{m} or more.
 \subsection{Simulations}
 %
 We ran a sequence of r.sim.terrain simulations 
-for the Patterson Branch Creek subwatershed study area
+for the Patterson Branch subwatershed study area
 to test dynamic and steady state flow regimes
 using the RUSLE3D, USPED, and SIMWE models
 (Table~\ref{table:simulations}).
@@ -1358,7 +1356,28 @@ model erosion for the entire 650~\unit{km}$^{2}$
 Fort Bragg installation at 9~\unit{m} resolution
 \citep{Levine2018}. 
 
-% --------- SIMULATION TABLE ---------
+% --------- SIMULATION TABLES ---------
+
+% linear regression table
+\begin{table*}
+\small
+\caption{Linear regression of elevation maps}
+\begin{tabu} to \textwidth {llll}
+\toprule
+Elevation A & Elevation B &  Correlation coeff. (R) & Difference from 2012-2016 baseline \\
+\midrule
+2012 & 2016 & 0.999865 & 0\\
+2012 & simulated with var. erosion-deposition SIMWE & 0.999932 & -0.000067\\
+2012 & simulated with detachment-limited SIMWE & 0.977801 & 0.022064\\
+2012 & simulated with transport-limited SIMWE & 0.999925 & -0.00006\\
+2012 & simulated with RUSLE3D & 0.998432 & 0.001433\\
+2012 & simulated with USPED & 0.999926 & -0.000061\\
+\bottomrule
+\\
+\end{tabu}
+\label{table:linear_regression} 
+\end{table*}
+
 
 % table of simulations
 \begin{table*}
@@ -1384,8 +1403,9 @@ Steady state & SIMWE & 25~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 120~\unit{min} 
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/simulations.pdf}
-\caption{Dynamic RUSLE3D (a-c) and USPED (d-f) simulations
-for a 120~\unit{min} event with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$}
+\caption{Dynamic RUSLE3D (a-b) and USPED (c-d) simulations
+for a 120~\unit{min} event with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$,\\
+Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC}
 \label{fig:simulations}
 \end{figure}
 
@@ -1394,8 +1414,9 @@ for a 120~\unit{min} event with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/simwe.pdf}
 \caption{Steady state SIMWE simulations
-for 120~\unit{min} events with rainfall intensities of 50~\unit{mm~hr}$^{-1}$ (a-c)
-and 25~\unit{mm~hr}$^{-1}$(d-f)}
+for 120~\unit{min} events with rainfall intensities of 50~\unit{mm~hr}$^{-1}$ (a-b)
+and 25~\unit{mm~hr}$^{-1}$ (c-d),\\
+Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC}
 \label{fig:simwe_simulations}
 \end{figure}
 

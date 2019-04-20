@@ -1,0 +1,59 @@
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass{standalone}
+
+% packages
+\usepackage{float}
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[export]{adjustbox}
+\usepackage[utf8]{inputenc}
+%\usepackage[active,pdftex,tightpage]{preview}
+\usepackage{newtxtext,newtxmath}
+\usepackage[percent]{overpic}
+
+\begin{document}
+
+%\sf
+\scriptsize
+\centering 
+
+% Steady state SIMWE simulations
+
+\begin{tabular}{m{0.05\textwidth} m{0.45\textwidth} m{0.05\textwidth} m{0.45\textwidth}}
+% 
+\multicolumn{1}{c}{\includegraphics[height=25mm]{../../images/ss_erdep_3d/legend_depth.png}}
+& \multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_erdep_3d/depth.png}} 
+& \multicolumn{1}{c}{\includegraphics[height=25mm]{../../images/ss_flux_3d/legend_flux.png}}
+& \multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_flux_3d/flux.png}}\\
+\multicolumn{1}{c}{} 
+& \multicolumn{1}{c}{a. Erosion-deposition simulation water depth [m]}
+& \multicolumn{1}{c}{} 
+& \multicolumn{1}{c}{d. Detachment limited simulation flux [kg~m$^{-1}$~s$^{-1}$]}\\
+%
+\multicolumn{1}{c}{\includegraphics[height=25mm]{../../images/ss_erdep_3d/legend_landforms.png}}
+& \multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_erdep_3d/landforms.png}}
+& \multicolumn{1}{c}{\includegraphics[height=25mm]{../../images/ss_flux_3d/legend_landforms.png}}
+& \multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_flux_3d/landforms.png}}\\
+\multicolumn{1}{c}{}
+& \multicolumn{1}{c}{b. Erosion-deposition simulation landforms}
+& \multicolumn{1}{c}{}
+& \multicolumn{1}{c}{e. Detachment limited landforms}\\
+%
+\multicolumn{1}{c}{\includegraphics[height=25mm]{../../images/ss_erdep_3d/legend_difference.png}}
+& \multicolumn{1}{c}{\includegraphics[height=50mm]{../../images/ss_erdep_3d/difference.png}}
+& \multicolumn{1}{c}{\includegraphics[height=25mm]{../../images/ss_flux_3d/legend_difference.png}}
+& \multicolumn{1}{c}{\begin{overpic}[height=50mm]{../../images/ss_flux_3d/difference.png}
+\hspace*{-1.75cm}
+\put(0,0){\includegraphics[height=55mm]{../../images/sample_data_3d/map_elements.png}}  
+\end{overpic}}\\
+\multicolumn{1}{c}{} 
+& \multicolumn{1}{c}{c. Erosion-deposition simulation net difference [m]} 
+& \multicolumn{1}{c}{} 
+& \multicolumn{1}{c}{f. Detachment limited simulation net difference [m]}\\
+%
+\end{tabular}
+
+\end{document}
