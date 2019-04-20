@@ -395,6 +395,33 @@ with the command:
 g.extension r.sim.terrain
 \end{verbatim}
 
+% -------------- LIMITATIONS ---------------------
+Limitations of this landscape evolution model include
+units, computation time, resolution and spatial scale,
+and shallow overland flow.
+% units
+r.sim.terrain requires data including 
+elevation and rainfall intensity in metric units. 
+% computation
+The SIMWE model is computationally intensive 
+and may require long computation times even with multithreading.
+Because SIMWE uses a Green's function Monte Carlo solution 
+of the sediment transport equation, 
+the detail and smoothness of the results 
+depends on the number of random walkers.
+Large numbers of random walkers will greatly increase computation time
+and a customized compilation of GRASS GIS 
+is needed for more than 7 million random walkers.
+This limits the resolution and spatial scale 
+at which SIMWE can be easily applied,
+while RUSLE3D and USPED are much faster and computationally efficient
+and can easily be run at regional scales. 
+% shallow water flow
+Furthermore r.sim.terrain only models shallow overland flows, 
+not fluvial processes or subsurface flows. 
+% empirical parameters
+% sensitivity to parameters
+
 % -------------------------- TABLE OF MODELS -----------------------------
 
 % table of erosion models
@@ -1067,7 +1094,9 @@ for constant rainfall, design storms, and recorded rainfall.
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/watershed.pdf}
-\caption{Subwatershed with 2014 orthoimagery draped over 2016 digital elevation model (a) and drainage areas with 2014 orthoimagery (b), Patterson Branch, Fort Bragg, NC, USA}
+\caption{Subwatershed with 2014 orthoimagery
+draped over the 2016 digital elevation model (a)
+and drainage areas with 2014 orthoimagery (b), Patterson Branch, Fort Bragg, NC, USA}
 \label{fig:watershed}
 \end{figure}
 
@@ -1099,7 +1128,7 @@ In 2016 the  450~\unit{m}$^{2}$ study site was
 43.24\% bare ground with predominately loamy sands,
 39.54\% covered by the Wiregrass community, and
 17.22\% forested with the Longleaf Pine community 
-(Figure~\ref{fig:study_area}c). 
+(Figure~\ref{fig:study_area}a). 
 %
 We hypothesize that the elimination of forest cover
 in the impact zone
@@ -1109,8 +1138,8 @@ gully formation, and sediment transport into the creek.
 % --------- DATA ---------
 Timeseries of digital elevations models 
 and landcover maps for the study landscape
-were generated from lidar pointclouds and orthophotography
-(Figure~\ref{fig:study_area}a-c). 
+were generated from lidar pointclouds and orthophotography.
+%(Figure~\ref{fig:study_area}a-c). 
 The digital elevations models for 2004, 2012, and 2016
 were interpolated at 0.3~\unit{m} resolution
 using the regularized spline with tension function \citep{Mitasova1993,Mitasova2005}
@@ -1121,11 +1150,11 @@ Unsupervised image classification
 was used to identify clusters of spectral reflectance
 in a timeseries of 1~\unit{m} resolution orthoimagery 
 collected by the National Agriculture Imagery Program.
-The landcover maps were derived by fusing the
-classified lidar point clouds with the classified orthoimagery.
+The landcover maps were derived from the
+classified lidar point clouds and the classified orthoimagery.
 Spatially variable soil erosion factors 
 -- k-factor, c-factor, mannings, and runoff rates --
-were derived from the landcover and soil maps.
+were then derived from the landcover and soil maps.
 The dataset for this study is hosted at 
 \url{https://github.com/baharmon/landscape\_evolution_dataset}
 under the ODC Open Database License (ODbL).
@@ -1143,7 +1172,7 @@ of automated landform classification
 based on the openness of terrain \citep{Jasiewicz2013}
 and the difference between the digital elevation models 
 to analyze the changing morphology of the study area
-(Figure~\ref{fig:study_area}d-f). 
+(Figure~\ref{fig:study_area}c-d). 
 %
 The 2~\unit{m} deep gully -- 
 its channels classified as valleys and 
@@ -1165,7 +1194,7 @@ has developed at the foot of this nascent branch
 where it would meet the main channel. 
 %
 The difference in elevation between 2012 and 2016
-(Figure~\ref{fig:study_area}d)
+(Figure~\ref{fig:study_area}b)
 shows a deepening of the main channel 
 by approximately 0.2~\unit{m} 
 and the scours pits
@@ -1177,7 +1206,7 @@ approximately 1~\unit{m} or more.
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/study_area.pdf}
-\caption{Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC, USA}
+\caption{Morphological Change, Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC, USA}
 \label{fig:study_area}
 \end{figure}
 
@@ -1186,29 +1215,44 @@ approximately 1~\unit{m} or more.
 %
 We ran a sequence of r.sim.terrain simulations 
 for the Patterson Branch subwatershed study area
-to test dynamic and steady state flow regimes
-using the RUSLE3D, USPED, and SIMWE models
+to test and demonstrate the capabilities 
+of the RUSLE3D, USPED, and SIMWE models
 (Table~\ref{table:simulations}).
 %
+Since the study area dominated by
+a variable erosion-deposition or transport limited
+soil erosion regime during the 2012-2016 study period, 
+we could not quantitatively assess the detachment limited models
+against the observed topographic evolution of the landscape.
+%
+Instead the goal of simulations was to test
+what morphological processes and features 
+the different models could simulate. 
+%
+We analyzed the results of the simulations 
+by qualitatively comparing landforms 
+and the net difference in elevation
+and by quantitatively comparing 
+linear regressions of elevation change.
+
 RUSLE3D was used to simulate 120~\unit{min} events
 with rainfall intensities of 50~\unit{mm~hr}$^{-1}$
 for detachment capacity limited soil erosion regimes
 for both dynamic and steady state flow regimes
 using RUSLE3D
-(Figure~\ref{fig:simulations}a-c).
+(Figure~\ref{fig:simulations}a-b).
 % 
 USPED was used to simulate 120~\unit{min} events
 with rainfall intensities of \unit{50~mm~hr}$^{-1}$
 for transport capacity limited soil erosion regimes
 for both dynamic and steady state flow regimes
-(Figure~\ref{fig:simulations}d-f).
+(Figure~\ref{fig:simulations}c-d).
 %
 SIMWE was used to simulate 120~\unit{min} events 
 with rainfall intensities of 50~\unit{mm~hr}$^{-1}$
-for erosion-deposition 
-and detachment limited soil erosion regimes 
-in steady state flow regimes
-(Figure~\ref{fig:simwe_simulations}).
+for erosion-deposition (Figure~\ref{fig:simwe_simulations}a-b)
+and detachment limited (Figure~\ref{fig:simwe_simulations}c-d)
+soil erosion regimes in steady state flow regimes.
 %
 In all of the simulations 
 a sink filling algorithm
@@ -1250,6 +1294,18 @@ while steady state simulations for SIMWE each took
 % --------- RESULTS ---------
 \subsection{Results}
 
+% linear regression
+We used linear regression to quantitatively analyze 
+observed versus simulated changes in topographic elevation
+(Table~\ref{table:linear_regression}).
+As expected given that the gully was dominated 
+by a variable erosion-deposition 
+or  transport limited soil erosion regime 
+throughout the study period,
+the detachment limited models diverged more from the 
+2012-2016 baseline. 
+
+
 % dynamic model results
 The dynamic RUSLE3D simulation
 deepened the main channel of the gully,
@@ -1283,7 +1339,7 @@ a transport capacity limited soil erosion regime
 
 % steady state model results
 The steady state SIMWE simulations 
-predicted more realistic patterns 
+predicted more realistic morphological patterns 
 of landscape evolution
 (Figure~\ref{fig:simwe_simulations}). 
 %
@@ -1465,6 +1521,25 @@ in conjunction with other GIS-based tools
 for geomorphological research,
 land management and conservation,
 erosion control, and landscape restoration. 
+
+% --------- FUTURE WORK ---------
+
+% assessment study
+In the future we plan to assess this model
+by comparing simulations against 
+a monthly timeseries
+of submeter resolution surveys
+by unmanned aerial systems and terrestrial lidar. 
+% case study
+We also plan to develop a case study demonstrating
+how the model can be used as a planning tool 
+for landscape restoration. 
+% enhancements
+Planned enhancements to model include 
+modeling subsurface flows, 
+accounting for bedrock, 
+and a reverse landscape evolution mode
+for backward modeling. 
 
 % --------------------CODE AND DATA------------------------
 
