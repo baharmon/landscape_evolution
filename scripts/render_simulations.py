@@ -184,8 +184,10 @@ def render_region_2d(mapset):
         step=0,
         start=0,
         overwrite=overwrite)
-    gscript.run_command('d.rast',
-        map='landforms')
+    gscript.run_command('d.shade',
+        shade='shaded_relief',
+        color='landforms',
+        brighten=0)
     gscript.run_command('d.legend',
         raster='landforms',
         fontsize=fontsize,
@@ -336,8 +338,10 @@ def render_subregion_2d(mapset):
         step=0,
         start=0,
         overwrite=overwrite)
-    gscript.run_command('d.rast',
-        map='landforms')
+    gscript.run_command('d.shade',
+        shade='shaded_relief',
+        color='landforms',
+        brighten=0)
     gscript.run_command('d.legend',
         raster='landforms',
         fontsize=fontsize,

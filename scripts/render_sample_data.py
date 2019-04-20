@@ -41,7 +41,7 @@ legend_coord = (2, 32, 2, 4)
 border = 400
 width = 1600
 height = 1600
-fontsize = 24
+fontsize = 26
 vector_width = 3
 
 # set data parameters
@@ -84,22 +84,91 @@ def render_region_2d():
         start=driver,
         width=width,
         height=height,
-        output=os.path.join(render, 'subwatersheds'+'.png'),
+        output=os.path.join(render, 'imagery_subwatersheds'+'.png'),
         overwrite=overwrite)
     gscript.run_command('d.rast',
         map='naip_2014')
     gscript.run_command('d.vect',
         map='subwatersheds',
         fill_color='none',
-        width=1)
+        width=3)
+    gscript.run_command('d.vect',
+        map='watershed',
+        fill_color='none',
+        width=6)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render map with depth and subwatershed
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'depth_subwatersheds'+'.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='skyview_2016',
+        color='depth_2016',
+        brighten=0)
     gscript.run_command('d.vect',
         map='subwatershed',
         fill_color='none',
         width=6)
+    gscript.run_command('d.legend',
+        raster='depth_2016',
+        fontsize=fontsize,
+        at=legend_coord)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render map with flow accumlation and subwatershed
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'flowacc_subwatersheds'+'.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.shade',
+        shade='skyview_2016',
+        color='flow_accumulation_2016',
+        brighten=0)
+    gscript.run_command('d.vect',
+        map='subwatershed',
+        fill_color='none',
+        width=6)
+    gscript.run_command('d.legend',
+        raster='flow_accumulation_2016',
+        fontsize=fontsize,
+        at=legend_coord,
+        flags='nl')
+    gscript.run_command('d.mon', stop=driver)
+
+    # render map with subwatersheds
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'subwatersheds'+'.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.vect',
+        map='subwatersheds',
+        fill_color='none',
+        width=3)
     gscript.run_command('d.vect',
         map='watershed',
         fill_color='none',
-        width=3)
+        width=6)
+    gscript.run_command('d.mon', stop=driver)
+
+    # render map with subwatershed
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'subwatershed'+'.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.vect',
+        map='subwatershed',
+        fill_color='none',
+        width=6)
     gscript.run_command('d.mon', stop=driver)
 
     # render shaded relief maps
@@ -961,13 +1030,31 @@ def render_map_elements():
 
     # set region
     gscript.run_command('g.region', region='region', res=res)
-
     # render map scale bar and north arrow
     gscript.run_command('d.mon',
         start=driver,
         width=width,
         height=height,
         output=os.path.join(render, 'map_elements'+'.png'),
+        overwrite=overwrite)
+    gscript.run_command('d.northarrow',
+        style='6',
+        at='90.0,10.0',
+        flags='t')
+    gscript.run_command('d.barscale',
+        at='63,5.0',
+        segment=2,
+        fontsize=fontsize)
+    gscript.run_command('d.mon', stop=driver)
+
+    # set subregion
+    gscript.run_command('g.region', region='subregion', res=res)
+    # render map scale bar and north arrow
+    gscript.run_command('d.mon',
+        start=driver,
+        width=width,
+        height=height,
+        output=os.path.join(render, 'map_elements_detail'+'.png'),
         overwrite=overwrite)
     gscript.run_command('d.northarrow',
         style='6',
