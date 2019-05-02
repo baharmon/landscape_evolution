@@ -41,6 +41,7 @@ legend_coord = (2, 32, 2, 4)
 border = 400
 width = 1600
 height = 1600
+font = 'Lato-Regular'
 fontsize = 26
 vector_width = 3
 
@@ -52,7 +53,7 @@ def main():
 
     """render 2d maps"""
     render_region_2d()
-    # render_subregion_2d()
+    render_subregion_2d()
     # render_map_elements()
     # render_fortbragg_2d()
 
@@ -74,7 +75,7 @@ def render_region_2d():
         os.makedirs(render)
 
     # set region
-    gscript.run_command('g.region', region='region', res=res)
+    gscript.run_command('g.region', region='region', res=res, align='elevation_2016')
 
     # set mask
     gscript.run_command('r.mask', vector='watershed')
@@ -115,6 +116,7 @@ def render_region_2d():
         width=6)
     gscript.run_command('d.legend',
         raster='depth_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -136,6 +138,7 @@ def render_region_2d():
         width=6)
     gscript.run_command('d.legend',
         raster='flow_accumulation_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
         flags='nl')
@@ -183,6 +186,7 @@ def render_region_2d():
             map='shaded_relief_'+str(year))
         gscript.run_command('d.legend',
             raster='elevation_'+str(year),
+            font=font,
             fontsize=fontsize,
             at=legend_coord)
         gscript.run_command('d.mon', stop=driver)
@@ -201,6 +205,7 @@ def render_region_2d():
             brighten=0)
         gscript.run_command('d.legend',
             raster='landforms_'+str(year),
+            font=font,
             fontsize=fontsize,
             at=legend_coord)
         gscript.run_command('d.mon', stop=driver)
@@ -216,6 +221,7 @@ def render_region_2d():
         map='difference_2004_2016')
     gscript.run_command('d.legend',
         raster='difference_2004_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -231,6 +237,7 @@ def render_region_2d():
         map='difference_2004_2012')
     gscript.run_command('d.legend',
         raster='difference_2004_2012',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -263,6 +270,7 @@ def render_region_2d():
         brighten=0)
     gscript.run_command('d.legend',
         raster='depth_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -293,6 +301,7 @@ def render_region_2d():
         brighten=0)
     gscript.run_command('d.legend',
         raster='landcover',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
         flags='n')
@@ -311,6 +320,7 @@ def render_region_2d():
         brighten=0)
     gscript.run_command('d.legend',
         raster='flow_accumulation_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
         flags='nl')
@@ -329,10 +339,11 @@ def render_region_2d():
         brighten=0)
     gscript.run_command('d.legend',
         raster='ls_factor',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
-        labelnum='2',
-        flags='nl')
+        label_values=[0.001,1.8],
+        label_step=0.5)
     gscript.run_command('d.mon', stop=driver)
 
     # render sediment flow
@@ -348,10 +359,10 @@ def render_region_2d():
         brighten=0)
     gscript.run_command('d.legend',
         raster='sediment_flow_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
-        labelnum='2',
-        flags='nl')
+        range='0,3')
     gscript.run_command('d.mon', stop=driver)
 
     # render sediment flux
@@ -367,6 +378,7 @@ def render_region_2d():
         brighten=0)
     gscript.run_command('d.legend',
         raster='sediment_flux_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
         range='0,1',
@@ -387,9 +399,11 @@ def render_region_2d():
         brighten=0)
     gscript.run_command('d.legend',
         raster='erosion_deposition_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
         range='-0.1,0.1',
+        digits='2',
         flags='n')
     gscript.run_command('d.mon', stop=driver)
 
@@ -406,7 +420,10 @@ def render_subregion_2d():
         os.makedirs(render)
 
     # set region
-    gscript.run_command('g.region', region='subregion', res=res)
+    gscript.run_command('g.region',
+        region='subregion',
+        res=res,
+        align='elevation_2016')
 
     # set mask
     gscript.run_command('r.mask', vector='subwatershed')
@@ -425,6 +442,7 @@ def render_subregion_2d():
             brighten=50)
         gscript.run_command('d.legend',
             raster='elevation_'+str(year),
+            font=font,
             fontsize=fontsize,
             at=legend_coord)
         gscript.run_command('d.mon', stop=driver)
@@ -443,6 +461,7 @@ def render_subregion_2d():
             brighten=50)
         gscript.run_command('d.legend',
             raster='landforms_'+str(year),
+            font=font,
             fontsize=fontsize,
             at=legend_coord)
         gscript.run_command('d.mon', stop=driver)
@@ -458,6 +477,7 @@ def render_subregion_2d():
         map='difference_2004_2016')
     gscript.run_command('d.legend',
         raster='difference_2004_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -473,6 +493,7 @@ def render_subregion_2d():
         map='difference_2004_2012')
     gscript.run_command('d.legend',
         raster='difference_2004_2012',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -488,6 +509,7 @@ def render_subregion_2d():
         map='difference_2012_2016')
     gscript.run_command('d.legend',
         raster='difference_2012_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -505,6 +527,7 @@ def render_subregion_2d():
         brighten=50)
     gscript.run_command('d.legend',
         raster='depth_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -535,6 +558,7 @@ def render_subregion_2d():
         brighten=50)
     gscript.run_command('d.legend',
         raster='landcover',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
         flags='n')
@@ -553,6 +577,7 @@ def render_subregion_2d():
         brighten=50)
     gscript.run_command('d.legend',
         raster='flow_accumulation_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
         flags='nl')
@@ -571,10 +596,11 @@ def render_subregion_2d():
         brighten=50)
     gscript.run_command('d.legend',
         raster='ls_factor',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
-        labelnum='2',
-        flags='nl')
+        label_values=[0.001,1.8],
+        label_step=0.5)
     gscript.run_command('d.mon', stop=driver)
 
     # render sediment flow
@@ -590,10 +616,10 @@ def render_subregion_2d():
         brighten=50)
     gscript.run_command('d.legend',
         raster='sediment_flow_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
-        labelnum='2',
-        flags='nl')
+        range='0,3')
     gscript.run_command('d.mon', stop=driver)
 
     # render sediment flux
@@ -609,6 +635,7 @@ def render_subregion_2d():
         brighten=50)
     gscript.run_command('d.legend',
         raster='sediment_flux_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
         range='0,1',
@@ -629,9 +656,11 @@ def render_subregion_2d():
         brighten=50)
     gscript.run_command('d.legend',
         raster='erosion_deposition_2016',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
         range='-0.1,0.1',
+        digits='2',
         flags='n')
     gscript.run_command('d.mon', stop=driver)
 
@@ -648,7 +677,10 @@ def render_fortbragg_2d():
         os.makedirs(render)
 
     # set region
-    gscript.run_command('g.region', region='fortbragg', res=10)
+    gscript.run_command('g.region',
+        region='fortbragg',
+        res=10,
+        align='fortbragg_elevation_10m_2012')
 
     # set mask
     gscript.run_command('r.mask', raster='fortbragg_cfactor')
@@ -664,13 +696,14 @@ def render_fortbragg_2d():
         map='fortbragg_shaded_10m_2012')
     gscript.run_command('d.legend',
         raster='fortbragg_elevation_10m_2012',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
 
     # compute relief
     gscript.run_command('r.relief',
-        input='fortbragg_elevation_10m_2012@PERMANENT',
+        input='fortbragg_elevation_10m_2012',
         output='relief',
         altitude=90,
         azimuth=45,
@@ -690,6 +723,7 @@ def render_fortbragg_2d():
         brighten=0)
     gscript.run_command('d.legend',
         raster='fortbragg_cfactor',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -708,6 +742,7 @@ def render_fortbragg_2d():
     gscript.run_command('d.legend',
         raster='fortbragg_landcover',
         fontsize=fontsize,
+        font=font,
         at=legend_coord,
         flags='n')
     gscript.run_command('d.mon', stop=driver)
@@ -725,6 +760,7 @@ def render_fortbragg_2d():
         brighten=0)
     gscript.run_command('d.legend',
         raster='fortbragg_erdep',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -742,6 +778,7 @@ def render_fortbragg_2d():
         brighten=0)
     gscript.run_command('d.legend',
         raster='fortbragg_classified_erdep',
+        font=font,
         fontsize=fontsize,
         at=legend_coord,
         flags='n')
@@ -773,8 +810,9 @@ def render_region_3d():
 
     # set region
     gscript.run_command('g.region',
-                        region='region',
-                        res=res)
+        region='region',
+        align='elevation_2016',
+        res=res)
 
     # list of 2004 rasters to render
     rasters_2004 = ['colorized_skyview_2004',
@@ -890,8 +928,8 @@ def render_fortbragg_3d():
 
     # set region
     gscript.run_command('g.region',
-                        region='fortbragg',
-                        res=10)
+        region='fortbragg',
+        res=10)
 
     # 3D render elevation
     gscript.run_command('m.nviz.image',
@@ -924,6 +962,7 @@ def render_legends():
     # set region
     gscript.run_command('g.region',
         region='region',
+        align='elevation_2016',
         res=res)
 
     # mask rasters

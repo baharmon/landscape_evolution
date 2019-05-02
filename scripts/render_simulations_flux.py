@@ -40,6 +40,7 @@ legend_coord = (2, 32, 2, 4)
 border = 400
 width = 1600
 height = 1600
+font = 'Lato-Regular'
 fontsize = 24
 
 # temporal paramters
@@ -92,7 +93,10 @@ def render_region_2d(mapset):
         os.makedirs(render)
 
     # set region and mask
-    gscript.run_command('g.region', region='region', res=res)
+    gscript.run_command('g.region',
+        region='region',
+        align='elevation_2016',
+        res=res)
     gscript.run_command('r.mask', vector='watershed')
 
     # set color tables
@@ -113,6 +117,7 @@ def render_region_2d(mapset):
         map='elevation_{time}'.format(time=end_time))
     gscript.run_command('d.legend',
         raster='elevation_{time}'.format(time=end_time),
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -128,6 +133,7 @@ def render_region_2d(mapset):
         map='net_difference')
     gscript.run_command('d.legend',
         raster='net_difference',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -153,6 +159,7 @@ def render_region_2d(mapset):
         map='landforms')
     gscript.run_command('d.legend',
         raster='landforms',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -168,6 +175,7 @@ def render_region_2d(mapset):
         map='depth_{time}'.format(time=end_time))
     gscript.run_command('d.legend',
         raster='depth_{time}'.format(time=end_time),
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -187,6 +195,7 @@ def render_region_2d(mapset):
             map='erosion_deposition_{time}'.format(time=end_time))
         gscript.run_command('d.legend',
             raster='erosion_deposition_{time}'.format(time=end_time),
+            font=font,
             fontsize=fontsize,
             at=legend_coord)
         gscript.run_command('d.mon', stop=driver)
@@ -211,6 +220,7 @@ def render_region_2d(mapset):
             map='flux_{time}'.format(time=end_time))
         gscript.run_command('d.legend',
             raster='flux_{time}'.format(time=end_time),
+            font=font,
             fontsize=fontsize,
             labelnum='2',
             at=legend_coord,
@@ -230,7 +240,10 @@ def render_subregion_2d(mapset):
         os.makedirs(render)
 
     # set region and mask
-    gscript.run_command('g.region', region='subregion', res=res)
+    gscript.run_command('g.region',
+        region='subregion',
+        align='elevation_2016',
+        res=res)
     gscript.run_command('r.mask', vector='subwatershed')
 
     # set color tables
@@ -251,6 +264,7 @@ def render_subregion_2d(mapset):
         map='elevation_{time}'.format(time=end_time))
     gscript.run_command('d.legend',
         raster='elevation_{time}'.format(time=end_time),
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -266,6 +280,7 @@ def render_subregion_2d(mapset):
         map='net_difference')
     gscript.run_command('d.legend',
         raster='net_difference',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -291,6 +306,7 @@ def render_subregion_2d(mapset):
         map='landforms')
     gscript.run_command('d.legend',
         raster='landforms',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -306,6 +322,7 @@ def render_subregion_2d(mapset):
         map='depth_{time}'.format(time=end_time))
     gscript.run_command('d.legend',
         raster='depth_{time}'.format(time=end_time),
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
@@ -325,6 +342,7 @@ def render_subregion_2d(mapset):
             map='erosion_deposition_{time}'.format(time=end_time))
         gscript.run_command('d.legend',
             raster='erosion_deposition_{time}'.format(time=end_time),
+            font=font,
             fontsize=fontsize,
             at=legend_coord)
         gscript.run_command('d.mon', stop=driver)
@@ -349,6 +367,7 @@ def render_subregion_2d(mapset):
             map='flux_{time}'.format(time=end_time))
         gscript.run_command('d.legend',
             raster='flux_{time}'.format(time=end_time),
+            font=font,
             fontsize=fontsize,
             labelnum='2',
             at=legend_coord,
@@ -376,9 +395,9 @@ def render_fortbragg_2d():
     gscript.run_command('r.relief',
         input='fortbragg_elevation_10m_2012',
         output='relief',
-        altitude=90,
+        altitude=80,
         azimuth=45,
-        zscale=3,
+        zscale=0.3,
         overwrite=overwrite)
 
     # compute skyview
@@ -404,6 +423,7 @@ def render_fortbragg_2d():
 
     gscript.run_command('d.legend',
         raster='net_difference',
+        font=font,
         fontsize=fontsize,
         at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
