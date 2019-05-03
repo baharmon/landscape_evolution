@@ -31,7 +31,7 @@ simulations = ['ss_flux']
 res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
 nprocs = 1
-threads = 4
+threads = 16
 
 def main():
     """install dependencies, create mapsets and environments,
@@ -52,14 +52,14 @@ def main():
         simulation=simulations[0])
     ss_flux_params['runs'] = 'event'
     ss_flux_params['mode'] = 'simwe_mode'
-    ss_flux_params['rain_intensity'] = 25.0
+    ss_flux_params['rain_intensity'] = 60.0
     ss_flux_params['rain_duration'] = 120
     ss_flux_params['rain_interval'] = 120
     ss_flux_params['start'] = "2016-01-01 00:00:00"
     ss_flux_params['grav_diffusion'] = 0.05
     ss_flux_params['density_value'] = 1.6
     ss_flux_params['fluxmax'] = 0.25
-    ss_flux_params['detachment_value'] = 0.0001
+    ss_flux_params['detachment_value'] = 0.001
     ss_flux_params['transport_value'] = 0.01
     ss_flux_params['mannings'] = 'mannings'
     ss_flux_params['runoff'] = 'runoff'
