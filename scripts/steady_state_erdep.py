@@ -25,13 +25,13 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = ['ss_erdep']
+simulations = ['erdep_1m']
 
 # set parameters
 res = 1  # resolution of the region
 region = 'elevation_2012@PERMANENT'
 nprocs = 1
-threads = 4
+threads = 8
 
 def main():
     """install dependencies, create mapsets and environments,
@@ -53,14 +53,16 @@ def main():
     ss_erdep_params['runs'] = 'event'
     ss_erdep_params['mode'] = 'simwe_mode'
     ss_erdep_params['rain_intensity'] = 50.0
-    ss_erdep_params['rain_duration'] = 120
-    ss_erdep_params['rain_interval'] = 120
+    ss_erdep_params['rain_duration'] = 60
+    ss_erdep_params['rain_interval'] = 3
     ss_erdep_params['start'] = "2016-01-01 00:00:00"
     ss_erdep_params['walkers'] = 1000000
     ss_erdep_params['grav_diffusion'] = 0.05
     ss_erdep_params['density_value'] = 1.6
-    ss_erdep_params['erdepmin'] = -0.25
-    ss_erdep_params['erdepmax'] = 0.25
+    ss_erdep_params['erdepmin'] = -0.5
+    ss_erdep_params['erdepmax'] = 0.5
+    ss_erdep_params['detachment_value'] = 0.01
+    ss_erdep_params['transport_value'] = 0.01
     ss_erdep_params['mannings'] = 'mannings'
     ss_erdep_params['runoff'] = 'runoff'
     ss_erdep_params['threads'] = threads

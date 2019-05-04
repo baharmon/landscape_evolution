@@ -195,7 +195,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% type: double
 #% description: Detachment coefficient
 #% label: Detachment coefficient
-#% answer: 0.001
+#% answer: 0.01
 #% multiple: no
 #% guisection: Input
 #%end
@@ -213,7 +213,7 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% type: double
 #% description: Transport coefficient
 #% label: Transport coefficient
-#% answer: 0.001
+#% answer: 0.01
 #% multiple: no
 #% guisection: Input
 #%end
@@ -610,7 +610,7 @@ def main():
 
 class Evolution:
     def __init__(self, elevation, precipitation, start, rain_intensity,
-        rain_interval, walkers, runoff, mannings, detachment, transport,
+        rain_interval, rain_duration, walkers, runoff, mannings, detachment, transport,
         shearstress, density, mass, grav_diffusion, erdepmin, erdepmax,
         fluxmax, k_factor, c_factor, m, n, threads, fill_depressions):
         self.elevation = elevation
@@ -618,6 +618,7 @@ class Evolution:
         self.start = start
         self.rain_intensity = float(rain_intensity)
         self.rain_interval = int(rain_interval)
+        self.rain_duration = int(rain_duration)
         self.walkers = walkers
         self.runoff = runoff
         self.mannings = mannings
@@ -772,6 +773,7 @@ class Evolution:
             man=self.mannings,
             depth=depth,
             niterations=self.rain_interval,
+            step=self.rain_duration,
             nwalkers=self.walkers,
             nprocs=self.threads,
             overwrite=True)
