@@ -1909,6 +1909,7 @@ class DynamicEvolution:
             start=self.start,
             rain_intensity=self.rain_intensity,
             rain_interval=self.rain_interval,
+            rain_duration=self.rain_duration,
             walkers=self.walkers,
             runoff=self.runoff,
             mannings=self.mannings,
