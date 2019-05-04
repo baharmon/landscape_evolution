@@ -53,8 +53,8 @@ def main():
     ss_erdep_params['runs'] = 'event'
     ss_erdep_params['mode'] = 'simwe_mode'
     ss_erdep_params['rain_intensity'] = 50.0
-    ss_erdep_params['rain_duration'] = 60
-    ss_erdep_params['rain_interval'] = 3
+    ss_erdep_params['rain_duration'] = 120
+    ss_erdep_params['rain_interval'] = 120
     ss_erdep_params['start'] = "2016-01-01 00:00:00"
     ss_erdep_params['walkers'] = 1000000
     ss_erdep_params['grav_diffusion'] = 0.05
