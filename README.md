@@ -31,10 +31,8 @@ It is an add-on module for
 [GRASS GIS](https://grass.osgeo.org/).
 
 <p align="center">
-  <img src="images/ss_erdep_3d/legend_erosion_deposition.png" height="200">
-  <img src="images/ss_erdep_3d/erosion_deposition.png" height="360">
-  <img src="images/ss_erdep_3d/legend_difference.png" height="200">
-  <img src="images/ss_erdep_3d/difference.png" height="360">
+  <img src="images/sample_data/elevation_2012.png" height="360">
+  <img src="images/ss_erdep/shaded_relief.png" height="360">
 </p>
 Variable erosion-Deposition (kg*m^-2*s^-1) and net difference (m)
 for a steady state, detachment limited SIMWE simulation
