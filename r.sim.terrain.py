@@ -773,7 +773,7 @@ class Evolution:
             man=self.mannings,
             depth=depth,
             niterations=self.rain_interval,
-            step=self.rain_duration,
+            output_step=self.rain_duration,
             nwalkers=self.walkers,
             nprocs=self.threads,
             overwrite=True)
