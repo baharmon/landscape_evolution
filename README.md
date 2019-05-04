@@ -31,12 +31,10 @@ It is an add-on module for
 [GRASS GIS](https://grass.osgeo.org/).
 
 <p align="center">
-  <img src="images/ss_flux_3d/legend_flux.png" height="200">
-  <img src="images/ss_flux_3d/flux.png" height="360">
-  <img src="images/ss_flux_3d/legend_difference.png" height="200">
-  <img src="images/ss_flux_3d/difference.png" height="360">
+  <img src="images/sample_data/elevation_2012.png" height="360">
+  <img src="images/ss_erdep/shaded_relief.png" height="360">
 </p>
-Sediment flux (kg*m/s) and net difference (m)
+Variable erosion-Deposition (kg*m^-2*s^-1) and net difference (m)
 for a steady state, detachment limited SIMWE simulation
 of a 120 min event with a rainfall intensity of 25 mm/hr
 
