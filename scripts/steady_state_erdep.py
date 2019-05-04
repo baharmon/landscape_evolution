@@ -25,7 +25,7 @@ gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 
 # list of simulations to run
-simulations = ['erdep_1m']
+simulations = ['erdep']
 
 # set parameters
 res = 1  # resolution of the region
