@@ -311,33 +311,33 @@ that uses a Monte Carlo path sampling method
 to solve the water and sediment flow equations
 %for detachment limited, transport limited, and variable erosion-deposition 
 %soil erosion regimes 
-\citep{Mitasova2004}. 
+\citep{Mitas1998,Mitasova2004}. 
 With SIMWE 
 r.sim.terrain
 uses the modeled flow of sediment 
 -- a function of water flow and soil detachment and transport parameters -- 
 to estimate net erosion and deposition rates. 
 % rusle3d
-RUSLE3D is an empirical equation for sediment flows 
-in detachment capacity limited soil erosion regimes \citep{Mitasova1996}. 
+RUSLE3D is an empirical equation for estimating soil erosion rates
+in detachment capacity limited soil erosion regimes 
+\citep{Mitasova1996,Mitasova2013}. 
 With RUSLE3D
 r.sim.terrain
-uses an event-based erosivity factor, 
-the slope, the flow accumulation, and a 3D topographic factor
-to model sediment flow. 
+uses an event-based rainfall erosivity factor, 
+soil erodibility factor, landcover factor, and 3D topographic factor
+-- a function of slope and flow accumulation --
+to model soil erosion rates. 
 % usped
-USPED is an empirical equation for net erosion and deposition 
-in transport capacity limited soil erosion regimes. 
-With USPED 
-r.sim.terrain
-uses an event-based erosivity factor, 
-the slope and aspect, the flow accumulation, and a 3D topographic factor
-to model erosion-deposition as the
-the divergence of sediment flows. 
+USPED is a semi-empirical equation for net erosion and deposition 
+in transport capacity limited soil erosion regimes 
+\citep{Mitasova1996,Mitasova2013}. 
+With USPED r.sim.terrain uses an event-based rainfall erosivity factor, 
+soil erodibility factor, landcover factor, and a 3D topographic factor
+to model net erosion or deposition rates as the divergence of sediment flows. 
 % evolution
 For each of the models 
 topographic change is derived at each time step
-from the sediment flow or net erosion-deposition rate
+from the erosion rate or net erosion-deposition rate
 and gravitational diffusion.
 % regimes
 %During simulations with SIMWE 
@@ -374,6 +374,7 @@ to regional watersheds
 of hundreds of square kilometers
 with USPED or RULSE3D,
 although it does not model fluvial processes. 
+It has been used at resolutions ranging from sub-meter to 30~\unit{m}.
 % implementation
 The model has been implemented 
 as a Python add-on module 
@@ -479,6 +480,53 @@ and by RUSLE3D with a R-factor of 310 (d-f)
 }
 \label{fig:models}
 \end{figure}
+
+% -------------------------- MATH FOUNDATIONS OF THE MODEL -----------------------------
+
+\subsection{Landscape evolution}
+
+% Landscape evolution
+The simulated change in elevation over time 
+${\partial z / \partial t}$ [\unit{m~s}$^{-1}$] is a function of
+the net erosion-deposition rate $d_s$ [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] 
+and the sediment mass density $\rho_s$ [\unit{kg~m}$^{-3}$] 
+\citep{Mitasova2013}:
+% landscape evolution equation
+\begin{equation}
+\label{eq:evolution} 
+{\partial z \over \partial t } = d_s ~ \rho_s^{-1} 
+\end{equation}
+The net erosion-deposition rate $d_s$ can be estimated at different levels of complexity based on the 
+user selected simulation mode guided by the type of application.
+The simulation modes include the process-based SIMWE model for
+steady state and dynamic shallow overland flow and variable erosion-deposition regime,
+USPED model for the transport capacity limited regime or RUSLE3D model for the detachment capacity limited case. 
+In the detachment capacity limited regime, there is no deposition and $d_s$ represents soil erosion rate (soil loss).
+%
+% gravitational diffusion
+%\noindent
+Gravitational diffusion is then applied to the evolved topography
+to simulate smoothing effects of localized transport of soil that
+occurs during and between rainfall events.
+%the settling of sediment particles.
+The simulated change in elevation $\partial z / \partial t$ 
+due to gravitational diffusion
+is a function of the the sediment mass density,
+the diffusion coefficient, and Laplacian of the elevation
+%-- i.e.~the sum of the second order derivatives of elevation
+\citep{thaxton2004}:
+% change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
+\begin{equation}
+\label{eq:grav_diffusion} 
+{\partial z \over \partial t }= \rho_s^{-1} ~ \varepsilon_g ~ \nabla^2 z 
+%HM this should be \nabla^2 z, \nabla is an operator so there should be a variable upon which it is applied
+%HM see eq 4.41 in Thaxton, also from Willgoose, the second term
+\end{equation}
+%{\small
+\noindent
+where $\varepsilon_g$ is the diffusion coefficient [\unit{m}$^{2}$~\unit{s}$^{-1}$].
+%\\ \hspace*{0.5em} $\nabla$ is the topographic divergence [\unit{m}$^{-1}$].\\
+%}
 
 % -------------------------- EROSION-DEPOSITION -----------------------------
 \subsection{Simulation of Water Erosion (SIMWE)} \label{simwe}
@@ -1021,7 +1069,7 @@ Gullies -- ephemeral channels with steep headwalls
 that incise into unconsolidated soil to depths of meters -- 
 are a manifestation of erosion common to 
 military training installations like Ft. Bragg in North Carolina 
-and the Piñon Canyon Maneuver Site in Colorado. 
+and the Pi\~{n}on Canyon Maneuver Site in Colorado. 
 While the local development of gullies can restrict 
 the maneuverability of troops and vehicles during training exercises, 
 pervasive gullying across a landscape 
