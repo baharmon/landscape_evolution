@@ -347,12 +347,11 @@ net erosion-deposition ratei, and gravitational diffusion.
 %HM water added
 The r.sim.terrain model
 can simulate either steady state or dynamic water flow regimes.
-During simulations with SIMWE 
+Depending on the input parameters, simulations with SIMWE 
 r.sim.terrain
 %HM depending on what we end up using we may use other term than "switch"
-can switch between 
-detachment limited, transport limited, and variable erosion-deposition 
-soil erosion regimes.
+can represent variable soil erosion-deposition regimes, including prevailing  
+detachment capacity limited, or prevailing transport capacity limited regimes.
 
 % capabilities
 The r.sim.terrain model
@@ -516,44 +515,25 @@ SIMWE has been implemented in GRASS GIS as the modules
 r.sim.water
 and r.sim.sediment. % <-------------------------------------- ADD sediment continuity equation? 
 % overview
-In SIMWE mode for each time step
+In the SIMWE mode for each landscape evolution time step
 r.sim.terrain
-determines the soil erosion regime,
-computes the first order partial derivatives of elevation,
+%determines the soil erosion regime,
+computes the first order partial derivatives of elevation 
+$\partial z / \partial x$ and $\partial z / \partial y$ 
+using the GRASS GIS module r.slope.aspect,
 %HMi.e.~the slope in the East-West direction ($dx$)
 %HMand the slope in the North-South direction ($dy$),
-simulates water and sediment flows, 
-and then evolves the topography. 
-%
-% <-------------------------- EDITING
-% 
-% if the regime is ... then...
-%HM FIX THIS SECTION for the limited cases
-% 
-% erdep
-In a variable erosion-deposition regime,
-the model simulates shallow water flow and net erosion-deposition ($d_s$),
+simulates water flow, sediment flow, and net erosion-deposition rate $d_s$
 and then evolves the topography based on the erosion-deposition rate
-and gravitational diffusion.
-% transport limited
-The same process is used in
-a transport capacity limited regime,
-except that the topography is evolved based on 
-the net transport limited erosion-deposition rate
-and gravitational diffusion.
-% detachment  limited
-In a detachment capacity limited regime
-the model instead simulates shallow water flow and sediment flow ($q_s$),
-and then evolves the topography based on the sediment flow rate
-and gravitational diffusion.
-% dynamic versus steady state
+and gravitational diffusion. 
+%
 The model simulates dynamic flow regimes
-when the time step is less than the travel time 
-for a drop of water or a particle of sediment to cross the landscape.
-With longer time steps the model simulates a steady state regime. 
+when the landscape evolution time step is less than the travel time 
+for a drop of water or a particle of sediment to cross the landscape,
+e.g. the time step is less than the time to concentration.
+With longer lanscape evolution time steps the model simulates a steady state regime. 
 
 %% terms
-%
 %% erdep
 %The net erosion-deposition rate ($d_s$) 
 %is the change in sediment storage over time 
@@ -561,7 +541,6 @@ With longer time steps the model simulates a steady state regime.
 % 
 %% flux
 %The  sediment flow rate per unit width ($q_s$)
-%...
 
 % <------------------------------------------- EDITS HERE
 %
@@ -586,64 +565,21 @@ With longer time steps the model simulates a steady state regime.
 % (e.g., Haan et al., 1994; Govindaraju and Kavvas, 1991; Foster and Meyer, 1972; Bennet, 1974)."
 
 
-
 % ------------------------------------------------------------------------------
 
-\subsubsection{Erosion regime}
-
+%\subsubsection{Erosion regime}
 % <---------------------------------------------------EDITING HERE
-
 % REGIMES
 
 %Although the difference between steady-state and dynamic flow regimes is discussed, the differences between the erosion regimes (e.g. detachment capacity limited, transport capacity limited, erosion-deposition and detachment limited) are less clear. A more thorough discussion of those regimes and their differences would allow for a clearer understanding of the results of the model compared to the typical characteristics associated with these regimes. On P16 L24 to L27, the results of SIMWE were compared to the characteristics typical of the simulated erosion regime. Establishing the characteristics of the erosion regimes earlier, perhaps after the explanation of the flow regimes, would give the reader more clarity regarding what influences these regimes and how the model compares to real-world characteristics.
 
-
-% Erosion regime
-This model can switch erosion regimes at each time step
-based on the rainfall intensity ($i_r$)
-and the balance of the sediment detachment capacity ($D_c$)
-and the sediment transport capacity ($T_c$)
-represented by the first order reaction term $\sigma$, 
-which depends on soil and landcover properties.
-The detachment capacity is the maximum potential 
-detachment rate by overland flow, while
-the sediment transport capacity 
-is the maximum potential sediment flow rate 
-\citep{Mitasova2001}.
-When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
-or $\sigma$ is low ($\sigma \leq 0.01 \unit{m}^{-1}$),
-then the regime is detachment capacity limited. 
-%
-When rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $)
-and $\sigma$ is high ($\sigma \geq 100 \unit{m}^{-1}$),
-then the regime is transport capacity limited. 
-%
-When rainfall intensity is not very high 
-($i_r<60 \unit{mm~hr}^{-1}$)
-and $\sigma$ is neither high nor low 
-($ 0.01 \unit{m}^{-1}< \sigma < 100 \unit{m}^{-1}$),
-then there is an variable erosion-deposition regime. \\
-% erosion regime eq.
-\begin{equation}
-\label{eq:regime}
-\sigma = {D_c \over T_c}
-\end{equation}
-{\small
-\noindent
-where: \\
-\noindent
-\hspace*{0.5em} $\sigma$  is a first order reaction term [$\unit{m}^{-1}$]\\
-\hspace*{0.5em} $D_c$ is the sediment detachment capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
-\hspace*{0.5em} $T_c$ is the sediment transport capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
-}
-
-% ------------------------------------------------------------------------------
+%HM I am re-organizing this, starting with water flow, then sediment continuity equation and erosion regimes will be the last
+%HM we may consider moving the descriptive characterization of regimes to the descriptive section of r.sim.terrain 
 
 \subsubsection{Shallow water flow}
 
 % Shallow water flow
-The SIMWE model
-simulates shallow overland water flow
+The SIMWE model simulates shallow overland water flow
 controlled by spatially variable topographic, soil, landcover, 
 and rainfall parameters
 by solving the continuity and momentum equations 
@@ -661,24 +597,22 @@ the bivariate form of the St.~Venant equation:
 \noindent
 where: \\
 \noindent
-\hspace*{0.5em} $x, y$ is the position [\unit{m}]\\
+%\hspace*{0.5em} $x, y$ is the position [\unit{m}]\\
 \hspace*{0.5em} $t$ is the time [\unit{s}] \\
 \hspace*{0.5em} $h$ is the depth of overland flow [\unit{m}]\\
-\hspace*{0.5em} $i_e$ is the rainfall excess [\unit{m~s^{-1}}] \\
-\hspace*{0.5em} (i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)\\
-\hspace*{0.5em} $\nabla$ is the divergence of the flow vector field\\
+\hspace*{0.5em} $i_e$ is the rainfall excess [\unit{m~s^{-1}}]
+(i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)\\
+%HM in this journal we don't need to explain the nabla operator 
+%\hspace*{0.5em} $\nabla$ is the divergence of the flow vector field\\
 \hspace*{0.5em} $q$ is the water flow per unit width [$\unit{m}^2~\unit{s}^{-1}$]. \\
 }
 
 \noindent
-Diffusive wave effects can be approximated
-so that water can flow through depressions 
-by integrating a diffusion term 
+Diffusive wave effects can be approximated so that water can flow through depressions 
+by adding  a diffusion-like term 
 $ \propto \nabla^2 [h^{5/3}]$
 into the solution of the continuity and momentum equations 
-for steady state water flow.
-This equation is solved using a 
-Green's function Monte Carlo path sampling method. 
+for steady state water flow:
 %  diffuse wave eq.
 \begin{equation}
 \label{eq:difwater}
@@ -691,6 +625,16 @@ Green's function Monte Carlo path sampling method.
  \noindent
  \hspace*{0.5em} $\varepsilon$ is a spatially variable diffusion coefficient. \\
 }
+This equation is solved using a Green's function Monte Carlo path sampling method 
+where the steady-state solution is obtained by accumulation of the evolving source 
+over the given time period effectively performing the corresponding integral over time.
+This accumulation process can be also interpreted as an approximation of 
+a dynamical solution for shallow water flow.
+See \citep{Mitasova2005} for more details about the mathematical background of the method.
+
+%HM text from 2005 paper
+%The steady-state solution is obtained by accumulation of the evolving source over the relevant period (i.e., until all the walkers flow out or die out), effectively performing the corresponding integral over time.
+%The accumulation process can be also interpreted as an approximation of a dynamical solution for shallow water flow, in which velocity is mostly controlled by terrain slope and surface roughness rather than by water depth and friction slope, and therefore its change over time at a given location is negligible. The robustness of the path sampling method enables the use of a very wide range of input data and complex conditions that can be modeled without manually editing the input data, as it is common with traditional methods. It can be therefore used efficiently for exploration of large number of landscape configurations, needed for various applications, including conservation planning and sed- iment control.
 
 % ------------------------------------------------------------------------------
 
@@ -741,63 +685,56 @@ where: \\
 
 % ------------------------------------------------------------------------------
 
-\subsubsection{Landscape evolution}
+\subsubsection{Erosion regime}
+% <---------------------------------------------------EDITING HERE
+% REGIMES
 
-% Landscape evolution
-The simulated change in elevation $\Delta z$
-due to water erosion and deposition
-is a function of
-the change in time, the net erosion-deposition rate, and the sediment mass density 
-\citep{Mitasova2013}:
-% landscape evolution equation
-\begin{equation}
-\label{eq:evolution} 
-{\Delta z = \Delta t ~ d_s ~ \rho_s^{-1} }
-\end{equation}
+%Although the difference between steady-state and dynamic flow regimes is discussed, the differences between the erosion regimes (e.g. detachment capacity limited, transport capacity limited, erosion-deposition and detachment limited) are less clear. A more thorough discussion of those regimes and their differences would allow for a clearer understanding of the results of the model compared to the typical characteristics associated with these regimes. On P16 L24 to L27, the results of SIMWE were compared to the characteristics typical of the simulated erosion regime. Establishing the characteristics of the erosion regimes earlier, perhaps after the explanation of the flow regimes, would give the reader more clarity regarding what influences these regimes and how the model compares to real-world characteristics.
 
-% detachment limited landscape evolution
-\noindent
-In a detachment limited erosion regime
-the simulated change in elevation $\Delta z$
-is a function of
-the change in time, the sediment flow rate, and the mass of water carried sediment per unit area
-\citep{Mitasova2013}:
-% change in elevation (m) = change in time (s) * sediment flux (kg/ms) / mass of sediment per unit area (kg/m^2)
+%HM I am re-organizing this, starting with water flow, then sediment continuity equation and erosion regimes will be the last
+%HM we may consider moving the descriptive characterization of regimes to the descriptive section of r.sim.terrain 
+
+% Erosion regime
+This model can simulate broad range of erosion regimes at each time step
+based on the rainfall intensity ($i_r$)
+and the balance of the sediment detachment capacity ($D_c$)
+and the sediment transport capacity ($T_c$)
+represented by the first order reaction term $\sigma$,
+which depends on soil and landcover properties.
+The detachment capacity is the maximum potential
+detachment rate by overland flow, while
+the sediment transport capacity
+is the maximum potential sediment flow rate
+\citep{Mitasova2001}.
+When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
+or $\sigma$ is low ($\sigma \leq 0.01 \unit{m}^{-1}$),
+then the regime is detachment capacity limited.
+%
+When rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $)
+and $\sigma$ is high ($\sigma \geq 100 \unit{m}^{-1}$),
+then the regime is transport capacity limited.
+%
+When rainfall intensity is not very high
+($i_r<60 \unit{mm~hr}^{-1}$)
+and $\sigma$ is neither high nor low
+($ 0.01 \unit{m}^{-1}< \sigma < 100 \unit{m}^{-1}$),
+then there is an variable erosion-deposition regime. \\
+% erosion regime eq.
 \begin{equation}
-\label{eq:flux_evolution} 
-{\Delta z = \Delta t ~ q_s~ \varrho_s^{-1} } 
+\label{eq:regime}
+\sigma = {D_c \over T_c}
 \end{equation}
 {\small
 \noindent
 where: \\
 \noindent
-\hspace*{0.5em} $\varrho_s$ is the mass of sediment per unit area [\unit{kg ~ m}$^{-2}$].\\
+\hspace*{0.5em} $\sigma$  is a first order reaction term [$\unit{m}^{-1}$]\\
+\hspace*{0.5em} $D_c$ is the sediment detachment capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
+\hspace*{0.5em} $T_c$ is the sediment transport capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
 }
-
 
 % ------------------------------------------------------------------------------
 
-% gravitational diffusion
-\noindent
-Gravitational diffusion is then applied to the evolved topography
-to simulate the settling of sediment particles. 
-The simulated change in elevation $\Delta z$ %$\Delta z(x,y,t)$
-due to gravitational diffusion 
-is a function of the change in time, the sediment mass density, 
-the gravitational diffusion coefficient, and topographic divergence 
--- i.e.~the sum of the second order derivatives of elevation
-\citep{thaxton2004}:
-% change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
-\begin{equation}
-\label{eq:grav_diffusion} 
-{\Delta z = \Delta t ~ \rho_s^{-1} ~ \varepsilon_g ~ \nabla}
-\end{equation}
-{\small
-\noindent
-where: \\
-\noindent
-\hspace*{0.5em} $\varepsilon_g$ is the gravitational diffusion coefficient [\unit{m}$^{2}$~\unit{s}$^{-1}$]\\ \hspace*{0.5em} $\nabla$ is the topographic divergence [\unit{m}$^{-1}$].\\
-}
 
 % -------------------------------- RUSLE --------------------------------
 \subsection{Revised Universal Soil Loss Equation for Complex Terrain (RUSLE3D)}
