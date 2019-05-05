@@ -66,7 +66,7 @@ based on topographic, land cover, soil, and rainfall parameters.
 As demonstrated by a case study 
 for Patterson Branch subwatershed
 on the Fort Bragg military installation in North Carolina,
-r.sim.terrain can realistically simulate the development of 
+r.sim.terrain simulates the development of 
 fine-scale morphological features including 
 ephemeral gullies, rills, and hillslopes.
 Applications include land management, erosion control,
@@ -86,8 +86,8 @@ before (a) and after (b)
 simulated landscape evolution with r.sim.terrain 
 for a subwatershed of Patterson Branch, Fort Bragg, NC, USA. 
 This simulation used the SIMWE model
-for a 120~\unit{min} rainfall event with 25~\unit{mm~hr}$^{-1}$
-in a transport limited soil erosion regime at steady state.
+for a 120~\unit{min} rainfall event with 50~\unit{mm~hr}$^{-1}$
+for a variable erosion-deposition regime at steady state.
 In the evolved DEM (b)
 the gully channel has widened 
 with depositional ridges forming along its thalweg.}
@@ -230,7 +230,7 @@ total station theodolites \citep{Thomas2004},
 unmanned aerial systems (UAS),
 airborne lidar, and terrestrial lidar \citep{Starek2011,Bechet2016}.
 % high resolution topographic data
-With terrestrial lidar, airborne lidar and 
+With terrestrial lidar, airborne lidar, and 
 UAS photogrammetry
 there is now sufficient resolution topographic data 
 to morphometrically analyze and 
@@ -249,7 +249,7 @@ with the Simulation of Water Erosion (SIMWE) model
 Now numerical landscape evolution models 
 that can simulate 
 steady state and dynamic flow regimes
-and can dynamically switch between soil erosion regimes 
+and switch between soil erosion regimes 
 are needed to study 
 fine-scale spatial and short-term temporal erosional processes.
 
@@ -263,8 +263,8 @@ square meters to kilometers
 and temporal scales ranging from minutes to years. 
 % objectives
 This open source, GIS-based landscape evolution model can
-simulate either steady state or dynamic flow regimes, 
-dynamically switch between soil erosion regimes, and
+model steady state or dynamic flow regimes
+for different soil erosion regimes and
 simulate the evolution of fine-scale morphological features 
 such as ephemeral gullies
 (Figure~\ref{fig:evolution}).
@@ -303,47 +303,48 @@ using either
 the Simulated Water Erosion (SIMWE) model, 
 the 3-Dimensional Revised Universal Soil Loss Equation (RUSLE 3D) model,
 or the Unit Stream Power Erosion Deposition (USPED) model.  
+The r.sim.terrain model
+can simulate either steady state or dynamic flow regimes.
 % simwe
 SIMWE is a physics-based simulation
 that uses a Monte Carlo path sampling method
-to solve the water and sediment flow equations 
-for detachment limited, transport limited, and variable erosion-deposition 
-soil erosion regimes \citep{Mitasova2004}. 
+to solve the water and sediment flow equations
+%for detachment limited, transport limited, and variable erosion-deposition 
+%soil erosion regimes 
+\citep{Mitas1998,Mitasova2004}. 
 With SIMWE 
 r.sim.terrain
 uses the modeled flow of sediment 
 -- a function of water flow and soil detachment and transport parameters -- 
 to estimate net erosion and deposition rates. 
 % rusle3d
-RUSLE3D is an empirical equation for sediment flows 
-in detachment capacity limited soil erosion regimes \citep{Mitasova1996}. 
+RUSLE3D is an empirical equation for estimating soil erosion rates
+in detachment capacity limited soil erosion regimes 
+\citep{Mitasova1996,Mitasova2013}. 
 With RUSLE3D
 r.sim.terrain
-uses an event-based erosivity factor, 
-the slope, the flow accumulation, and a 3D topographic factor
-to model sediment flow. 
+uses an event-based rainfall erosivity factor, 
+soil erodibility factor, landcover factor, and 3D topographic factor
+-- a function of slope and flow accumulation --
+to model soil erosion rates. 
 % usped
-USPED is an empirical equation for net erosion and deposition 
-in transport capacity limited soil erosion regimes. 
-With USPED 
-r.sim.terrain
-uses an event-based erosivity factor, 
-the slope and aspect, the flow accumulation, and a 3D topographic factor
-to model erosion-deposition as the
-the divergence of sediment flows. 
+USPED is a semi-empirical equation for net erosion and deposition 
+in transport capacity limited soil erosion regimes 
+\citep{Mitasova1996,Mitasova2013}. 
+With USPED r.sim.terrain uses an event-based rainfall erosivity factor, 
+soil erodibility factor, landcover factor, and a 3D topographic factor
+to model net erosion or deposition rates as the divergence of sediment flows. 
 % evolution
 For each of the models 
 topographic change is derived at each time step
-from the sediment flow or net erosion-deposition rate
+from the erosion rate or net erosion-deposition rate
 and gravitational diffusion.
 % regimes
-The r.sim.terrain model
-can simulate either steady state or dynamic flow regimes.
-During simulations with SIMWE 
-r.sim.terrain
-can switch between 
-detachment limited, transport limited, and variable erosion-deposition 
-soil erosion regimes.
+%During simulations with SIMWE 
+%r.sim.terrain
+%can switch between 
+%detachment limited, transport limited, and variable erosion-deposition 
+%soil erosion regimes.
 
 % capabilities
 The r.sim.terrain model
@@ -373,8 +374,9 @@ to regional watersheds
 of hundreds of square kilometers
 with USPED or RULSE3D,
 although it does not model fluvial processes. 
+It has been used at resolutions ranging from sub-meter to 30~\unit{m}.
 % implementation
-This model has been implemented 
+The model has been implemented 
 as a Python add-on module 
 for the free, open source
 \href{https://grass.osgeo.org/}{Geographic Resources Analysis Support System (GRASS) GIS}
@@ -391,7 +393,7 @@ The landscape evolution model
 can be installed in GRASS GIS as an add-on module 
 with the command: 
 \begin{verbatim}
-g.extension r.sim.terrain
+g.extension extension=r.sim.terrain
 \end{verbatim}
 
 % -------------- LIMITATIONS ---------------------
@@ -444,25 +446,25 @@ USPED & watershed & continuous & raster & map algebra & \citep{Mitasova1996}\\
 \label{table:erosion_models}
 \end{table*}
 
-% table of landscape evolution models
-\begin{table*}
-\small
-\caption{Topographic evolution models}
-\begin{tabu} to \textwidth {lXXXXll}
-\toprule
-Model &  Temporal scale & Representation & Dynamics & Implementation & Reference\\
-\midrule
-\href{https://csdms.colorado.edu/wiki/Model:CHILD}{CHILD} & continuous & mesh & steady state & \href{https://csdms.colorado.edu/wiki/Model:CHILD}{C++ program} & \citep{Tucker2001}\\
-\href{https://csdms.colorado.edu/wiki/Model:SIBERIA}{SIBERIA} & continuous & raster & steady state & \href{https://csdms.colorado.edu/wiki/Model:SIBERIA}{Fortran prog.} & \citep{Willgoose2005}\\
-\href{https://grass.osgeo.org/grass74/manuals/addons/r.landscape.evol.html}{r.landscape.evol} & continuous & raster &  steady state & \href{https://grass.osgeo.org/grass74/manuals/addons/r.landscape.evol.html}{GRASS module} & \citep{Barton2010}\\
-\href{https://github.com/landlab/}{Landlab built models} & continuous & raster + mesh & steady state & \href{https://github.com/landlab/}{Python library} & \citep{Hobley2017}\\
-\href{https://github.com/baharmon/landscape_evolution}{r.sim.terrain}  & event -- & raster & dynamic -- & \href{https://github.com/baharmon/landscape_evolution}{GRASS module} &\\
-& continuous && steady state & &\\
-\bottomrule
-\\
-\end{tabu}
-\label{table:evolution_models} 
-\end{table*}
+%% table of landscape evolution models
+%\begin{table*}
+%\small
+%\caption{Topographic evolution models}
+%\begin{tabu} to \textwidth {lXXXXll}
+%\toprule
+%Model &  Temporal scale & Representation & Dynamics & Implementation & Reference\\
+%\midrule
+%\href{https://csdms.colorado.edu/wiki/Model:CHILD}{CHILD} & continuous & mesh & steady state & \href{https://csdms.colorado.edu/wiki/Model:CHILD}{C++ program} & \citep{Tucker2001}\\
+%\href{https://csdms.colorado.edu/wiki/Model:SIBERIA}{SIBERIA} & continuous & raster & steady state & \href{https://csdms.colorado.edu/wiki/Model:SIBERIA}{Fortran prog.} & \citep{Willgoose2005}\\
+%\href{https://grass.osgeo.org/grass74/manuals/addons/r.landscape.evol.html}{r.landscape.evol} & continuous & raster &  steady state & \href{https://grass.osgeo.org/grass74/manuals/addons/r.landscape.evol.html}{GRASS module} & \citep{Barton2010}\\
+%\href{https://github.com/landlab/}{Landlab built models} & continuous & raster + mesh & steady state & \href{https://github.com/landlab/}{Python library} & \citep{Hobley2017}\\
+%\href{https://github.com/baharmon/landscape_evolution}{r.sim.terrain}  & event -- & raster & dynamic -- & \href{https://github.com/baharmon/landscape_evolution}{GRASS module} &\\
+%& continuous && steady state & &\\
+%\bottomrule
+%\\
+%\end{tabu}
+%\label{table:evolution_models} 
+%\end{table*}
 
 % -------------------------- MODEL FIGURE -----------------------------
 
@@ -479,6 +481,53 @@ and by RUSLE3D with a R-factor of 310 (d-f)
 \label{fig:models}
 \end{figure}
 
+% -------------------------- MATH FOUNDATIONS OF THE MODEL -----------------------------
+
+\subsection{Landscape evolution}
+
+% Landscape evolution
+The simulated change in elevation over time 
+${\partial z / \partial t}$ [\unit{m~s}$^{-1}$] is a function of
+the net erosion-deposition rate $d_s$ [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] 
+and the sediment mass density $\rho_s$ [\unit{kg~m}$^{-3}$] 
+\citep{Mitasova2013}:
+% landscape evolution equation
+\begin{equation}
+\label{eq:evolution} 
+{\partial z \over \partial t } = d_s ~ \rho_s^{-1} 
+\end{equation}
+The net erosion-deposition rate $d_s$ can be estimated at different levels of complexity based on the 
+user selected simulation mode guided by the type of application.
+The simulation modes include the process-based SIMWE model for
+steady state and dynamic shallow overland flow and variable erosion-deposition regime,
+USPED model for the transport capacity limited regime or RUSLE3D model for the detachment capacity limited case. 
+In the detachment capacity limited regime, there is no deposition and $d_s$ represents soil erosion rate (soil loss).
+%
+% gravitational diffusion
+%\noindent
+Gravitational diffusion is then applied to the evolved topography
+to simulate smoothing effects of localized transport of soil that
+occurs during and between rainfall events.
+%the settling of sediment particles.
+The simulated change in elevation $\partial z / \partial t$ 
+due to gravitational diffusion
+is a function of the the sediment mass density,
+the diffusion coefficient, and Laplacian of the elevation
+%-- i.e.~the sum of the second order derivatives of elevation
+\citep{thaxton2004}:
+% change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
+\begin{equation}
+\label{eq:grav_diffusion} 
+{\partial z \over \partial t }= \rho_s^{-1} ~ \varepsilon_g ~ \nabla^2 z 
+%HM this should be \nabla^2 z, \nabla is an operator so there should be a variable upon which it is applied
+%HM see eq 4.41 in Thaxton, also from Willgoose, the second term
+\end{equation}
+%{\small
+\noindent
+where $\varepsilon_g$ is the diffusion coefficient [\unit{m}$^{2}$~\unit{s}$^{-1}$].
+%\\ \hspace*{0.5em} $\nabla$ is the topographic divergence [\unit{m}$^{-1}$].\\
+%}
+
 % -------------------------- EROSION-DEPOSITION -----------------------------
 \subsection{Simulation of Water Erosion (SIMWE)} \label{simwe}
 % simwe intro
@@ -489,56 +538,50 @@ with a 2D diffusive wave approximation
 \citep{Mitas1998,Mitasova2004}.
 SIMWE has been implemented in GRASS GIS as the modules 
 r.sim.water
-and r.sim.sediment. % <-------------------------------------- ADD sediment continuity equation? 
+and r.sim.sediment.
 % overview
 In SIMWE mode 
 for each time step
 r.sim.terrain
-determines the soil erosion regime,
 computes the first order partial derivatives of elevation,
-i.e.~the slope in the East-West direction ($dx$)
-and the slope in the North-South direction ($dy$),
-simulates water and sediment flows, 
-and then evolves the topography. 
-%
-% <-------------------------- EDITING
-% 
-% if the regime is ... then...
-% 
-% erdep
-In a variable erosion-deposition regime,
-the model simulates shallow water flow and net erosion-deposition ($d_s$),
-and then evolves the topography based on the erosion-deposition rate
-and gravitational diffusion.
-% transport limited
-The same process is used in
-a transport capacity limited regime,
-except that the topography is evolved based on 
-the net transport limited erosion-deposition rate
-and gravitational diffusion.
-% detachment  limited
-In a detachment capacity limited regime
-the model instead simulates shallow water flow and sediment flow ($q_s$),
-and then evolves the topography based on the sediment flow rate
-and gravitational diffusion.
-% dynamic versus steady state
+%i.e.~the slope in the East-West direction ($dx$)
+%and the slope in the North-South direction ($dy$),
+simulates shallow water flow and net erosion-deposition ($d_s$),
+and then evolves the topography based on 
+the erosion-deposition rate and gravitational diffusion.
 The model simulates dynamic flow regimes
 when the time step is less than the travel time 
 for a drop of water or a particle of sediment to cross the landscape.
 With longer time steps the model simulates a steady state regime. 
-
-%% terms
 %
-%% erdep
-%The net erosion-deposition rate ($d_s$) 
-%is the change in sediment storage over time 
-%based on the difference between sources and sinks of sediment. 
-% 
-%% flux
-%The  sediment flow rate per unit width ($q_s$)
-%...
+% erosion regime
+In SIMWE the erosion regime is determined by 
+the balance of the sediment detachment capacity ($D_c$)
+and the sediment transport capacity ($T_c$)
+represented by the first order reaction term $\sigma$, 
+which depends on soil and landcover properties.
+The detachment capacity is the maximum potential 
+detachment rate by overland flow, while
+the sediment transport capacity 
+is the maximum potential sediment flow rate 
+\citep{Mitasova2001}.
+% erosion regime eq.
+\begin{equation}
+\label{eq:regime}
+\sigma = {D_c \over T_c}
+\end{equation}
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $\sigma$  is a first order reaction term [$\unit{m}^{-1}$]\\
+\hspace*{0.5em} $D_c$ is the sediment detachment capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
+\hspace*{0.5em} $T_c$ is the sediment transport capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
+}
 
-% <------------------------------------------- EDITS HERE
+
+
+% <------------------------------------------- REVIEWER COMMENTS
 %
 % "Often, authors presenting a set of governing equations 
 % will start with the high-level conservation law(s), 
@@ -560,57 +603,7 @@ With longer time steps the model simulates a steady state regime.
 % hillslope to effective sources and sinks 
 % (e.g., Haan et al., 1994; Govindaraju and Kavvas, 1991; Foster and Meyer, 1972; Bennet, 1974)."
 
-
-
-% ------------------------------------------------------------------------------
-
-\subsubsection{Erosion regime}
-
-% <---------------------------------------------------EDITING HERE
-
-% REGIMES
-
 %Although the difference between steady-state and dynamic flow regimes is discussed, the differences between the erosion regimes (e.g. detachment capacity limited, transport capacity limited, erosion-deposition and detachment limited) are less clear. A more thorough discussion of those regimes and their differences would allow for a clearer understanding of the results of the model compared to the typical characteristics associated with these regimes. On P16 L24 to L27, the results of SIMWE were compared to the characteristics typical of the simulated erosion regime. Establishing the characteristics of the erosion regimes earlier, perhaps after the explanation of the flow regimes, would give the reader more clarity regarding what influences these regimes and how the model compares to real-world characteristics.
-
-
-% Erosion regime
-This model can switch erosion regimes at each time step
-based on the rainfall intensity ($i_r$)
-and the balance of the sediment detachment capacity ($D_c$)
-and the sediment transport capacity ($T_c$)
-represented by the first order reaction term $\sigma$, 
-which depends on soil and landcover properties.
-The detachment capacity is the maximum potential 
-detachment rate by overland flow, while
-the sediment transport capacity 
-is the maximum potential sediment flow rate 
-\citep{Mitasova2001}.
-When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
-or $\sigma$ is low ($\sigma \leq 0.01 \unit{m}^{-1}$),
-then the regime is detachment capacity limited. 
-%
-When rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $)
-and $\sigma$ is high ($\sigma \geq 100 \unit{m}^{-1}$),
-then the regime is transport capacity limited. 
-%
-When rainfall intensity is not very high 
-($i_r<60 \unit{mm~hr}^{-1}$)
-and $\sigma$ is neither high nor low 
-($ 0.01 \unit{m}^{-1}< \sigma < 100 \unit{m}^{-1}$),
-then there is an variable erosion-deposition regime. \\
-% erosion regime eq.
-\begin{equation}
-\label{eq:regime}
-\sigma = {D_c \over T_c}
-\end{equation}
-{\small
-\noindent
-where: \\
-\noindent
-\hspace*{0.5em} $\sigma$  is a first order reaction term [$\unit{m}^{-1}$]\\
-\hspace*{0.5em} $D_c$ is the sediment detachment capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
-\hspace*{0.5em} $T_c$ is the sediment transport capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
-}
 
 % ------------------------------------------------------------------------------
 
@@ -669,27 +662,24 @@ Green's function Monte Carlo path sampling method.
 
 % ------------------------------------------------------------------------------
 
-\subsubsection{Sediment flow}
-
-% Sediment flow
-In SIMWE the sediment flow rate $q_s$ is estimated
-as a function of water flow and sediment concentration
-\citep{Mitas1998}
-(Fig.~\ref{fig:models}b): 
-%sediment flow equation
-\begin{equation}\label{eq:sedflow} 
-q_s = \rho_s ~ q
-\end{equation}
-{\small
-\noindent
-where: \\
-\hspace*{0.5em} $q_s$ is the sediment flow rate per unit width [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
-\hspace*{0.5em} $\rho_s$ is sediment mass density in the water column [\unit{kg~m}$^{-3}$].\\
-}
-
-% ------------------------------------------------------------------------------
-
 \subsubsection{Erosion-deposition}
+
+%% Sediment flow
+%In SIMWE the sediment flow rate $q_s$ is estimated
+%as a function of water flow and sediment concentration
+%\citep{Mitas1998}
+%(Fig.~\ref{fig:models}b): 
+%sediment flow equation
+%\begin{equation}\label{eq:sedflow} 
+%q_s = \rho_s ~ q
+%\end{equation}
+%{\small
+%\noindent
+%where: \\
+%\hspace*{0.5em} $q_s$ is the sediment flow rate per unit width [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
+%\hspace*{0.5em} $\rho_s$ is sediment mass density in the water column [\unit{kg~m}$^{-3}$].\\
+%}
+
 
 % Erosion-deposition
 In SIMWE 
@@ -730,24 +720,24 @@ the change in time, the net erosion-deposition rate, and the sediment mass densi
 {\Delta z = \Delta t ~ d_s ~ \rho_s^{-1} }
 \end{equation}
 
-% detachment limited landscape evolution
-\noindent
-In a detachment limited erosion regime
-the simulated change in elevation $\Delta z$
-is a function of
-the change in time, the sediment flow rate, and the mass of water carried sediment per unit area
-\citep{Mitasova2013}:
-% change in elevation (m) = change in time (s) * sediment flux (kg/ms) / mass of sediment per unit area (kg/m^2)
-\begin{equation}
-\label{eq:flux_evolution} 
-{\Delta z = \Delta t ~ q_s~ \varrho_s^{-1} } 
-\end{equation}
-{\small
-\noindent
-where: \\
-\noindent
-\hspace*{0.5em} $\varrho_s$ is the mass of sediment per unit area [\unit{kg ~ m}$^{-2}$].\\
-}
+%% detachment limited landscape evolution
+%\noindent
+%In a detachment limited erosion regime
+%the simulated change in elevation $\Delta z$
+%is a function of
+%the change in time, the sediment flow rate, and the mass of water carried sediment per unit area
+%\citep{Mitasova2013}:
+%% change in elevation (m) = change in time (s) * sediment flux (kg/ms) / mass of sediment per unit area (kg/m^2)
+%\begin{equation}
+%\label{eq:flux_evolution} 
+%{\Delta z = \Delta t ~ q_s~ \varrho_s^{-1} } 
+%\end{equation}
+%{\small
+%\noindent
+%where: \\
+%\noindent
+%\hspace*{0.5em} $\varrho_s$ is the mass of sediment per unit area [\unit{kg ~ m}$^{-2}$].\\
+%}
 
 
 % ------------------------------------------------------------------------------
@@ -1079,7 +1069,7 @@ Gullies -- ephemeral channels with steep headwalls
 that incise into unconsolidated soil to depths of meters -- 
 are a manifestation of erosion common to 
 military training installations like Ft. Bragg in North Carolina 
-and the Piñon Canyon Maneuver Site in Colorado. 
+and the Pi\~{n}on Canyon Maneuver Site in Colorado. 
 While the local development of gullies can restrict 
 the maneuverability of troops and vehicles during training exercises, 
 pervasive gullying across a landscape 
@@ -1227,14 +1217,14 @@ to test and demonstrate the capabilities
 of the RUSLE3D, USPED, and SIMWE models
 (Table~\ref{table:simulations}).
 %
-Since the study area was dominated by
-a variable erosion-deposition or transport limited
-soil erosion regime during the 2012-2016 study period, 
-we could not quantitatively assess 
-the detachment capacity limited models
-against the observed topographic evolution of the landscape.
+%Since the study area was dominated by
+%a variable erosion-deposition or transport limited
+%soil erosion regime during the 2012-2016 study period, 
+%we could not quantitatively assess 
+%the detachment capacity limited model
+%against the observed topographic evolution of the landscape.
 %
-Instead the goal of simulations was to test
+The goal of simulations was to test
 what morphological processes and features 
 the different models could simulate. 
 %
@@ -1271,14 +1261,6 @@ for a 120~\unit{min} design storm
 with a constant rainfall intensity of 50~\unit{mm~hr}$^{-1}$
 (Figure~\ref{fig:simwe_simulations}a-b). 
 %
-We also used SIMWE to simulate landscape evolution
-in a steady state, detachment capacity limited soil erosion regime
-for a 120~\unit{min} design storm
-with a constant rainfall intensity of 25~\unit{mm~hr}$^{-1}$
-(Figure~\ref{fig:simwe_simulations}c-d).
-We used a lower rainfall intensity for this simulation 
-to reduce overshoot.
-%
 In all of the simulations 
 a sink filling algorithm
 -- an optional parameter in r.sim.terrain -- 
@@ -1311,7 +1293,7 @@ when compiled with OpenMP.
 % runtime
 Dynamic simulations of RUSLE3D and USPED each took
 3~\unit{min}~14~\unit{s} to run on a single thread, 
-while steady state simulations for SIMWE each took 
+while steady state simulation for SIMWE took 
 84~\unit{min}~13~\unit{s} running on 6 threads
 (Table~\ref{table:simulations}).
 
@@ -1323,14 +1305,22 @@ while steady state simulations for SIMWE each took
 We used linear regression to quantitatively analyze 
 observed versus simulated changes in topographic elevation
 (Table~\ref{table:linear_regression}).
-As expected given that the gully was dominated 
-by a variable erosion-deposition 
-or  transport capacity limited soil erosion regime 
-throughout the study period,
-the detachment capacity limited models 
+%
+As expected given the current erosion regime 
+for the study landscape,
+the detachment capacity limited model 
 diverged more from the 2012-2016 baseline. 
+%
+Given the presence the mature gully 
+with ridges along its banks,
+this landscape had previously been dominated by 
+a detachment limited soil erosion regime.
+During our study period, however, 
+the landscape was dominated 
+by a variable erosion-deposition 
+or transport capacity limited soil erosion regime.
 
-% dynamic model results
+% results
 The dynamic RUSLE3D simulation
 deepened the main channel of the gully,
 while the dynamic USPED simulation
@@ -1338,85 +1328,38 @@ eroded the banks of the gully
 and deposited in channels
 causing the gully grow wider and shallower
 (Figure~\ref{fig:simulations}). 
-%
+% rusle
 As a detachment capacity limited model
 RUSLE3D's results were
 dominated by erosion and 
 thus negative elevation change.
-%
 RUSLE3D carved a deep incision 
 in the main gully channel
 where water and sediment flow accumulated
-(Figure~\ref{fig:simulations}c). 
-%
+(Figure~\ref{fig:simulations}b). 
+% usped
 As a transport capacity limited model
 USPED generated a distributed pattern
 with both erosion and deposition and thus
-negative and positive elevation change. 
-%
+negative and positive elevation change.
 While USPED's pattern of elevation change
 was grainy and fragmented, 
 it captured the process of channel 
 filling and widening expected with 
 a transport capacity limited soil erosion regime
-(Figure~\ref{fig:simulations}f). 
-
-% steady state model results
-The steady state SIMWE simulations 
-predicted more realistic morphological patterns 
-of landscape evolution
-(Figure~\ref{fig:simwe_simulations}). 
-%
-For transport limited and
-variable erosion-deposition regimes
-SIMWE simulated
-channel widening 
+(Figure~\ref{fig:simulations}d). 
+% simwe
+The steady state SIMWE simulation
+for a variable erosion-deposition regime
+predicted the morphological processes and features
+expected of its regime including
+gradual aggradation,
+channel widening,
 and the formation of depositional ridges
 along the thalweg of the channel
-(Figure~\ref{fig:simwe_simulations}c).
-%
-For a detachment limited soil erosion regime
-SIMWE simulated major erosion
-driving the continued development 
-of the gully network
-including the spread of rills and
-the evolution of the nascent branch
-into a full fledged channel
-(Figure~\ref{fig:simwe_simulations}f). 
-%
-The detachment limited simulation
-also formed extensive ridges
-beside the gully channels 
-(Figure~\ref{fig:simwe_simulations}f), 
-continuing the development of 
-channel-side ridges
-observed in the 2012 and 2016 landform maps
-(Figure~\ref{fig:study_area}e-f). 
+(Figure~\ref{fig:simwe_simulations}b).
 
 % comparison of dynamic and steady state results
-Given the presence the mature gully 
-with ridges along its banks,
-this landscape had previously been dominated by 
-a detachment limited soil erosion regime.
-%
-The detachment limited SIMWE simulation 
-generated the morphological features
--- the deeply incised gully channels, 
-scour pits,
-and ridges along the channels 
---
-characteristic of a detachment-limited erosion regime,
-realistically simulating landscape evolution 
-at the scale of a subwatershed. 
-%
-The erosion-deposition and transport limited 
-SIMWE simulations also generated 
-the morphological processes and features
-that would be expected in these regimes
--- gradual aggradation
-and the formation of a depositional ridge 
-along the thalweg of the channel.
-
 While RUSLE3D and USPED
 produced less realistic patterns of landscape evolution
 than SIMWE,
@@ -1442,14 +1385,12 @@ Fort Bragg installation at 9~\unit{m} resolution
 \begin{table*}
 \small
 \caption{Linear regression of elevation maps}
-\begin{tabu} to \textwidth {llll}
+\begin{tabu} to \textwidth {lllX}
 \toprule
 Elevation A & Elevation B &  Correlation coeff. (R) & Difference from 2012-2016 baseline \\
 \midrule
 2012 & 2016 & 0.999865 & 0\\
-2012 & simulated with var. erosion-deposition SIMWE & 0.999932 & -0.000067\\
-2012 & simulated with detachment-limited SIMWE & 0.977801 & 0.022064\\
-2012 & simulated with transport-limited SIMWE & 0.999925 & -0.00006\\
+2012 & simulated with SIMWE & 0.999932 & -0.000067\\
 2012 & simulated with RUSLE3D & 0.998432 & 0.001433\\
 2012 & simulated with USPED & 0.999926 & -0.000061\\
 \bottomrule
@@ -1465,12 +1406,11 @@ Elevation A & Elevation B &  Correlation coeff. (R) & Difference from 2012-2016 
 \caption{Landscape evolution simulations}
 \begin{tabu} to \textwidth {XXXXXllllllX}
 \toprule
-Dynamics & Model & Intensity & Duration & Interval & $D_c$ & $T_c$ & m & n & $\rho_s$ & Threads & Runtime\\
+Flow regime & Model & Intensity & Duration & Interval & $D_c$ & $T_c$ & m & n & $\rho_s$ & Threads & Runtime\\
 \midrule
 Dynamic & RUSLE3D & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 3~\unit{min} &  &  & 0.4 & 1.3 & & & 2~\unit{min}~36~\unit{s}\\
 Dynamic & USPED & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 3~\unit{min} &  &  & 1.5 & 1.2 & 1.6 & & 3~\unit{min}~14~\unit{s}\\
 Steady state & SIMWE & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 120~\unit{min} & & & & & 1.6 & 6 & 84~\unit{min}~13~\unit{s}\\
-Steady state & SIMWE & 25~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 120~\unit{min} & 0.0001 & 0.01 & & & 1.6 & 6 & 84~\unit{min}~13~\unit{s}\\
 \bottomrule
 \\
 \end{tabu}
@@ -1493,9 +1433,8 @@ Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC}
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/simwe.pdf}
-\caption{Steady state SIMWE simulations
-for 120~\unit{min} events with rainfall intensities of 50~\unit{mm~hr}$^{-1}$ (a-b)
-and 25~\unit{mm~hr}$^{-1}$ (c-d),\\
+\caption{Steady state SIMWE simulation
+for a 120~\unit{min} event with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$ (a-b),
 Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC}
 \label{fig:simwe_simulations}
 \end{figure}
@@ -1504,8 +1443,7 @@ Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC}
 \conclusions
 
 The short-term landscape evolution model 
-r.sim.terrain 
-can realistically simulate the development of 
+r.sim.terrain can simulate the development of 
 gullies, rills, and hillslopes by overland water erosion
 for a range of hydrologic and soil erosion regimes.
 The landscape evolution model was tested
@@ -1517,37 +1455,30 @@ For each regime it generated the
 morphological processes and features expected.
 % physics based models
 The physics-based SIMWE model 
-realistically simulated short-term topographic change
-for steady state hydrologic regimes
-at sub-watershed to watershed scales. 
-For detachment limited soil erosion regimes
-it simulated morphological processes including
-channel incision, channel widening, and 
-the development of knickzones, rills, and scour pits.
-For transport limited and variable erosion-deposition regimes,
-it simulated processes such as channel aggradation,
+simulated morphological processes 
+for a variable erosion-deposition regime such as 
+gradual aggradation, channel widening, 
 scouring, and the development of
 depositional ridges along the thalweg.
 % empirical models
 The empirical RUSLE3D and USPED models
 approximated short-term topographic change
 at watershed to regional scales. 
-For detachment limited soil erosion regimes 
-RUSLE3D simulated channel incision,
-while for transport limited regimes
-USPED simulated channel widening and filling. 
+The empirical RUSLE3D model simulated channel incision
+in a detachment limited soil erosion regime,
+while the empirical USPED model
+simulated channel widening and filling
+in a transport limited regime. 
 % uses & implications
-Since it is a GIS-based model 
-that realistically simulates 
-fine-scale morphological processes and features,
-r.sim.terrain can easily and effectively be used 
+Since r.sim.terrain is a GIS-based model 
+that simulates fine-scale morphological processes and features,
+it can easily and effectively be used 
 in conjunction with other GIS-based tools
 for geomorphological research,
 land management and conservation,
 erosion control, and landscape restoration. 
 
 % --------- FUTURE WORK ---------
-
 % assessment study
 In the future we plan to assess this model
 by comparing simulations against 
