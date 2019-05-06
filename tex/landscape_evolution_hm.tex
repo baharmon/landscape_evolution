@@ -471,15 +471,78 @@ and the sediment mass density $\rho_s$ [\unit{kg~m}$^{-3}$]
 \label{eq:evolution} 
 {\partial z \over \partial t } = d_s ~ \rho_s^{-1} 
 \end{equation}
-The net erosion-deposition rate $d_s$ can be estimated at different levels of complexity based on the 
-user selected simulation mode guided by the type of application.
+The net erosion-deposition rate $d_s$ can be estimated at different levels of complexity based 
+on the user selected simulation mode guided by the type of application.
+
+In general, $d_s$ is obtained by solving the sediment continuity equation
+which for the steady state case relates $d_s$ to the divergence 
+of sediment flow rate per unit width ${\bf q_s}$ [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]:
+
+\begin{equation}
+\label{eq:steady_sed}
+\nabla\cdot {\bf q_s} = d_s 
+\end{equation}
+
+The net erosion and deposition rates $d_s$ are proportional to the difference between
+the sediment transport capacity and the actual sediment flow rate \cite{fostermeyer72}:
+
+\begin{equation}
+\label{eq:sigma}
+d_s =\sigma \bigl[ T_c - |{\bf q_s}\bigr]
+\end{equation}
+
+\noindent
+where $T_c)$ [$\unit kg~m^{-1}~s{-1}$] is the sediment transport capacity,
+and $\sigma({\bf r})$ [m$^{-1}$] is the first order reaction term
+ dependent on soil and cover properties.
+ The expression for $\sigma = D_c / T_c$
+is obtained from the following relationship \cite{fostermeyer72}:
+
+\begin{equation}
+\label{eq:foster_law}
+d_s/D_c + |{\bf q_s}|/T_c = 1
+\end{equation}
+
+\noindent
+ which states that the ratio of the erosion rate to the detachment
+ capacity $D_c ({\bf r})$ in $kg/(m^2s)$ %(entrainment)
+ plus the ratio of the sediment flow to the sediment transport capacity is
+ a conserved quantity (unity).
+The qualitative arguments, experimental observations and values for
+ $\sigma({\bf r})$   are discussed, for example, by Foster and Meyer\cite{fostermeyer72}.
+
+%HM show the math for the cases below or is it obvious?
+For $\sigma \to 0$, the net erosion is equal to the detachment capacity
+
+\begin{equation}
+\label{eq:detachment_limited}
+ d_s = D_c
+\end{equation}
+For this case, transport capacity exceeds
+detachment capacity everywhere, erosion and sediment transport is detachment
+capacity limited and therefore no deposition occurs.
+When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
+or $\sigma$ is low, for example, for compacted clay soil with low detachment capacity but
+high transport capacity ( $\sigma \leq 0.01 \unit{m}^{-1}$),
+then the regime is detachment capacity limited.
+
+For very large $\sigma \to \infty$ the sediment flow is at sediment transport capacity $q_s = T_c$ 
+leading to a transport capacity regime of erosion-deposition with deposition reaching its maximum
+extent for the given water flow. 
+%This would be the case when rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $) and 
+For example, $\sigma$ is high for sandy soils with high detachment capacity but
+low transport capacity  ($\sigma \geq 100 \unit{m}^{-1}$).
+
 The simulation modes include the process-based SIMWE model for
 steady state and dynamic shallow overland flow and variable erosion-deposition regime,
 USPED model for the transport capacity limited regime or RUSLE3D model for the detachment capacity limited case. 
-In the detachment capacity limited regime, there is no deposition and $d_s$ represents soil erosion rate (soil loss).
+%In the detachment capacity limited regime, there is no deposition and $d_s$ represents soil erosion rate (soil loss).
 % ------------------------------------------------------------------------------
+INTRODUCE FOSTERS EQUATION and ds FOR LIMITING CASES IN GENERAL HERE?
+and show how they are computed for the specific cases in SIMWE, RUSLE3D and USPED
 
 % gravitational diffusion
+%HM put this right after dz/dt?
 \noindent
 Gravitational diffusion is then applied to the evolved topography
 to simulate smoothing effects of localized transport of soil that
