@@ -505,25 +505,24 @@ where $\varepsilon_g$ is the diffusion coefficient [\unit{m}$^{2}$~\unit{s}$^{-1
 
 % -------------------------- EROSION-DEPOSITION -----------------------------
 \subsection{Simulation of Water Erosion (SIMWE)} \label{simwe}
+
+THIS ENTIRE SECTION WILL NEED SEVERAL INTERATIONS TO GET IT RIGHT
+
 % simwe intro
-SIMWE is a physics-based simulation 
-of shallow overland water and sediment flow
+SIMWE is a physics-based simulation of shallow overland water and sediment flow
 that uses a path sampling method to solve the continuity and momentum equations 
 with a 2D diffusive wave approximation 
 \citep{Mitas1998,Mitasova2004}.
 SIMWE has been implemented in GRASS GIS as the modules 
 r.sim.water
-and r.sim.sediment. % <-------------------------------------- ADD sediment continuity equation? 
+and r.sim.sediment. 
 % overview
 In the SIMWE mode for each landscape evolution time step
 r.sim.terrain
-%determines the soil erosion regime,
 computes the first order partial derivatives of elevation 
 $\partial z / \partial x$ and $\partial z / \partial y$ 
 using the GRASS GIS module r.slope.aspect,
-%HMi.e.~the slope in the East-West direction ($dx$)
-%HMand the slope in the North-South direction ($dy$),
-simulates water flow, sediment flow, and net erosion-deposition rate $d_s$
+simulates shallow water flow depth, sediment flow, and net erosion-deposition rate 
 and then evolves the topography based on the erosion-deposition rate
 and gravitational diffusion. 
 %
@@ -533,43 +532,23 @@ for a drop of water or a particle of sediment to cross the landscape,
 e.g. the time step is less than the time to concentration.
 With longer lanscape evolution time steps the model simulates a steady state regime. 
 
-%% terms
-%% erdep
-%The net erosion-deposition rate ($d_s$) 
-%is the change in sediment storage over time 
-%based on the difference between sources and sinks of sediment. 
-% 
-%% flux
-%The  sediment flow rate per unit width ($q_s$)
-
 % <------------------------------------------- EDITS HERE
-%
 % "Often, authors presenting a set of governing equations 
 % will start with the high-level conservation law(s), 
 % and then define each term more precisely. 
 % There’s an opportunity to do this at least partly in subsection 2.1.1."
 % 
 % "So we need a definition for ds, which as suggested above, you could provide in section 2.1.1."
-% 
 % $q_s$ is the sediment flow rate per unit width [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]
-%
 % $d_s$ is net erosion-deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]
-%
 % "Net erosion-deposition $d_s$ -- the difference between sources and sinks --"
-
 % "The basic relationship describing sediment transport by overland flow
 % is the sediment continuity equation, 
 % which relates the change in sediment storage over time, 
 % and the change in sediment flow rate along the
 % hillslope to effective sources and sinks 
 % (e.g., Haan et al., 1994; Govindaraju and Kavvas, 1991; Foster and Meyer, 1972; Bennet, 1974)."
-
-
 % ------------------------------------------------------------------------------
-
-%\subsubsection{Erosion regime}
-% <---------------------------------------------------EDITING HERE
-% REGIMES
 
 %Although the difference between steady-state and dynamic flow regimes is discussed, the differences between the erosion regimes (e.g. detachment capacity limited, transport capacity limited, erosion-deposition and detachment limited) are less clear. A more thorough discussion of those regimes and their differences would allow for a clearer understanding of the results of the model compared to the typical characteristics associated with these regimes. On P16 L24 to L27, the results of SIMWE were compared to the characteristics typical of the simulated erosion regime. Establishing the characteristics of the erosion regimes earlier, perhaps after the explanation of the flow regimes, would give the reader more clarity regarding what influences these regimes and how the model compares to real-world characteristics.
 
@@ -578,20 +557,21 @@ With longer lanscape evolution time steps the model simulates a steady state reg
 
 \subsubsection{Shallow water flow}
 
+%HM we use bold font for vector, feel free to replace it with a symbol with arrow on the top)
 % Shallow water flow
 The SIMWE model simulates shallow overland water flow
 controlled by spatially variable topographic, soil, landcover, 
 and rainfall parameters
-by solving the continuity and momentum equations 
-for steady state water flow with a path sampling method
+by solving the continuity equation 
+for steady state water flow using a path sampling method
 (Fig.~\ref{fig:models}a). 
-Shallow water flow $q$ can be approximated by
+Shallow water flow ${\bf q}$ can be approximated by
 the bivariate form of the St.~Venant equation:
 % shallow water flow eq.
 \begin{equation}
 \label{eq:water}
 {\partial h \over \partial t} =
- i_e - \nabla ~ q
+ i_e - \nabla ~ {\bf q}
 \end{equation}
 {\small
 \noindent
@@ -600,61 +580,128 @@ where: \\
 %\hspace*{0.5em} $x, y$ is the position [\unit{m}]\\
 \hspace*{0.5em} $t$ is the time [\unit{s}] \\
 \hspace*{0.5em} $h$ is the depth of overland flow [\unit{m}]\\
-\hspace*{0.5em} $i_e$ is the rainfall excess [\unit{m~s^{-1}}]
+\hspace*{0.5em} $i_e$ is the rainfall excess [$\unit{m~s^{-1}}$]
 (i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)\\
-%HM in this journal we don't need to explain the nabla operator 
-%\hspace*{0.5em} $\nabla$ is the divergence of the flow vector field\\
-\hspace*{0.5em} $q$ is the water flow per unit width [$\unit{m}^2~\unit{s}^{-1}$]. \\
+\hspace*{0.5em} $\nabla$ is the divergence operator\\
+\hspace*{0.5em} ${\bf q}$ is the vector of water flow per unit width [$\unit{m}^2~\unit{s}^{-1}$]. \\
 }
 
-\noindent
-Diffusive wave effects can be approximated so that water can flow through depressions 
-by adding  a diffusion-like term 
-$ \propto \nabla^2 [h^{5/3}]$
-into the solution of the continuity and momentum equations 
-for steady state water flow:
-%  diffuse wave eq.
+The approximation of a dynamical solution for shallow water flow
+is found by Green's function Monte Carlo path sampling method
+where the steady-state solution is obtained by accumulation of the evolving source
+over the given time period. This accumulation process can be also interpreted as
+an approximation of a dynamical solution,
+with diffusive wave effects incorporated by adding a diffusion term proprtional to
+$ \nabla^2 [h^{5/3}]$
+into the solution of the continuity 
+????and momentum ????
+equations for steady state water flow:
+
 \begin{equation}
 \label{eq:difwater}
--{\varepsilon\over 2 }\nabla^2 [h^{5/3}]
-+\nabla ~ [ h~v] = i_e
+-{\varepsilon\over 2 }\nabla^2 ~ h^{5/3}
++\nabla ~ {\bf q} = i_e
 \end{equation}
 {\small
 \noindent
  where: \\
  \noindent
- \hspace*{0.5em} $\varepsilon$ is a spatially variable diffusion coefficient. \\
+ \hspace*{0.5em} $\varepsilon$ [$\unit{m}^{4/3}~\unit{s}^{-1}$] is a spatially variable diffusion coefficient. \\
 }
-This equation is solved using a Green's function Monte Carlo path sampling method 
-where the steady-state solution is obtained by accumulation of the evolving source 
-over the given time period effectively performing the corresponding integral over time.
-This accumulation process can be also interpreted as an approximation of 
-a dynamical solution for shallow water flow.
-See \citep{Mitasova2005} for more details about the mathematical background of the method.
+The solution assumes that water flow velocity is mostly controlled by terrain slope and surface roughness 
+and its change during the simulated event at a given location is negligible. 
+The water depth at time $t$ during the simulated rainfall event
+%HM note that we have several time steps in r.sim.terrain - topo evolution time step, water flow time step and sediment flow time step
+ is computed as function of particle (walkers) density at each grid cell. 
+The initial number of particles per grid cell is proportinal to rainfall excess rate $i_e$ and 
+the particles are then routed across the landscape by finding a new position of the walker at time $t + \Delta t$ by:
 
-%HM text from 2005 paper
-%The steady-state solution is obtained by accumulation of the evolving source over the relevant period (i.e., until all the walkers flow out or die out), effectively performing the corresponding integral over time.
-%The accumulation process can be also interpreted as an approximation of a dynamical solution for shallow water flow, in which velocity is mostly controlled by terrain slope and surface roughness rather than by water depth and friction slope, and therefore its change over time at a given location is negligible. The robustness of the path sampling method enables the use of a very wide range of input data and complex conditions that can be modeled without manually editing the input data, as it is common with traditional methods. It can be therefore used efficiently for exploration of large number of landscape configurations, needed for various applications, including conservation planning and sed- iment control.
-
-% ------------------------------------------------------------------------------
-
-\subsubsection{Sediment flow}
-
-% Sediment flow
-In SIMWE the sediment flow rate $q_s$ is estimated
-as a function of water flow and sediment concentration
-\citep{Mitas1998}
-(Fig.~\ref{fig:models}b): 
-%sediment flow equation
-\begin{equation}\label{eq:sedflow} 
-q_s = \rho_s ~ q
+\begin{equation}
+{\bf r}_m^{new}={\bf r}_m + \tau {\bf v}_0 + {\bf g}
 \end{equation}
+
 {\small
 \noindent
 where: \\
-\hspace*{0.5em} $q_s$ is the sediment flow rate per unit width [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
+\noindent
+\hspace*{0.5em} ${\bf r} = (x, y)$ is the $m^{th}$ walker position [\unit{m}]\\
+\hspace*{0.5em} ${\bf g}$ is a random vector with gaussian components with variance $\tau$ ????  [\unit{m}]\\
+\hspace*{0.5em} ${\bf v}_0 $ is the velocity vector [$\unit{m~s^{-1}}$],  
+ with the direction given by the topographic gradient $\nabla z = (\partial z / \partial x, \partial z / \partial y)$
+and magnitude computed by Manning or Chezy equation\\ 
+}
+%HM should we say here that it is a kinematic wave with diffusion
+
+See \citep{Mitasova2005} for more details about the mathematical background of the method.
+
+% ------------------------------------------------------------------------------
+
+\subsubsection{Sediment flow and net erosion-deposition}
+
+% Sediment flow
+In SIMWE the sediment flow over complex topography is approximated 
+by the sediment-continuity equation,
+which relates the change in sediment storage over time, and the change
+in sediment flow rate to effective sources and sinks \citep{haan1994,govindar1991,foster1972}: 
+
+\begin{equation}
+\label{eq:sedcont}
+{\partial [\rho_s~h] \over \partial t} +
+\nabla\cdot {\bf q_s} = {\rm sources - sinks}=
+d_s
+\end{equation}
+\noindent
+
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $\rho_s$ is sediment mass density [$\unit{kg~m^{-3}}$]\\
+\hspace*{0.5em} $h$ is water flow depth  [\unit{m}]\\
+\hspace*{0.5em} ${\bf q_s}$ is the sediment flow rate per unit width (unit sediment load) vector [$\unit{kg~m^{-1}~s{-1}}$]
+\hspace*{0.5em} $d_s$ is the net erosion or deposition rate [$\unit{kg~m^{-2}~s^{-1}}$] is the net erosion or deposition rate.
+}
+
+DO WE NEED THIS HERE?
+
+The sediment-flow rate ${\bf q_s}$ is a function of water flow and sediment concentration:
+\citep{Mitas1998}, (Fig.~\ref{fig:models}b):
+\begin{equation}
+\label{eq:sedflow}
+  {\bf q_s} = \rho_s {\bf q}
+\end{equation}
+
+{\small
+\noindent
+where: \\
+\hspace*{0.5em} $\bf q$ is the water flow direction and rate per unit width [$\unit{m^2~s^{-1}}$]\\
 \hspace*{0.5em} $\rho_s$ is sediment mass density in the water column [\unit{kg~m}$^{-3}$].\\
 }
+
+Similarly as for the shallow water flow we can solve the steady state sediment flow 
+equation using Greens function Monte Carlo path sampling, but in this case each particle will 
+have weight dependent on the rate of erosion or deposition.
+
+A simplified, steady-state form of the continuity equation can be derived
+for the conditions when, at the given location, the change in water flow
+and sediment concentrations over time is close to zero.  The net erosion or deposition
+rate $d_s(x,y)$ is then computed as a divergence of steady state sediment flow
+rate per unit width ${\bf q_s}(x,y)$:
+
+\smallskip
+\begin{equation}
+\label{eq:steady_sed}
+{\partial [\rho_s(x,y,t)h(x,y,t)] \over \partial t}=0.
+\quad \longrightarrow \quad
+\nabla\cdot {\bf q_s}(x,y) = d_s(x,y) 
+\end{equation}
+\smallskip
+\noindent
+Assuming steady rainfall excess rates,  equation (\ref{eq:steady_sed})
+applies to the peak flow and peak concentration conditions when
+water depth and sediment concentrations remain constant over time.
+
+ADD FOSTER's LAW AND Dc, Tc equations here
 
 % ------------------------------------------------------------------------------
 
