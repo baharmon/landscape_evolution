@@ -123,6 +123,7 @@ spatial and statistical modeling and analysis,
 and visualization,
 there are few GIS-based soil erosion models or landscape evolution models
 (see Tables~\ref{table:erosion_models}-\ref{table:evolution_models}).
+%%HM ADD HERE r.landscape.evol paper by Isaac or Barton
 % research questions
 Furthermore there are still major research questions 
 to address in the theoretical foundations of erosion modeling 
@@ -565,8 +566,8 @@ and rainfall parameters
 by solving the continuity equation 
 for steady state water flow using a path sampling method
 (Fig.~\ref{fig:models}a). 
-Shallow water flow ${\bf q}$ can be approximated by
-the bivariate form of the St.~Venant equation:
+In general, shallow water flow ${\bf q}$ is approximated by
+the bivariate form of the St.~Venant equation (e.g., \citep{haan1994}:
 % shallow water flow eq.
 \begin{equation}
 \label{eq:water}
@@ -587,34 +588,33 @@ where: \\
 }
 
 The approximation of a dynamical solution for shallow water flow
-is found by Green's function Monte Carlo path sampling method
-where the steady-state solution is obtained by accumulation of the evolving source
-over the given time period. This accumulation process can be also interpreted as
+can be obtained by Green's function Monte Carlo path sampling method.
+The method solved the steady-state solution by accumulation of the evolving source
+over the given time period and this accumulation process can be interpreted as
 an approximation of a dynamical solution,
 with diffusive wave effects incorporated by adding a diffusion term proprtional to
 $ \nabla^2 [h^{5/3}]$
-into the solution of the continuity 
-????and momentum ????
-equations for steady state water flow:
+into the solution of the continuity equation for steady state water flow:
 
 \begin{equation}
 \label{eq:difwater}
--{\varepsilon\over 2 }\nabla^2 ~ h^{5/3}
+-{\varepsilon_w\over 2 }\nabla^2 ~ h^{5/3}
 +\nabla ~ {\bf q} = i_e
 \end{equation}
 {\small
 \noindent
  where: \\
  \noindent
- \hspace*{0.5em} $\varepsilon$ [$\unit{m}^{4/3}~\unit{s}^{-1}$] is a spatially variable diffusion coefficient. \\
+ \hspace*{0.5em} $\varepsilon_w$ is a spatially variable diffusion coefficient [$\unit{m}^{4/3}~\unit{s}^{-1}$]. \\
 }
 The solution assumes that water flow velocity is mostly controlled by terrain slope and surface roughness 
 and its change during the simulated event at a given location is negligible. 
 The water depth at time $t$ during the simulated rainfall event
 %HM note that we have several time steps in r.sim.terrain - topo evolution time step, water flow time step and sediment flow time step
  is computed as function of particle (walkers) density at each grid cell. 
-The initial number of particles per grid cell is proportinal to rainfall excess rate $i_e$ and 
-the particles are then routed across the landscape by finding a new position of the walker at time $t + \Delta t$ by:
+The initial number of particles per grid cell is proportinal to rainfall excess rate $i_e$ (source)
+and the particles are then routed across the landscape by finding a new position of the walker at time $t + \Delta t$ by:
+DO WE NEED v0 here? remove 0 if not needed.
 
 \begin{equation}
 {\bf r}_m^{new}={\bf r}_m + \tau {\bf v}_0 + {\bf g}
@@ -658,77 +658,80 @@ where: \\
 \noindent
 \hspace*{0.5em} $\rho_s$ is sediment mass density [$\unit{kg~m^{-3}}$]\\
 \hspace*{0.5em} $h$ is water flow depth  [\unit{m}]\\
-\hspace*{0.5em} ${\bf q_s}$ is the sediment flow rate per unit width (unit sediment load) vector [$\unit{kg~m^{-1}~s{-1}}$]
+\hspace*{0.5em} ${\bf q_s}$ is the sediment flow rate per unit width (unit sediment load) vector [$\unit{kg~m^{-1}~s{-1}}$]\\
 \hspace*{0.5em} $d_s$ is the net erosion or deposition rate [$\unit{kg~m^{-2}~s^{-1}}$] is the net erosion or deposition rate.
 }
 
-DO WE NEED THIS HERE?
+%DO WE NEED THIS HERE?
+%The sediment-flow rate ${\bf q_s}$ is a function of water flow and sediment concentration:
+%\citep{Mitas1998}, (Fig.~\ref{fig:models}b):
+%\begin{equation}
+%\label{eq:sedflow}
+%  {\bf q_s} = \rho_s {\bf q}
+%\end{equation}
+%
+%{\small
+%\noindent
+%where: \\
+%\hspace*{0.5em} $\bf q$ is the water flow direction and rate per unit width [$\unit{m^2~s^{-1}}$]\\
+%\hspace*{0.5em} $\rho_s$ is sediment mass density in the water column [\unit{kg~m}$^{-3}$].\\
+%}
 
-The sediment-flow rate ${\bf q_s}$ is a function of water flow and sediment concentration:
-\citep{Mitas1998}, (Fig.~\ref{fig:models}b):
-\begin{equation}
-\label{eq:sedflow}
-  {\bf q_s} = \rho_s {\bf q}
-\end{equation}
+Similarly as for the shallow water flow SIMWE module solves the steady state sediment flow 
+equation using Greens function Monte Carlo path sampling
+assuming that the change in water flow
+and sediment concentrations over the modeled time interval at a given location is close to zero.
+The steady state sediment flow equation (\ref{eq:ssediment}) 
+which relates the net erosion or deposition
+rate $d_s$ to the divergence of sediment flow rate per unit width ${\bf q_s}$
 
-{\small
-\noindent
-where: \\
-\hspace*{0.5em} $\bf q$ is the water flow direction and rate per unit width [$\unit{m^2~s^{-1}}$]\\
-\hspace*{0.5em} $\rho_s$ is sediment mass density in the water column [\unit{kg~m}$^{-3}$].\\
-}
-
-Similarly as for the shallow water flow we can solve the steady state sediment flow 
-equation using Greens function Monte Carlo path sampling, but in this case each particle will 
-have weight dependent on the rate of erosion or deposition.
-
-A simplified, steady-state form of the continuity equation can be derived
-for the conditions when, at the given location, the change in water flow
-and sediment concentrations over time is close to zero.  The net erosion or deposition
-rate $d_s(x,y)$ is then computed as a divergence of steady state sediment flow
-rate per unit width ${\bf q_s}(x,y)$:
-
-\smallskip
 \begin{equation}
 \label{eq:steady_sed}
-{\partial [\rho_s(x,y,t)h(x,y,t)] \over \partial t}=0.
-\quad \longrightarrow \quad
-\nabla\cdot {\bf q_s}(x,y) = d_s(x,y) 
+\nabla\cdot {\bf q_s} = d_s 
 \end{equation}
-\smallskip
-\noindent
-Assuming steady rainfall excess rates,  equation (\ref{eq:steady_sed})
-applies to the peak flow and peak concentration conditions when
-water depth and sediment concentrations remain constant over time.
+
+is rewritten to include a small diffusion term proportional to the 
+mass of water-carried sediment per unit area $\nabla^2 \varrho$:
+
+\begin{equation}
+\label{eq:difsedim}
+-{\varepsilon_s \over 2}\nabla^2 \varrho
++ \nabla\cdot [\varrho {\bf v}]
+ + \varrho \sigma |{\bf v}|
+= \sigma({\bf r}) T({\bf r}) = write as SOURCE
+%\sigma({\bf r}) T({\bf r})=Dc/T * T=Dc
+\end{equation}
+
+where  $\varepsilon_s$ [m$^2$/s] is the diffusion constant and
+$\varrho = \rho_s~c~h$ [kg/m$^2$] is
+the mass of water-carried sediment per unit area, $c$ is the sediment concentration [$\unit{particle~m^{-3}}$].
+% On the left hand side of the equation (\ref{eq:difsedim}), the first term
+% describes local diffusion, the second term is a drift driven by the water flow
+% while the third term represents a velocity dependent 'potential' acting on $\varrho$ EXPLAIN THIS TERM. 
+The equation is solved for $\varrho$ which is represented by particle density.
+The initial number of particles per grid cell is proportinal to soil detachment rate $D_c$
+(source) and the particles are then routed across the landscape by finding a new position 
+of the walker at time $t + \Delta t$ by:
+
+\begin{equation}
+{\bf r}_m^{new}={\bf r}_m + \tau {\bf v}_0 + {\bf g}
+\end{equation}
+
+ while the updated weight is
+
+\begin{equation}
+w_m^{new}=w_m \exp[-\tau(u({\bf r}_m^{new})+u({\bf r}_m))/2]
+\end{equation}
+
+We compute $\varrho$ from the weighted particle densities, then $q_s$ from $\varrho$ 
+and then $d_s$ using equation \ref{eq:steady_sed}.
 
 ADD FOSTER's LAW AND Dc, Tc equations here
 
 % ------------------------------------------------------------------------------
 
-\subsubsection{Erosion-deposition}
-
-% Erosion-deposition
-In SIMWE 
-the net erosion-deposition rate is estimated
-using the bivariate form of sediment continuity equation
-to model sediment storage and flow 
-based on effective sources and sinks
-(Fig.~\ref{fig:models}c). 
-Net erosion-deposition $d_s$
--- the difference between sources and sinks --
-is approximated by
-the steady state sediment flow equation with diffusion:
-% erosion-deposition equation
-\begin{equation}\label{eq:sediment} 
-d_s = 
-{\partial [\rho_s ~ h] \over \partial t} +
-\nabla~q_s
-\end{equation}
-{\small
-\noindent
-where: \\
-\hspace*{0.5em} $d_s$ is net erosion-deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$].\\
-}
+%HM merged into the previous 
+%\subsubsection{Erosion-deposition}
 
 % ------------------------------------------------------------------------------
 
@@ -754,18 +757,20 @@ the sediment transport capacity
 is the maximum potential sediment flow rate
 \citep{Mitasova2001}.
 When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
-or $\sigma$ is low ($\sigma \leq 0.01 \unit{m}^{-1}$),
+or $\sigma$ is low, for example, for compacted clay soil with low detachment capacity but 
+high transport capacity ( $\sigma \leq 0.01 \unit{m}^{-1}$),
 then the regime is detachment capacity limited.
 %
 When rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $)
-and $\sigma$ is high ($\sigma \geq 100 \unit{m}^{-1}$),
+and $\sigma$ is high, for example, for sandy soils with high detachment capacity but
+low transport capacity  ($\sigma \geq 100 \unit{m}^{-1}$),
 then the regime is transport capacity limited.
 %
 When rainfall intensity is not very high
 ($i_r<60 \unit{mm~hr}^{-1}$)
 and $\sigma$ is neither high nor low
 ($ 0.01 \unit{m}^{-1}< \sigma < 100 \unit{m}^{-1}$),
-then there is an variable erosion-deposition regime. \\
+then there is a variable erosion-deposition regime. \\
 % erosion regime eq.
 \begin{equation}
 \label{eq:regime}
@@ -827,8 +832,8 @@ this model computes the parameters for RUSLE3D --
 an event-based erosivity factor,
 the slope of the topography, the flow accumulation, and
 the 3D topographic factor -- and then
-solves the RUSLE3D equation for sediment flow. 
-The sediment flow is used to simulate landscape evolution 
+solves the RUSLE3D equation for soil loss rate. 
+The soil loss rate is used to simulate landscape evolution 
 in a detachment capacity limited soil erosion regime.
 
 % RESOURCES
@@ -939,9 +944,9 @@ where: \\
 
 % ------------------------------------------------------------------------------
 
-\subsubsection{Sediment flow}
+\subsubsection{Detachment limited erosion rate}
 
-Sediment flow is a function of the event-based erosivity factor, 
+Erosion rate is a function of the event-based erosivity factor, 
 the soil erodibility factor, the 3D topographic factor, cover factor, and the prevention measures factor 
 (Fig.~\ref{fig:models}f):
 %
@@ -954,7 +959,7 @@ the soil erodibility factor, the 3D topographic factor, cover factor, and the pr
 \noindent
 where: \\
 \noindent
-\hspace*{0.5em} $E$ is sediment flow [\unit{kg~m}$^{-2}$~\unit{min}$^{-1}$]\\
+\hspace*{0.5em} $E$ is soil erosion rate (soil loss) [\unit{kg~m}$^{-2}$~\unit{min}$^{-1}$]\\
 \hspace*{0.5em} $R_e$ is the event-based erosivity factor [\unit{MJ~mm~ha}$^{-1}$~\unit{hr}$^{-1}$]\\
 \hspace*{0.5em} $K$ is the soil erodibility factor [\unit{ton~ha~hr~ha}$^{-1}$~\unit{MJ}$^{-1}$~\unit{mm}$^{-1}$]\\
 \hspace*{0.5em} $LS_{3D}$ is the dimensionless topographic (length-slope) factor\\
@@ -967,7 +972,7 @@ where: \\
 For RUSLE3D the simulated change in elevation 
 $\Delta z$
 is derived from 
-equation \ref{eq:flux_evolution}
+equation \ref{eq:evolution}
 for landscape evolution in an detachment limited soil erosion regime
 and then equation \ref{eq:grav_diffusion}
 for the settling of sediment particles due to gravitational diffusion.
