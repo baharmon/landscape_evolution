@@ -406,6 +406,12 @@ g.extension r.sim.terrain
 \end{verbatim}
 
 % -------------- LIMITATIONS ---------------------
+%HM why are the limitations here, before we explain what methods are in the model?
+%HM is this required this way or can we put them in the discussion after we explain the walkers?
+%HM I don't see the metric units as limitation - that is the standard
+%HM the real limitation is the lack of fluvial erosion which limits the scale,
+%HM lack of full dynamics - we do not have coupled dynamic water and sediment transport and we neglect friction slope
+%HM I agree with computational demands 
 Limitations of this landscape evolution model include
 shallow overland flow, 
 units, computation time, resolution and spatial scale.
@@ -434,21 +440,29 @@ numerical error in the path sampling solution,
 it will also greatly increase computation time.
 Furthermore a customized compilation of GRASS GIS 
 is needed for more than 7 million random walkers.
-This limits the resolution and spatial scale 
-at which SIMWE can be easily applied,
+%HM it is not scale but the size of raster that matters 
+This limits the size of the raster layers that can be processed
+%resolution and spatial scale 
+%at which SIMWE can be easily applied,
 while RUSLE3D and USPED are much faster, computationally efficient,
-and can easily be run at regional scales. 
+and can easily be run for much larger rasters.
+%at regional scales. 
 
 % -------------------------- TABLE OF MODELS -----------------------------
 
 % -------------------------- MODEL FIGURE -----------------------------
+%HM I modified the caption - I think that you should remove the subcaptions,
+%HM editors hate it and most journal formatting does not support it.
+%HM make sure you do not refer to 3f as sediment flow - it is erosion rate (see the units)
 
 % model figure
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/models.pdf}
-\caption{Water and sediment flows
-for a subwatershed (a \& d) and drainage area (b, c, e, \& f) of Patterson Branch
+\caption{Water flow for a subwatershed (a \& d), 
+sediment flow and net erosion deposition (b, c)
+topographoc erosion factor and net erosion (e,f) for
+drainage area 1 of Patterson Branch
 modeled by SIMWE 
 for a 10~\unit{min} event with 50~\unit{mm~hr}$^{-1}$ (a-c)
 and by RUSLE3D with a R-factor of 310 (d-f)
@@ -508,7 +522,6 @@ where $\varepsilon_g$ is the diffusion coefficient [\unit{m}$^{2}$~\unit{s}$^{-1
 In general, the net erosion-deposition $d_s$ is obtained by solving the sediment continuity equation
 which for the steady state case relates $d_s$ to the divergence 
 of sediment flow rate per unit width ${\bf q_s}$ [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]:
-
 \begin{equation}
 \label{eq:steady_sed}
 \nabla\cdot {\bf q_s} = d_s 
@@ -517,12 +530,10 @@ of sediment flow rate per unit width ${\bf q_s}$ [\unit{kg~m}$^{-1}$~\unit{s}$^{
 REWORD To solve the above equation the following relationship between $d_s$ and ${\bf q_s}$ is used.
 The net erosion and deposition rates $d_s$ are proportional to the difference between
 the sediment transport capacity and the actual sediment flow rate \cite{fostermeyer72}:
-
 \begin{equation}
 \label{eq:sigma}
 d_s =\sigma \bigl[ T_c - q_s\bigr]
 \end{equation}
-
 \noindent
 where 
 $T_c$ [$\unit kg~m^{-1}~s{-1}$] is the sediment transport capacity,
@@ -531,7 +542,6 @@ $\sigma$ [m$^{-1}$] is the first order reaction term
  dependent on soil and cover properties.
 The expression for $\sigma = D_c / T_c$
 is obtained from the following relationship \cite{fostermeyer72}:
-
 \begin{equation}
 \label{eq:foster_law}
 d_s/D_c + q_s/T_c = 1
@@ -547,7 +557,6 @@ The qualitative arguments, experimental observations and values for
 
 %HM show the math for the cases below or is it obvious?
 For $\sigma \to 0$, the net erosion is equal to the detachment capacity
-
 \begin{equation}
 \label{eq:detachment_limited}
  d_s = D_c
@@ -563,7 +572,6 @@ For very large $\sigma \to \infty$ the sediment flow is at sediment transport ca
 leading to a transport capacity regime of erosion-deposition with deposition reaching its maximum
 extent for the given water flow and the net erosion-deposition is computed as a divergence of
 transport capacity multiplied by a unit vector ${\bf s_0}$ in the direction of flow:
-
 \begin{equation}
 \label{eq:transport_limited}
  d_s = \nabla\cdot (T_c . {\bf s_0})
@@ -588,7 +596,7 @@ USPED model for the transport capacity limited regime or RUSLE3D model for the d
 % -------------------------- EROSION-DEPOSITION -----------------------------
 \subsection{Simulation of Water Erosion (SIMWE)} \label{simwe}
 
-THIS ENTIRE SECTION WILL NEED SEVERAL INTERATIONS TO GET IT RIGHT
+%THIS ENTIRE SECTION WILL NEED SEVERAL INTERATIONS TO GET IT RIGHT
 
 % simwe intro
 SIMWE is a physics-based simulation of shallow overland water and sediment flow
@@ -601,10 +609,10 @@ and r.sim.sediment.
 % overview
 In the SIMWE mode for each landscape evolution time step
 r.sim.terrain
-computes the first order partial derivatives of elevation 
+computes the first order partial derivatives of elevation surface
 $\partial z / \partial x$ and $\partial z / \partial y$ 
-using the GRASS GIS module r.slope.aspect,
-simulates shallow water flow depth, sediment flow, and net erosion-deposition rate 
+using the GRASS GIS module r.slope.aspect (see the equations in \citep{hofierka2009}),
+simulates shallow water flow depth, sediment flow, and net erosion-deposition rate, 
 and then evolves the topography based on the erosion-deposition rate
 and gravitational diffusion. 
 %
@@ -612,7 +620,7 @@ The model simulates dynamic flow regimes
 when the landscape evolution time step is less than the travel time 
 for a drop of water or a particle of sediment to cross the landscape,
 e.g. the time step is less than the time to concentration.
-With longer lanscape evolution time steps the model simulates a steady state regime. 
+With longer landscape evolution time steps the model simulates a steady state regime. 
 
 % <------------------------------------------- EDITS HERE
 % "Often, authors presenting a set of governing equations 
@@ -643,12 +651,12 @@ With longer lanscape evolution time steps the model simulates a steady state reg
 % Shallow water flow
 The SIMWE model simulates shallow overland water flow
 controlled by spatially variable topographic, soil, landcover, 
-and rainfall parameters
-by solving the continuity equation 
-for steady state water flow using a path sampling method
+and rainfall parameters by solving the water flow continuity equation 
+%for steady state water flow 
+using Green's function Monte Carlo path sampling method 
 (Fig.~\ref{fig:models}a). 
 In general, shallow water flow ${\bf q}$ is approximated by
-the bivariate form of the St.~Venant equation (e.g., \citep{haan1994}:
+the bivariate form of the St.~Venant equation (e.g., \citep{Julien1995}):
 % shallow water flow eq.
 \begin{equation}
 \label{eq:water}
@@ -668,15 +676,12 @@ where: \\
 \hspace*{0.5em} ${\bf q}$ is the vector of water flow per unit width [$\unit{m}^2~\unit{s}^{-1}$]. \\
 }
 
-The approximation of a dynamical solution for shallow water flow
-can be obtained by Green's function Monte Carlo path sampling method.
-The method solved the steady-state solution by accumulation of the evolving source
+The path sampling method solves the continuity equation by accumulation of the evolving source
 over the given time period and this accumulation process can be interpreted as
 an approximation of a dynamical solution,
 with diffusive wave effects incorporated by adding a diffusion term proprtional to
 $ \nabla^2 [h^{5/3}]$
-into the solution of the continuity equation for steady state water flow:
-
+into the solution:
 \begin{equation}
 \label{eq:difwater}
 -{\varepsilon_w\over 2 }\nabla^2 ~ h^{5/3}
@@ -696,7 +701,6 @@ The water depth at time $t$ during the simulated rainfall event
 The initial number of particles per grid cell is proportinal to rainfall excess rate $i_e$ (source)
 and the particles are then routed across the landscape by finding a new position of the walker at time $t + \Delta t$ by:
 DO WE NEED v0 here? remove 0 if not needed.
-
 \begin{equation}
 {\bf r}_m^{new}={\bf r}_m + \tau {\bf v}_0 + {\bf g}
 \end{equation}
@@ -712,7 +716,7 @@ where: \\
 and magnitude computed by Manning or Chezy equation\\ 
 }
 %HM should we say here that it is a kinematic wave with diffusion
-
+%HM add here the diagram of dynamic water flow from Lubos here?
 See \citep{Mitasova2005} for more details about the mathematical background of the method.
 
 % ------------------------------------------------------------------------------
@@ -740,7 +744,7 @@ where: \\
 \hspace*{0.5em} $\rho_s$ is sediment mass density [$\unit{kg~m^{-3}}$]\\
 \hspace*{0.5em} $h$ is water flow depth  [\unit{m}]\\
 \hspace*{0.5em} ${\bf q_s}$ is the sediment flow rate per unit width (unit sediment load) vector [$\unit{kg~m^{-1}~s{-1}}$]\\
-\hspace*{0.5em} $d_s$ is the net erosion or deposition rate [$\unit{kg~m^{-2}~s^{-1}}$] is the net erosion or deposition rate.
+\hspace*{0.5em} $d_s$ is the net erosion or deposition rate [$\unit{kg~m^{-2}~s^{-1}}$].
 }
 
 %DO WE NEED THIS HERE?
@@ -758,31 +762,28 @@ where: \\
 %\hspace*{0.5em} $\rho_s$ is sediment mass density in the water column [\unit{kg~m}$^{-3}$].\\
 %}
 
-Similarly as for the shallow water flow SIMWE module solves the steady state sediment flow 
-equation using Greens function Monte Carlo path sampling
+Similarly as for the shallow water flow, SIMWE module solves the sediment flow 
+equation using Green's function Monte Carlo path sampling method
 assuming that the change in water flow
 and sediment concentrations over the modeled time interval at a given location is close to zero.
-The steady state sediment flow equation (\ref{eq:ssediment}) 
-which relates the net erosion or deposition
-rate $d_s$ to the divergence of sediment flow rate per unit width ${\bf q_s}$
-
-\begin{equation}
-\label{eq:steady_sed}
-\nabla\cdot {\bf q_s} = d_s 
-\end{equation}
-
+The sediment flow equation (\ref{eq:ssediment}) 
+%which relates the net erosion or deposition
+%rate $d_s$ to the divergence of sediment flow rate per unit width ${\bf q_s}$
+%
+%\begin{equation}
+%\label{eq:steady_sed}
+%\nabla\cdot {\bf q_s} = d_s 
+%\end{equation}
 is rewritten to include a small diffusion term proportional to the 
 mass of water-carried sediment per unit area $\nabla^2 \varrho$:
-
 \begin{equation}
 \label{eq:difsedim}
 -{\varepsilon_s \over 2}\nabla^2 \varrho
 + \nabla\cdot [\varrho {\bf v}]
  + \varrho \sigma |{\bf v}|
-= \sigma({\bf r}) T({\bf r}) = write as SOURCE
+= \sigma({\bf r}) T({\bf r}) = SOURCE (Dc?)
 %\sigma({\bf r}) T({\bf r})=Dc/T * T=Dc
 \end{equation}
-
 where  $\varepsilon_s$ [m$^2$/s] is the diffusion constant and
 $\varrho = \rho_s~c~h$ [kg/m$^2$] is
 the mass of water-carried sediment per unit area, $c$ is the sediment concentration [$\unit{particle~m^{-3}}$].
@@ -790,21 +791,18 @@ the mass of water-carried sediment per unit area, $c$ is the sediment concentrat
 % describes local diffusion, the second term is a drift driven by the water flow
 % while the third term represents a velocity dependent 'potential' acting on $\varrho$ EXPLAIN THIS TERM. 
 The equation is solved for $\varrho$ which is represented by particle density.
-The initial number of particles per grid cell is proportinal to soil detachment rate $D_c$
+The initial number of particles per grid cell is proportinal to the soil detachment rate $D_c$
 (source) and the particles are then routed across the landscape by finding a new position 
 of the walker at time $t + \Delta t$ by:
-
 \begin{equation}
 {\bf r}_m^{new}={\bf r}_m + \tau {\bf v}_0 + {\bf g}
 \end{equation}
-
  while the updated weight is
-
 \begin{equation}
 w_m^{new}=w_m \exp[-\tau(u({\bf r}_m^{new})+u({\bf r}_m))/2]
 \end{equation}
 
-We compute $\varrho$ from the weighted particle densities, then $q_s$ from $\varrho$ 
+We then compute $\varrho$ from the weighted particle densities, then $q_s$ from $\varrho$ 
 and then $d_s$ using equation \ref{eq:steady_sed}.
 
 ADD FOSTER's LAW AND Dc, Tc equations here
@@ -816,7 +814,7 @@ ADD FOSTER's LAW AND Dc, Tc equations here
 
 % ------------------------------------------------------------------------------
 
-\subsubsection{Erosion regime}
+%\subsubsection{Erosion regime}
 % <---------------------------------------------------EDITING HERE
 % REGIMES
 
@@ -828,30 +826,33 @@ ADD FOSTER's LAW AND Dc, Tc equations here
 % Erosion regime
 This model can simulate broad range of erosion regimes at each time step
 based on the rainfall intensity ($i_r$)
-and the balance of the sediment detachment capacity ($D_c$)
-and the sediment transport capacity ($T_c$)
+and the balance of the sediment detachment capacity ($D_c$),
+the sediment transport capacity ($T_c$) and the actual sediment flow rate,
 represented by the first order reaction term $\sigma$,
 which depends on soil and landcover properties.
+
 The detachment capacity is the maximum potential
 detachment rate by overland flow, while
 the sediment transport capacity
 is the maximum potential sediment flow rate
 \citep{Mitasova2001}.
-When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
-or $\sigma$ is low, for example, for compacted clay soil with low detachment capacity but 
-high transport capacity ( $\sigma \leq 0.01 \unit{m}^{-1}$),
-then the regime is detachment capacity limited.
-%
-When rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $)
-and $\sigma$ is high, for example, for sandy soils with high detachment capacity but
-low transport capacity  ($\sigma \geq 100 \unit{m}^{-1}$),
-then the regime is transport capacity limited.
-%
-When rainfall intensity is not very high
-($i_r<60 \unit{mm~hr}^{-1}$)
-and $\sigma$ is neither high nor low
-($ 0.01 \unit{m}^{-1}< \sigma < 100 \unit{m}^{-1}$),
-then there is a variable erosion-deposition regime. \\
+
+
+%When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
+%or $\sigma$ is low, for example, for compacted clay soil with low detachment capacity but 
+%high transport capacity ( $\sigma \leq 0.01 \unit{m}^{-1}$),
+%then the regime is detachment capacity limited.
+%%
+%When rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $)
+%and $\sigma$ is high, for example, for sandy soils with high detachment capacity but
+%low transport capacity  ($\sigma \geq 100 \unit{m}^{-1}$),
+%then the regime is transport capacity limited.
+%%
+%When rainfall intensity is not very high
+%($i_r<60 \unit{mm~hr}^{-1}$)
+%and $\sigma$ is neither high nor low
+%($ 0.01 \unit{m}^{-1}< \sigma < 100 \unit{m}^{-1}$),
+%then there is a variable erosion-deposition regime. \\
 % erosion regime eq.
 \begin{equation}
 \label{eq:regime}
@@ -1064,7 +1065,7 @@ for the settling of sediment particles due to gravitational diffusion.
 USPED estimates net erosion-deposition as the divergence of sediment flow
 in transport capacity limited soil erosion regimes.
 At transport capacity 
-shallow flows of water are carrying as much sediment possible 
+shallow flows of water are carrying as much sediment as possible 
 -- more sediment is being detached 
 than can be transported.
 As a transport capacity limited model
