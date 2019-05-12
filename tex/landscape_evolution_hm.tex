@@ -584,13 +584,20 @@ low transport capacity  ($\sigma \geq 100 \unit{m}^{-1}$).
 For $0 < \sigma < \infty$ the spatial pattern of net erosion-deposition is variable and depends on the 
 relationship between the land cover, soil and topographic properties represented in the governing equations 
 (continuity and Foster's conserved quantity law).
-
-$D_c$ and $T_c$ is estimated in SIMWE using shear stress and stream power respectively,
-while for the lmiting cases, it is based on USLE parameters.
+The sediment-transport capacity, $T_c $, and the detachment capacity, $D_c $,
+represent the maximum potential sediment flow rate and the maximum potential
+detachment rate. They are estimated using water flow shear stress and stream power
+which are usually expressed as power functions of water-flow properties and slope.    
+For a given rainfall rate and surface roughness, these two variables can be derived from a DEM
+using spatial analysis functions to compute the slope, and flow-routing
+tools to compute the upslope contributing area as an input for estimating unit water flow and water depth.
 
 The simulation modes include the process-based SIMWE model for
-steady state and dynamic shallow overland flow and variable erosion-deposition regime,
-USPED model for the transport capacity limited regime or RUSLE3D model for the detachment capacity limited case. 
+steady state and dynamic shallow overland flow and variable erosion-deposition regime with $d_s$ computed 
+by solving the shallow water flow and sediment transport continuity equations,
+USPED model for the transport capacity limited regime with $d_s$ computed by equation \ref{eq:transport_limited}
+ or RUSLE3D model for the detachment capacity limited case with $d_s$ computed by equation \ref{eq:detachment_limited}. 
+The following section explain the computation of $d_s$ for these three modes in more detail.
 %In the detachment capacity limited regime, there is no deposition and $d_s$ represents soil erosion rate (soil loss).
 
 % -------------------------- EROSION-DEPOSITION -----------------------------
@@ -717,7 +724,8 @@ and magnitude computed by Manning or Chezy equation\\
 }
 %HM should we say here that it is a kinematic wave with diffusion
 %HM add here the diagram of dynamic water flow from Lubos here?
-See \citep{Mitasova2005} for more details about the mathematical background of the method.
+The mathematical background of the method is presented in \citep{Mitas1998,Mitasova2005}, including the incoporation
+of approximate momentum through increased diffusion rate in the prevailing direction of flow.
 
 % ------------------------------------------------------------------------------
 
@@ -775,7 +783,7 @@ The sediment flow equation (\ref{eq:ssediment})
 %\nabla\cdot {\bf q_s} = d_s 
 %\end{equation}
 is rewritten to include a small diffusion term proportional to the 
-mass of water-carried sediment per unit area $\nabla^2 \varrho$:
+mass of water-carried sediment per unit area $\nabla^2 \varrho$ REWRITE WITH qs:
 \begin{equation}
 \label{eq:difsedim}
 -{\varepsilon_s \over 2}\nabla^2 \varrho
@@ -786,7 +794,7 @@ mass of water-carried sediment per unit area $\nabla^2 \varrho$:
 \end{equation}
 where  $\varepsilon_s$ [m$^2$/s] is the diffusion constant and
 $\varrho = \rho_s~c~h$ [kg/m$^2$] is
-the mass of water-carried sediment per unit area, $c$ is the sediment concentration [$\unit{particle~m^{-3}}$].
+the mass of sediment transported by water per unit area, $c$ is the sediment concentration [$\unit{particle~m^{-3}}$].
 % On the left hand side of the equation (\ref{eq:difsedim}), the first term
 % describes local diffusion, the second term is a drift driven by the water flow
 % while the third term represents a velocity dependent 'potential' acting on $\varrho$ EXPLAIN THIS TERM. 
@@ -802,18 +810,47 @@ of the walker at time $t + \Delta t$ by:
 w_m^{new}=w_m \exp[-\tau(u({\bf r}_m^{new})+u({\bf r}_m))/2]
 \end{equation}
 
-We then compute $\varrho$ from the weighted particle densities, then $q_s$ from $\varrho$ 
-and then $d_s$ using equation \ref{eq:steady_sed}.
+The sediment flow is then computed as weighted particle densities 
+multiplied by unit vector in the direction of flow???
+${\bf q_s} = \varrho$ and then net eroion-deposition $d_s$ 
+is computed as divergence of sediment flow using equation \ref{eq:steady_sed}.
 
-ADD FOSTER's LAW AND Dc, Tc equations here
+SIMWE estimates the detachment capacity sediment-transport capacity, $D_c $, and 
+the sediment-transport caacity $T_c $, 
+using shear stress and stream power \citep{Mitasova2001}
+expressed as power functions of water depth derived by r.sim.water and slope. 
+
+Specifically,  the detachment capacity:
+\begin{equation}
+\label{eq:detach_cap}
+D_c =K_d  \bigl(\tau - \tau_0 \bigr)^b,
+\end{equation}
+\smallskip
+\noindent
+where
+$K_d  [s \; m^{-1}]$ is the effective erodibility (detachment-capacity coefficient),
+%($[s \; m^{-1}]$ for $p=1$),
+$\tau=\rho_w\, g h  S  [Pa=kg \; m^{-2}]$ is the shear stress,
+$\tau_0  [Pa]$ is the critical shear stress,
+and $a$ and $b$ are empirical exponents.
+The shear stress, $\tau $, is a function of water
+depth $h$ estimated by r.sim.water and surface slope angle, $\beta [deg] $.
+
+Sediment-transport capacity is computed as:
+\smallskip
+\begin{equation}
+\label{eq:tc_streampower}
+T_c =K_s \omega =
+K_s n ^{-1} g_w h^{m}  S^{n}, 
+\end{equation}
+\smallskip
+\noindent
+$K_s [s]$ is the effective sediment-transport capacity coefficient, and water depth is computed by r.sim.water.
+%($[s]$ for $p=1$).
 
 % ------------------------------------------------------------------------------
-
 %HM merged into the previous 
 %\subsubsection{Erosion-deposition}
-
-% ------------------------------------------------------------------------------
-
 %\subsubsection{Erosion regime}
 % <---------------------------------------------------EDITING HERE
 % REGIMES
@@ -830,13 +867,6 @@ and the balance of the sediment detachment capacity ($D_c$),
 the sediment transport capacity ($T_c$) and the actual sediment flow rate,
 represented by the first order reaction term $\sigma$,
 which depends on soil and landcover properties.
-
-The detachment capacity is the maximum potential
-detachment rate by overland flow, while
-the sediment transport capacity
-is the maximum potential sediment flow rate
-\citep{Mitasova2001}.
-
 
 %When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
 %or $\sigma$ is low, for example, for compacted clay soil with low detachment capacity but 
@@ -907,14 +937,13 @@ and the angle of the slope.
 
 In this spatially and temporally distributed model 
 RUSLE3D is modified by the use of a 
-event-based r-factor derived from the rainfall intensity 
+event-based R-factor derived from the rainfall intensity 
 at each time step.
-For each time step
-this model computes the parameters for RUSLE3D -- 
+For each time step this model computes the parameters for RUSLE3D -- 
 an event-based erosivity factor,
 the slope of the topography, the flow accumulation, and
 the 3D topographic factor -- and then
-solves the RUSLE3D equation for soil loss rate. 
+solves the RUSLE3D equation for soil loss rate (net soil erosion). 
 The soil loss rate is used to simulate landscape evolution 
 in a detachment capacity limited soil erosion regime.
 
@@ -926,6 +955,8 @@ in a detachment capacity limited soil erosion regime.
 
 \subsubsection{Event-based erosivity factor}
 
+%HM add reference
+%HM Citation: Yin, S., M.A. Nearing, P. Borrelli, and X. Xue. 2017. Rainfall erosivity: An overview of methodologies and applications. Vadose Zone J. 16(12).  doi:10.2136/vzj2017.06.0131 - suggests e =0.29[1-0.72exp(-0.082i]
 The erosivity factor $R$ 
 in USLE and RUSLE 
 is the combination of the total energy 
@@ -939,12 +970,17 @@ and its maximum 30 \unit{min} intensity $I_{30}$
 \citep{Brown1987,Renard1997}.
 In this model, however, the erosivity factor
 is derived at each time step as a function of
-kinetic energy, rainfall volume, rainfall intensity, and time.
+kinetic energy, rainfall depth, rainfall intensity, and time.
 First rain energy is derived from rainfall intensity \citep{Brown1987}:
 %
 \begin{equation}
 \label{eq:rain_energy}
 {e_r = 0.29 ~ (1.-0.72 ~ exp(-0.05 ~ i_r))}
+\end{equation}
+%HM
+\begin{equation}
+\label{eq:rain_energy}
+{e_r \over e_0} = 1.- a ~ exp(-b ~ i_r)
 \end{equation}
 %
 {\small
@@ -953,12 +989,15 @@ where: \\
 \noindent
 \hspace*{0.5em} $e_r$is unit rain energy [\unit{MJ~ha}$^{-1}$~\unit{mm}${^-1}$]\\
 \hspace*{0.5em} $i_r$ is rainfall intensity [\unit{mm~h}$^{-1}$].\\
+\hspace*{0.5em} $a=0.72r$ is coeficient\\
+\hspace*{0.5em} $b=-0.05$ is exponent WRITE AS $i_0$.
 }
 
+%HM I think we have the units here right - show it in the answer
 \noindent
 Then the event-based erosivity index $R_e$ 
 is calculated as the product of 
-unit rain energy, rainfall volume, rainfall intensity, and time: 
+unit rain energy, rainfall depth, rainfall intensity, and time: 
 \begin{equation}
 \label{eq:erosivity_index}
 {R_e = e_r ~ v_r ~ i_r ~ t_r}
@@ -968,7 +1007,7 @@ unit rain energy, rainfall volume, rainfall intensity, and time:
 \noindent
 where: \\
 \hspace*{0.5em} $R_e$ is the event-based erosivity index [\unit{MJ~mm~ha}$^{-1}$~\unit{hr}$^{-1}$]\\
-\hspace*{0.5em} $v_r$ is the rainfall volume [\unit{mm}] derived from ${v_r = i_r~t_r}$\\
+\hspace*{0.5em} $v_r$ is the rainfall depth [\unit{mm}] derived from ${v_r = i_r~t_r}$\\
 \hspace*{0.5em} $t_r$ is the time interval [\unit{s}].
 }
 
@@ -991,7 +1030,7 @@ navigate nested depressions and other obstacles.
 
 \subsubsection{3D topographic factor}
 %
-The 3D topographic factor $LS_{3D}(x,y)$
+The 3D topographic factor $LS_{3D}$
 is calculated as a function of flow accumulation,
 representing the upslope contributing area
 and the slope 
@@ -1007,14 +1046,14 @@ and high values representing dominant rill flow.
 %
 \begin{equation}
 \label{eq:ls_factor}
-{LS_{3D} = (m+1.0) ~ (a(x,y) ~ a_0^{-1})^{m} ~ (sin(\beta) ~ \beta_0^{-1})^{n}}
+LS_{3D} = (m+1) ~ \left({a \over a_0}\right)^m ~ \left({sin(\beta) \over \beta_0}\right)^n
 \end{equation}
 %
 {\small
 \noindent
 where: \\
 \noindent
-\hspace*{0.5em} $LS_{3D}$ is the dimensionless topographic (length-slope) factor\\
+\hspace*{0.5em} $LS_{3D}$ is the dimensionless topographic factor\\
 \hspace*{0.5em} $a$ is upslope contributing area per unit width [\unit{m}]\\
 \hspace*{0.5em} $a_0$ is the length of the standard USLE plot [22.1 \unit{m}]\\
 \hspace*{0.5em} $\beta$ is the angle of the slope [$\degree$]\\
@@ -1057,7 +1096,7 @@ is derived from
 equation \ref{eq:evolution}
 for landscape evolution in an detachment limited soil erosion regime
 and then equation \ref{eq:grav_diffusion}
-for the settling of sediment particles due to gravitational diffusion.
+for gravitational diffusion.
 
 % -------------------------------- USPED --------------------------------
 
@@ -1089,20 +1128,20 @@ and the divergence of the sediment flow.
 % Topographic sediment transport factor
 The 3D topographic factor (Eq.~\ref{eq:ls_factor}) 
 for RUSLE3D is adapted to represent 
-the topographic sediment transport factor ($LST$) --
+the topographic sediment transport factor ($LS_T$) --
 the topographic component 
 of overland flow at sediment transport capacity:
 %
 \begin{equation}
 \label{eq:lst_factor}
-{LST = a^{m} ~ (\sin \beta)^{n}}
+{LS_T = a^{m} ~ (\sin \beta)^{n}}
 \end{equation}
 %
 {\small
 \noindent
 where: \\
 \noindent
-\hspace*{0.5em} $LST$ is the topographic sediment transport factor\\
+\hspace*{0.5em} $LS_T$ is the topographic sediment transport factor\\
 \hspace*{0.5em} $a$ is the upslope contributing area per unit width [m]\\
 \hspace*{0.5em} $\beta$ is the angle of the slope [$\degree$]\\
 \hspace*{0.5em} $m$ is an empirical coefficient\\
@@ -1118,7 +1157,7 @@ the landcover factor, and the prevention measures factor:
 %
 \begin{equation}
 \label{eq:usped}
-{T = R_e ~ K ~ C ~ P ~ LST}
+{T = R_e ~ K ~ C ~ P ~ LS_T}
 \end{equation}
 {\small
 \noindent
@@ -1153,7 +1192,7 @@ where: \\
 With USPED the simulated change in elevation $\Delta z$
 is derived from equation \ref{eq:evolution} for landscape evolution
 and then equation \ref{eq:grav_diffusion}
-for the settling of sediment particles due to gravitational diffusion.
+for the gravitational diffusion.
 
 % -------------------------------- CASE STUDIES --------------------------------
 
