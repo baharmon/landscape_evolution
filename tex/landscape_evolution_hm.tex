@@ -286,10 +286,11 @@ a time-series of airborne lidar surveys.
 
 % --------- CONCEPT MODEL ---------
 
+%HM sediment flow needs to be replaced by detachment rate for RUSLE
 \begin{figure}%[H]
 \center
 \includegraphics[width=\textwidth,keepaspectratio]{figures/concept.pdf}
-\caption{Conceptual diagram for r.sim.terrain.}
+\caption{Conceptual diagram for r.sim.terrain. REPLACE SED FLOW BY DETACH IN RUSLE}
 \label{fig:evolution}
 \end{figure}
 
@@ -411,7 +412,9 @@ g.extension r.sim.terrain
 %HM I don't see the metric units as limitation - that is the standard
 %HM the real limitation is the lack of fluvial erosion which limits the scale,
 %HM lack of full dynamics - we do not have coupled dynamic water and sediment transport and we neglect friction slope
-%HM I agree with computational demands 
+%HM we assume spatially variable but steady rainfal during the modeled landscape evolution time interval
+%HM I agree with computational demandsa, although a script can be written to distribute the runs with different seeds
+%HM across many processors (we ran it with 50 million particles on computers in 90s). 
 Limitations of this landscape evolution model include
 shallow overland flow, 
 units, computation time, resolution and spatial scale.
@@ -454,18 +457,21 @@ and can easily be run for much larger rasters.
 %HM I modified the caption - I think that you should remove the subcaptions,
 %HM editors hate it and most journal formatting does not support it.
 %HM make sure you do not refer to 3f as sediment flow - it is erosion rate (see the units)
+%HM check the R unit!!!
 
 % model figure
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/models.pdf}
-\caption{Water flow for a subwatershed (a \& d), 
+\caption{Water flow for a subwatershed (a, d), 
 sediment flow and net erosion deposition (b, c)
-topographoc erosion factor and net erosion (e,f) for
+topographic erosion factor and net erosion (e,f) for
 drainage area 1 of Patterson Branch
 modeled by SIMWE 
 for a 10~\unit{min} event with 50~\unit{mm~hr}$^{-1}$ (a-c)
-and by RUSLE3D with a R-factor of 310 (d-f)
+and by RUSLE3D with a R-factor of 310 UNITS??? 
+%~$\unit{MJ~mm~ha^{-1}~hr^{-1}}$ 
+(d-f)
 }
 \label{fig:models}
 \end{figure}
@@ -474,8 +480,8 @@ and by RUSLE3D with a R-factor of 310 (d-f)
 
 \subsection{Landscape evolution}
 
-Landscape evolution in r.sim.water 
-is driven by erosion-deposition from overland flow and erosion by gravitational diffusion.
+Landscape evolution in r.sim.terrain 
+is driven by soil erosion or deposition by overland flow combined with erosion by gravitational diffusion.
 
 \subsubsection{Change in elevation} 
 
@@ -490,11 +496,11 @@ and the sediment mass density $\rho_s$ [\unit{kg~m}$^{-3}$]
 \label{eq:evolution} 
 {\partial z \over \partial t } = d_s ~ \rho_s^{-1} 
 \end{equation}
-The net erosion-deposition rate $d_s$ can be estimated at different levels of complexity based 
+The net erosion-deposition rate $d_s$ is estimated at different levels of complexity based 
 on the user selected simulation mode guided by the type of application.
 
 \noindent
-Gravitational diffusion is then applied to the evolved topography
+Gravitational diffusion is applied to the evolved topography during each time step
 to simulate smoothing effects of localized transport of soil that
 occurs during and between rainfall events.
 %the settling of sediment particles.
@@ -507,7 +513,7 @@ the diffusion coefficient, and Laplacian of the elevation
 % change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
 \begin{equation}
 \label{eq:grav_diffusion} 
-{\partial z \over \partial t }= \rho_s^{-1} ~ \varepsilon_g ~ \nabla^2 z 
+{\partial z \over \partial t } = \rho_s^{-1} ~ \varepsilon_g ~ \nabla^2 z 
 %HM this should be \nabla^2 z, \nabla is an operator so there should be a variable upon which it is applied
 %HM see eq 4.41 in Thaxton, also from Willgoose, the second term
 \end{equation}
@@ -517,18 +523,39 @@ where $\varepsilon_g$ is the diffusion coefficient [\unit{m}$^{2}$~\unit{s}$^{-1
 %\\ \hspace*{0.5em} $\nabla$ is the topographic divergence [\unit{m}$^{-1}$].\\
 %}
 
+THIS MAY NOT bE NEEDED: In discrete ??? implementation the elevation surface evolves as
+HOW IS THE TIME handled here?
+\begin{equation}
+\label{eq:evolution_disc1} 
+z_{t+\Delta t}' = z_t + \Delta z_s  
+\end{equation}
+\begin{equation}
+\label{eq:evolution_disc2} 
+z_{t+\Delta t} = z_{t+\Delta t}' + \Delta z_g 
+\end{equation}
+where $z_{t+\Delta t}'$ is elevation after the change $\Delta z_s$ due to net erosion or deposition (\ref{eq:evolution})
+was applied, $z_{t+\Delta t}$ is elevation after the eroded elevation surface
+was smoothed by diffusion by adding the diffusion term $\Delta z_g$, (\ref{eq:grav_diffusion}).  
+
 \subsubsection{Erosion-deposition regimes}
 
 In general, the net erosion-deposition $d_s$ is obtained by solving the sediment continuity equation
-which for the steady state case relates $d_s$ to the divergence 
+which for the simpler, steady state case relates $d_s$ to the divergence 
 of sediment flow rate per unit width ${\bf q_s}$ [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]:
 \begin{equation}
 \label{eq:steady_sed}
 \nabla\cdot {\bf q_s} = d_s 
 \end{equation}
-
-REWORD To solve the above equation the following relationship between $d_s$ and ${\bf q_s}$ is used.
-The net erosion and deposition rates $d_s$ are proportional to the difference between
+Assuming that the ratio of the net erosion-deposition rate $d_s$ to the detachment
+ capacity $D_c$ in $kg/(m^2s)$ %(entrainment)
+ plus the ratio of the sediment flow rate $q_s = |{\bf q_s}|$ 
+to the sediment transport capacity $T_c$ [$\unit kg~m^{-1}~s{-1}$] is
+ a conserved quantity (unity) \cite{fostermeyer72}:
+\begin{equation}
+\label{eq:foster_law}
+d_s/D_c + q_s/T_c = 1
+\end{equation}
+the net erosion and deposition rates $d_s$ can be expressed as proportional to the difference between
 the sediment transport capacity and the actual sediment flow rate \cite{fostermeyer72}:
 \begin{equation}
 \label{eq:sigma}
@@ -540,22 +567,16 @@ $T_c$ [$\unit kg~m^{-1}~s{-1}$] is the sediment transport capacity,
 $q_s = |{\bf q_s}|$ is the magnitude of sediment flow and 
 $\sigma$ [m$^{-1}$] is the first order reaction term
  dependent on soil and cover properties.
-The expression for $\sigma = D_c / T_c$
-is obtained from the following relationship \cite{fostermeyer72}:
+The expression for the first order reaction term  is then
 \begin{equation}
-\label{eq:foster_law}
-d_s/D_c + q_s/T_c = 1
+\label{eq:sigma_Dc_Tc}
+\sigma = D_c / T_c
 \end{equation}
+The qualitative arguments, experimental observations and values for $\sigma$ are discussed, for example, by Foster and Meyer\cite{fostermeyer72}.
 
-\noindent
- which states that the ratio of the erosion rate to the detachment
- capacity $D_c$ in $kg/(m^2s)$ %(entrainment)
- plus the ratio of the sediment flow to the sediment transport capacity is
- a conserved quantity (unity).
-The qualitative arguments, experimental observations and values for
- $\sigma$   are discussed, for example, by Foster and Meyer\cite{fostermeyer72}.
-
-%HM show the math for the cases below or is it obvious?
+SHOW THE MATH
+Using the concept proposed by \cite{fostermeyer72} it is possible to identify two limiting erosion-deposition
+regimes.
 For $\sigma \to 0$, the net erosion is equal to the detachment capacity
 \begin{equation}
 \label{eq:detachment_limited}
@@ -565,12 +586,13 @@ For this case, transport capacity exceeds
 detachment capacity everywhere, erosion and sediment transport is limited by the detachment
 capacity and therefore no deposition occurs.
 %When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
-This case may occur during large storms, producing significant overland flow over compacted clay soil 
-with low detachment capacity but high transport capacity ( $\sigma \leq 0.01 \unit{m}^{-1}$).
+An example of this case is a strong storm producing large overland flow over compacted clay soil 
+leading to high transport capacity of flow to carry the light clay particles
+but low detachment capacity due to compacted soil ($\sigma \leq 0.01 \unit{m}^{-1}$).
 
 For very large $\sigma \to \infty$ the sediment flow is at sediment transport capacity $q_s = T_c$ 
-leading to a transport capacity regime of erosion-deposition with deposition reaching its maximum
-extent for the given water flow and the net erosion-deposition is computed as a divergence of
+leading to a transport capacity limited regime of erosion-deposition with deposition reaching its maximum
+extent for the given water flow. The net erosion-deposition is computed as a divergence of
 transport capacity multiplied by a unit vector ${\bf s_0}$ in the direction of flow:
 \begin{equation}
 \label{eq:transport_limited}
@@ -592,12 +614,16 @@ For a given rainfall rate and surface roughness, these two variables can be deri
 using spatial analysis functions to compute the slope, and flow-routing
 tools to compute the upslope contributing area as an input for estimating unit water flow and water depth.
 
-The simulation modes include the process-based SIMWE model for
+The relation between the parameters of the well known empirical equations for erosion modeling, such as RUSLE or USPED 
+and shear stress and stream power was presented by \citep{MooreBurch1984} and used to develop
+simple, GIS-based models for the limiting erosion-deposition cases \citep{Mitasova2001}.
+
+The simulation modes in r.sim.terrain include the process-based SIMWE model for
 steady state and dynamic shallow overland flow and variable erosion-deposition regime with $d_s$ computed 
 by solving the shallow water flow and sediment transport continuity equations,
 USPED model for the transport capacity limited regime with $d_s$ computed by equation \ref{eq:transport_limited}
  or RUSLE3D model for the detachment capacity limited case with $d_s$ computed by equation \ref{eq:detachment_limited}. 
-The following section explain the computation of $d_s$ for these three modes in more detail.
+The following sections explain the computation of $d_s$ for these three modes in more detail.
 %In the detachment capacity limited regime, there is no deposition and $d_s$ represents soil erosion rate (soil loss).
 
 % -------------------------- EROSION-DEPOSITION -----------------------------
@@ -789,7 +815,7 @@ mass of water-carried sediment per unit area $\nabla^2 \varrho$ REWRITE WITH qs:
 -{\varepsilon_s \over 2}\nabla^2 \varrho
 + \nabla\cdot [\varrho {\bf v}]
  + \varrho \sigma |{\bf v}|
-= \sigma({\bf r}) T({\bf r}) = SOURCE (Dc?)
+= \sigma~T_c = SOURCE (D_c?)
 %\sigma({\bf r}) T({\bf r})=Dc/T * T=Dc
 \end{equation}
 where  $\varepsilon_s$ [m$^2$/s] is the diffusion constant and
@@ -823,14 +849,15 @@ expressed as power functions of water depth derived by r.sim.water and slope.
 Specifically,  the detachment capacity:
 \begin{equation}
 \label{eq:detach_cap}
-D_c =K_d  \bigl(\tau - \tau_0 \bigr)^b,
+D_c =K_d  \bigl(\tau - \tau_0 \bigr)^b = K_d  \bigl(\rho_w\, g h  S - \tau_0 \bigr)^b 
 \end{equation}
 \smallskip
 \noindent
 where
 $K_d  [s \; m^{-1}]$ is the effective erodibility (detachment-capacity coefficient),
 %($[s \; m^{-1}]$ for $p=1$),
-$\tau=\rho_w\, g h  S  [Pa=kg \; m^{-2}]$ is the shear stress,
+%$\tau=\rho_w\, g h  S  [Pa=kg \; m^{-2}]$ is the shear stress,
+$\tau [Pa=kg \; m^{-2}]$ is the shear stress,
 $\tau_0  [Pa]$ is the critical shear stress,
 and $a$ and $b$ are empirical exponents.
 The shear stress, $\tau $, is a function of water
@@ -896,6 +923,8 @@ where: \\
 \hspace*{0.5em} $D_c$ is the sediment detachment capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
 \hspace*{0.5em} $T_c$ is the sediment transport capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
 }
+
+SUMMARIZE HOW IT IS COMPUTED HERE
 
 % ------------------------------------------------------------------------------
 
