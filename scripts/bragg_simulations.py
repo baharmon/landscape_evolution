@@ -80,7 +80,7 @@ def main():
     ss_rusle_params['rain_interval'] = 10
     ss_rusle_params['start'] = "2012-01-01 00:00:00"
     ss_rusle_params['grav_diffusion'] = 0.0
-    ss_rusle_params['fluxmax'] = 0.25
+    ss_rusle_params['erdepmax'] = 0.25
     ss_rusle_params['m'] = 0.4
     ss_rusle_params['n'] = 1.3
     ss_rusle_params['flags'] = 'f'
