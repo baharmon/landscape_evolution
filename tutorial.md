@@ -19,9 +19,6 @@
     1. [RULSE evolution model](#rusle-model)
     2. [USPED evolution model](#usped-model)
     3. [SIMWE evolution model](#simwe-model)
-      1. [Erosion-deposition regime](#erosion-deposition-regime)
-      2. [Detachment limited regime](#detachment-limited-regime)
-      3. [Transport limited regime](#transport-limited-regime)
     4. [Parallel processing](#parallel-processing)
     5. [Travel time](#travel-time)
 ---
@@ -725,12 +722,10 @@ at 3 minute interval at 1 meter resolution.
 
 ## SIMWE evolution model
 
-
-### Erosion-deposition regime
-Create a new mapset called `erdep` with the module
+Create a new mapset called `simwe` with the module
 [g.mapset](https://grass.osgeo.org/grass76/manuals/g.mapset.html).
 ```
-g.mapset -c mapset=erdep location=nc_spm_evolution
+g.mapset -c mapset=simwe location=nc_spm_evolution
 ```
 
 Set your region to the study area with 1 meter resolution
@@ -769,88 +764,7 @@ Net difference (m)for a steady state SIMWE simulation
 in a variable erosion-deposition regime
 of a 120 min event with a rainfall intensity of 50 mm/hr
 
-
 ---
-
-### Detachment limited regime
-Create a new mapset called `flux` with the module
-[g.mapset](https://grass.osgeo.org/grass76/manuals/g.mapset.html).
-```
-g.mapset -c mapset=flux location=nc_spm_evolution
-```
-
-Set your region to the study area with 1 meter resolution
-using the module
-[g.region](https://grass.osgeo.org/grass76/manuals/g.region.html).
-Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
-using the module
-[g.copy](https://grass.osgeo.org/grass76/manuals/g.copy.html).
-```
-g.region region=region res=1
-g.copy raster=elevation_2016@PERMANENT,elevation_2016
-```
-
-Run *r.sim.terrain* with the SIMWE model
-for a 120 min event with a rainfall intensity of 50 mm/hr.
-Use a detachment value lower than the transport value
-to trigger a detachment limited erosion regime.
-Optionally use the `-f` flag to fill depressions
-in order to reduce the effect of positive feedback loops.
-```
-r.sim.terrain -f  elevation=elevation_2016 runs=event mode=simwe_mode rain_intensity=50.0 rain_interval=120 rain_duration=120 walkers=1000000 manning=mannings runoff=runoff grav_diffusion=0.05 erdepmin=-0.25 erdepmax=0.25 detachment_value=0.0001 transport_value=0.01
-```
-
-<p align="center"><img src="images/ss_flux/net_difference.png"></p>
-Net difference (m)for a steady state, detachment limited  SIMWE simulation
-of a 120 min event with a rainfall intensity of 50 mm/hr
-
----
-
-### Transport limited regime
-Create a new mapset called `transport` with the module
-[g.mapset](https://grass.osgeo.org/grass76/manuals/g.mapset.html).
-```
-g.mapset -c mapset=transport location=nc_spm_evolution
-```
-
-Set your region to the study area with 1 meter resolution
-using the module
-[g.region](https://grass.osgeo.org/grass76/manuals/g.region.html).
-Copy `elevation_2016` from the `PERMANENT` mapset to the current mapset
-using the module
-[g.copy](https://grass.osgeo.org/grass76/manuals/g.copy.html).
-```
-g.region region=region res=1
-g.copy raster=elevation_2016@PERMANENT,elevation_2016
-```
-
-Run *r.sim.terrain* with the SIMWE model
-for a 120 min event with a rainfall intensity of 50 mm/hr.
-Use a transport value lower than the detachment value
-to trigger a transport limited erosion regime.
-Optionally use the `-f` flag to fill depressions
-in order to reduce the effect of positive feedback loops.
-```
-r.sim.terrain -f elevation=elevation_2016 runs=event mode=simwe_mode rain_intensity=50.0 rain_interval=120 rain_duration=120 walkers=1000000 manning=mannings runoff=runoff grav_diffusion=0.05 erdepmin=-0.25 erdepmax=0.25 detachment_value=0.01 transport_value=0.0001
-```
-
-<p align="center">
-  <img src="images/ss_transport_3d/legend_erosion_deposition.png" height="150">
-  <img src="images/ss_transport_3d/erosion_deposition.png" height="360">
-  <img src="images/ss_transport_3d/legend_difference.png" height="150">
-  <img src="images/ss_transport_3d/difference.png" height="360">
-</p>
-Erosion-deposition (kg*m/s^2)and net difference (m)
-for a steady state, transport limited SIMWE simulation
-of a 120 min event with a rainfall intensity of 50 mm/hr
-
-<p align="center">
-  <img src="images/sample_data/elevation_2016.png" height="360">
-  <img src="images/ss_transport/shaded_relief.png" height="360">
-</p>
-Elevation from 2016 airborne lidar survey
-and elevation after a steady state, transport limited SIMWE simulation
-of a 120 min event with a rainfall intensity of 50 mm/hr
 
 ## Parallel processing
 In GRASS GIS on Ubuntu turn on

@@ -835,13 +835,19 @@ class Evolution:
                 rain_intensity=self.rain_intensity),
             overwrite=True)
 
-        # multiply by rainfall interval in seconds (MJ mm ha^-1 hr^-1 s^-1)
+        # derive R factor (MJ mm ha^-1 hr^-1 yr^1)
+        """
+        R factor (MJ mm ha^-1 hr^-1 yr^1)
+        = EI (MJ mm ha^-1 hr^-1)
+        / (rainfall interval (min)
+        * (1 yr / 525600 min))
+        """
         gscript.run_command(
             'r.mapcalc',
             expression="{r_factor}"
             "={erosivity}"
             "/({rain_interval}"
-            "*60.)".format(
+            "/525600.)".format(
                 r_factor=r_factor,
                 erosivity=erosivity,
                 rain_interval=self.rain_interval),
@@ -1138,7 +1144,7 @@ class Evolution:
         (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
         difference) = self.parse_time()
 
-        # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
+        # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1 yr^-1)
         r_factor = self.event_based_r_factor()
 
         # compute slope and aspect
@@ -1233,17 +1239,19 @@ class Evolution:
                 sedflow=sedflow),
             overwrite=True)
 
-        # convert sediment flow from tons/ha to kg/ms
+        # convert sediment flow from tons/ha/yr to kg/m^2s
         gscript.run_command(
             'r.mapcalc',
             expression="{converted_sedflow}"
             "={sedflow}"
             "*{ton_to_kg}"
-            "/{ha_to_m2}".format(
+            "/{ha_to_m2}"
+            "/{yr_to_s}".format(
                 converted_sedflow=sediment_flux,
                 sedflow=sedflow,
                 ton_to_kg=1000.,
-                ha_to_m2=10000.),
+                ha_to_m2=10000.,
+                yr_to_s=31557600.),
             overwrite=True)
 
         # compute sediment flow rate in x direction (m^2/s)
@@ -1400,7 +1408,7 @@ class Evolution:
         (evolved_elevation, time, depth, sediment_flux, erosion_deposition,
         difference) = self.parse_time()
 
-        # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1)
+        # compute event-based erosivity (R) factor (MJ mm ha^-1 hr^-1 yr^-1)
         r_factor = self.event_based_r_factor()
 
         # compute slope
@@ -1480,15 +1488,19 @@ class Evolution:
                 c_factor=self.c_factor),
             overwrite=True)
 
-        # convert sediment flow from tons/ha to kg/ms
+        # convert sediment flow from tons/ha/yr to kg/m^2s
         gscript.run_command(
             'r.mapcalc',
             expression="{converted_sedflow}"
-            "={sedflow}*{ton_to_kg}/{ha_to_m2}".format(
+            "={sedflow}"
+            "*{ton_to_kg}"
+            "/{ha_to_m2}"
+            "/{yr_to_s}".format(
                 converted_sedflow=sedflux,
                 sedflow=sedflow,
                 ton_to_kg=1000.,
-                ha_to_m2=10000.),
+                ha_to_m2=10000.,
+                yr_to_s=31557600.),
             overwrite=True)
 
         # filter outliers
