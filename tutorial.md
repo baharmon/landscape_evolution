@@ -16,9 +16,9 @@
       4. [Sediment flow](#sediment-flow)
       5. [Water flow animation](#water-flow-animation)
 3. [**Landscape evolution**](#landscape-evolution)
-    1. [RULSE evolution model](#rusle-model)
-    2. [USPED evolution model](#usped-model)
-    3. [SIMWE evolution model](#simwe-model)
+    1. [RULSE evolution model](#rusle-evolution-model)
+    2. [USPED evolution model](#usped-evolution-model)
+    3. [SIMWE evolution model](#simwe-evolution-model)
     4. [Parallel processing](#parallel-processing)
     5. [Travel time](#travel-time)
 ---

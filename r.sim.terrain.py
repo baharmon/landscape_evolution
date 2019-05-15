@@ -303,16 +303,6 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #%end
 
 #%option
-#% key: fluxmax
-#% type: double
-#% description: Maximum values for sediment flux in kg/ms
-#% label: Maximum values for sediment flux
-#% answer: 0.5
-#% multiple: no
-#% guisection: Input
-#%end
-
-#%option
 #% key: start
 #% type: string
 #% description: Start time in year-month-day hour:minute:second format
@@ -474,7 +464,6 @@ def main():
     grav_diffusion = options['grav_diffusion']
     erdepmin = options['erdepmin']
     erdepmax = options['erdepmax']
-    fluxmax = options['fluxmax']
     k_factor = options['k_factor']
     c_factor = options['c_factor']
     k_factor_value = options['k_factor_value']
@@ -590,7 +579,6 @@ def main():
         grav_diffusion=grav_diffusion,
         erdepmin=erdepmin,
         erdepmax=erdepmax,
-        fluxmax=fluxmax,
         k_factor=k_factor,
         c_factor=c_factor,
         m=m,
@@ -612,7 +600,7 @@ class Evolution:
     def __init__(self, elevation, precipitation, start, rain_intensity,
         rain_interval, rain_duration, walkers, runoff, mannings, detachment, transport,
         shearstress, density, mass, grav_diffusion, erdepmin, erdepmax,
-        fluxmax, k_factor, c_factor, m, n, threads, fill_depressions):
+        k_factor, c_factor, m, n, threads, fill_depressions):
         self.elevation = elevation
         self.precipitation = precipitation
         self.start = start
@@ -630,7 +618,6 @@ class Evolution:
         self.grav_diffusion = grav_diffusion
         self.erdepmin = erdepmin
         self.erdepmax = erdepmax
-        self.fluxmax = fluxmax
         self.k_factor = k_factor
         self.c_factor = c_factor
         self.m = m
@@ -1507,10 +1494,10 @@ class Evolution:
         gscript.run_command(
             'r.mapcalc',
             expression="{sediment_flux}"
-            "=if({sedflux}>{fluxmax},{fluxmax},{sedflux})".format(
+            "=if({sedflux}>{erdepmax},{erdepmax},{sedflux})".format(
                 sediment_flux=sediment_flux,
                 sedflux=sedflux,
-                fluxmax=self.fluxmax),
+                erdepmax=self.erdepmax),
             overwrite=True)
         gscript.run_command(
             'r.colors',
@@ -1570,7 +1557,7 @@ class DynamicEvolution:
         flux_timeseries, flux_title, flux_description, difference_timeseries,
         difference_title, difference_description, start, walkers, runoff,
         mannings, detachment, transport, shearstress, density, mass,
-        grav_diffusion, erdepmin, erdepmax, fluxmax, k_factor, c_factor,
+        grav_diffusion, erdepmin, erdepmax, k_factor, c_factor,
         m, n, threads, fill_depressions):
         self.elevation = elevation
         self.mode = mode
@@ -1606,7 +1593,6 @@ class DynamicEvolution:
         self.grav_diffusion = grav_diffusion
         self.erdepmin = erdepmin
         self.erdepmax = erdepmax
-        self.fluxmax = fluxmax
         self.k_factor = k_factor
         self.c_factor = c_factor
         self.m = m
@@ -1698,7 +1684,6 @@ class DynamicEvolution:
             grav_diffusion=self.grav_diffusion,
             erdepmin=self.erdepmin,
             erdepmax=self.erdepmax,
-            fluxmax=self.fluxmax,
             k_factor=self.k_factor,
             c_factor=self.c_factor,
             m=self.m,
@@ -2011,7 +1996,6 @@ class DynamicEvolution:
             grav_diffusion=self.grav_diffusion,
             erdepmin=self.erdepmin,
             erdepmax=self.erdepmax,
-            fluxmax=self.fluxmax,
             k_factor=self.k_factor,
             c_factor=self.c_factor,
             m=self.m,
