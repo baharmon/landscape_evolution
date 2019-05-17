@@ -26,7 +26,6 @@
 \affil[2]{Center for Geospatial Analytics, North Carolina State University, Raleigh, North Carolina, USA}
 \affil[3]{Department of Marine, Earth, and Atmospheric Sciences, North Carolina State University, Raleigh, North Carolina, USA}
 
-%\runningtitle{\lowercase{r.sim.terrain 1.0}: a dynamic landscape evolution model}
 \runningtitle{\lowercase{r.sim.terrain 1.0}: a landscape evolution model with dynamic hydrology} 
 
 \runningauthor{Brendan Harmon}
@@ -106,9 +105,11 @@ have been developed that simulate elevational change over time
 % numerical models
 Numerical landscape evolution models
 such as the Channel-Hillslope Integrated Landscape Development (CHILD) model 
-\citep{Tucker2001} 
-and SIBERIA \citep{Willgoose2005}
-simulate steady state flows over long temporal scales. %<-----------------------------ADD LAPSUS
+\citep{Tucker2001},
+SIBERIA \citep{Willgoose2005},
+LAPSUS \citep{Schoorl2000,Schoorl2002},
+and the GRASS GIS add-on module r.landscape.evol \citep{Barton2010}
+simulate steady state flows over long temporal scales.
 % recent development
 \href{http://landlab.github.io/}{Landlab},
 a new Python library for numerically modeling Earth surface processes
@@ -121,8 +122,8 @@ While Geographic Information Systems (GIS)
 support efficient data management, 
 spatial and statistical modeling and analysis, 
 and visualization,
-there are few GIS-based soil erosion models or landscape evolution models
-(see Tables~\ref{table:erosion_models}-\ref{table:evolution_models}).
+there are few GIS-based soil erosion models (see Table~\ref{table:erosion_models})
+or landscape evolution models.
 % research questions
 Furthermore there are still major research questions 
 to address in the theoretical foundations of erosion modeling 
@@ -130,8 +131,7 @@ such as how erosional processes scale over time and space
 and how sediment detachment and transport interact \citep{Mitasova2013}. 
 % dynamic evolution
 While most numerical landscape evolution models 
-simulate peak flows at steady state
-(see Table~\ref{table:evolution_models}),
+simulate peak flows at steady state,
 short-term erosional processes like gully formation can be dynamic
 with significant morphological changes happening within minutes
 before flows reach steady state. 
@@ -438,8 +438,12 @@ USPED & watershed & continuous & raster & map algebra & \citep{Mitasova1996}\\
 \href{https://grass.osgeo.org/grass74/manuals/r.sim.sediment.html}{SIMWE} & watershed & event -- & raster & \href{https://grass.osgeo.org/grass74/manuals/r.sim.sediment.html}{GRASS modules} & \citep{Mitas1998}\\
 && continuous\\
 \href{http://geowepp.geog.buffalo.edu/}{GeoWEPP} & watershed & continuous & raster & \href{http://geowepp.geog.buffalo.edu/}{ArcGIS module} & \citep{Flanagan2013}\\
-\href{https://www.tucson.ars.ag.gov/agwa/}{AGWA}  & watershed & event -- & vector & \href{https://www.tucson.ars.ag.gov/agwa/}{ArcGIS module} & \citep{Guertin2015}\\
+\href{https://www.tucson.ars.ag.gov/agwa/}{AGWA} & watershed & event -- & vector & \href{https://www.tucson.ars.ag.gov/agwa/}{ArcGIS module} & \citep{Guertin2015}\\
 && continuous\\
+\href{https://blog.utwente.nl/lisem/}{openLISEM} & watershed & event & raster & \href{https://blog.utwente.nl/lisem/}{PCRaster script} & \citep{Roo1996}\\
+\href{https://github.com/landlab/}{Landlab} & watershed & event -- & raster + mesh & \href{https://github.com/landlab/}{Python library} & \citep{Hobley2017}\\
+&& continuous\\
+
 \bottomrule
 \\
 \end{tabu}
@@ -1254,26 +1258,15 @@ approximately 1~\unit{m} or more.
 We ran a sequence of r.sim.terrain simulations 
 with design storms
 for the Patterson Branch subwatershed study area
-to test and demonstrate the capabilities 
+to demonstrate the capabilities 
 of the RUSLE3D, USPED, and SIMWE models
 (Table~\ref{table:simulations}).
 %
-%Since the study area was dominated by
-%a variable erosion-deposition or transport limited
-%soil erosion regime during the 2012-2016 study period, 
-%we could not quantitatively assess 
-%the detachment capacity limited model
-%against the observed topographic evolution of the landscape.
-%
-The goal of simulations was to test
-what morphological processes and features 
-the different models could simulate. 
-%
-We analyzed the results of the simulations 
-by qualitatively comparing landforms 
-and the net difference in elevation
-and by quantitatively comparing 
-linear regressions of elevation change.
+To analyze the results of the simulations,
+we compared 
+net differences in elevation
+morphological features,
+and linear regressions of elevation change.
 
 % design storms
 While r.sim.terrain can use rainfall records,
@@ -1338,28 +1331,64 @@ while steady state simulation for SIMWE took
 84~\unit{min}~13~\unit{s} running on 6 threads
 (Table~\ref{table:simulations}).
 
-
-% --------- RESULTS ---------
 \subsection{Results}
 
+% --------- RESULT TABLES ---------
+
+% table of simulations
+\begin{table*}
+\small
+\caption{Landscape evolution simulations}
+\begin{tabu} to \textwidth {XXXXXllllX}
+\toprule
+Flow regime & Model & Intensity & Duration & Interval & m & n & $\rho_s$ & Threads & Runtime\\
+\midrule
+Dynamic & RUSLE3D & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 3~\unit{min} &  0.4 & 1.3 & & & 2~\unit{min}~36~\unit{s}\\
+Dynamic & USPED & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 3~\unit{min} &  1.5 & 1.2 & 1.6 & & 3~\unit{min}~14~\unit{s}\\
+Steady state & SIMWE & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 120~\unit{min} & & & 1.6 & 6 & 84~\unit{min}~13~\unit{s}\\
+\bottomrule
+\\
+\end{tabu}
+\label{table:simulations} 
+\end{table*}
+
+% linear regression table
+\begin{table*}
+\small
+\caption{Linear regression of elevation maps for drainage area}
+\begin{tabu} to \textwidth {lXXX}
+\toprule
+Elevation A & Elevation B &  Correlation coeff. (R) & Difference from 2012-2016 baseline \\
+\midrule
+2012 & 2016 & 0.999329 & 0\\
+2012 & simulated with RUSLE3D & 0.999848 & -0.000519\\
+2012 & simulated with USPED & 0.999514 & -0.000185\\
+2012 & simulated with SIMWE & 0.999333 & -0.000004\\
+\bottomrule
+\\
+\end{tabu}
+\label{table:linear_regression} 
+\end{table*}
+
+% --------------------------------------------
+
 % linear regression
-We used linear regression to quantitatively analyze 
+We used linear regressions to quantitatively analyze 
 observed versus simulated changes in topographic elevation
-(Table~\ref{table:linear_regression}).
+(Table~\ref{table:linear_regression} \& Figure~\ref{fig:scatterplots}).
 %
-As expected given the current erosion regime 
-for the study landscape,
-the detachment capacity limited model 
-diverged more from the 2012-2016 baseline. 
+The results of the SIMWE simulation closely fit
+the observed change in elevation between 2012-2016.
+As expected given the current erosion regime for the study landscape 
+the detachment capacity limited model, RUSLE3D, 
+diverged the most from the baseline.
 %
 Given the presence the mature gully 
 with ridges along its banks,
 this landscape had previously been dominated by 
-a detachment limited soil erosion regime.
-During our study period, however, 
-the landscape was dominated 
-by a variable erosion-deposition 
-or transport capacity limited soil erosion regime.
+a detachment limited soil erosion regime, but 
+during our study period it was dominated by
+a variable erosion-deposition soil erosion regime. 
 
 % results
 The dynamic RUSLE3D simulation
@@ -1412,51 +1441,26 @@ Given their speed
 and approximate modeling of erosive processes, 
 RUSLE3D and USPED 
 are effective for simulating landscape evolution
-at regional scales, 
-i.e.~for landscapes greater than 10~\unit{km}$^{2}$. 
+on large rasters.
 %
 RUSLE3D for example has been used to
 model erosion for the entire 650~\unit{km}$^{2}$ 
 Fort Bragg installation at 9~\unit{m} resolution
 \citep{Levine2018}. 
 
-% --------- SIMULATION TABLES ---------
+% --------- SCATTERPLOTS ---------
 
-% linear regression table
-\begin{table*}
-\small
-\caption{Linear regression of elevation maps}
-\begin{tabu} to \textwidth {lllX}
-\toprule
-Elevation A & Elevation B &  Correlation coeff. (R) & Difference from 2012-2016 baseline \\
-\midrule
-2012 & 2016 & 0.999865 & 0\\
-2012 & simulated with SIMWE & 0.999932 & -0.000067\\
-2012 & simulated with RUSLE3D & 0.998432 & 0.001433\\
-2012 & simulated with USPED & 0.999926 & -0.000061\\
-\bottomrule
-\\
-\end{tabu}
-\label{table:linear_regression} 
-\end{table*}
-
-
-% table of simulations
-\begin{table*}
-\small
-\caption{Landscape evolution simulations}
-\begin{tabu} to \textwidth {XXXXXllllllX}
-\toprule
-Flow regime & Model & Intensity & Duration & Interval & $D_c$ & $T_c$ & m & n & $\rho_s$ & Threads & Runtime\\
-\midrule
-Dynamic & RUSLE3D & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 3~\unit{min} &  &  & 0.4 & 1.3 & & & 2~\unit{min}~36~\unit{s}\\
-Dynamic & USPED & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 3~\unit{min} &  &  & 1.5 & 1.2 & 1.6 & & 3~\unit{min}~14~\unit{s}\\
-Steady state & SIMWE & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 120~\unit{min} & & & & & 1.6 & 6 & 84~\unit{min}~13~\unit{s}\\
-\bottomrule
-\\
-\end{tabu}
-\label{table:simulations} 
-\end{table*}
+% bivariate scatterplots
+\begin{figure}
+\center
+\includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/scatterplots.pdf}
+\caption{Bivariate scatterplots of the
+(a) 2012 \& 2016 elevation maps, 
+(b) 2012 \& RUSLE3D simulated elevation maps,  
+(c) 2012 \& USPED simulated elevation maps, and
+(d) 2012 \& SIMWE simulated elevation maps.}
+\label{fig:scatterplots}
+\end{figure}
 
 % --------- SIMULATION FIGURES ---------
 
@@ -1501,6 +1505,8 @@ for a variable erosion-deposition regime such as
 gradual aggradation, channel widening, 
 scouring, and the development of
 depositional ridges along the thalweg.
+The elevation change simulated with the SIMWE model
+closely fit the observed change in the study landscape.
 % empirical models
 The empirical RUSLE3D and USPED models
 approximated short-term topographic change
@@ -1518,7 +1524,7 @@ in conjunction with other GIS-based tools
 for geomorphological research,
 land management and conservation,
 erosion control, and landscape restoration. 
-
+%
 % --------- FUTURE WORK ---------
 % assessment study
 In the future we plan to assess this model
@@ -1577,9 +1583,6 @@ on the Open Science Framework at
 with the DOI:
 \url{https://doi.org/10.17605/osf.io/tf6yb}.
 }
-
-
-
 
 % ----------------------------------------------------------------------------
 
