@@ -481,7 +481,10 @@ and by RUSLE3D with a R-factor of 310 UNITS???
 \subsection{Landscape evolution}
 
 Landscape evolution in r.sim.terrain 
-is driven by soil erosion or deposition by overland flow combined with erosion by gravitational diffusion.
+is driven by change in elevation surface caused by soil erosion and deposition.
+During storm events, overland flow erodes soil, transports sediment across landscape and 
+deposits the sediment in some locations. Gravitational diffusion applied to the changed elevation
+surface simulates smoothing effects of localized transport of soil between the events.
 
 \subsubsection{Change in elevation} 
 
@@ -490,19 +493,20 @@ The simulated change in elevation over time
 ${\partial z / \partial t}$ [\unit{m~s}$^{-1}$] is a function of
 the net erosion-deposition rate $d_s$ [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] 
 and the sediment mass density $\rho_s$ [\unit{kg~m}$^{-3}$] 
-\citep{Mitasova2013}:
+\citep{Mitasova2013}: (DO WE HAVE OTHER REFERENCE?)
 % landscape evolution equation
 \begin{equation}
 \label{eq:evolution} 
 {\partial z \over \partial t } = d_s ~ \rho_s^{-1} 
 \end{equation}
-The net erosion-deposition rate $d_s$ is estimated at different levels of complexity based 
+The overland flow driven net erosion-deposition rate $d_s$ 
+ is estimated at different levels of complexity based 
 on the user selected simulation mode guided by the type of application.
 
 \noindent
 Gravitational diffusion is applied to the evolved topography during each time step
 to simulate smoothing effects of localized transport of soil that
-occurs during and between rainfall events.
+occurs between rainfall events.
 %the settling of sediment particles.
 The simulated change in elevation $\partial z / \partial t$
 due to gravitational diffusion
@@ -523,8 +527,15 @@ where $\varepsilon_g$ is the diffusion coefficient [\unit{m}$^{2}$~\unit{s}$^{-1
 %\\ \hspace*{0.5em} $\nabla$ is the topographic divergence [\unit{m}$^{-1}$].\\
 %}
 
-THIS MAY NOT bE NEEDED: In discrete ??? implementation the elevation surface evolves as
-HOW IS THE TIME handled here?
+THIS MAY NOT BE NEEDED: In discrete ??? implementation the elevation surface evolves as
+HOW IS THE TIME handled here? Does the application of grav diffusion move time step another delta t 
+or is it applied within the same time step? 
+If it is the same time step we have
+\begin{equation}
+\label{eq:evolution_disc1} 
+z_{t+\Delta t} = z_t + \Delta z_s + \Delta z_g 
+\end{equation}
+if the time step advances we need two equations, something like this:
 \begin{equation}
 \label{eq:evolution_disc1} 
 z_{t+\Delta t}' = z_t + \Delta z_s  
@@ -535,22 +546,22 @@ z_{t+\Delta t} = z_{t+\Delta t}' + \Delta z_g
 \end{equation}
 where $z_{t+\Delta t}'$ is elevation after the change $\Delta z_s$ due to net erosion or deposition (\ref{eq:evolution})
 was applied, $z_{t+\Delta t}$ is elevation after the eroded elevation surface
-was smoothed by diffusion by adding the diffusion term $\Delta z_g$, (\ref{eq:grav_diffusion}).  
+was smoothed by diffusion by adding the diffusion driven elevation change $\Delta z_g$, (\ref{eq:grav_diffusion}).  
 
 \subsubsection{Erosion-deposition regimes}
 
-In general, the net erosion-deposition $d_s$ is obtained by solving the sediment continuity equation
+In general, the net erosion-deposition $d_s$ is obtained by solving the sediment transport continuity equation
 which for the simpler, steady state case relates $d_s$ to the divergence 
 of sediment flow rate per unit width ${\bf q_s}$ [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]:
 \begin{equation}
 \label{eq:steady_sed}
-\nabla\cdot {\bf q_s} = d_s 
+d_s = \nabla\cdot {\bf q_s} 
 \end{equation}
-Assuming that the ratio of the net erosion-deposition rate $d_s$ to the detachment
- capacity $D_c$ in $kg/(m^2s)$ %(entrainment)
- plus the ratio of the sediment flow rate $q_s = |{\bf q_s}|$ 
-to the sediment transport capacity $T_c$ [$\unit kg~m^{-1}~s{-1}$] is
- a conserved quantity (unity) \cite{fostermeyer72}:
+Assuming that the ratio of net erosion-deposition rate $d_s$ to detachment
+ capacity  $D_c$  [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] 
+ plus the ratio of sediment flow rate $q_s = |{\bf q_s}|$ 
+to sediment transport capacity $T_c$ [$\unit kg~m^{-1}~s{-1}$] is
+ a conserved quantity (unity), as proposed by \cite{fostermeyer72}:
 \begin{equation}
 \label{eq:foster_law}
 d_s/D_c + q_s/T_c = 1
@@ -563,8 +574,8 @@ d_s =\sigma \bigl[ T_c - q_s\bigr]
 \end{equation}
 \noindent
 where 
-$T_c$ [$\unit kg~m^{-1}~s{-1}$] is the sediment transport capacity,
-$q_s = |{\bf q_s}|$ is the magnitude of sediment flow and 
+%$T_c$ [$\unit kg~m^{-1}~s{-1}$] is the sediment transport capacity,
+%$q_s = |{\bf q_s}|$ is the magnitude of sediment flow and 
 $\sigma$ [m$^{-1}$] is the first order reaction term
  dependent on soil and cover properties.
 The expression for the first order reaction term  is then
@@ -572,7 +583,8 @@ The expression for the first order reaction term  is then
 \label{eq:sigma_Dc_Tc}
 \sigma = D_c / T_c
 \end{equation}
-The qualitative arguments, experimental observations and values for $\sigma$ are discussed, for example, by Foster and Meyer\cite{fostermeyer72}.
+The qualitative arguments, experimental observations and values for $\sigma$ are discussed, for example, by Foster and Meyer\cite{fostermeyer72} and the concept is used in several well established erosion models such as Water Erosion ... (WEPP) CITE
+or RUSLE2???? find the correct name and reference to RUSLE with erdep.
 
 SHOW THE MATH
 Using the concept proposed by \cite{fostermeyer72} it is possible to identify two limiting erosion-deposition
@@ -582,7 +594,7 @@ For $\sigma \to 0$, the net erosion is equal to the detachment capacity
 \label{eq:detachment_limited}
  d_s = D_c
 \end{equation}
-For this case, transport capacity exceeds
+For this case, transport capacity of overland flow exceeds
 detachment capacity everywhere, erosion and sediment transport is limited by the detachment
 capacity and therefore no deposition occurs.
 %When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
@@ -599,30 +611,33 @@ transport capacity multiplied by a unit vector ${\bf s_0}$ in the direction of f
  d_s = \nabla\cdot (T_c . {\bf s_0})
 \end{equation}
 %This would be the case when rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $) and 
-This case may occur, for example, during moderate storm and overland flow in areas 
-where $\sigma$ is high for sandy soils with high detachment capacity but
+This case may occur, for example, during a moderate storm and overland flow in areas 
+with sandy soils with high detachment capacity but
 low transport capacity  ($\sigma \geq 100 \unit{m}^{-1}$).
 
 For $0 < \sigma < \infty$ the spatial pattern of net erosion-deposition is variable and depends on the 
-relationship between the land cover, soil and topographic properties represented in the governing equations 
-(continuity and Foster's conserved quantity law).
-The sediment-transport capacity, $T_c $, and the detachment capacity, $D_c $,
-represent the maximum potential sediment flow rate and the maximum potential
-detachment rate. They are estimated using water flow shear stress and stream power
-which are usually expressed as power functions of water-flow properties and slope.    
-For a given rainfall rate and surface roughness, these two variables can be derived from a DEM
-using spatial analysis functions to compute the slope, and flow-routing
-tools to compute the upslope contributing area as an input for estimating unit water flow and water depth.
-
-The relation between the parameters of the well known empirical equations for erosion modeling, such as RUSLE or USPED 
+relationship between the land cover, soil and topography.
+% represented in the governing equations 
+%(continuity and Foster's conserved quantity law).
+The sediment-transport capacity, $T_c $ and the detachment capacity, $D_c $,
+are estimated using water flow shear stress and stream power
+expressed as power functions of water-flow properties and slope.    
+%For a given rainfall rate and surface roughness, these two variables can be derived from a DEM
+%using topographic analysis functions to compute the slope, and flow-routing
+%tools to compute the upslope contributing area as an input for estimating unit water flow.
+The relation between the parameters of the well known empirical equations for erosion modeling, such as USLE 
 and shear stress and stream power was presented by \citep{MooreBurch1984} and used to develop
-simple, GIS-based models for the limiting erosion-deposition cases \citep{Mitasova2001}.
+simple, GIS-based models for the limiting erosion-deposition cases, including RUSLE3D and USPED \citep{Mitasova2001}.
+The SIMWE model estimates $T_c$ and $D_c$ using  equations and parameters developed for the WEPP model.
 
-The simulation modes in r.sim.terrain include the process-based SIMWE model for
-steady state and dynamic shallow overland flow and variable erosion-deposition regime with $d_s$ computed 
-by solving the shallow water flow and sediment transport continuity equations,
-USPED model for the transport capacity limited regime with $d_s$ computed by equation \ref{eq:transport_limited}
- or RUSLE3D model for the detachment capacity limited case with $d_s$ computed by equation \ref{eq:detachment_limited}. 
+The simulation modes in r.sim.terrain include 
+\begin{itemize}
+  \item the process-based SIMWE model for steady state and dynamic shallow overland flow 
+   and variable erosion-deposition regime with $d_s$ computed 
+   by solving the shallow water flow and sediment transport continuity equations,
+  \item USPED model for the transport capacity limited regime with $d_s$ computed by equation (\ref{eq:transport_limited})
+  \item or RUSLE3D model for the detachment capacity limited case with $d_s$ computed by equation (\ref{eq:detachment_limited}). 
+\end{itemize}
 The following sections explain the computation of $d_s$ for these three modes in more detail.
 %In the detachment capacity limited regime, there is no deposition and $d_s$ represents soil erosion rate (soil loss).
 
@@ -728,7 +743,7 @@ into the solution:
 }
 The solution assumes that water flow velocity is mostly controlled by terrain slope and surface roughness 
 and its change during the simulated event at a given location is negligible. 
-The water depth at time $t$ during the simulated rainfall event
+The water depth $h$ at time $t$ during the simulated rainfall event
 %HM note that we have several time steps in r.sim.terrain - topo evolution time step, water flow time step and sediment flow time step
  is computed as function of particle (walkers) density at each grid cell. 
 The initial number of particles per grid cell is proportinal to rainfall excess rate $i_e$ (source)
@@ -746,7 +761,7 @@ where: \\
 \hspace*{0.5em} ${\bf g}$ is a random vector with gaussian components with variance $\tau$ ????  [\unit{m}]\\
 \hspace*{0.5em} ${\bf v}_0 $ is the velocity vector [$\unit{m~s^{-1}}$],  
  with the direction given by the topographic gradient $\nabla z = (\partial z / \partial x, \partial z / \partial y)$
-and magnitude computed by Manning or Chezy equation\\ 
+and magnitude computed by Manning or Chezy equation $v=n^{-1}h^{0.6}S^{0.5}$, where $S$ is slope\\ 
 }
 %HM should we say here that it is a kinematic wave with diffusion
 %HM add here the diagram of dynamic water flow from Lubos here?
@@ -926,14 +941,11 @@ where: \\
 
 SUMMARIZE HOW IT IS COMPUTED HERE
 
-% ------------------------------------------------------------------------------
-
 
 % -------------------------------- RUSLE --------------------------------
 \subsection{Revised Universal Soil Loss Equation for Complex Terrain (RUSLE3D)}
 \label{rusle_model}
-RUSLE3D
-is an empirical equation for computing erosion 
+RUSLE3D is an empirical model for computing erosion 
 in a detachment capacity limited soil erosion regime
 for watersheds with complex topography \citep{Mitasova1996}. 
 It is based on 
