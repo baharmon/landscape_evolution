@@ -658,7 +658,7 @@ and r.sim.sediment.
 In the SIMWE mode for each landscape evolution time step
 r.sim.terrain
 computes the first order partial derivatives of elevation surface
-$\partial z / \partial x$ and $\partial z / \partial y$ 
+$\partial z / \partial x$ and $\partial z / \partial y$, 
 %using the GRASS GIS module r.slope.aspect (see the equations in \citep{hofierka2009}),
 simulates shallow water flow depth, sediment flow, and net erosion-deposition rate, 
 and then evolves the topography based on the erosion-deposition rate
@@ -824,7 +824,7 @@ The sediment flow equation (\ref{eq:ssediment})
 %\nabla\cdot {\bf q_s} = d_s 
 %\end{equation}
 is rewritten to include a small diffusion term proportional to the 
-mass of water-carried sediment per unit area $\nabla^2 \varrho$ REWRITE WITH qs:
+mass of water-carried sediment per unit area $\nabla^2 \varrho$ :
 \begin{equation}
 \label{eq:difsedim}
 -{\varepsilon_s \over 2}\nabla^2 \varrho
@@ -833,12 +833,18 @@ mass of water-carried sediment per unit area $\nabla^2 \varrho$ REWRITE WITH qs:
 = \sigma~T_c = SOURCE (D_c?)
 %\sigma({\bf r}) T({\bf r})=Dc/T * T=Dc
 \end{equation}
-where  $\varepsilon_s$ [m$^2$/s] is the diffusion constant and
-$\varrho = \rho_s~c~h$ [kg/m$^2$] is
-the mass of sediment transported by water per unit area, $c$ is the sediment concentration [$\unit{particle~m^{-3}}$].
-% On the left hand side of the equation (\ref{eq:difsedim}), the first term
-% describes local diffusion, the second term is a drift driven by the water flow
-% while the third term represents a velocity dependent 'potential' acting on $\varrho$ EXPLAIN THIS TERM. 
+{\small
+\noindent
+where: \\
+\noindent
+\hspace*{0.5em} $\varepsilon_s$ is the diffusion constant [$\unit{m^2~s^{-1}}$]\\
+\hspace*{0.5em} $\varrho = \rho_s~c~h$ is the mass of sediment transported by water per unit area [$\unit{kg~m^{-2}}$] \\
+\hspace*{0.5em} $c$ is the sediment concentration [$\unit{particle~m^{-3}}$].
+}
+
+On the left hand side of the equation (\ref{eq:difsedim}), the first term
+describes local diffusion, the second term is a drift driven by the water flow
+while the third term represents a velocity dependent 'potential' acting on $\varrho$ EXPLAIN THIS TERM. 
 The equation is solved for $\varrho$ which is represented by particle density.
 The initial number of particles per grid cell is proportinal to the soil detachment rate $D_c$
 (source) and the particles are then routed across the landscape by finding a new position 
@@ -853,7 +859,7 @@ w_m^{new}=w_m \exp[-\tau(u({\bf r}_m^{new})+u({\bf r}_m))/2]
 
 The sediment flow is then computed as weighted particle densities 
 multiplied by unit vector in the direction of flow???
-${\bf q_s} = \varrho$ and then net eroion-deposition $d_s$ 
+${\bf q_s} = \varrho~{\bf s_0}$ and then net eroion-deposition $d_s$ 
 is computed as divergence of sediment flow using equation \ref{eq:steady_sed}.
 
 SIMWE estimates the detachment capacity sediment-transport capacity, $D_c $, and 
@@ -903,13 +909,17 @@ $K_s [s]$ is the effective sediment-transport capacity coefficient, and water de
 %HM we may consider moving the descriptive characterization of regimes to the descriptive section of r.sim.terrain 
 
 % Erosion regime
-This model can simulate broad range of erosion regimes at each time step
+This model can simulate broad range of erosion regimes at each landscape evolution time step
 based on the rainfall intensity ($i_r$)
 and the balance of the sediment detachment capacity ($D_c$),
-the sediment transport capacity ($T_c$) and the actual sediment flow rate,
-represented by the first order reaction term $\sigma$,
-which depends on soil and landcover properties.
+the sediment transport capacity ($T_c$) and the actual sediment flow rate.
+%represented by the first order reaction term $\sigma$,
+%which depends on soil and landcover properties.
+If the landscape evolution time step is shorter than time to concentration (time for water to reach steady state)
+elevation change is derived from non-steady state flow...
+SUMMARIZE HOW IT IS COMPUTED HERE
 
+%HM this was moved to the section 2.1
 %When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
 %or $\sigma$ is low, for example, for compacted clay soil with low detachment capacity but 
 %high transport capacity ( $\sigma \leq 0.01 \unit{m}^{-1}$),
@@ -926,20 +936,19 @@ which depends on soil and landcover properties.
 %($ 0.01 \unit{m}^{-1}< \sigma < 100 \unit{m}^{-1}$),
 %then there is a variable erosion-deposition regime. \\
 % erosion regime eq.
-\begin{equation}
-\label{eq:regime}
-\sigma = {D_c \over T_c}
-\end{equation}
-{\small
-\noindent
-where: \\
-\noindent
-\hspace*{0.5em} $\sigma$  is a first order reaction term [$\unit{m}^{-1}$]\\
-\hspace*{0.5em} $D_c$ is the sediment detachment capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
-\hspace*{0.5em} $T_c$ is the sediment transport capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
-}
+%\begin{equation}
+%\label{eq:regime}
+%\sigma = {D_c \over T_c}
+%\end{equation}
+%{\small
+%\noindent
+%where: \\
+%\noindent
+%%\hspace*{0.5em} $\sigma$  is a first order reaction term [$\unit{m}^{-1}$]\\
+%\hspace*{0.5em} $D_c$ is the sediment detachment capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
+%\hspace*{0.5em} $T_c$ is the sediment transport capacity [$\unit{kg~m}^{-1}s^{-1}$]\\
+%}
 
-SUMMARIZE HOW IT IS COMPUTED HERE
 
 
 % -------------------------------- RUSLE --------------------------------
