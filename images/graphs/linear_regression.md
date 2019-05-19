@@ -1,85 +1,147 @@
 # Linear regression
 
 ## Set region
-g.region vector=subwatershed
+g.region vector=subwatershed res=1
+r.mask vector=subwatershed
 
 ## Baseline 2012-2016
-r.regression.line mapx=elevation_2012@PERMANENT mapy=elevation_2016@PERMANENT
+r.regression.line mapx=elevation_2012_1m mapy=elevation_2016_1m@PERMANENT
 ```
 y = a + b*x
-   a (Offset): -0.254813
-   b (Gain): 1.002773
-   R (sumXY - sumX*sumY/N): 0.999329
+   a (Offset): -0.201885
+   b (Gain): 1.002306
+   R (sumXY - sumX*sumY/N): 0.999490
    N (Number of elements): 19226
-   F (F-test significance): 14318481.907321
-   meanX (Mean of map1): 106.183153
-   sdX (Standard deviation of map1): 4.054545
-   meanY (Mean of map2): 106.222834
-   sdY (Standard deviation of map2): 4.068519
+   F (F-test significance): 18823495.196710
+   meanX (Mean of map1): 106.170402
+   sdX (Standard deviation of map1): 4.055803
+   meanY (Mean of map2): 106.213344
+   sdY (Standard deviation of map2): 4.067231
 ```
 
-## ERDEP
-r.regression.line mapx=elevation_2012@PERMANENT mapy=elevation_2016_01_01_02_00_00@ss_erdep
-```
+## SIMWE
+r.regression.line mapx=elevation_2012_1m mapy=elevation_simwe
+```       
 y = a + b*x
-   a (Offset): 0.107050
-   b (Gain): 0.998926
-   R (sumXY - sumX*sumY/N): 0.999333
+   a (Offset): -0.048322
+   b (Gain): 1.000372
+   R (sumXY - sumX*sumY/N): 0.998312
    N (Number of elements): 19226
-   F (F-test significance): 14387605.899509
-   meanX (Mean of map1): 106.183153
-   sdX (Standard deviation of map1): 4.054545
-   meanY (Mean of map2): 106.176207
-   sdY (Standard deviation of map2): 4.052897
+   F (F-test significance): 5680403.746928
+   meanX (Mean of map1): 106.170402
+   sdX (Standard deviation of map1): 4.055803
+   meanY (Mean of map2): 106.161534
+   sdY (Standard deviation of map2): 4.064170
 ```
 
 ## RUSLE
-r.regression.line mapx=elevation_2012@PERMANENT mapy=elevation_2016_01_01_02_00_00@rusle
+r.regression.line mapx=elevation_2012_1m mapy=elevation_rusle
 ```
 y = a + b*x
-   a (Offset): -0.127633
-   b (Gain): 1.001103
-   R (sumXY - sumX*sumY/N): 0.999848
+   a (Offset): -0.042211
+   b (Gain): 1.000379
+   R (sumXY - sumX*sumY/N): 0.999973
    N (Number of elements): 19226
-   F (F-test significance): 63183164.797364
-   meanX (Mean of map1): 106.183153
-   sdX (Standard deviation of map1): 4.054545
-   meanY (Mean of map2): 106.172603
-   sdY (Standard deviation of map2): 4.059634
+   F (F-test significance): 361604088.919433
+   meanX (Mean of map1): 106.170402
+   sdX (Standard deviation of map1): 4.055803
+   meanY (Mean of map2): 106.168460
+   sdY (Standard deviation of map2): 4.057449
 ```
 
 ## USPED
-r.regression.line mapx=elevation_2012@PERMANENT mapy=elevation_2016_01_01_02_00_00@usped
+r.regression.line mapx=elevation_2012_1m mapy=elevation_usped
 ```
 y = a + b*x
-   a (Offset): -0.042093
-   b (Gain): 1.000245
-   R (sumXY - sumX*sumY/N): 0.999514
+   a (Offset): -0.062897
+   b (Gain): 1.000514
+   R (sumXY - sumX*sumY/N): 0.999743
    N (Number of elements): 19226
-   F (F-test significance): 19760637.703019
-   meanX (Mean of map1): 106.183153
-   sdX (Standard deviation of map1): 4.054545
-   meanY (Mean of map2): 106.167064
-   sdY (Standard deviation of map2): 4.057511
+   F (F-test significance): 37335027.936762
+   meanX (Mean of map1): 106.170402
+   sdX (Standard deviation of map1): 4.055803
+   meanY (Mean of map2): 106.162072
+   sdY (Standard deviation of map2): 4.058932
 ```
 
 ## R comparison
-baseline - erdep
+baseline - simwe
 ```
-−0.000004
+0.001178
 ```
 
 baseline - rusle
 ```
-−0.000519
+−0.000483
 ```
 
 baseline - usped
 ```
-−0.000185
+−0.000253
 ```
 
-# Bivariate Scatterplots
+# Bivariate Scatterplots of Difference
+
+## SIMWE
+```
+N = 19226
+R = -0.115982
+R-squared = 0.013452
+F = 262.125877
+
+```
+
+## RUSLE
+```
+N = 19226
+R = -0.002643
+R-squared = 0.000007
+F = 0.134318
+```
+
+## USPED
+```
+N = 19226
+R = -0.049370
+R-squared = 0.002437
+F = 46.970180
+```
+
+# Bivariate Scatterplots of Elevation
+
+## Baseline
+```
+N = 19226
+R = 0.999490
+R-squared = 0.998980
+F = 18823495.196710
+```
+
+## SIMWE
+```
+N = 19226
+R = 0.998312
+R-squared = 0.996627
+F = 5680403.746928
+```
+
+## RUSLE
+```
+N = 19226
+R = 0.999973
+R-squared = 0.999946
+F = 361604088.919433
+```
+
+## USPED
+```
+N = 19226
+R = 0.999743
+R-squared = 0.999486
+F = 37335027.936762
+```
+
+# Bivariate Scatterplot Commands
 
 ## Baseline
 r.scatterplot input=elevation_2012,elevation_2016 color_raster=elevation_2012 output=scatterplot_2012_2016 vector_mask=subwatershed
@@ -99,28 +161,16 @@ v.mkgrid --overwrite map=grid box=1,1
 d.vect map=grid fill_color=none color=grey width=1
 
 
-```
-Regression Statistics for Scatterplot(s)
-Regression equation for raster map <elevation_2012> vs. <elevation_2016>:
-
-   elevation_2016 = -0.254813 + 1.002773(elevation_2012)
-
-N = 19226
-R = 0.999329
-R-squared = 0.998658
-F = 14318481.907321
-```
-
 ## 2012 - SIMWE
-r.scatterplot input=elevation_2012,elevation_2016_01_01_02_00_00@ss_erdep color_raster=elevation_2012 output=scatterplot_2012_erdep vector_mask=subwatershed
+r.scatterplot input=elevation_2012,elevation_2016_01_01_02_00_00@simwe color_raster=elevation_2012 output=scatterplot_2012_simwe vector_mask=subwatershed
 
-v.mkgrid -h map=scatterplot_grid_2012_erdep
+v.mkgrid -h map=scatterplot_grid_2012_simwe
 
-v.vect.stats points=scatterplot_2012_erdep areas=scatterplot_grid_2012_erdep count_column=count
+v.vect.stats points=scatterplot_2012_simwe areas=scatterplot_grid_2012_simwe count_column=count
 
-v.colors map=scatterplot_grid_2012_erdep use=attr column=count color=viridis
+v.colors map=scatterplot_grid_2012_simwe use=attr column=count color=viridis
 
-d.vect map=scatterplot_grid_2012_erdep where="count > 0" icon=basic/point
+d.vect map=scatterplot_grid_2012_simwe where="count > 0" icon=basic/point
 
 
 ## 2012 - RUSLE
@@ -134,17 +184,6 @@ v.colors map=scatterplot_grid_2012_rusle use=attr column=count color=viridis
 
 d.vect map=scatterplot_grid_2012_rusle where="count > 0" icon=basic/point
 
-```
-Regression Statistics for Scatterplot(s)
-Regression equation for raster map <elevation_2012> vs. <elevation_2016_01_01_02_00_00>:
-
-   elevation_2016_01_01_02_00_00 = -0.127633 + 1.001103(elevation_2012)
-
-N = 19226
-R = 0.999848
-R-squared = 0.999696
-F = 63183164.797364
-```
 
 ## 2012 - USPED
 r.scatterplot input=elevation_2012,elevation_2016_01_01_02_00_00@usped color_raster=elevation_2012 output=scatterplot_2012_usped vector_mask=subwatershed

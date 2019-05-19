@@ -199,10 +199,12 @@ def render_region_2d():
             height=height,
             output=os.path.join(render, 'landforms_'+str(year)+'.png'),
             overwrite=overwrite)
-        gscript.run_command('d.shade',
-            shade='skyview_'+str(year),
-            color='landforms_'+str(year),
-            brighten=0)
+        # gscript.run_command('d.shade',
+        #     shade='skyview_'+str(year),
+        #     color='landforms_'+str(year),
+        #     brighten=0)
+        gscript.run_command('d.rast',
+            map='landforms_'+str(year))
         gscript.run_command('d.legend',
             raster='landforms_'+str(year),
             font=font,

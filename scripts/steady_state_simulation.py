@@ -29,7 +29,7 @@ simulations = ['simwe']
 
 # set parameters
 res = 1  # resolution of the region
-region = 'elevation_2012@PERMANENT'
+region = 'elevation_2012_1m@PERMANENT'
 nprocs = 1
 threads = 8
 
@@ -47,29 +47,29 @@ def main():
     options_list = []
 
     # dictionary of parameters for steady state erosion-deposition simulation
-    ss_erdep_params = {}
-    ss_erdep_params['elevation'] = 'elevation@{simulation}'.format(
+    simwe_params = {}
+    simwe_params['elevation'] = 'elevation@{simulation}'.format(
         simulation=simulations[0])
-    ss_erdep_params['runs'] = 'event'
-    ss_erdep_params['mode'] = 'simwe_mode'
-    ss_erdep_params['rain_intensity'] = 50.0
-    ss_erdep_params['rain_duration'] = 120
-    ss_erdep_params['rain_interval'] = 120
-    ss_erdep_params['start'] = "2016-01-01 00:00:00"
-    ss_erdep_params['walkers'] = 1000000
-    ss_erdep_params['grav_diffusion'] = 0.05
-    ss_erdep_params['density_value'] = 1.6
-    ss_erdep_params['erdepmin'] = -0.5
-    ss_erdep_params['erdepmax'] = 0.5
-    ss_erdep_params['detachment_value'] = 0.01
-    ss_erdep_params['transport_value'] = 0.01
-    ss_erdep_params['mannings'] = 'mannings'
-    ss_erdep_params['runoff'] = 'runoff'
-    ss_erdep_params['threads'] = threads
-    ss_erdep_params['flags'] = 'f'
-    ss_erdep_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
+    simwe_params['runs'] = 'event'
+    simwe_params['mode'] = 'simwe_mode'
+    simwe_params['rain_intensity'] = 50.0
+    simwe_params['rain_duration'] = 120
+    simwe_params['rain_interval'] = 120
+    simwe_params['start'] = "2016-01-01 00:00:00"
+    simwe_params['walkers'] = 1000000
+    simwe_params['grav_diffusion'] = 0.05
+    simwe_params['density_value'] = 1.6
+    simwe_params['erdepmin'] = -0.5
+    simwe_params['erdepmax'] = 0.5
+    simwe_params['detachment_value'] = 0.001
+    simwe_params['transport_value'] = 0.001
+    simwe_params['mannings'] = 'mannings'
+    simwe_params['runoff'] = 'runoff'
+    simwe_params['threads'] = threads
+    simwe_params['flags'] = 'f'
+    simwe_params['env'] = envs['{simulation}'.format(simulation=simulations[0])]
     # append dictionary to options list
-    options_list.append(ss_erdep_params)
+    options_list.append(simwe_params)
 
     # run simulations in parallel
     parallel_simulations(options_list)

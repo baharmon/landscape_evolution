@@ -33,6 +33,7 @@ env['GRASS_MESSAGE_FORMAT'] = 'standard'
 gisdbase = env['GISDBASE']
 location = env['LOCATION_NAME']
 mapset = env['MAPSET']
+region = 'elevation_2012_1m@PERMANENT'
 res=1
 
 # set 2D rendering parameters
@@ -95,7 +96,7 @@ def render_region_2d(mapset):
 
     # set region and mask
     gscript.run_command('g.region',
-        region='region',
+        raster=region,
         res=res)
     gscript.run_command('r.mask', vector='watershed')
 
@@ -165,10 +166,12 @@ def render_region_2d(mapset):
         step=0,
         start=0,
         overwrite=overwrite)
-    gscript.run_command('d.shade',
-        shade='shaded_relief',
-        color='landforms',
-        brighten=0)
+    # gscript.run_command('d.shade',
+    #     shade='shaded_relief',
+    #     color='landforms',
+    #     brighten=0)
+    gscript.run_command('d.rast',
+        map='landforms')
     gscript.run_command('d.legend',
         raster='landforms',
         font=font,
@@ -257,7 +260,7 @@ def render_subregion_2d(mapset):
 
     # set region and mask
     gscript.run_command('g.region',
-        region='subregion',
+        vector='subwatershed',
         res=res)
     gscript.run_command('r.mask', vector='subwatershed')
 
@@ -327,10 +330,12 @@ def render_subregion_2d(mapset):
         step=0,
         start=0,
         overwrite=overwrite)
-    gscript.run_command('d.shade',
-        shade='shaded_relief',
-        color='landforms',
-        brighten=0)
+    # gscript.run_command('d.shade',
+    #     shade='shaded_relief',
+    #     color='landforms',
+    #     brighten=0)
+    gscript.run_command('d.rast',
+        map='landforms')
     gscript.run_command('d.legend',
         raster='landforms',
         font=font,

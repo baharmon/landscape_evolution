@@ -31,7 +31,7 @@ simulations = [
 
 # set parameters
 res = 1  # resolution of the region
-region = 'elevation_2012@PERMANENT'
+region = 'elevation_2012_1m@PERMANENT'
 nprocs = 2
 threads = 1
 
