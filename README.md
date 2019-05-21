@@ -32,7 +32,7 @@ It is an add-on module for
 
 <p align="center">
   <img src="images/sample_data/elevation_2012.png" height="360">
-  <img src="images/ss_erdep/shaded_relief.png" height="360">
+  <img src="images/simwe/shaded_relief.png" height="360">
 </p>
 Variable erosion-Deposition (kg*m^-2*s^-1) and net difference (m)
 for a steady state SIMWE simulation
