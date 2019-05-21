@@ -84,5 +84,21 @@ with a time series of lidar-based digital elevation models
 and orthoimagery
 for a highly eroded subwatershed of Patterson Branch Creek, Fort Bragg, NC, USA.
 
+## Replicability
+The results in the paper [r.sim.terrain: a dynamic landscape evolution model](tex/landscape_evolution.pdf)
+can be replicated by downloading the
+[sample dataset](https://github.com/baharmon/landscape_evolution_dataset),
+launching GRASS GIS in the sample location,
+installing the add-on module,
+and then running the Python scripts in the
+[scripts](/scripts) directory.
+Launch the scripts
+[dynamic_simulations.py](/scripts/dynamic_simulations.py)
+and [steady_state_simulation.py](/scripts/steady_state_simulation.py)
+to run the simulations.
+Then launch the script
+[render_simulations.py](/scripts/render_simulations.py)
+to generate graphics for each simulation.
+
 ## License
 GNU General Public License Version 2
