@@ -34,9 +34,8 @@ It is an add-on module for
   <img src="images/sample_data/elevation_2012.png" height="360">
   <img src="images/simwe/shaded_relief.png" height="360">
 </p>
-Variable erosion-Deposition (kg*m^-2*s^-1) and net difference (m)
-for a steady state SIMWE simulation
-of a 120 min event with a rainfall intensity of 25 mm/hr
+Elevation before and after a steady state SIMWE simulation
+of a 120 min event with a rainfall intensity of 50 mm/hr
 
 ## Installation
 * Launch GRASS GIS
