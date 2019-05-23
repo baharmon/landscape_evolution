@@ -81,13 +81,14 @@ landscape planning, and landscape restoration.
 \includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/evolution.pdf}
 \caption{
 The digital elevation model (DEM) 
-before (a) and after (b)
+(a) before and (b) after
 simulated landscape evolution with r.sim.terrain 
 for a subwatershed of Patterson Branch, Fort Bragg, NC, USA. 
+(a) The before DEM was generated from an airborne lidar survey in 2012. 
 This simulation used the SIMWE model
 for a 120~\unit{min} rainfall event with 50~\unit{mm~hr}$^{-1}$
 for a variable erosion-deposition regime at steady state.
-In the evolved DEM (b)
+(b) In the evolved DEM 
 the gully channel has widened 
 with depositional ridges forming along its thalweg.}
 \label{fig:evolution}
@@ -227,8 +228,9 @@ extensometers for recording mass wasting events,
 weirs for recording water and suspended sediment discharge rates, 
 and time series of surveys using 
 total station theodolites \citep{Thomas2004},
-unmanned aerial systems (UAS),
-airborne lidar, and terrestrial lidar \citep{Starek2011,Bechet2016}.
+unmanned aerial systems (UAS) \citep{Jeziorska2016,Kasprak2019,Yang2019},
+airborne lidar \citep{Perroy2010,Starek2011}, 
+and terrestrial lidar \citep{Starek2011,Bechet2016,Goodwin2016,Telling2017}.
 % high resolution topographic data
 With terrestrial lidar, airborne lidar, and 
 UAS photogrammetry
@@ -476,11 +478,14 @@ USPED & watershed & continuous & raster & map algebra & \citep{Mitasova1996}\\
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/models.pdf}
-\caption{Water and sediment flows
-for a subwatershed (a \& d) and drainage area (b, c, e, \& f) of Patterson Branch
-modeled by SIMWE 
-for a 10~\unit{min} event with 50~\unit{mm~hr}$^{-1}$ (a-c)
-and by RUSLE3D with a R-factor of 310 (d-f)
+\caption{Water and sediment flows 
+modeled by (a \& c) SIMWE and (b \& d) RUSLE3D with spatially variable landcover 
+for a (a \& b) subwatershed and (c \& d) drainage area of Patterson Branch, Fort Bragg, NC
+at 0.3 \unit{m} resolution.
+(a) Water depth [m] simulated by SIMWE for a 10~\unit{min} event with 50~\unit{mm~hr}$^{-1}$ in the subwatershed.
+(b) Flow accumulation for RUSLE3D in the subwatershed.
+(c) Erosion and deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] simulated by SIMWE in drainage area 1.
+(d) Erosion [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] modeled by RUSLE3D in drainage area 1.
 }
 \label{fig:models}
 \end{figure}
@@ -1137,8 +1142,8 @@ for constant rainfall, design storms, and recorded rainfall.
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/watershed.pdf}
 \caption{Subwatershed with 2014 orthoimagery
-draped over the 2016 digital elevation model (a)
-and drainage areas with 2014 orthoimagery (b), Patterson Branch, Fort Bragg, NC, USA}
+(a) draped over the 2016 digital elevation model
+and (b) drainage areas with 2014 orthoimagery, Patterson Branch, Fort Bragg, NC, USA}
 \label{fig:watershed}
 \end{figure}
 
@@ -1248,7 +1253,12 @@ approximately 1~\unit{m} or more.
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/study_area.pdf}
-\caption{Morphological Change, Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC, USA}
+\caption{Morphological Change, Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC, USA.
+(a) Landcover in 2014, 
+(b) landforms in 2012,
+(c) elevation difference between 2012-2016 [m], and
+(d) landforms in 2016.
+}
 \label{fig:study_area}
 \end{figure}
 
@@ -1325,10 +1335,12 @@ than RULSE3D or USPED,
 but support multi-threading 
 when compiled with OpenMP. 
 % runtime
-Dynamic simulations of RUSLE3D and USPED each took
-3~\unit{min}~14~\unit{s} to run on a single thread, 
-while steady state simulation for SIMWE took 
-84~\unit{min}~13~\unit{s} running on 6 threads
+Dynamic simulations of RUSLE3D and USPED took
+2~\unit{min}~36~\unit{s} and 
+3~\unit{min}~14~\unit{s} respectively
+to run on a single thread, 
+while the steady state simulation for SIMWE took 
+44~\unit{min}~51~\unit{s} running on 6 threads
 (Table~\ref{table:simulations}).
 
 \subsection{Results}
@@ -1356,9 +1368,9 @@ Steady state & SIMWE & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 120~\unit{min} 
 \begin{table*}
 \small
 \caption{Linear regression of elevation maps for drainage area}
-\begin{tabu} to \textwidth {lXXX}
+\begin{tabu} to \textwidth {lXXl}
 \toprule
-Elevation A & Elevation B &  Correlation coeff. (R) & Difference from 2012-2016 baseline \\
+Elevation A & Elevation B &  Correlation coeff. (R) & Difference in R from 2012-2016 baseline \\
 \midrule
 2012 & 2016 & 0.999490 & 0\\
 2012 & simulated with RUSLE3D & 0.999848 & -0.000483\\
@@ -1373,25 +1385,14 @@ Elevation A & Elevation B &  Correlation coeff. (R) & Difference from 2012-2016 
 
 % --------------------------------------------
 
-% linear regression
-We used linear regressions to quantitatively analyze 
-observed versus simulated changes in topographic elevation
-(Table~\ref{table:linear_regression} \& Figure~\ref{fig:scatterplots}).
-%
-The results of the SIMWE simulation closely fit
-the observed change in elevation between 2012-2016.
-As expected given the current erosion regime for the study landscape 
-the detachment capacity limited model, RUSLE3D, 
-diverged the most from the baseline.
-%
-Given the presence the mature gully 
-with ridges along its banks,
-this landscape had previously been dominated by 
-a detachment limited soil erosion regime, but 
-during our study period it was dominated by
-a variable erosion-deposition soil erosion regime. 
+%Given the presence the mature gully 
+%with ridges along its banks,
+%this landscape had previously been dominated by 
+%a detachment limited soil erosion regime, but 
+%during our study period it was dominated by
+%a transport capacity limited or 
+%variable erosion-deposition soil erosion regime. 
 
-% results
 The dynamic RUSLE3D simulation
 deepened the main channel of the gully,
 while the dynamic USPED simulation
@@ -1406,7 +1407,7 @@ dominated by erosion and
 thus negative elevation change.
 RUSLE3D carved a deep incision 
 in the main gully channel
-where water and sediment flow accumulated
+where water accumulated
 (Figure~\ref{fig:simulations}b). 
 % usped
 As a transport capacity limited model
@@ -1430,20 +1431,24 @@ and the formation of depositional ridges
 along the thalweg of the channel
 (Figure~\ref{fig:simwe_simulations}b).
 
+% linear regression
+We used linear regressions to quantitatively analyze 
+observed versus simulated changes in topographic elevation
+(Table~\ref{table:linear_regression} \& Figure~\ref{fig:scatterplots}).
+The results of the USPED simulation closely fit
+the observed change in elevation between 2012-2016,
+while RUSLE3D overpredicted erosion and 
+SIMWE overpredicted deposition.
 % comparison of dynamic and steady state results
-While RUSLE3D and USPED
-produced less realistic patterns of landscape evolution
-than SIMWE,
-these models were much faster and still generated
-the key morphological patterns and processes -- 
+While USPED generated a grainy pattern of erosion and deposition,
+it was much faster than SIMWE, most closely fit the observed change,
+and simulated the key morphological patterns and processes -- 
 channel incision, filling, and widening. 
-%
 Given their speed
 and approximate modeling of erosive processes, 
 RUSLE3D and USPED 
 are effective for simulating landscape evolution
 on large rasters.
-%
 RUSLE3D for example has been used to
 model erosion for the entire 650~\unit{km}$^{2}$ 
 Fort Bragg installation at 9~\unit{m} resolution
@@ -1468,9 +1473,15 @@ versus the change simulated with
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/simulations.pdf}
-\caption{Dynamic RUSLE3D (a-b) and USPED (c-d) simulations
-for a 120~\unit{min} event with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$,\\
-Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC}
+\caption{Dynamic simulations with (a-b) RUSLE3D and (c-d) USPED
+for a 120~\unit{min} event with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$
+at 1~\unit{m} resolution for
+Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC.
+The (a) net difference [\unit{m}] and 
+(b) landforms for the RUSLE3D simulation.
+The (c) net difference [\unit{m}] and 
+(d) landforms for the USPED simulation.
+}
 \label{fig:simulations}
 \end{figure}
 
@@ -1478,9 +1489,14 @@ Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC}
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/simwe.pdf}
-\caption{Steady state SIMWE simulation
-for a 120~\unit{min} event with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$ (a-b),
-Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC}
+\caption{
+The (a) net difference [\unit{m}] and
+(b) landforms
+simulated with SIMWE at steady state 
+for a 120~\unit{min} event with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$
+at 1~\unit{m} resolution for
+Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC.
+}
 \label{fig:simwe_simulations}
 \end{figure}
 
@@ -1505,8 +1521,6 @@ for a variable erosion-deposition regime such as
 gradual aggradation, channel widening, 
 scouring, and the development of
 depositional ridges along the thalweg.
-The elevation change simulated with the SIMWE model
-closely fit the observed change in the study landscape.
 % empirical models
 The empirical RUSLE3D and USPED models
 approximated short-term topographic change
@@ -1516,6 +1530,8 @@ in a detachment limited soil erosion regime,
 while the empirical USPED model
 simulated channel widening and filling
 in a transport limited regime. 
+The elevation change simulated with the USPED model
+most closely fit the observed change in the study landscape.
 % uses & implications
 Since r.sim.terrain is a GIS-based model 
 that simulates fine-scale morphological processes and features,
