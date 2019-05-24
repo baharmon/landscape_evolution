@@ -124,8 +124,16 @@ and visualization,
 there are few GIS-based soil erosion models or landscape evolution models
 (see Tables~\ref{table:erosion_models}-\ref{table:evolution_models}).
 %%HM ADD HERE r.landscape.evol paper by Isaac or Barton
+\cite{Thaxton2004} developed a GRASS GIS shell script module r.terradyn  
+to simulate terrain evolution by combining steady-state net erosion deposition rates
+estimated by the Simulation of Water Erosion (SIMWE) model \citep{Mitas1998}
+and gravitational diffusion. \cite{Barton2010} implemented a long term
+landscape evolution GRASS GIS model r.landscape.evol which integrates gravitational diffusion,
+USPED model and fluvial erosion and has been applied to simulate impact of prehistoric settlements
+on mediteranean landscapes.
 % research questions
-Furthermore there are still major research questions 
+However, there are still major research questions 
+%%HM end changes
 to address in the theoretical foundations of erosion modeling 
 such as how erosional processes scale over time and space 
 and how sediment detachment and transport interact \citep{Mitasova2013}. 
@@ -139,6 +147,8 @@ before flows reach steady state.
 A landscape evolution model with dynamic water and sediment flow
 is needed to study fine-scale spatial and short-term temporal erosional processes
 such as gully formation and the development of microtopography. 
+%HM should we also say that moels are needed to support sustainable landscape design?
+% and study how landscapes can recover from major events?
 
 % steady state versus dynamic
 At the beginning of a rainfall event 
@@ -489,26 +499,36 @@ surface simulates smoothing effects of localized transport of soil between the e
 \subsubsection{Change in elevation} 
 
 % Landscape evolution
-The simulated change in elevation over time 
-${\partial z / \partial t}$ [\unit{m~s}$^{-1}$] is a function of
-the net erosion-deposition rate $d_s$ [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] 
-and the sediment mass density $\rho_s$ [\unit{kg~m}$^{-3}$] 
-\citep{Mitasova2013}: (DO WE HAVE OTHER REFERENCE?)
+Assuming negligible uplift, the change in elevation over time 
+${\partial z / \partial t}$ [\unit{m~s}$^{-1}$] 
+is described by the continuity of mass equation expressed in terms of divergence 
+of sediment flow  \citep{Tucker2001}:
+%HM flow or flux above? is flux flow per unit width? check entire paper for consistency
+%\citep{Mitasova2013}
 % landscape evolution equation
 \begin{equation}
 \label{eq:evolution} 
-{\partial z \over \partial t } = d_s ~ \rho_s^{-1} 
+{\partial z \over \partial t } = -\nabla~{\bf q_s} = d_s ~ \rho_s^{-1} 
 \end{equation}
+{\small
+where: \\
+\noindent
+\hspace*{0.5em} $z$ is the elevation [\unit{m}] \\
+\hspace*{0.5em} $t$ is the time [\unit{s}] \\
+\hspace*{0.5em} ${\bf q_s}$ is the sediment flow per unit width vector [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
+\hspace*{0.5em} $d_s$ is the net erosion-deposition rate [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]\\
+\hspace*{0.5em} $\rho_s$ is the sediment mass density [\unit{kg~m}$^{-3}$]\\
+}
 The overland flow driven net erosion-deposition rate $d_s$ 
  is estimated at different levels of complexity based 
 on the user selected simulation mode guided by the type of application.
 
 \noindent
-Gravitational diffusion is applied to the evolved topography during each time step
+Gravitational diffusion is applied to the changed topography during each time step
 to simulate smoothing effects of localized transport of soil that
 occurs between rainfall events.
 %the settling of sediment particles.
-The simulated change in elevation $\partial z / \partial t$
+The change in elevation $\partial z / \partial t$
 due to gravitational diffusion
 is a function of the the sediment mass density,
 the diffusion coefficient, and Laplacian of the elevation
@@ -523,28 +543,26 @@ the diffusion coefficient, and Laplacian of the elevation
 \end{equation}
 %{\small
 \noindent
-where $\varepsilon_g$ is the diffusion coefficient [\unit{m}$^{2}$~\unit{s}$^{-1}$].
+where $\varepsilon_g$ is the diffusion coefficient [\unit{kg~m}$^{2}$~\unit{s}$^{-1}$].
 %\\ \hspace*{0.5em} $\nabla$ is the topographic divergence [\unit{m}$^{-1}$].\\
 %}
 
-THIS MAY NOT BE NEEDED: In discrete ??? implementation the elevation surface evolves as
-HOW IS THE TIME handled here? Does the application of grav diffusion move time step another delta t 
-or is it applied within the same time step? 
+The discrete implementation follows \citep{Thaxton2004}?:
 If it is the same time step we have
 \begin{equation}
 \label{eq:evolution_disc1} 
-z_{t+\Delta t} = z_t + \Delta z_s + \Delta z_g 
+z_{t + \Delta t} = z_t + \Delta z_s + \Delta z_g 
 \end{equation}
-if the time step advances we need two equations, something like this:
+if the time step advances we need two equations, something like this: or see Thaxton
 \begin{equation}
 \label{eq:evolution_disc1} 
-z_{t+\Delta t}' = z_t + \Delta z_s  
+z_{t+ 1/2 \Delta t} = z_t + \Delta z_s  
 \end{equation}
 \begin{equation}
 \label{eq:evolution_disc2} 
-z_{t+\Delta t} = z_{t+\Delta t}' + \Delta z_g 
+z_{t+\Delta t} = z_{t+1/2 \Delta t} + \Delta z_g 
 \end{equation}
-where $z_{t+\Delta t}'$ is elevation after the change $\Delta z_s$ due to net erosion or deposition (\ref{eq:evolution})
+where $z_{t+ 1/2 \Delta t}'$ is elevation after the change $\Delta z_s$ due to net erosion or deposition (\ref{eq:evolution})
 was applied, $z_{t+\Delta t}$ is elevation after the eroded elevation surface
 was smoothed by diffusion by adding the diffusion driven elevation change $\Delta z_g$, (\ref{eq:grav_diffusion}).  
 
