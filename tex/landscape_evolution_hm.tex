@@ -568,49 +568,40 @@ was smoothed by diffusion by adding the diffusion driven elevation change $\Delt
 
 \subsubsection{Erosion-deposition regimes}
 
-In general, the net erosion-deposition $d_s$ is obtained by solving the sediment transport continuity equation
-which for the simpler, steady state case relates $d_s$ to the divergence 
-of sediment flow rate per unit width ${\bf q_s}$ [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]:
-\begin{equation}
-\label{eq:steady_sed}
-d_s = \nabla\cdot {\bf q_s} 
-\end{equation}
-Assuming that the ratio of net erosion-deposition rate $d_s$ to detachment
+%In general, the net erosion-deposition $d_s$ is obtained by solving the sediment transport continuity equation
+%which for the simpler, steady state case relates $d_s$ to the divergence 
+%of sediment flow rate per unit width ${\bf q_s}$ [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]:
+%\begin{equation}
+%\label{eq:steady_sed}
+%d_s = \nabla\cdot {\bf q_s} 
+%\end{equation}
+Following experimental observations and qualitative arguments \cite{fostermeyer72} 
+proposed that the ratio of net erosion-deposition rate $d_s$ to detachment
  capacity  $D_c$  [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] 
  plus the ratio of sediment flow rate $q_s = |{\bf q_s}|$ 
 to sediment transport capacity $T_c$ [$\unit kg~m^{-1}~s{-1}$] is
- a conserved quantity (unity), as proposed by \cite{fostermeyer72}:
+ a conserved quantity (unity):
 \begin{equation}
 \label{eq:foster_law}
-d_s/D_c + q_s/T_c = 1
+{d_s \over D_c} + {q_s \over T_c} = 1
 \end{equation}
-the net erosion and deposition rates $d_s$ can be expressed as proportional to the difference between
-the sediment transport capacity and the actual sediment flow rate \cite{fostermeyer72}:
+and the net erosion and deposition rates $d_s$ can be expressed as proportional to the difference between
+the sediment transport capacity $T_c$ and the actual sediment flow rate $q_s$:
 \begin{equation}
 \label{eq:sigma}
-d_s =\sigma \bigl[ T_c - q_s\bigr]
+d_s = {D_c \over T_c} \bigl[ T_c - q_s\bigr]
 \end{equation}
 \noindent
-where 
-%$T_c$ [$\unit kg~m^{-1}~s{-1}$] is the sediment transport capacity,
-%$q_s = |{\bf q_s}|$ is the magnitude of sediment flow and 
-$\sigma$ [m$^{-1}$] is the first order reaction term
- dependent on soil and cover properties.
-The expression for the first order reaction term  is then
-\begin{equation}
-\label{eq:sigma_Dc_Tc}
-\sigma = D_c / T_c
-\end{equation}
-The qualitative arguments, experimental observations and values for $\sigma$ are discussed, for example, by Foster and Meyer\cite{fostermeyer72} and the concept is used in several well established erosion models such as Water Erosion ... (WEPP) CITE
-or RUSLE2???? find the correct name and reference to RUSLE with erdep.
+This equations are used in several well established erosion models such as Water Erosion Prediction Project (WEPP)
+\citep{Flanagan2013} or SIMWE. 
+%HM also RUSLE2???? find the correct name and reference to RUSLE with erdep.
 
-SHOW THE MATH
-Using the concept proposed by \cite{fostermeyer72} it is possible to identify two limiting erosion-deposition
-regimes.
-For $\sigma \to 0$, the net erosion is equal to the detachment capacity
+Using this concept it is possible to identify two limiting erosion-deposition regimes.
+For $T_c >> D_c$, the erosion regime is detachment capacity limited and
+net erosion is equal to the detachment capacity
 \begin{equation}
 \label{eq:detachment_limited}
- d_s = D_c
+ d_s = -D_c
 \end{equation}
 For this case, transport capacity of overland flow exceeds
 detachment capacity everywhere, erosion and sediment transport is limited by the detachment
@@ -618,25 +609,23 @@ capacity and therefore no deposition occurs.
 %When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
 An example of this case is a strong storm producing large overland flow over compacted clay soil 
 leading to high transport capacity of flow to carry the light clay particles
-but low detachment capacity due to compacted soil ($\sigma \leq 0.01 \unit{m}^{-1}$).
+but low detachment capacity due to compacted soil.
 
-For very large $\sigma \to \infty$ the sediment flow is at sediment transport capacity $q_s = T_c$ 
+For  $D_c >> T_C$ the sediment flow is at sediment transport capacity $q_s = T_c$, 
 leading to a transport capacity limited regime of erosion-deposition with deposition reaching its maximum
 extent for the given water flow. The net erosion-deposition is computed as a divergence of
 transport capacity multiplied by a unit vector ${\bf s_0}$ in the direction of flow:
 \begin{equation}
 \label{eq:transport_limited}
- d_s = \nabla\cdot (T_c . {\bf s_0})
+ d_s = \nabla\cdot (T_c ~ {\bf s_0})
 \end{equation}
 %This would be the case when rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $) and 
 This case may occur, for example, during a moderate storm and overland flow in areas 
 with sandy soils with high detachment capacity but
-low transport capacity  ($\sigma \geq 100 \unit{m}^{-1}$).
-
-For $0 < \sigma < \infty$ the spatial pattern of net erosion-deposition is variable and depends on the 
+low transport capacity.
+For $0 < ({D_c / T_c}) < \infty$ the spatial pattern of net erosion-deposition is variable and depends on the 
 relationship between the land cover, soil and topography.
-% represented in the governing equations 
-%(continuity and Foster's conserved quantity law).
+
 The sediment-transport capacity, $T_c $ and the detachment capacity, $D_c $,
 are estimated using water flow shear stress and stream power
 expressed as power functions of water-flow properties and slope.    
@@ -644,9 +633,10 @@ expressed as power functions of water-flow properties and slope.
 %using topographic analysis functions to compute the slope, and flow-routing
 %tools to compute the upslope contributing area as an input for estimating unit water flow.
 The relation between the parameters of the well known empirical equations for erosion modeling, such as USLE 
-and shear stress and stream power was presented by \citep{MooreBurch1984} and used to develop
+and stream power was presented by \citep{MooreBurch1984} and used to develop
 simple, GIS-based models for the limiting erosion-deposition cases, including RUSLE3D and USPED \citep{Mitasova2001}.
-The SIMWE model estimates $T_c$ and $D_c$ using  equations and parameters developed for the WEPP model.
+The SIMWE model estimates $T_c$ and $D_c$ using equations and parameters developed for the WEPP model \citep{Flanagan2013}.
+VERIFY!!!
 
 The simulation modes in r.sim.terrain include 
 \begin{itemize}
