@@ -712,7 +712,7 @@ and rainfall parameters by solving the water flow continuity equation
 using Green's function Monte Carlo path sampling method 
 (Fig.~\ref{fig:models}a). 
 In general, shallow water flow ${\bf q}$ is approximated by
-the bivariate form of the St.~Venant equation (e.g., \citep{Julien1995}):
+the bivariate form of the St.~Venant equation (e.g., \cite{Julien1995}):
 % shallow water flow eq.
 \begin{equation}
 \label{eq:water}
@@ -729,13 +729,13 @@ where: \\
 \hspace*{0.5em} $i_e$ is the rainfall excess [$\unit{m~s^{-1}}$]
 (i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)\\
 \hspace*{0.5em} $\nabla$ is the divergence operator\\
-\hspace*{0.5em} ${\bf q}$ is the vector of water flow per unit width [$\unit{m}^2~\unit{s}^{-1}$]. \\
+\hspace*{0.5em} ${\bf q}$ is the water flow per unit width vector [$\unit{m}^2~\unit{s}^{-1}$]. 
 }
 
 The path sampling method solves the continuity equation by accumulation of the evolving source
-over the given time period and this accumulation process can be interpreted as
+over the given time period. This accumulation process can be interpreted as
 an approximation of a dynamical solution,
-with diffusive wave effects incorporated by adding a diffusion term proprtional to
+with diffusive wave effects incorporated by adding a diffusion term proportional to
 $ \nabla^2 [h^{5/3}]$
 into the solution:
 \begin{equation}
@@ -766,7 +766,7 @@ DO WE NEED v0 here? remove 0 if not needed.
 where: \\
 \noindent
 \hspace*{0.5em} ${\bf r} = (x, y)$ is the $m^{th}$ walker position [\unit{m}]\\
-\hspace*{0.5em} $\Delta \tau$ is the praticle routing time step [\unit{s}]\\
+\hspace*{0.5em} $\Delta \tau$ is the particle routing time step [\unit{s}]\\
 \hspace*{0.5em} ${\bf g}$ is a random vector with gaussian components with variance $\tau$ ????  [\unit{m}]\\
 \hspace*{0.5em} ${\bf v}_0 $ is the velocity vector [$\unit{m~s^{-1}}$],  
  with the direction given by the topographic gradient $\nabla z = (\partial z / \partial x, \partial z / \partial y)$
