@@ -508,14 +508,14 @@ of sediment flow  \citep{Tucker2001}:
 % landscape evolution equation
 \begin{equation}
 \label{eq:evolution} 
-{\partial z \over \partial t } = -\nabla~{\bf q_s} = d_s ~ \rho_s^{-1} 
+{\partial z \over \partial t } = -\nabla {\bf q_s} = d_s ~ \rho_s^{-1} 
 \end{equation}
 {\small
 where: \\
 \noindent
 \hspace*{0.5em} $z$ is the elevation [\unit{m}] \\
 \hspace*{0.5em} $t$ is the time [\unit{s}] \\
-\hspace*{0.5em} ${\bf q_s}$ is the sediment flow per unit width vector [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
+\hspace*{0.5em} ${\bf q_s}$ is the sediment flow per unit width (vector) [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
 \hspace*{0.5em} $d_s$ is the net erosion-deposition rate [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]\\
 \hspace*{0.5em} $\rho_s$ is the sediment mass density [\unit{kg~m}$^{-3}$]\\
 }
@@ -524,7 +524,7 @@ The overland flow driven net erosion-deposition rate $d_s$
 on the user selected simulation mode guided by the type of application.
 
 \noindent
-Gravitational diffusion is applied to the changed topography during each time step
+Gravitational diffusion is applied to the changed topography during each landscape evolution time step
 to simulate smoothing effects of localized transport of soil that
 occurs between rainfall events.
 %the settling of sediment particles.
@@ -533,7 +533,7 @@ due to gravitational diffusion
 is a function of the the sediment mass density,
 the diffusion coefficient, and Laplacian of the elevation
 %-- i.e.~the sum of the second order derivatives of elevation
-\citep{thaxton2004}:
+\citep{Thaxton2004}:
 % change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
 \begin{equation}
 \label{eq:grav_diffusion} 
@@ -547,13 +547,14 @@ where $\varepsilon_g$ is the diffusion coefficient [\unit{kg~m}$^{2}$~\unit{s}$^
 %\\ \hspace*{0.5em} $\nabla$ is the topographic divergence [\unit{m}$^{-1}$].\\
 %}
 
+%If it is the same time step we have
+%\begin{equation}
+%\label{eq:evolution_disc1} 
+%z_{t + \Delta t} = z_t + \Delta z_s + \Delta z_g 
+%\end{equation}
+%if the time step advances we need two equations, something like this: or see Thaxton
+%HM VERIFY whether this is acceptable
 The discrete implementation follows \citep{Thaxton2004}?:
-If it is the same time step we have
-\begin{equation}
-\label{eq:evolution_disc1} 
-z_{t + \Delta t} = z_t + \Delta z_s + \Delta z_g 
-\end{equation}
-if the time step advances we need two equations, something like this: or see Thaxton
 \begin{equation}
 \label{eq:evolution_disc1} 
 z_{t+ 1/2 \Delta t} = z_t + \Delta z_s  
@@ -562,9 +563,9 @@ z_{t+ 1/2 \Delta t} = z_t + \Delta z_s
 \label{eq:evolution_disc2} 
 z_{t+\Delta t} = z_{t+1/2 \Delta t} + \Delta z_g 
 \end{equation}
-where $z_{t+ 1/2 \Delta t}'$ is elevation after the change $\Delta z_s$ due to net erosion or deposition (\ref{eq:evolution})
-was applied, $z_{t+\Delta t}$ is elevation after the eroded elevation surface
-was smoothed by diffusion by adding the diffusion driven elevation change $\Delta z_g$, (\ref{eq:grav_diffusion}).  
+where $z_{t+ 1/2 \Delta t}$ is elevation after the change $\Delta z_s$ due to net erosion or deposition (Eq.~\ref{eq:evolution}),
+$z_{t+\Delta t}$ is elevation after the eroded elevation surface
+was smoothed by diffusion by adding the diffusion driven elevation change $\Delta z_g$, (Eq.~\ref{eq:grav_diffusion}).  
 
 \subsubsection{Erosion-deposition regimes}
 
@@ -575,7 +576,7 @@ was smoothed by diffusion by adding the diffusion driven elevation change $\Delt
 %\label{eq:steady_sed}
 %d_s = \nabla\cdot {\bf q_s} 
 %\end{equation}
-Following experimental observations and qualitative arguments \cite{fostermeyer72} 
+Following experimental observations and qualitative arguments, \cite{Foster1977} 
 proposed that the ratio of net erosion-deposition rate $d_s$ to detachment
  capacity  $D_c$  [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] 
  plus the ratio of sediment flow rate $q_s = |{\bf q_s}|$ 
@@ -585,20 +586,20 @@ to sediment transport capacity $T_c$ [$\unit kg~m^{-1}~s{-1}$] is
 \label{eq:foster_law}
 {d_s \over D_c} + {q_s \over T_c} = 1
 \end{equation}
-and the net erosion and deposition rates $d_s$ can be expressed as proportional to the difference between
+and the net erosion and deposition rate $d_s$ can be expressed as proportional to the difference between
 the sediment transport capacity $T_c$ and the actual sediment flow rate $q_s$:
 \begin{equation}
 \label{eq:sigma}
-d_s = {D_c \over T_c} \bigl[ T_c - q_s\bigr]
+d_s = {D_c \over T_c}~\bigl( T_c - q_s\bigr)
 \end{equation}
 \noindent
-This equations are used in several well established erosion models such as Water Erosion Prediction Project (WEPP)
-\citep{Flanagan2013} or SIMWE. 
+This concept is used in several well established erosion models such as Water Erosion Prediction Project (WEPP)
+\citep{Flanagan2013} or SIMWE \citep{Mitas1998}. 
 %HM also RUSLE2???? find the correct name and reference to RUSLE with erdep.
 
 Using this concept it is possible to identify two limiting erosion-deposition regimes.
 For $T_c >> D_c$, the erosion regime is detachment capacity limited and
-net erosion is equal to the detachment capacity
+net erosion is equal to the detachment capacity:
 \begin{equation}
 \label{eq:detachment_limited}
  d_s = -D_c
@@ -608,11 +609,11 @@ detachment capacity everywhere, erosion and sediment transport is limited by the
 capacity and therefore no deposition occurs.
 %When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
 An example of this case is a strong storm producing large overland flow over compacted clay soil 
-leading to high transport capacity of flow to carry the light clay particles
-but low detachment capacity due to compacted soil.
+leading to high capacity of flow to transport the light clay particles
+while the detachment of the compacted soil is limited.
 
-For  $D_c >> T_C$ the sediment flow is at sediment transport capacity $q_s = T_c$, 
-leading to a transport capacity limited regime of erosion-deposition with deposition reaching its maximum
+For  $D_c >> T_c$ the sediment flow is at sediment transport capacity $q_s = T_c$, 
+leading to a transport capacity limited regime with deposition reaching its maximum
 extent for the given water flow. The net erosion-deposition is computed as a divergence of
 transport capacity multiplied by a unit vector ${\bf s_0}$ in the direction of flow:
 \begin{equation}
@@ -621,10 +622,10 @@ transport capacity multiplied by a unit vector ${\bf s_0}$ in the direction of f
 \end{equation}
 %This would be the case when rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $) and 
 This case may occur, for example, during a moderate storm and overland flow in areas 
-with sandy soils with high detachment capacity but
-low transport capacity.
+with sandy soils with high detachment capacity but low transport capacity.
+
 For $0 < ({D_c / T_c}) < \infty$ the spatial pattern of net erosion-deposition is variable and depends on the 
-relationship between the land cover, soil and topography.
+relationship given by the Eq.~\ref{eq:foster_law}.
 
 The sediment-transport capacity, $T_c $ and the detachment capacity, $D_c $,
 are estimated using water flow shear stress and stream power
@@ -633,7 +634,7 @@ expressed as power functions of water-flow properties and slope.
 %using topographic analysis functions to compute the slope, and flow-routing
 %tools to compute the upslope contributing area as an input for estimating unit water flow.
 The relation between the parameters of the well known empirical equations for erosion modeling, such as USLE 
-and stream power was presented by \citep{MooreBurch1984} and used to develop
+and stream power was presented by \citep{Moore1986} and used to develop
 simple, GIS-based models for the limiting erosion-deposition cases, including RUSLE3D and USPED \citep{Mitasova2001}.
 The SIMWE model estimates $T_c$ and $D_c$ using equations and parameters developed for the WEPP model \citep{Flanagan2013}.
 VERIFY!!!
@@ -643,8 +644,8 @@ The simulation modes in r.sim.terrain include
   \item the process-based SIMWE model for steady state and dynamic shallow overland flow 
    and variable erosion-deposition regime with $d_s$ computed 
    by solving the shallow water flow and sediment transport continuity equations,
-  \item USPED model for the transport capacity limited regime with $d_s$ computed by equation (\ref{eq:transport_limited})
-  \item or RUSLE3D model for the detachment capacity limited case with $d_s$ computed by equation (\ref{eq:detachment_limited}). 
+  \item USPED model for the transport capacity limited regime with $d_s$ given by Eq.~(\ref{eq:transport_limited})
+  \item or RUSLE3D model for the detachment capacity limited case with $d_s$ given by Eq.~(\ref{eq:detachment_limited}). 
 \end{itemize}
 The following sections explain the computation of $d_s$ for these three modes in more detail.
 %In the detachment capacity limited regime, there is no deposition and $d_s$ represents soil erosion rate (soil loss).
@@ -665,12 +666,14 @@ and r.sim.sediment.
 % overview
 In the SIMWE mode for each landscape evolution time step
 r.sim.terrain
-computes the first order partial derivatives of elevation surface
-$\partial z / \partial x$ and $\partial z / \partial y$, 
-%using the GRASS GIS module r.slope.aspect (see the equations in \citep{hofierka2009}),
-simulates shallow water flow depth, sediment flow, and net erosion-deposition rate, 
-and then evolves the topography based on the erosion-deposition rate
-and gravitational diffusion. 
+\begin{itemize}
+  \item computes the first order partial derivatives of elevation surface
+        $\partial z / \partial x$ and $\partial z / \partial y$, 
+        using the GRASS GIS module r.slope.aspect (see the equations in \citep{hofierka2009}),
+  \item simulates shallow water flow depth, sediment flow, and net erosion-deposition rate, 
+  \item then evolves the topography based on the erosion-deposition rate
+        and gravitational diffusion. 
+\end{itemize}
 %
 The model simulates dynamic flow regimes
 when the landscape evolution time step is less than the travel time 
@@ -697,9 +700,6 @@ With longer landscape evolution time steps the model simulates a steady state re
 % ------------------------------------------------------------------------------
 
 %Although the difference between steady-state and dynamic flow regimes is discussed, the differences between the erosion regimes (e.g. detachment capacity limited, transport capacity limited, erosion-deposition and detachment limited) are less clear. A more thorough discussion of those regimes and their differences would allow for a clearer understanding of the results of the model compared to the typical characteristics associated with these regimes. On P16 L24 to L27, the results of SIMWE were compared to the characteristics typical of the simulated erosion regime. Establishing the characteristics of the erosion regimes earlier, perhaps after the explanation of the flow regimes, would give the reader more clarity regarding what influences these regimes and how the model compares to real-world characteristics.
-
-%HM I am re-organizing this, starting with water flow, then sediment continuity equation and erosion regimes will be the last
-%HM we may consider moving the descriptive characterization of regimes to the descriptive section of r.sim.terrain 
 
 \subsubsection{Shallow water flow}
 
@@ -728,7 +728,7 @@ where: \\
 \hspace*{0.5em} $h$ is the depth of overland flow [\unit{m}]\\
 \hspace*{0.5em} $i_e$ is the rainfall excess [$\unit{m~s^{-1}}$]
 (i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)\\
-\hspace*{0.5em} $\nabla$ is the divergence operator\\
+%\hspace*{0.5em} $\nabla$ is the divergence operator\\
 \hspace*{0.5em} ${\bf q}$ is the water flow per unit width vector [$\unit{m}^2~\unit{s}^{-1}$]. 
 }
 
