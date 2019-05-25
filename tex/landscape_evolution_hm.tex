@@ -492,15 +492,15 @@ and by RUSLE3D with a R-factor of 310 UNITS???
 
 Landscape evolution in r.sim.terrain 
 is driven by change in elevation surface caused by soil erosion and deposition.
-During storm events, overland flow erodes soil, transports sediment across landscape and 
-deposits the sediment in some locations. Gravitational diffusion applied to the changed elevation
-surface simulates smoothing effects of localized transport of soil between the events.
+During storm events, overland flow erodes soil, transports sediment across landscape and, 
+under favorable conditions, deposits the sediment. Gravitational diffusion, applied to the changed elevation
+surface, simulates smoothing effects of localized transport of soil between the events.
 
 \subsubsection{Change in elevation} 
 
 % Landscape evolution
 Assuming negligible uplift, the change in elevation over time 
-${\partial z / \partial t}$ [\unit{m~s}$^{-1}$] 
+%${\partial z / \partial t}$ [\unit{m~s}$^{-1}$] 
 is described by the continuity of mass equation expressed in terms of divergence 
 of sediment flow  \citep{Tucker2001}:
 %HM flow or flux above? is flux flow per unit width? check entire paper for consistency
@@ -520,16 +520,15 @@ where: \\
 \hspace*{0.5em} $\rho_s$ is the sediment mass density [\unit{kg~m}$^{-3}$]\\
 }
 The overland flow driven net erosion-deposition rate $d_s$ 
- is estimated at different levels of complexity based 
+ is in r.sim.terrain estimated at different levels of complexity based 
 on the user selected simulation mode guided by the type of application.
 
 \noindent
-Gravitational diffusion is applied to the changed topography during each landscape evolution time step
+Gravitational diffusion is then applied to the changed topography 
 to simulate smoothing effects of localized transport of soil that
 occurs between rainfall events.
 %the settling of sediment particles.
-The change in elevation $\partial z / \partial t$
-due to gravitational diffusion
+The change in elevation due to gravitational diffusion
 is a function of the the sediment mass density,
 the diffusion coefficient, and Laplacian of the elevation
 %-- i.e.~the sum of the second order derivatives of elevation
@@ -554,18 +553,24 @@ where $\varepsilon_g$ is the diffusion coefficient [\unit{kg~m}$^{2}$~\unit{s}$^
 %\end{equation}
 %if the time step advances we need two equations, something like this: or see Thaxton
 %HM VERIFY whether this is acceptable
-The discrete implementation follows \citep{Thaxton2004}?:
+The discrete implementation follows \cite{Thaxton2004}:
 \begin{equation}
 \label{eq:evolution_disc1} 
-z_{t+ 1/2 \Delta t} = z_t + \Delta z_s  
+z_{t+ \Delta t_1} = z_t + \Delta z_s  
 \end{equation}
 \begin{equation}
 \label{eq:evolution_disc2} 
-z_{t+\Delta t} = z_{t+1/2 \Delta t} + \Delta z_g 
+z_{t+\Delta t_1+\Delta t_2} = z_{t+\Delta t_1} + \Delta z_g 
 \end{equation}
-where $z_{t+ 1/2 \Delta t}$ is elevation after the change $\Delta z_s$ due to net erosion or deposition (Eq.~\ref{eq:evolution}),
-$z_{t+\Delta t}$ is elevation after the eroded elevation surface
-was smoothed by diffusion by adding the diffusion driven elevation change $\Delta z_g$, (Eq.~\ref{eq:grav_diffusion}).  
+{\small
+where: \\
+\noindent
+\hspace*{0.5em} $\Delta z_s$ is elevation change caused by net erosion or deposition [\unit{m}], (Eq.~\ref{eq:evolution})\\
+\hspace*{0.5em} $\Delta z_g$ is the diffusion driven elevation change [\unit{m}], (Eq.~\ref{eq:grav_diffusion})\\
+\hspace*{0.5em} $t$ is the time [\unit{s}] \\
+\hspace*{0.5em} $\Delta t_1$ is the time interval during a storm event [\unit{s}] \\
+\hspace*{0.5em} $\Delta t_2$ is the time interval when the gravitational diffusion changes the elevation surface[\unit{s}] \\
+}
 
 \subsubsection{Erosion-deposition regimes}
 
@@ -580,20 +585,20 @@ Following experimental observations and qualitative arguments, \cite{Foster1977}
 proposed that the ratio of net erosion-deposition rate $d_s$ to detachment
  capacity  $D_c$  [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] 
  plus the ratio of sediment flow rate $q_s = |{\bf q_s}|$ 
-to sediment transport capacity $T_c$ [$\unit kg~m^{-1}~s{-1}$] is
+to sediment transport capacity $T_c$ [$\unit kg~m^{-1}~s^{-1}$] is
  a conserved quantity (unity):
 \begin{equation}
 \label{eq:foster_law}
 {d_s \over D_c} + {q_s \over T_c} = 1
 \end{equation}
-and the net erosion and deposition rate $d_s$ can be expressed as proportional to the difference between
+and the net erosion and deposition rate $d_s$ can then be expressed as proportional to the difference between
 the sediment transport capacity $T_c$ and the actual sediment flow rate $q_s$:
 \begin{equation}
 \label{eq:sigma}
 d_s = {D_c \over T_c}~\bigl( T_c - q_s\bigr)
 \end{equation}
 \noindent
-This concept is used in several well established erosion models such as Water Erosion Prediction Project (WEPP)
+This principle is used in several well established erosion models such as Water Erosion Prediction Project (WEPP)
 \citep{Flanagan2013} or SIMWE \citep{Mitas1998}. 
 %HM also RUSLE2???? find the correct name and reference to RUSLE with erdep.
 
