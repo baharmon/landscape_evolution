@@ -541,6 +541,7 @@ the diffusion coefficient, and Laplacian of the elevation
 %{\small
 \noindent
 where $\varepsilon_g$ is the diffusion coefficient [\unit{kg~m}$^{2}$~\unit{s}$^{-1}$].
+%HM we can write $\varepsilon_g=c~\varepsilon$ where k[kg] to keep the diffusion coef units the same as in literature
 %\\ \hspace*{0.5em} $\nabla$ is the topographic divergence [\unit{m}$^{-1}$].\\
 %}
 
@@ -567,7 +568,7 @@ where: \\
 \hspace*{0.5em} $\Delta z_g$ is the diffusion driven elevation change [\unit{m}], (Eq.~\ref{eq:grav_diffusion})\\
 \hspace*{0.5em} $t$ is the time [\unit{s}] \\
 \hspace*{0.5em} $\Delta t_1$ is the time interval during a storm event [\unit{s}] \\
-\hspace*{0.5em} $\Delta t_2$ is the time interval when the gravitational diffusion changes the elevation surface[\unit{s}] \\
+\hspace*{0.5em} $\Delta t_2$ is the time interval between the events when the gravitational diffusion changes the elevation surface[\unit{s}] \\
 }
 
 \subsubsection{Erosion-deposition regimes}
@@ -601,14 +602,15 @@ This principle is used in several erosion models such as Water Erosion Predictio
 %HM to some extent it is used also in RUSLE2 (see the website and science doc
 
 Using this concept it is possible to identify two limiting erosion-deposition regimes.
-For $T_c >> D_c$, the erosion regime is detachment capacity limited and
+For $T_c >> D_c$ leading to $T_c >> q_s$, the erosion regime is detachment capacity limited and
 net erosion is equal to the detachment capacity:
 \begin{equation}
 \label{eq:detachment_limited}
- d_s = -D_c
+ d_s = D_c
 \end{equation}
 For this case, transport capacity of overland flow exceeds
-detachment capacity everywhere, erosion and sediment transport is limited by the detachment
+detachment capacity and consequently the sediment flow everywhere, 
+erosion and sediment transport is limited by the detachment
 capacity and therefore no deposition occurs.
 %When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
 An example of this case is a strong storm producing large overland flow over compacted clay soil 
@@ -630,18 +632,20 @@ with sandy soils with high detachment capacity but low transport capacity.
 For $0 < ({D_c / T_c}) < \infty$ the spatial pattern of net erosion-deposition is variable and depends on the 
 difference between the sediment transport capacity and the actual sediment flow rate at the given location.
 
-The sediment-transport capacity, $T_c $ and the detachment capacity, $D_c $,
-are estimated using shear stress and stream power
+The detachment capacity, $D_c $  and the sediment-transport capacity $T_c $  
+are estimated using shear stress and stream power equations respectively
 expressed as power functions of water-flow properties and slope angle.    
 %For a given rainfall rate and surface roughness, these two variables can be derived from a DEM
 %using topographic analysis functions to compute the slope, and flow-routing
 %tools to compute the upslope contributing area as an input for estimating unit water flow.
-The relation between the parameters of the well known empirical equations for erosion modeling, such as USLE 
+The relation between the topographic parameters of the well known empirical equations for erosion modeling, such as USLE 
 and stream power was presented by \citep{Moore1986} and used to develop
 simple, GIS-based models for the limiting erosion-deposition cases, including RUSLE3D and USPED \citep{Mitasova2001}.
 The SIMWE model estimates $T_c$ and $D_c$ using modified 
 equations and parameters developed for the WEPP model \citep{Flanagan2013,Mitasova2001}.
 
+%HM check for redundancy - if we already say this before, maybe it should be just here or we don't need it elswhere?
+%HM it is OK to mention it twice but probably not more than that.
 The simulation modes in r.sim.terrain include 
 \begin{itemize}
   \item the process-based SIMWE model for steady state and unsteady shallow overland flow 
@@ -651,7 +655,6 @@ The simulation modes in r.sim.terrain include
   \item RUSLE3D model for the detachment capacity limited case with $d_s$ given by Eq.~(\ref{eq:detachment_limited}). 
 \end{itemize}
 The following sections explain the computation of $d_s$ for these three modes in more detail.
-%In the detachment capacity limited regime, there is no deposition and $d_s$ represents soil erosion rate (soil loss).
 
 % -------------------------- EROSION-DEPOSITION -----------------------------
 \subsection{Simulation of Water Erosion (SIMWE)} \label{simwe}
@@ -668,7 +671,7 @@ r.sim.water
 and r.sim.sediment. 
 % overview
 In the SIMWE mode for each landscape evolution time step
-r.sim.terrain
+r.sim.terrain:
 \begin{itemize}
   \item computes the first order partial derivatives of elevation surface
         $\partial z / \partial x$ and $\partial z / \partial y$, 
