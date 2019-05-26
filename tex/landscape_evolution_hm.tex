@@ -147,12 +147,10 @@ before flows reach steady state.
 A landscape evolution model with dynamic water and sediment flow
 is needed to study fine-scale spatial and short-term temporal erosional processes
 such as gully formation and the development of microtopography. 
-%HM should we also say that moels are needed to support sustainable landscape design?
-% and study how landscapes can recover from major events?
 
 % steady state versus dynamic
 At the beginning of a rainfall event 
-the overland water flow regime is dynamic -- 
+the overland water flow  is unsteady -- 
 its depth changes at a variable rate over time and space. 
 If the intensity of rainfall continues to change throughout the event
 then the flow regime will remain dynamic. 
@@ -259,7 +257,7 @@ with the Simulation of Water Erosion (SIMWE) model
 \citep{Koco2011, Mitasova2013}. 
 Now numerical landscape evolution models 
 that can simulate 
-steady state and dynamic flow regimes
+steady state and unsteady flow regimes
 and can dynamically switch between soil erosion regimes 
 are needed to study 
 fine-scale spatial and short-term temporal erosional processes.
@@ -274,7 +272,7 @@ square meters to kilometers
 and temporal scales ranging from minutes to years. 
 % objectives
 This open source, GIS-based landscape evolution model can
-simulate either steady state or dynamic flow regimes, 
+simulate either steady state or unsteady flow regimes, 
 dynamically switch between soil erosion regimes, and
 simulate the evolution of fine-scale morphological features 
 such as ephemeral gullies
@@ -283,8 +281,8 @@ such as ephemeral gullies
 It was designed as a research tool for
 studying how erosional processes scale over time and space,
 comparing empirical and process-based models, 
-comparing steady state and dynamic flow regimes, and
-studying the role of dynamic flow regimes 
+comparing steady state and unsteady flow regimes, and
+studying the role of unsteady flow regimes 
 in fine-scale morphological change. 
 % testing
 r.sim.terrain was tested with 
@@ -358,7 +356,7 @@ net erosion-deposition ratei, and gravitational diffusion.
 % regimes
 %HM water added
 The r.sim.terrain model
-can simulate either steady state or dynamic water flow regimes.
+can simulate either steady state or unsteady water flow regimes.
 Depending on the input parameters, simulations with SIMWE 
 r.sim.terrain
 %HM depending on what we end up using we may use other term than "switch"
@@ -508,7 +506,7 @@ of sediment flow  \citep{Tucker2001}:
 % landscape evolution equation
 \begin{equation}
 \label{eq:evolution} 
-{\partial z \over \partial t } = -\nabla {\bf q_s} = d_s ~ \rho_s^{-1} 
+{\partial z \over \partial t } = -\nabla \cdot {\bf q_s} = d_s ~ \rho_s^{-1} 
 \end{equation}
 {\small
 where: \\
@@ -598,9 +596,9 @@ the sediment transport capacity $T_c$ and the actual sediment flow rate $q_s$:
 d_s = {D_c \over T_c}~\bigl( T_c - q_s\bigr)
 \end{equation}
 \noindent
-This principle is used in several well established erosion models such as Water Erosion Prediction Project (WEPP)
+This principle is used in several erosion models such as Water Erosion Prediction Project (WEPP)
 \citep{Flanagan2013} or SIMWE \citep{Mitas1998}. 
-%HM also RUSLE2???? find the correct name and reference to RUSLE with erdep.
+%HM to some extent it is used also in RUSLE2 (see the website and science doc
 
 Using this concept it is possible to identify two limiting erosion-deposition regimes.
 For $T_c >> D_c$, the erosion regime is detachment capacity limited and
@@ -630,27 +628,27 @@ This case may occur, for example, during a moderate storm and overland flow in a
 with sandy soils with high detachment capacity but low transport capacity.
 
 For $0 < ({D_c / T_c}) < \infty$ the spatial pattern of net erosion-deposition is variable and depends on the 
-relationship given by the Eq.~\ref{eq:foster_law}.
+difference between the sediment transport capacity and the actual sediment flow rate at the given location.
 
 The sediment-transport capacity, $T_c $ and the detachment capacity, $D_c $,
-are estimated using water flow shear stress and stream power
-expressed as power functions of water-flow properties and slope.    
+are estimated using shear stress and stream power
+expressed as power functions of water-flow properties and slope angle.    
 %For a given rainfall rate and surface roughness, these two variables can be derived from a DEM
 %using topographic analysis functions to compute the slope, and flow-routing
 %tools to compute the upslope contributing area as an input for estimating unit water flow.
 The relation between the parameters of the well known empirical equations for erosion modeling, such as USLE 
 and stream power was presented by \citep{Moore1986} and used to develop
 simple, GIS-based models for the limiting erosion-deposition cases, including RUSLE3D and USPED \citep{Mitasova2001}.
-The SIMWE model estimates $T_c$ and $D_c$ using equations and parameters developed for the WEPP model \citep{Flanagan2013}.
-VERIFY!!!
+The SIMWE model estimates $T_c$ and $D_c$ using modified 
+equations and parameters developed for the WEPP model \citep{Flanagan2013,Mitasova2001}.
 
 The simulation modes in r.sim.terrain include 
 \begin{itemize}
-  \item the process-based SIMWE model for steady state and dynamic shallow overland flow 
+  \item the process-based SIMWE model for steady state and unsteady shallow overland flow 
    and variable erosion-deposition regime with $d_s$ computed 
    by solving the shallow water flow and sediment transport continuity equations,
   \item USPED model for the transport capacity limited regime with $d_s$ given by Eq.~(\ref{eq:transport_limited})
-  \item or RUSLE3D model for the detachment capacity limited case with $d_s$ given by Eq.~(\ref{eq:detachment_limited}). 
+  \item RUSLE3D model for the detachment capacity limited case with $d_s$ given by Eq.~(\ref{eq:detachment_limited}). 
 \end{itemize}
 The following sections explain the computation of $d_s$ for these three modes in more detail.
 %In the detachment capacity limited regime, there is no deposition and $d_s$ represents soil erosion rate (soil loss).
@@ -662,7 +660,7 @@ The following sections explain the computation of $d_s$ for these three modes in
 
 % simwe intro
 SIMWE is a physics-based simulation of shallow overland water and sediment flow
-that uses a path sampling method to solve the continuity and momentum equations 
+that uses a path sampling method to solve the continuity equations 
 with a 2D diffusive wave approximation 
 \citep{Mitas1998,Mitasova2004}.
 SIMWE has been implemented in GRASS GIS as the modules 
@@ -674,16 +672,16 @@ r.sim.terrain
 \begin{itemize}
   \item computes the first order partial derivatives of elevation surface
         $\partial z / \partial x$ and $\partial z / \partial y$, 
-        using the GRASS GIS module r.slope.aspect (see the equations in \citep{hofierka2009}),
+        using the GRASS GIS module r.slope.aspect (see the equations in \cite{hofierka2009}),
   \item simulates shallow water flow depth, sediment flow, and net erosion-deposition rate, 
   \item then evolves the topography based on the erosion-deposition rate
         and gravitational diffusion. 
 \end{itemize}
 %
-The model simulates dynamic flow regimes
+The model simulates unsteady-state flow regimes
 when the landscape evolution time step is less than the travel time 
 for a drop of water or a particle of sediment to cross the landscape,
-e.g. the time step is less than the time to concentration.
+e.g. the time step is less than the time to concentration for the modeled watershed.
 With longer landscape evolution time steps the model simulates a steady state regime. 
 
 % <------------------------------------------- EDITS HERE
@@ -716,25 +714,25 @@ and rainfall parameters by solving the water flow continuity equation
 %for steady state water flow 
 using Green's function Monte Carlo path sampling method 
 (Fig.~\ref{fig:models}a). 
-In general, shallow water flow ${\bf q}$ is approximated by
-the bivariate form of the St.~Venant equation (e.g., \cite{Julien1995}):
+Steady state shallow water flow ${\bf q}$ is approximated by
+the bivariate continuity equation (e.g., \cite{Julien1995}):
 % shallow water flow eq.
 \begin{equation}
 \label{eq:water}
-{\partial h \over \partial t} =
- i_e - \nabla ~ {\bf q}
+%{\partial h \over \partial t} =
+\nabla \cdot {\bf q} = i_e
 \end{equation}
 {\small
 \noindent
 where: \\
 \noindent
 %\hspace*{0.5em} $x, y$ is the position [\unit{m}]\\
-\hspace*{0.5em} $t$ is the time [\unit{s}] \\
-\hspace*{0.5em} $h$ is the depth of overland flow [\unit{m}]\\
-\hspace*{0.5em} $i_e$ is the rainfall excess [$\unit{m~s^{-1}}$]
+%\hspace*{0.5em} $t$ is the time [\unit{s}] \\
+%\hspace*{0.5em} $h$ is the depth of overland flow [\unit{m}]\\
+\hspace*{0.5em} $i_e$ is the rainfall excess rate [$\unit{m~s^{-1}}$]
 (i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)\\
 %\hspace*{0.5em} $\nabla$ is the divergence operator\\
-\hspace*{0.5em} ${\bf q}$ is the water flow per unit width vector [$\unit{m}^2~\unit{s}^{-1}$]. 
+\hspace*{0.5em} ${\bf q}$ is the water flow per unit width (vector) [$\unit{m}^2~\unit{s}^{-1}$]. 
 }
 
 The path sampling method solves the continuity equation by accumulation of the evolving source
@@ -742,11 +740,11 @@ over the given time period. This accumulation process can be interpreted as
 an approximation of a dynamical solution,
 with diffusive wave effects incorporated by adding a diffusion term proportional to
 $ \nabla^2 [h^{5/3}]$
-into the solution:
+into the solution (see \cite{Mitasova2004} for more details on this equation and its numerical solution):
 \begin{equation}
 \label{eq:difwater}
 -{\varepsilon_w\over 2 }\nabla^2 ~ h^{5/3}
-+\nabla ~ {\bf q} = i_e
++\nabla \cdot {\bf q} = i_e
 \end{equation}
 {\small
 \noindent
@@ -761,9 +759,8 @@ The water depth $h$ at time $t$ during the simulated rainfall event
  is computed as function of particle (walkers) density at each grid cell. 
 The initial number of particles per grid cell is proportinal to rainfall excess rate $i_e$ (source)
 and the particles are then routed across the landscape by finding a new position of the walker at time $\tau + \Delta \tau$ by:
-DO WE NEED v0 here? remove 0 if not needed.
 \begin{equation}
-{\bf r}_m^{new}={\bf r}_m + \Delta \tau {\bf v}_0 + {\bf g}
+{\bf r}_m^{new}={\bf r}_m + \Delta \tau {\bf v} + {\bf g}
 \end{equation}
 
 {\small
@@ -772,14 +769,17 @@ where: \\
 \noindent
 \hspace*{0.5em} ${\bf r} = (x, y)$ is the $m^{th}$ walker position [\unit{m}]\\
 \hspace*{0.5em} $\Delta \tau$ is the particle routing time step [\unit{s}]\\
-\hspace*{0.5em} ${\bf g}$ is a random vector with gaussian components with variance $\tau$ ????  [\unit{m}]\\
-\hspace*{0.5em} ${\bf v}_0 $ is the velocity vector [$\unit{m~s^{-1}}$],  
- with the direction given by the topographic gradient $\nabla z = (\partial z / \partial x, \partial z / \partial y)$
-and magnitude computed by Manning or Chezy equation $v=n^{-1}h^{0.6}S^{0.5}$, where $S$ is slope\\ 
+\hspace*{0.5em} ${\bf g}$ is a random vector with gaussian components with variance $\Delta \tau$ [\unit{m}]\\
+\hspace*{0.5em} ${\bf v} $ is the water flow velocity vector [$\unit{m~s^{-1}}$],  
+% with the direction given by the aspect angle 
+%gradient $\nabla z = (\partial z / \partial x, \partial z / \partial y)$
+with the magnitude computed by Manning equation $v=n^{-1}~h^{2/3}~s^{1/2}$, 
+where $n$ is Manning coefficient [$\unit{s~m^{-1/3}}$], and $s$ is slope\\ 
 }
+ADD COMPUTATION OF WALKER DENSITY HERE 
 %HM should we say here that it is a kinematic wave with diffusion
 %HM add here the diagram of dynamic water flow from Lubos here?
-The mathematical background of the method is presented in \citep{Mitas1998,Mitasova2005}, including the incoporation
+The mathematical background of the method is presented by \cite{Mitas1998,Mitasova2004}, including the incoporation
 of approximate momentum through increased diffusion rate in the prevailing direction of flow.
 
 % ------------------------------------------------------------------------------
@@ -1369,7 +1369,7 @@ collected by the National Agriculture Imagery Program.
 The landcover maps were derived from the
 classified lidar point clouds and the classified orthoimagery.
 Spatially variable soil erosion factors 
--- k-factor, c-factor, mannings, and runoff rates --
+-- k-factor, c-factor, Manning coefficient, and runoff rates --
 were then derived from the landcover and soil maps.
 The dataset for this study is hosted at 
 \url{https://github.com/baharmon/landscape\_evolution_dataset}
