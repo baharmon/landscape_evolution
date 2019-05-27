@@ -863,48 +863,44 @@ The sediment flow rate is then computed as weighted particle densities
 multiplied by unit vector in the direction of flow
 VERIFY ${\bf q_s} = \varrho~{\bf s_0}$ and then net erosion-deposition $d_s$ 
 is computed as divergence of sediment flow using equation (\ref{eq:steady_sed}).
-EXPLAIN that as the sediment deposits the particles lose weight and that the evolution of steady state solution
-approximates the dynamic process.
 
 SIMWE estimates the detachment capacity $D_c $, and 
-the sediment-transport capacity $T_c $, 
-using shear stress and stream power 
-expressed as power functions of water depth derived by r.sim.water and slope derived by r.slope.aspect \citep{Mitasova2001}. 
+the sediment-transport capacity $T_c $ as functions of shear stress and stream power respectively. 
 
 Specifically,  the detachment capacity is:
 \begin{equation}
 \label{eq:detach_cap}
-D_c =K_d  \bigl(\gamma - \gamma_0 \bigr)^b = K_d  \bigl(\rho_w~g~h~\sin \beta - \gamma_0 \bigr)^b 
+D_c =K_d  \bigl(\gamma - \gamma_0 \bigr)^b  
 \end{equation}
 {\small
 \noindent
 where: \\
 \noindent
 \hspace*{0.5em} $K_d$ is the effective erodibility (detachment-capacity coefficient) [$\unit{s~m^{-1}}$] for $b=1$ VERIFY\\
-\hspace*{0.5em} $\gamma$ is the shear stress [$\unit{Pa=kg~m^{-2}}$] \\
-\hspace*{0.5em} $\gamma_0$ is the critical shear stress [Pa] \\
-\hspace*{0.5em} $b$ is an empirical exponent \\
+\hspace*{0.5em} $\gamma=\rho_w~g~h~\sin \beta$ is the shear stress [$\unit{Pa=kg~m^{-2}}$] \\
 \hspace*{0.5em} $\rho_w$ is the mass density of water [$\unit{kg~m^{-3}}$] \\
-\hspace*{0.5em} $g$ is the gravitational acceleration [$\unit{m~s^{-2}}$].
+\hspace*{0.5em} $g$ is the gravitational acceleration [$\unit{m~s^{-2}}$]\\
+\hspace*{0.5em} $\gamma_0$ is the critical shear stress [Pa] \\
+\hspace*{0.5em} $b$ is an empirical exponent.
 }
-
 The shear stress, $\gamma $, is computed as a function  water
-depth $h$ estimated by r.sim.water and surface slope angle, $\beta [deg] $.
+depth $h$ estimated by r.sim.water and surface slope angle, $\beta [deg]$.
 
-Sediment-transport capacity is computed as:
+Sediment-transport capacity is computed as a function of the unit stream power $\omega$ \citep{Moore1986}:
 \smallskip
 \begin{equation}
 \label{eq:tc_streampower}
-T_c =K_s \omega =
-K_s n ^{-1} g_w h^{m} (\sin \beta)^{n}, 
+T_c =K_s \omega = K_s~\gamma~|{\bf v}| =
+K_s~n^{-1}~g_w~h^m~(\sin \beta)^p, 
 \end{equation}
 {\small
 \noindent
 where: \\
 \noindent
 \hspace*{0.5em} $K_s$ is the effective sediment-transport capacity coefficient [s] \\
-\hspace*{0.5em} $m$, $n$ are empirical exponents CHECK both n above - are they the same???
+\hspace*{0.5em} $m$ and $p$ is an empirical exponent
 }
+CHECK implementation may have omega just power of gamma without velocity
 
 % ------------------------------------------------------------------------------
 %HM merged into the previous 
@@ -920,9 +916,8 @@ where: \\
 
 % Erosion regime
 This model can simulate erosion regimes from prevailing detachment limited when $T_c >> D_c$ 
-to prevailing transport capacity limited when $D_c >> T_c$ and the erosion-deposition patterns in between.
-At each landscape evolution time step, the regime can change
-based on 
+to prevailing transport capacity limited when $D_c >> T_c$ and the erosion-deposition patterns in-between.
+At each landscape evolution time step, the regime can change based on 
 %the rainfall intensity $i_e$
 the ratio between the sediment detachment capacity $D_c$,
 and the sediment transport capacity $T_c$ and the actual sediment flow rate.
@@ -930,10 +925,6 @@ and the sediment transport capacity $T_c$ and the actual sediment flow rate.
 %which depends on soil and landcover properties.
 If the landscape evolution time step is shorter than time to concentration (time for water to reach steady state)
 the net erosion-deposition is derived from unsteady flow.
-
-SUMMARIZE HOW IT IS COMPUTED HERE - refer to discretized equation is we use it
-The change in elevation $\Delta z$ is then computed for each time step using the eqation (\ref{eq:evolution})
-
 
 %HM this was moved to the section 2.1
 %When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
