@@ -971,8 +971,9 @@ on agricultural fields and rangelands with simple topography
 It models erosion dominated regimes without deposition
 in which sediment transport capacity is 
 uniformly greater than detachment capacity.
-As an empirical equation the predicted soil loss 
-is spatially and temporally averaged. 
+%HM I found the statement below confusing - does this refer to r.sim.terrain or the old USLE?
+%As an empirical equation the predicted soil loss 
+%is spatially and temporally averaged. 
 In USLE soil loss per unit area is determined by 
 an erosivity factor $R$,
 a soil erodibility factor $K$, 
@@ -1029,15 +1030,15 @@ kinetic energy, rainfall depth, rainfall intensity, and time.
 First rain energy is derived from rainfall intensity \citep{Brown1987}:
 VERIFY UNITS FOR ALL EQS BELOW:
 %
-\begin{equation}
-\label{eq:rain_energy}
-{e_r = 0.29 ~ [1.-0.72 ~ exp(-0.05 ~ i_r)]}
-\end{equation}
+%\begin{equation}
+%\label{eq:rain_energy}
+%{e_r = 0.29 ~ [1.-0.72 ~ exp(-0.05 ~ i_r)]}
+%\end{equation}
 %HM
 I AM NOT SURE THE GENERALIZED EQ IS BETTER, but it could look like this
 \begin{equation}
 \label{eq:rain_energy}
-{e_r \over e_0} = 1.- b ~ exp(i_r/i_0)
+{e_r \over e_0} = 1.- b ~ exp({i_r \over i_0}
 \end{equation}
 %
 {\small
@@ -1045,13 +1046,13 @@ I AM NOT SURE THE GENERALIZED EQ IS BETTER, but it could look like this
 where: \\
 \noindent
 \hspace*{0.5em} $e_r$is unit rain energy [\unit{MJ~ha}$^{-1}$~\unit{mm}${^-1}$]\\
-\hspace*{0.5em} $i_r$ is rainfall intensity [\unit{mm~h}$^{-1}$].\\
-\hspace*{0.5em} $b=0.72r$ is coeficient\\
-\hspace*{0.5em} $i_0=-1/0.05$ is SEE REVIEWER\\
-\hspace*{0.5em} $e_0=0.29$ is SEE REVIEWER
+\hspace*{0.5em} $i_r$ is rainfall intensity [\unit{mm~h}$^{-1}$]\\
+\hspace*{0.5em} $b$ is empirical coeficient\\
+\hspace*{0.5em} $i_0$ is reference rainfall intensity [\unit{mm~h}$^{-1}$]\\
+\hspace*{0.5em} $e_0$ is reference energy [\unit{MJ~ha}$^{-1}$~\unit{mm}${^-1}$] 
 }
 The parameters for this equation were derived from observed data and published for different regions by
-REFS (US, Greece, others).
+PLEASE ADD REFS (US, Greece, others).
 
 %HM I think we have the units here right - show it in the answer
 \noindent
@@ -1128,7 +1129,7 @@ the soil erodibility factor, the 3D topographic factor, cover factor, and the pr
 %
 \begin{equation}
 \label{eq:rusle}
-{d_s = E = R_e ~ K ~ LS_{3D} ~ C ~ P}
+{E = R_e ~ K ~ LS_{3D} ~ C ~ P}
 \end{equation}
 %
 {\small
