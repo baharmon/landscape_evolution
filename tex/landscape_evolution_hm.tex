@@ -1038,7 +1038,7 @@ VERIFY UNITS FOR ALL EQS BELOW:
 I AM NOT SURE THE GENERALIZED EQ IS BETTER, but it could look like this
 \begin{equation}
 \label{eq:rain_energy}
-{e_r \over e_0} = 1.- b ~ exp({i_r \over i_0}
+{e_r \over e_0} = 1.- b ~ exp\bigl({i_r \over i_0} \bigr)
 \end{equation}
 %
 {\small
@@ -1146,13 +1146,12 @@ where: \\
 
 % Landscape evolution
 \noindent
-REFER TO DISCRETE EQUATIONS IF USING
-For RUSLE3D the simulated change in elevation 
-$\Delta z$
-is derived from 
-equation \ref{eq:evolution}
-for landscape evolution in an detachment limited soil erosion regime
-and then equation \ref{eq:grav_diffusion}
+The detachment limited erosion represented by RUSLE3D leads to the simulated change in elevation: 
+\begin{equation}
+\label{eq:dz_rusle}
+{\Delta z_s = D_c \rho_s^{-1} = E ~ \rho_s^{-1}}
+\end{equation}
+which is combined with Eq. (\ref{eq:grav_diffusion})
 for gravitational diffusion.
 
 % -------------------------------- USPED --------------------------------
@@ -1184,11 +1183,12 @@ and the sediment flow at transport capacity.
 The net erosion-deposition is then computed as the divergence of the sediment flow. 
 
 % Topographic sediment transport factor
-The 3D topographic factor (Eq.~\ref{eq:ls_factor}) 
-for RUSLE3D is adapted to represent 
+Using the unit stream power concept presented by \cite{Moore1986},
+the 3D topographic factor (Eq.~\ref{eq:ls_factor}) 
+for RUSLE3D is modified to represent 
 the topographic sediment transport factor ($LS_T$) --
 the topographic component 
-of overland flow at sediment transport capacity (REFER HERE TO STREAM POWER - that where USPED name is coming from):
+of overland flow at sediment transport capacity:
 %
 \begin{equation}
 \label{eq:lst_factor}
@@ -1230,7 +1230,8 @@ where: \\
 
 %Erosion-deposition at transport capacity
 \noindent
-Net erosion-deposition at transport capacity is estimated as the divergence of sediment flow: 
+Net erosion-deposition is estimated as the divergence of sediment flow, 
+assuming that the sediment flow is equal sediment transport capacity: 
 %D = ∇ · (T s0) = ∂(T cos α)/∂x + ∂(T sin α)/∂y
 \begin{equation}\label{eq:usped_erdep} 
 d_s = 
@@ -1246,8 +1247,8 @@ where: \\
 
 %Landscape evolution
 \noindent
-REFER TO DISCRETE EQUATION ID USED
-With USPED the simulated change in elevation $\Delta z$
+UPDATE based on the new structure of the paper
+With USPED the simulated change in elevation $\Delta z_s=d_s$
 is derived from equation \ref{eq:evolution} for landscape evolution
 and then equation \ref{eq:grav_diffusion}
 for the gravitational diffusion.
