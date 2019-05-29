@@ -102,14 +102,15 @@ over time in response to physical processes.
 Most studies of landscape evolution have been descriptive, 
 but a number of numerical landscape evolution models 
 have been developed that simulate elevational change over time 
-\citep{Temme2013}. 
+\citep{Tucker2010,Temme2013}. 
 % numerical models
 Numerical landscape evolution models
 such as the Channel-Hillslope Integrated Landscape Development (CHILD) model 
 \citep{Tucker2001},
+CAESAR \citep{Coulthard2002,Coulthard2012},
 SIBERIA \citep{Willgoose2005},
 LAPSUS \citep{Schoorl2000,Schoorl2002},
-and the GRASS GIS add-on module r.landscape.evol \citep{Barton2010}
+and r.landscape.evol \citep{Barton2010}
 simulate steady state flows over long temporal scales.
 % recent development
 \href{http://landlab.github.io/}{Landlab},
@@ -465,8 +466,7 @@ USPED & watershed & continuous & raster & map algebra & \citep{Mitasova1996}\\
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/models.pdf}
 \caption{Water and sediment flows 
 modeled by (a \& c) SIMWE and (b \& d) RUSLE3D with spatially variable landcover 
-for a (a \& b) subwatershed and (c \& d) drainage area of Patterson Branch, Fort Bragg, NC
-at 0.3 \unit{m} resolution.
+for a (a \& b) subwatershed and (c \& d) drainage area of Patterson Branch, Fort Bragg, NC.
 (a) Water depth [m] simulated by SIMWE for a 10~\unit{min} event with 50~\unit{mm~hr}$^{-1}$ in the subwatershed.
 (b) Flow accumulation for RUSLE3D in the subwatershed.
 (c) Erosion and deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] simulated by SIMWE in drainage area 1.
@@ -1350,7 +1350,7 @@ and landcover maps for the study landscape
 were generated from lidar pointclouds and orthophotography.
 %(Figure~\ref{fig:study_area}a-c). 
 The digital elevations models for 2004, 2012, and 2016
-were interpolated at 0.3~\unit{m} resolution
+were interpolated at 1~\unit{m} resolution
 using the regularized spline with tension function \citep{Mitasova1993,Mitasova2005}
 from airborne lidar surveys 
 collected by the NC Floodplain Mapping program and Fort Bragg. 
