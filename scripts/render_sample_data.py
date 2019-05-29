@@ -151,35 +151,79 @@ def render_region_2d():
 
     # compute flow accumulation and erosion with RUSLE3D
     for year in years:
-        gscript.run_command('r.watershed',
-            elevation='elevation_'+str(year),
-            accumulation='flow_accumulation_'+str(year),
-            flags='a',
-            overwrite=overwrite)
+
+        # compute slope
         gscript.run_command('r.slope.aspect',
             elevation='elevation_'+str(year),
             slope='slope_'+str(year),
             overwrite=overwrite)
-        gscript.run_command('r.mapcalc',
+
+        # compute flow accumulation
+        gscript.run_command(
+            'r.watershed',
+            elevation='elevation_'+str(year),
+            accumulation='flowacc',
+            flags="a",
+            overwrite=True)
+        region = gscript.parse_command(
+            'g.region', flags='g')
+        nsres = region['nsres']
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{depth}"
+            "=({flowacc}*{res})".format(
+                depth='flow_accumulation_'+str(year),
+                flowacc='flowacc',
+                res=nsres),
+            overwrite=True)
+
+        # compute dimensionless topographic factor
+        gscript.run_command(
+            'r.mapcalc',
             expression="{ls_factor}"
             "=(0.4+1.0)"
-            "*(({flow_accumulation}/22.1)^0.4)"
+            "*(({flowacc}/22.1)^0.4)"
             "*((sin({slope})/5.14)^1.3)".format(
                 ls_factor='ls_factor_'+str(year),
-                flow_accumulation='flow_accumulation_'+str(year),
+                flowacc='flow_accumulation_'+str(year),
                 slope='slope_'+str(year)),
             overwrite=True)
-        gscript.run_command('r.mapcalc',
-            expression="{flux}"
-            "=310.0"
+
+        # compute sediment flow
+        """E = R * K * LS * C * P
+        where
+        E is average annual soil loss
+        R is erosivity factor
+        K is soil erodibility factor
+        LS is a dimensionless topographic (length-slope) factor
+        C is a dimensionless land cover factor
+        P is a dimensionless prevention measures factor
+        """
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{sedflow}"
+            "={r_factor}"
             "*{k_factor}"
             "*{ls_factor}"
             "*{c_factor}".format(
-                flux='sediment_flow_'+str(year),
+                sedflow='sedflow',
+                r_factor=310.,
                 k_factor='k_factor',
                 ls_factor='ls_factor_'+str(year),
                 c_factor='c_factor'),
             overwrite=True)
+
+        # convert sediment flow from tons/ha to kg/ms
+        gscript.run_command(
+            'r.mapcalc',
+            expression="{converted_sedflow}"
+            "={sedflow}*{ton_to_kg}/{ha_to_m2}".format(
+                converted_sedflow='sediment_flow_'+str(year),
+                sedflow='sedflow',
+                ton_to_kg=1000.,
+                ha_to_m2=10000.),
+            overwrite=True)
+
         # set color tables
         gscript.write_command(
             'r.colors',
@@ -442,9 +486,7 @@ def render_region_2d():
         raster='ls_factor_2012',
         font=font,
         fontsize=fontsize,
-        at=legend_coord,
-        label_values=[0.001,1.8],
-        label_step=0.5)
+        at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
 
     # render sediment flow
@@ -462,8 +504,7 @@ def render_region_2d():
         raster='sediment_flow_2012',
         font=font,
         fontsize=fontsize,
-        at=legend_coord,
-        range='0,3')
+        at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
 
     # render sediment flux
@@ -482,8 +523,6 @@ def render_region_2d():
         font=font,
         fontsize=fontsize,
         at=legend_coord,
-        range='0,1',
-        digits='2',
         flags='n')
     gscript.run_command('d.mon', stop=driver)
 
@@ -503,7 +542,7 @@ def render_region_2d():
         font=font,
         fontsize=fontsize,
         at=legend_coord,
-        range='-0.1,0.1',
+        range='-0.25,0.25',
         digits='2',
         flags='n')
     gscript.run_command('d.mon', stop=driver)
@@ -517,6 +556,8 @@ def render_region_2d():
         type='raster',
         name=['dx'+str(year),
             'dy'+str(year),
+            'flowacc',
+            'sedflow',
             'detachment',
             'transport',
             'shear_stress'],
@@ -728,8 +769,7 @@ def render_subregion_2d():
         raster='sediment_flow_2012',
         font=font,
         fontsize=fontsize,
-        at=legend_coord,
-        range='0,3')
+        at=legend_coord)
     gscript.run_command('d.mon', stop=driver)
 
     # render sediment flux
@@ -748,7 +788,6 @@ def render_subregion_2d():
         font=font,
         fontsize=fontsize,
         at=legend_coord,
-        range='0,1',
         digits='2',
         flags='n')
     gscript.run_command('d.mon', stop=driver)
@@ -769,7 +808,7 @@ def render_subregion_2d():
         font=font,
         fontsize=fontsize,
         at=legend_coord,
-        range='-0.1,0.1',
+        range='-0.25,0.25',
         digits='2',
         flags='n')
     gscript.run_command('d.mon', stop=driver)
@@ -1228,6 +1267,25 @@ def cleanup():
     except CalledModuleError:
         pass
 
+    try:
+        # remove temporary maps
+        gscript.run_command(
+            'g.remove',
+            type='raster',
+            name=['dx_2004',
+                'dx_2012',
+                'dx_2016',
+                'dy_2004',
+                'dy_2012',
+                'dy_2016',
+                'flowacc',
+                'sedflow',
+                'detachment',
+                'transport',
+                'shear_stress'],
+            flags='f')
+    except CalledModuleError:
+        pass
 
 if __name__ == "__main__":
     atexit.register(cleanup)
