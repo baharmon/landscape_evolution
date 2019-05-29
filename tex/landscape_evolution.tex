@@ -53,10 +53,8 @@ across a range of spatial scales.
 This free and open source, 
 GIS-based topographic evolution model
 uses empirical models for soil erosion
-at watershed to regional scales 
 and a physics-based model
 for shallow overland water flow and soil erosion 
-at subwatershed scales
 to compute short-term topographic change. 
 This model uses either a steady state or dynamic representation of overland flow
 to simulate how overland sediment mass flows reshape topography
@@ -484,11 +482,11 @@ is driven by the change in the elevation surface
 caused by soil erosion and deposition.
 During storm events overland flow erodes soil, 
 transports sediment across landscape, and 
--- under favorable conditions -- deposits the sediment. 
+under favorable conditions deposits the sediment. 
 Gravitational diffusion, 
 applied to the changing elevation surface, 
 simulates the smoothing effects 
-of localized soil transport between the events.
+of localized soil transport between events.
 
 \subsubsection{Elevation change} 
 Assuming negligible uplift, the change in elevation over time 
@@ -502,11 +500,11 @@ expressed as the divergence of sediment flow  \citep{Tucker2001}:
 {\small
 where: \\
 \noindent
-\hspace*{0.5em} $z$ is the elevation [\unit{m}] \\
-\hspace*{0.5em} $t$ is the time [\unit{s}] \\
-\hspace*{0.5em} ${\bf q_s}$ is the sediment flow per unit width (vector) [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
+\hspace*{0.5em} $z$ is elevation [\unit{m}] \\
+\hspace*{0.5em} $t$ is time [\unit{s}] \\
+\hspace*{0.5em} ${\bf q_s}$ is sediment flow per unit width (vector) [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
 \hspace*{0.5em} $d_s$ is the net erosion-deposition rate [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]\\
-\hspace*{0.5em} $\rho_s$ is the sediment mass density [\unit{kg~m}$^{-3}$].\\
+\hspace*{0.5em} $\rho_s$ is sediment mass density [\unit{kg~m}$^{-3}$].\\
 }
 The net erosion-deposition rate $d_s$ driven by overland flow
 in r.sim.terrain is estimated at different levels of complexity based 
@@ -515,7 +513,7 @@ Gravitational diffusion is then applied to the changed topography
 to simulate the smoothing effects 
 of localized soil transport between rainfall events.
 The change in elevation due to gravitational diffusion
-is a function of the the sediment mass density,
+is a function of the sediment mass density,
 the diffusion coefficient, and Laplacian of the elevation
 %-- i.e.~the sum of the second order derivatives of elevation
 \citep{Thaxton2004}:
@@ -554,7 +552,6 @@ where: \\
 [\unit{m}] (Eq.~\ref{eq:evolution})\\
 \hspace*{0.5em} $\Delta z_g$ is the diffusion driven elevation change
 [\unit{m}] (Eq.~\ref{eq:grav_diffusion})\\
-\hspace*{0.5em} $t$ is the time [\unit{s}]\\
 \hspace*{0.5em} $\Delta t_1$ is the time interval during a storm event [\unit{s}]\\
 \hspace*{0.5em} $\Delta t_2$ is the time interval between events
 when gravitational diffusion changes the elevation surface [\unit{s}].\\
@@ -603,10 +600,11 @@ net erosion is equal to the detachment capacity:
 \label{eq:detachment_limited}
  d_s = D_c
 \end{equation}
-For this case the transport capacity of overland flow exceeds
-the detachment capacity and thus sediment flow,
-erosion and sediment transport is limited by the detachment capacity, 
-and therefore no deposition occurs.
+For this case the transport capacity of overland flow 
+exceeds the detachment capacity 
+and thus sediment flow, erosion, and sediment transport
+are limited by the detachment capacity. 
+Therefore, no deposition occurs.
 %When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
 An example of this case is when a strong storm 
 producing intense % high 
@@ -617,12 +615,12 @@ while the detachment of compacted soils is limited.
 When $D_c >> T_c$, sediment flow is at sediment transport capacity $q_s = T_c$, 
 leading to a transport capacity limited regime 
 with deposition reaching its maximum extent for the given water flow. 
-The net erosion-deposition is computed as the divergence of
-transport capacity multiplied by a unit vector ${\bf s_0}$ 
+Net erosion-deposition is computed as the divergence of
+transport capacity multiplied by a unit vector $\vec{s_0}$ 
 in the direction of flow:
 \begin{equation}
 \label{eq:transport_limited}
- d_s = \nabla\cdot (T_c ~ {\bf s_0})
+ d_s = \nabla\cdot (T_c ~ \vec{s_0})
 \end{equation}
 %This would be the case when rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $) and 
 This case may occur, for example, during a moderate storm 
@@ -634,7 +632,7 @@ the spatial pattern of net erosion-deposition is variable
 and depends on the difference between the sediment transport capacity 
 and the actual sediment flow rate at the given location.
 
-The detachment capacity, $D_c $  and the sediment-transport capacity $T_c $  
+The detachment capacity $D_c $  and the sediment-transport capacity $T_c $  
 are estimated using shear stress and stream power equations respectively
 expressed as power functions of water-flow properties and slope angle.    
 %For a given rainfall rate and surface roughness, these two variables can be derived from a DEM
@@ -644,8 +642,8 @@ expressed as power functions of water-flow properties and slope angle.
 The relation between the topographic parameters 
 of well known empirical equations for erosion modeling, 
 such as USLE and stream power, were presented by \citep{Moore1986} 
-and used to develop simple, GIS-based models for limiting erosion-deposition cases, 
-including RUSLE3D and USPED \citep{Mitasova2001}.
+and used to develop simple, GIS-based models for limiting erosion-deposition cases 
+such as RUSLE3D and USPED \citep{Mitasova2001}.
 The SIMWE model estimates $T_c$ and $D_c$ using modified 
 equations and parameters developed for the WEPP model 
 \citep{Flanagan2013,Mitasova2001}.
@@ -702,7 +700,7 @@ With longer landscape evolution time steps the model simulates a steady state re
 The SIMWE model simulates shallow overland water flow
 controlled by spatially variable topographic, soil, landcover, 
 and rainfall parameters by solving the water flow continuity equation 
-using Green's function Monte Carlo path sampling method:
+using a Green's function Monte Carlo path sampling method:
 % shallow water flow eq.
 \begin{equation}
 \label{eq:water}
@@ -729,7 +727,7 @@ This accumulation process can be interpreted as
 an approximation of a dynamic solution with diffusive wave effects
 incorporated by adding a diffusion term proportional to
 $ \nabla^2 [h^{5/3}]$
-into the solution:
+in the solution:
 \begin{equation}
 \label{eq:difwater}
 -{\varepsilon_w\over 2 }\nabla^2 ~ h^{5/3}
@@ -749,7 +747,7 @@ and that its change at a given location during the simulated event is negligible
 The water depth $h$ at time $\tau$ during the simulated rainfall event
 %HM note that we have several time steps in r.sim.terrain 
 %- topo evolution time step, water flow time step and sediment flow time step
- is computed as function of particle (walkers) density at each grid cell. 
+ is computed as a function of particle (walkers) density at each grid cell. 
 The initial number of particles per grid cell 
 is proportional to the rainfall excess rate $i_e$ (source).
 Particles are then routed across the landscape 
@@ -766,8 +764,8 @@ where: \\
 \hspace*{0.5em} $\Delta \tau$ is the particle routing time step [\unit{s}]\\
 \hspace*{0.5em} $\vec{g}$ is a random vector with gaussian components with variance $\Delta \tau$ [\unit{m}]\\
 \hspace*{0.5em} $\vec{v} $ is the water flow velocity vector [$\unit{m~s^{-1}}$]
-with the magnitude computed by Manning equation $v=n^{-1}~h^{2/3}~s^{1/2}$, 
-where $n$ is the Manning coefficient [$\unit{s~m^{-1/3}}$] and $s$ is slope.\\ 
+whose magnitude is computed with the Manning's equation $v=n^{-1}~h^{2/3}~s^{1/2}$ 
+where $n$ is the Manning's coefficient [$\unit{s~m^{-1/3}}$] and $s$ is slope.\\ 
 }
 %
 \noindent
@@ -890,7 +888,7 @@ where: \\
 Shear stress $\gamma $ is computed
 as a function of water depth $h$ estimated by r.sim.water
 and the surface slope angle $\beta$ [$\unit{\degree}$].
-
+%
 Sediment-transport capacity is computed as a function 
 of unit stream power $\omega$ \citep{Moore1986}:
 \smallskip
@@ -915,7 +913,7 @@ from prevailing detachment limited conditions when $T_c >> D_c$
 to prevailing transport capacity limited conditions when $D_c >> T_c$
 and the erosion-deposition patterns between these conditions.
 At each landscape evolution time step, the regime can change based on 
-the ratio between the sediment detachment capacity $D_c$,
+the ratio between the sediment detachment capacity $D_c$
 and the sediment transport capacity $T_c$ and the actual sediment flow rate.
 If the landscape evolution time step is shorter than the time to concentration 
 (i.e.~the time for water to reach steady state)
@@ -999,7 +997,7 @@ where: \\
 \hspace*{0.5em} $i_r$ is rainfall intensity [\unit{mm~h}$^{-1}$]\\
 \hspace*{0.5em} $b$ is empirical coeficient\\
 \hspace*{0.5em} $i_0$ is reference rainfall intensity [\unit{mm~h}$^{-1}$]\\
-\hspace*{0.5em} $e_0$ is reference energy [\unit{MJ~ha}$^{-1}$~\unit{mm}${^-1}$] 
+\hspace*{0.5em} $e_0$ is reference energy [\unit{MJ~ha}$^{-1}$~\unit{mm}${^-1}$]. 
 }
 
 \noindent
@@ -1012,15 +1010,15 @@ is calculated as the product of
 unit rain energy, rainfall depth, rainfall intensity, and time: 
 \begin{equation}
 \label{eq:erosivity_index}
-{R_e = e_r ~ v_r ~ i_r ~ t_r}
+{R_e = e_r ~ v_r ~ i_r ~ \Delta t}
 \end{equation}
 %
 {\small
 \noindent
 where: \\
 \hspace*{0.5em} $R_e$ is the event-based erosivity index [\unit{MJ~mm~ha}$^{-1}$~\unit{hr}$^{-1}$]\\
-\hspace*{0.5em} $v_r$ is the rainfall depth [\unit{mm}] derived from ${v_r = i_r~t_r}$\\
-\hspace*{0.5em} $t_r$ is the time interval [\unit{s}].
+\hspace*{0.5em} $v_r$ is the rainfall depth [\unit{mm}] derived from ${v_r = i_r~\Delta t}$\\
+\hspace*{0.5em} $\Delta t$ is the change in time [\unit{s}].
 }
 
 
@@ -1121,7 +1119,7 @@ where: \\
 \hspace*{0.5em} $\beta$ is the angle of the slope [$\degree$]\\
 \hspace*{0.5em} $m$ is an empirical coefficient\\
 \hspace*{0.5em} $n$ is an empirical coefficient\\
-\hspace*{0.5em} $\beta_0$ is the slope of the standard USLE plot [0.09$\degree$]\\
+\hspace*{0.5em} $\beta_0$ is the slope of the standard USLE plot [0.09$\degree$].\\
 }
 The empirical coefficients $m$ and $n$
 for the upslope contributing area and the slope
@@ -1135,8 +1133,8 @@ and high values representing dominant rill flow.
 \subsubsection{Detachment limited erosion rate}
 
 The erosion rate is a function of the event-based erosivity factor, 
-the soil erodibility factor, the 3D topographic factor,
-landcover factor, and the prevention measures factor 
+soil erodibility factor, 3D topographic factor,
+landcover factor, and prevention measures factor 
 (Fig.~\ref{fig:models}d):
 %
 \begin{equation}
@@ -1182,7 +1180,7 @@ while the influence of soil and landcover are represented by
 factors adopted from USLE and RUSLE
 \citep{Mitasova1996}.
 %
-The sediment flow is estimated by computing
+Sediment flow is estimated by computing
 the event-based erosivity factor ($R_e$) 
 using Eq.~\ref{eq:erosivity_index},
 the slope and aspect of the topography,
@@ -1218,9 +1216,9 @@ where: \\
 % Sediment flow at transport capacity
 \noindent
 Sediment flow at transport capacity is a function of 
-the event-based rainfall factor, the soil erodibility factor, 
-the topographic component of overland flow,
-the landcover factor, and the prevention measures factor:
+the event-based rainfall factor, soil erodibility factor, 
+topographic component of overland flow,
+landcover factor, and prevention measures factor:
 %
 \begin{equation}
 \label{eq:usped}
@@ -1296,7 +1294,8 @@ Patterson Branch on Fort Bragg, North Carolina
 against a timeseries of airborne lidar surveys.
 The models -- SIMWE, RUSLE3D, and USPED --
 were tested in steady state and dynamic modes
-for constant rainfall, design storms, and recorded rainfall.
+for design storms with constant rainfall.
+%for constant rainfall, design storms, and recorded rainfall.
 
 \subsection{Patterson Branch}
 
@@ -1362,7 +1361,7 @@ collected by the National Agriculture Imagery Program.
 The landcover maps were derived from the
 classified lidar point clouds and the classified orthoimagery.
 Spatially variable soil erosion factors 
--- k-factor, c-factor, Manning's coefficient, and runoff rates --
+-- the k-factor, c-factor, Manning's coefficient, and runoff rate --
 were then derived from the landcover and soil maps.
 The dataset for this study is hosted at 
 \url{https://github.com/baharmon/landscape\_evolution_dataset}
@@ -1403,7 +1402,7 @@ has developed at the foot of this nascent branch
 where it would meet the main channel. 
 %
 The difference in elevation between 2012 and 2016
-(Figure~\ref{fig:study_area}b)
+(Figure~\ref{fig:study_area}c)
 shows a deepening of the main channel 
 by approximately 0.2~\unit{m} 
 and the scours pits
@@ -1697,7 +1696,7 @@ by unmanned aerial systems and terrestrial lidar.
 We also plan to develop a case study demonstrating
 how the model can be used as a planning tool 
 for landscape restoration. 
-Planned enhancements to model include 
+Planned enhancements to the model include 
 modeling subsurface flows, 
 accounting for bedrock, 
 and a reverse landscape evolution mode
@@ -1725,12 +1724,9 @@ gradual aggradation, channel widening,
 scouring, and the development of
 depositional ridges along the thalweg.
 % empirical models
-The empirical RUSLE3D and USPED models
-approximated short-term topographic change
-at watershed to regional scales. 
 The empirical RUSLE3D model simulated channel incision
 in a detachment limited soil erosion regime,
-while the empirical USPED model
+while the semi-empirical USPED model
 simulated channel widening and filling
 in a transport limited regime. 
 The elevation change simulated with the USPED model
