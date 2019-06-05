@@ -55,7 +55,8 @@ uses empirical models for soil erosion
 and a physics-based model
 for shallow overland water flow and soil erosion 
 to compute short-term topographic change. 
-This model uses either a steady state or dynamic representation of overland flow
+This model uses either a steady state 
+or unsteady representation of overland flow
 to simulate how overland sediment mass flows reshape topography
 for a range of hydrologic soil erosion regimes
 based on topographic, land cover, soil, and rainfall parameters. 
@@ -104,6 +105,8 @@ have been developed that simulate elevational change over time
 Numerical landscape evolution models
 such as the Channel-Hillslope Integrated Landscape Development (CHILD) model 
 \citep{Tucker2001},
+% GOLEM (Tucker and Slingerland, 1994), 
+% CASCADE (Braun and Sambridge,1997),
 CAESAR \citep{Coulthard2002,Coulthard2012},
 SIBERIA \citep{Willgoose2005},
 LAPSUS \citep{Schoorl2000,Schoorl2002},
@@ -1171,6 +1174,7 @@ the topographic sediment transport factor,
 and sediment flow at transport capacity.
 Net erosion-deposition is then computed as the divergence of sediment flow. 
 
+\subsubsection{Topographic sediment transport factor}
 % Topographic sediment transport factor
 Using the unit stream power concept presented by \cite{Moore1986},
 the 3D topographic factor (Eq.~\ref{eq:ls_factor}) 
@@ -1195,6 +1199,7 @@ where: \\
 \hspace*{0.5em} $n$ is an empirical coefficient.\\
 }
 
+\subsubsection{Transport limited sediment flow and net erosion-deposition}
 % Sediment flow at transport capacity
 \noindent
 Sediment flow at transport capacity is a function of 
@@ -1636,7 +1641,9 @@ such as the development of depositional ridges
 and a depositional fan. 
 %
 While USPED generated a grainy pattern of erosion and deposition,
-it was much faster than SIMWE and still simulated 
+it was much faster than SIMWE 
+(Table~\ref{table:simulations})
+and still simulated 
 the key morphological patterns and processes -- 
 channel incision, filling, and widening. 
 %
@@ -1663,7 +1670,7 @@ and Drainage Area 1 (c-d)
 on Patterson Branch, Fort Bragg, NC.
 The (a) flow accumulation  and
 (b) erosion [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]
-for the Study Subwatershed in the final 2~\unit{min} timestep.
+for the Study Subwatershed in the final 3~\unit{min} timestep.
 The (c) net difference [\unit{m}] and (d) landforms 
 for Drainage Area 1.
 }
@@ -1674,7 +1681,7 @@ for Drainage Area 1.
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/usped.pdf}
-\caption{Dynamic simulation with  USPED
+\caption{Dynamic simulation with USPED
 for a 120~\unit{min} event 
 with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$
 at 1~\unit{m} resolution for
@@ -1683,7 +1690,7 @@ and Drainage Area 1 (c-d)
 on Patterson Branch, Fort Bragg, NC.
 The (a) flow accumulation and
 (b) erosion-deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]
-for the Study Subwatershed in the final 2~\unit{min} timestep.
+for the Study Subwatershed in the final 3~\unit{min} timestep.
 The (c) net difference [\unit{m}] and (d) landforms 
 for Drainage Area 1.
 }
@@ -1721,7 +1728,8 @@ r.sim.terrain only models shallow overland flows,
 not fluvial processes or subsurface flows.
 It requires data -- including 
 elevation and rainfall intensity -- in metric units. 
-The SIMWE model is computationally intensive 
+The implementation of SIMWE in GRASS GIS
+is computationally intensive 
 and may require long computation times even with multithreading.
 Because SIMWE uses a Green's function Monte Carlo solution 
 of the sediment transport equation, 
@@ -1736,6 +1744,23 @@ This limits the size of rasters
 that can be easily processed with SIMWE,
 while RUSLE3D and USPED are much faster, computationally efficient,
 and can easily be run on much larger rasters. 
+
+%It is challenging to quantitatively assess the performance of
+%landscape evolution models at a watershed scale.
+%While geomorphological statistics 
+%like slope-area relationships and catchment hypsometry
+%are used to assess model results \citep{Tucker2010}, 
+%the drainage networks generated 
+%may have similar statistics, 
+%but very different spatial patterns \citep{Ijjasz1992}.
+%Furthermore drainage networks 
+%are sensitive to initial conditions
+%with errors propagating exponentially over time
+%\citep{Ijjasz1992}. 
+%Measured versus simulated erosion and deposition values
+%can be compared through landscape element classes 
+%based on slope and contributing area
+%\citep{Peeters2006,Temme2011}.
 
 % future work
 In the future we plan to assess this model
@@ -1759,6 +1784,8 @@ The short-term landscape evolution model
 r.sim.terrain can simulate the development of 
 gullies, rills, and hillslopes by overland water erosion
 for a range of hydrologic and soil erosion regimes.
+The model is novel for simulating landscape evolution
+based on unsteady flows. 
 The landscape evolution model was tested
 with a series of simulations for different 
 hydrologic and soil erosion regimes
@@ -1771,19 +1798,18 @@ The physics-based SIMWE model
 simulated morphological processes 
 for a variable erosion-deposition regime such as 
 gradual aggradation, channel widening, 
-scouring, and the development of
-depositional ridges along the thalweg.
+scouring, the development of
+depositional ridges along the thalweg,
+and the growth of the depositional fan.
 % empirical models
 The empirical RUSLE3D model simulated channel incision
 in a detachment limited soil erosion regime,
 while the semi-empirical USPED model
 simulated channel widening and filling
 in a transport limited regime. 
-The elevation change simulated with the USPED model
-most closely fit the observed change in the study landscape.
-% uses & implications
-Since r.sim.terrain is a GIS-based model 
-that simulates fine-scale morphological processes and features,
+% applications
+Since r.sim.terrain is a GIS-based model that simulates 
+fine-scale morphological processes and features,
 it can easily and effectively be used 
 in conjunction with other GIS-based tools
 for geomorphological research,
