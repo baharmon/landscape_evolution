@@ -37,12 +37,12 @@
 
     \node [block, below of=simwe] (variable) {variable erosion-deposition regime};
     \node [block, below of=variable, node distance=3.5cm] (water) {water flow};
-%HM we need a sediment flow block here
-	\node [block, below of=water, node distance=3.5cm] (erdep) {erosion-deposition};
+    \node [block, below of=water] (sedflux) {sediment flow};
+	\node [block, below of=sedflux] (erdep) {erosion-deposition};
 	\node [block, below of=erdep] (se) {change in elevation};
 	\node [block, below of=se] (sgd) {gravitional diffusion};
-%HM we need change in elevation here as well - we have delta z_s and delta z_g
-    \node [block, below of=sgd] (output) {output data};
+	\node [block, below of=sgd] (se2) {change in elevation};
+    \node [block, below of=se2] (output) {output data};
 
     \node [block, below of=rusle] (dl) {detachment limited regime};
     \node [block, below of=dl] (dr) {event-based erosivity factor};
@@ -51,17 +51,17 @@
 	\node [block, below of=dls] (dsf) {detachment rate};
 	\node [block, below of=dsf] (de) {change in elevation};
 	\node [block, below of=de] (dgd) {gravitional diffusion};
-%HM there should be change in elevation after grav diffusion as well, if I understand it correctly
+	\node [block, below of=dgd] (de2) {change in elevation};
 
     \node [block, below of=usped] (tl) {transport limited regime};
     \node [block, below of=tl] (tr) {event-based erosivity factor};
 	\node [block, below of=tr] (tflowacc) {flow accumulation};
 	\node [block, below of=tflowacc] (tls) {topographic sediment transport factor};
 	\node [block, below of=tls] (tsf) {sediment flow at transport capacity};
-%HM we need erosion-deposition block here
-	\node [block, below of=tsf] (te) {change in elevation};
+	\node [block, below of=tsf] (tlerdep) {erosion-deposition};
+	\node [block, below of=tlerdep] (te) {change in elevation};
 	\node [block, below of=te] (tgd) {gravitional diffusion};
-%HM we need change in elevation here as well
+	\node [block, below of=tgd] (te2) {change in elevation};
 
     % draw edges
     \path [line] (input) -- (flow);
@@ -77,11 +77,13 @@
     \path [line] (variable) -- (water);
     \path [line] (rusle) -- (dl);
     \path [line] (usped) -- (tl);
-    \path [line] (water) -- (erdep);
+    \path [line] (water) -- (sedflux);
+    \path [line] (sedflux) -- (erdep);
     \path [line] (erdep) -- (se);
     \path [line] (se) -- (sgd);
-    \path [line] (sgd) -- (output);
-    \path [line,dashed,rounded corners] (sgd) |- ($(sgd.south west) + (-0.25,-0.25)$) |- (simwe) node [pos=.00, left] (TextNode) {iterate};;
+    \path [line] (sgd) -- (se2);
+    \path [line] (se2) -- (output);
+    \path [line,dashed,rounded corners] (se2) |- ($(se2.south west) + (-0.25,-0.25)$) |- (simwe) node [pos=.00, left] (TextNode) {iterate};;
 
     \path [line] (rusle) -- (dl);
     \path [line] (dl) -- (dr);
@@ -90,8 +92,9 @@
     \path [line] (dls) -- (dsf);
     \path [line] (dsf) -- (de);
     \path [line] (de) -- (dgd);
-    \path [line,rounded corners] (dgd) |- (output);
-	\path [line,dashed,rounded corners] (dgd) |- ($(dgd.south west) + (-0.25,-0.25)$) |- (rusle) node [pos=.00, left] (TextNode) {iterate};;
+    \path [line] (dgd) -- (de2);
+    \path [line,rounded corners] (de2) |- (output);
+	\path [line,dashed,rounded corners] (de2) |- ($(de2.south west) + (-0.25,-0.25)$) |- (rusle) node [pos=.00, left] (TextNode) {iterate};;
 
     \path [line] (usped) -- (tl);
     \path [line] (tl) -- (tr);
@@ -100,8 +103,9 @@
     \path [line] (tls) -- (tsf);
     \path [line] (tsf) -- (te);
     \path [line] (te) -- (tgd);
-    \path [line,rounded corners] (tgd) |- (output);
-    \path [line,dashed,rounded corners] (tgd) |- ($(tgd.south east) + (0.25,-0.25)$) |- (usped) node [pos=.00, right] (TextNode) {iterate};;
+    \path [line] (tgd) -- (te2);
+    \path [line,rounded corners] (te2) |- (output);
+    \path [line,dashed,rounded corners] (te2) |- ($(te2.south east) + (0.25,-0.25)$) |- (usped) node [pos=.00, right] (TextNode) {iterate};;
 
 	% title
 	\node[above,font=\normalsize\bfseries] at ($(current bounding box.north) + (0,0.25)$) {r.sim.terrain};
