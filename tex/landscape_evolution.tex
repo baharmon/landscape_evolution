@@ -112,7 +112,7 @@ CAESAR \citep{Coulthard2002,Coulthard2012},
 SIBERIA \citep{Willgoose2005},
 LAPSUS \citep{Schoorl2000,Schoorl2002},
 and r.landscape.evol \citep{Barton2010}
-simulate steady state flows over long temporal scales.
+simulate landscape evolution driven primarily by steady state flows over long temporal scales.
 % recent development
 \href{http://landlab.github.io/}{Landlab},
 a new Python library for numerically modeling Earth surface processes
@@ -140,16 +140,16 @@ fluvial erosion, and gravitational diffusion.
 r.landscape.evol has been used to simulate the impact 
 of prehistoric settlements on Mediterranean landscapes.
 % research questions
-There are still major research questions 
+In spite of the recent progress in landscape evolution modeling and monitoring, 
+there are still major research questions 
 to address in the theoretical foundations of erosion modeling 
 such as how erosional processes scale over time and space 
 and how sediment detachment and transport interact \citep{Mitasova2013}. 
 % dynamic evolution
 While most numerical landscape evolution models 
-simulate peak flows at steady state,
-short-term erosional processes like gully formation can be dynamic
-with significant morphological changes happening within minutes
-before flows reach steady state. 
+simulate erosion processes at steady state, peak flows
+short-term erosional processes like gully formation can be driven by unsteady, dynamic flow
+with significant morphological changes happening before flows reach steady state. 
 A landscape evolution model with dynamic water and sediment flow
 is needed to study fine-scale spatial and short-term temporal erosional processes
 such as gully formation and the development of microtopography. 
@@ -267,7 +267,7 @@ that can simulate
 steady state and unsteady flow regimes
 and dynamically switch between soil erosion regimes 
 are needed to study 
-fine-scale spatial and short-term temporal erosional processes.
+fine-scale spatial and short-term erosional processes.
 
 % aim
 The numerical landscape evolution model 
@@ -318,7 +318,7 @@ across a range of spatiotemporal scales and soil erosion regimes
 using either
 the Simulated Water Erosion (SIMWE) model, 
 the 3-Dimensional Revised Universal Soil Loss Equation (RUSLE 3D) model,
-or the Unit Stream Power Erosion Deposition (USPED) model.  
+or the Unit Stream Power Erosion Deposition (USPED) model (\ref {fig:evolution}).  
 The r.sim.terrain model
 can simulate either steady state or dynamic flow regimes.
 % simwe
@@ -349,7 +349,7 @@ in transport capacity limited soil erosion regimes
 \citep{Mitasova1996,Mitasova2013}. 
 With USPED r.sim.terrain uses an event-based rainfall erosivity factor, 
 soil erodibility factor, landcover factor, and a 3D topographic factor
-to model net erosion or deposition rates as the divergence of sediment flows. 
+to model net erosion or deposition rates as the divergence of sediment flow. 
 % evolution
 For each of the models 
 topographic change is derived at each time step
@@ -467,7 +467,7 @@ During storm events overland flow erodes soil,
 transports sediment across landscape, and 
 under favorable conditions deposits the sediment. 
 Gravitational diffusion, 
-applied to the changing elevation surface, 
+applied to the changed elevation surface, 
 simulates the smoothing effects 
 of localized soil transport between events.
 
@@ -478,7 +478,7 @@ expressed as the divergence of sediment flow  \citep{Tucker2001}:
 % landscape evolution equation
 \begin{equation}
 \label{eq:evolution} 
-{\partial z \over \partial t } = -\nabla \cdot {\bf q_s} = d_s ~ \rho_s^{-1} 
+{\partial z \over \partial t } = \left (-\nabla \cdot {\bf q_s}i \right ) ~ \rho_s^{-1} = d_s ~ \rho_s^{-1} 
 \end{equation}
 {\small
 where: \\
@@ -509,7 +509,7 @@ the diffusion coefficient, and Laplacian of the elevation
 %HM see eq 4.41 in Thaxton, also from Willgoose, the second term
 \noindent
 where $\varepsilon_g$ is the diffusion coefficient [\unit{kg~m}$^{2}$~\unit{s}$^{-1}$].
-%HM we can write $\varepsilon_g=c~\varepsilon$ where k[kg] to keep the diffusion coef units the same as in literature
+%HM we can write $\varepsilon_g=c~\varepsilon$ where c[kg] to keep the diffusion coef units the same as in literature
 %If it is the same time step we have
 %\begin{equation}
 %\label{eq:evolution_disc1} 
@@ -539,6 +539,8 @@ where: \\
 \hspace*{0.5em} $\Delta t_2$ is the time interval between events
 when gravitational diffusion changes the elevation surface [\unit{s}].\\
 }
+%HM  we need to conclude this with reference to Thaxton? about delta z and stability of the solution
+%and/or that t1 and t2 can be different 
 
 \subsubsection{Erosion-deposition regimes}
 
