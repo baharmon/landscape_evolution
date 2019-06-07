@@ -19,36 +19,36 @@
 \begin{document}
 
 \tikzstyle{block} = [rectangle, draw, fill=black!10,
-    text width=12em, text centered, rounded corners, minimum height=4em]
+    text width=12em, text centered, rounded corners, minimum height=3em]
 \tikzstyle{line} = [draw, very thick, color=black!50, -latex']
 
 \sf
 \scriptsize
 \centering 
 
-\begin{tikzpicture}[scale=2, node distance = 1.75cm, auto]
+\begin{tikzpicture}[scale=2, node distance = 1.25cm, auto]
     % place nodes
     \node [block] (input) {input data};
     \node [block, below of=input, node distance=1.5cm] (flow) {determine steady state or unsteady flow regime};
     \node [block, below of=flow, node distance=1.5cm] (model) {determine model};
     \node [block, below of=model, node distance=1.5cm] (simwe) {SIMWE};
-    \node [block, left of=simwe, node distance=6.5cm] (rusle) {RUSLE3D};
-    \node [block, right of=simwe, node distance=6.5cm] (usped) {USPED};
+    \node [block, left of=simwe, node distance=6cm] (rusle) {RUSLE3D};
+    \node [block, right of=simwe, node distance=6cm] (usped) {USPED};
 
     \node [block, below of=simwe] (variable) {variable erosion-deposition regime};
-    \node [block, below of=variable, node distance=3.5cm] (water) {water flow};
-    \node [block, below of=water] (sedflux) {sediment flow};
+    \node [block, below of=variable, node distance=2.5cm] (water) {water flow};
+    \node [block, below of=water, node distance=2.5cm] (sedflux) {sediment flow};
 	\node [block, below of=sedflux] (erdep) {erosion-deposition};
 	\node [block, below of=erdep] (se) {change in elevation};
 	\node [block, below of=se] (sgd) {gravitional diffusion};
 	\node [block, below of=sgd] (se2) {change in elevation};
-    \node [block, below of=se2] (output) {output data};
+    \node [block, below of=se2, node distance=1.75cm] (output) {output data};
 
     \node [block, below of=rusle] (dl) {detachment limited regime};
     \node [block, below of=dl] (dr) {event-based erosivity factor};
 	\node [block, below of=dr] (dflowacc) {flow accumulation};
 	\node [block, below of=dflowacc] (dls) {3D topographic factor};
-	\node [block, below of=dls] (dsf) {detachment rate};
+	\node [block, below of=dls, node distance=2.5cm] (dsf) {detachment rate};
 	\node [block, below of=dsf] (de) {change in elevation};
 	\node [block, below of=de] (dgd) {gravitional diffusion};
 	\node [block, below of=dgd] (de2) {change in elevation};
@@ -101,7 +101,8 @@
     \path [line] (tr) -- (tflowacc);
     \path [line] (tflowacc) -- (tls);
     \path [line] (tls) -- (tsf);
-    \path [line] (tsf) -- (te);
+    \path [line] (tsf) -- (tlerdep);
+    \path [line] (tlerdep) -- (te);
     \path [line] (te) -- (tgd);
     \path [line] (tgd) -- (te2);
     \path [line,rounded corners] (te2) |- (output);
