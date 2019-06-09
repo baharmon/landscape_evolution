@@ -1,7 +1,7 @@
 % !TEX encoding = UTF-8 Unicode
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL discussion_paper.tex      Sat Jun  1 11:54:45 2019
-%DIF ADD landscape_evolution.tex   Sat Jun  1 11:13:54 2019
+%DIF DEL discussion_paper.tex      Tue Jun  4 20:34:05 2019
+%DIF ADD landscape_evolution.tex   Fri Jun  7 17:56:12 2019
 
 % Geoscientific Model Development (gmd)
 \documentclass[gmd, manuscript]{copernicus}
@@ -36,7 +36,6 @@
 
 \begin{document}
 
-%DIF > \title{\lowercase{r.sim.terrain 1.0}: a dynamic landscape evolution model} 
 \title{\DIFdelbegin %DIFDELCMD < \lowercase{r.sim.terrain}%%%
 \DIFdelend \DIFaddbegin \lowercase{r.sim.terrain 1.0}\DIFaddend : a \DIFdelbegin \DIFdel{dynamic }\DIFdelend landscape evolution model \DIFaddbegin \DIFadd{with dynamic hydrology}\DIFaddend } 
 
@@ -84,8 +83,9 @@ uses empirical models for soil erosion
 for shallow overland water flow and soil erosion 
 \DIFdelbegin \DIFdel{at subwatershed scales
 }\DIFdelend to compute short-term topographic change. 
-This \DIFdelbegin \DIFdel{either }\DIFdelend \DIFaddbegin \DIFadd{model uses either a }\DIFaddend steady state or dynamic \DIFdelbegin \DIFdel{model simulates
-}\DIFdelend \DIFaddbegin \DIFadd{representation of overland flow
+This \DIFdelbegin \DIFdel{either }\DIFdelend \DIFaddbegin \DIFadd{model uses either a }\DIFaddend steady state 
+or \DIFdelbegin \DIFdel{dynamic model simulates
+}\DIFdelend \DIFaddbegin \DIFadd{unsteady representation of overland flow
 to simulate }\DIFaddend how overland sediment mass flows reshape topography
 for a range of hydrologic soil erosion regimes
 based on topographic, land cover, soil, and rainfall parameters. 
@@ -132,14 +132,17 @@ but a number of numerical landscape evolution models
 have been developed that simulate elevational change over time 
 \DIFdelbegin \DIFdel{\citep{Temme2013}}\DIFdelend \DIFaddbegin \DIFadd{\citep{Tucker2010,Temme2013}}\DIFaddend . 
 % numerical models
-Numerical landscape evolution models
-such as the Channel-Hillslope Integrated Landscape Development (CHILD) model 
-\citep{Tucker2001}\DIFdelbegin \DIFdel{and SIBERIA \citep{Willgoose2005}}\DIFdelend \DIFaddbegin \DIFadd{,
+Numerical landscape evolution models such as the 
+\DIFaddbegin \DIFadd{Geomorphic - Orogenic Landscape Evolution Model (GOLEM) 
+\citep{Tucker1994},
+CASCADE \citep{Braun1997},
+the }\DIFaddend Channel-Hillslope Integrated Landscape Development (CHILD) model 
+\citep{Tucker2001}\DIFdelbegin \DIFdel{and SIBERIA \citep{Willgoose2005}simulate }\DIFdelend \DIFaddbegin \DIFadd{,
 CAESAR \citep{Coulthard2002,Coulthard2012},
 SIBERIA \citep{Willgoose2005},
 LAPSUS \citep{Schoorl2000,Schoorl2002},
 and r.landscape.evol \citep{Barton2010}
-}\DIFaddend simulate steady state flows over long temporal scales.
+simulate landscape evolution driven primarily by }\DIFaddend steady state flows over long temporal scales.
 % recent development
 \href{http://landlab.github.io/}{Landlab},
 a new Python library for numerically modeling Earth surface processes
@@ -167,16 +170,18 @@ fluvial erosion, and gravitational diffusion.
 r.landscape.evol has been used to simulate the impact 
 of prehistoric settlements on Mediterranean landscapes}\DIFaddend .
 % research questions
-\DIFdelbegin \DIFdel{Furthermore there }\DIFdelend \DIFaddbegin \DIFadd{There }\DIFaddend are still major research questions 
+\DIFdelbegin \DIFdel{Furthermore }\DIFdelend \DIFaddbegin \DIFadd{In spite of the recent progress in landscape evolution modeling and monitoring, 
+}\DIFaddend there are still major research questions 
 to address in the theoretical foundations of erosion modeling 
 such as how erosional processes scale over time and space 
 and how sediment detachment and transport interact \citep{Mitasova2013}. 
 % dynamic evolution
 While most numerical landscape evolution models 
-simulate peak flows at steady state\DIFdelbegin \DIFdel{(see Table~\ref{table:evolution_models})}\DIFdelend ,
-short-term erosional processes like gully formation can be dynamic
-with significant morphological changes happening within minutes
-before flows reach steady state. 
+simulate \DIFdelbegin \DIFdel{peak flows }\DIFdelend \DIFaddbegin \DIFadd{erosion processes }\DIFaddend at steady state\DIFdelbegin \DIFdel{(see Table~\ref{table:evolution_models}), }\DIFdelend \DIFaddbegin \DIFadd{, peak flows
+}\DIFaddend short-term erosional processes like gully formation can be \DIFdelbegin \DIFdel{dynamic
+}\DIFdelend \DIFaddbegin \DIFadd{driven by unsteady, dynamic flow
+}\DIFaddend with significant morphological changes happening \DIFdelbegin \DIFdel{within minutes
+}\DIFdelend before flows reach steady state. 
 A \DIFdelbegin \DIFdel{dynamic }\DIFdelend landscape evolution model \DIFaddbegin \DIFadd{with dynamic water and sediment flow
 }\DIFaddend is needed to study fine-scale spatial and short-term temporal erosional processes
 such as gully formation and the development of microtopography. 
@@ -295,7 +300,7 @@ that can simulate
 steady state and \DIFdelbegin \DIFdel{dynamic }\DIFdelend \DIFaddbegin \DIFadd{unsteady }\DIFaddend flow regimes
 and \DIFdelbegin \DIFdel{can }\DIFdelend dynamically switch between soil erosion regimes 
 are needed to study 
-fine-scale spatial and short-term temporal erosional processes.
+fine-scale spatial and short-term \DIFdelbegin \DIFdel{temporal }\DIFdelend erosional processes.
 
 % aim
 The numerical landscape evolution model 
@@ -347,10 +352,10 @@ across a range of spatiotemporal scales and soil erosion regimes
 using either
 the Simulated Water Erosion (SIMWE) model, 
 the 3-Dimensional Revised Universal Soil Loss Equation (RUSLE 3D) model,
-or the Unit Stream Power Erosion Deposition (USPED) model.  
-\DIFaddbegin \DIFadd{The r.sim.terrain model
-can simulate either steady state or dynamic flow regimes.
-}\DIFaddend % simwe
+or the Unit Stream Power Erosion Deposition (USPED) model \DIFaddbegin \DIFadd{(\ref {fig:evolution}).  
+The r.sim.terrain model
+can simulate either steady state or dynamic flow regimes}\DIFaddend .
+% simwe
 SIMWE is a physics-based simulation
 that uses a Monte Carlo path sampling method
 to solve the water and sediment flow equations
@@ -380,7 +385,7 @@ in transport capacity limited soil erosion regimes
 \DIFaddbegin \DIFadd{\citep{Mitasova1996,Mitasova2013}}\DIFaddend . 
 With USPED r.sim.terrain uses an event-based \DIFaddbegin \DIFadd{rainfall }\DIFaddend erosivity factor, 
 \DIFdelbegin \DIFdel{the slope and aspect, the flow accumulation}\DIFdelend \DIFaddbegin \DIFadd{soil erodibility factor, landcover factor}\DIFaddend , and a 3D topographic factor
-to model \DIFdelbegin \DIFdel{erosion-deposition as the the }\DIFdelend \DIFaddbegin \DIFadd{net erosion or deposition rates as the }\DIFaddend divergence of sediment flows. 
+to model \DIFdelbegin \DIFdel{erosion-deposition as the the }\DIFdelend \DIFaddbegin \DIFadd{net erosion or deposition rates as the }\DIFaddend divergence of sediment \DIFdelbegin \DIFdel{flows}\DIFdelend \DIFaddbegin \DIFadd{flow}\DIFaddend . 
 % evolution
 For each of the models 
 topographic change is derived at each time step
@@ -447,11 +452,9 @@ with the command:
 g.extension extension=r.sim.terrain
 \end{verbatim}
 
-
 % -------------------------- TABLE OF MODELS -----------------------------
 
 \DIFaddbegin
-
 % table of erosion models
 \begin{table*}
 \small
@@ -478,30 +481,8 @@ USPED & watershed & continuous & raster & map algebra & \citep{Mitasova1996}\\
 \end{table*}
 \DIFaddend
 
-% <-------------------------------------------------------- CHECK DIFF HERE!
 
-%DIF > % table of landscape evolution models
-%DIF > \begin{table*}
-%DIF > \small
-%DIF > \caption{Topographic evolution models}
-%DIF > \begin{tabu} to \textwidth {lXXXXll}
-%DIF > \toprule
-%DIF > Model &  Temporal scale & Representation & Dynamics & Implementation & Reference\\
-%DIF > \midrule
-%DIF > \href{https://csdms.colorado.edu/wiki/Model:CHILD}{CHILD} & continuous & mesh & steady state & \href{https://csdms.colorado.edu/wiki/Model:CHILD}{C++ program} & \citep{Tucker2001}\\
-%DIF > \href{https://csdms.colorado.edu/wiki/Model:SIBERIA}{SIBERIA} & continuous & raster & steady state & \href{https://csdms.colorado.edu/wiki/Model:SIBERIA}{Fortran prog.} & \citep{Willgoose2005}\\
-%DIF > \href{https://grass.osgeo.org/grass74/manuals/addons/r.landscape.evol.html}{r.landscape.evol} & continuous & raster &  steady state & \href{https://grass.osgeo.org/grass74/manuals/addons/r.landscape.evol.html}{GRASS module} & \citep{Barton2010}\\
-%DIF > \href{https://github.com/landlab/}{Landlab built models} & continuous & raster + mesh & steady state & \href{https://github.com/landlab/}{Python library} & \citep{Hobley2017}\\
-%DIF > \href{https://github.com/baharmon/landscape_evolution}{r.sim.terrain}  & event -- & raster & dynamic -- & \href{https://github.com/baharmon/landscape_evolution}{GRASS module} &\\
-%DIF > & continuous && steady state & &\\
-%DIF > \bottomrule
-%DIF > \\
-%DIF > \end{tabu}
-%DIF > \label{table:evolution_models} 
-%DIF > \end{table*}
-\DIFaddbegin 
-
-\DIFaddend % -------------------------- MODEL FIGURE -----------------------------
+%-------------------------- MODEL FIGURE -------------------------
 
 % model figure
 \begin{figure}
@@ -520,7 +501,7 @@ for a (a \& b) subwatershed and (c \& d) drainage area of Patterson Branch, Fort
 \end{figure}
 
 %DIF <  -------------------------- EROSION-DEPOSITION -----------------------------
-%DIF >  -------------------------- MATH FOUNDATIONS OF THE MODEL -----------------------------
+%DIF >  --------------- MATH FOUNDATIONS OF THE MODEL ------------------
 \DIFaddbegin 
 
 \DIFaddend \subsection{\DIFdelbegin \DIFdel{Simulation of water erosion model}\DIFdelend \DIFaddbegin \DIFadd{Landscape evolution}\DIFaddend }
@@ -533,7 +514,7 @@ During storm events overland flow erodes soil,
 transports sediment across landscape, and 
 under favorable conditions deposits the sediment. 
 Gravitational diffusion, 
-applied to the changing elevation surface, 
+applied to the changed elevation surface, 
 simulates the smoothing effects 
 of localized soil transport between events.
 }
@@ -544,17 +525,17 @@ is described by the continuity of mass equation
 expressed as the divergence of sediment flow  \citep{Tucker2001}:
 %DIF >  landscape evolution equation
 }\begin{equation}
-\DIFadd{\label{eq:evolution} 
-}{\DIFadd{\partial z \over \partial t }} \DIFadd{= -\nabla \cdot }{\DIFadd{\bf q_s}} \DIFadd{= d_s ~ \rho_s^{-1} 
-}\end{equation}
-{\small
-\DIFadd{where: }\\
-\noindent
-\DIFadd{\hspace*{0.5em} $z$ is elevation }[\unit{m}] \\
-\DIFadd{\hspace*{0.5em} $t$ is time }[\unit{s}] \\
-\DIFadd{\hspace*{0.5em} ${\bf q_s}$ is sediment flow per unit width (vector) }[\unit{kg~m}\DIFadd{$^{-1}$~}\unit{s}\DIFadd{$^{-1}$}]\\
-\DIFadd{\hspace*{0.5em} $d_s$ is the net erosion-deposition rate }[\unit{kg~m}\DIFadd{$^{-2}$~}\unit{s}\DIFadd{$^{-1}$}]\\
-\DIFadd{\hspace*{0.5em} $\rho_s$ is sediment mass density }[\unit{kg~m}\DIFadd{$^{-3}$}]\DIFadd{.}\\
+\label{eq:evolution} 
+{\partial z \over \partial t } = \left (-\nabla \cdot {\bf q_s}i \right ) ~ \rho_s^{-1} = d_s ~ \rho_s^{-1} 
+\end{equation}
+{\DIFadd{\small
+where: }\\
+\DIFadd{\noindent
+\hspace*{0.5em} $z$ is elevation }[\DIFadd{\unit{m}}] \\
+\DIFadd{\hspace*{0.5em} $t$ is time }[\DIFadd{\unit{s}}] \\
+\DIFadd{\hspace*{0.5em} ${\bf q_s}$ is sediment flow per unit width (vector) }[\DIFadd{\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$}]\\
+\DIFadd{\hspace*{0.5em} $d_s$ is the net erosion-deposition rate }[\DIFadd{\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$}]\\
+\DIFadd{\hspace*{0.5em} $\rho_s$ is sediment mass density }[\DIFadd{\unit{kg~m}$^{-3}$}]\DIFadd{.}\\
 }
 \DIFadd{The net erosion-deposition rate $d_s$ driven by overland flow
 in r.sim.terrain is estimated at different levels of complexity based 
@@ -570,13 +551,13 @@ the diffusion coefficient, and Laplacian of the elevation
 %DIF >  change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
 }\begin{equation}
 \DIFadd{\label{eq:grav_diffusion} 
-}{\DIFadd{\partial z \over \partial t }} \DIFadd{= \rho_s^{-1} ~ \varepsilon_g ~ \nabla^2 z 
+{\partial z \over \partial t } = \rho_s^{-1} ~ \varepsilon_g ~ \nabla^2 z 
 }\end{equation}
 %DIF > HM this should be \nabla^2 z, \nabla is an operator so there should be a variable upon which it is applied
 %DIF > HM see eq 4.41 in Thaxton, also from Willgoose, the second term
 \noindent
 \DIFadd{where $\varepsilon_g$ is the diffusion coefficient }[\unit{kg~m}\DIFadd{$^{2}$~}\unit{s}\DIFadd{$^{-1}$}]\DIFadd{.
-%DIF > HM we can write $\varepsilon_g=c~\varepsilon$ where k[kg] to keep the diffusion coef units the same as in literature
+%DIF > HM we can write $\varepsilon_g=c~\varepsilon$ where c[kg] to keep the diffusion coef units the same as in literature
 %DIF > If it is the same time step we have
 %DIF > \begin{equation}
 %DIF > \label{eq:evolution_disc1} 
@@ -593,20 +574,22 @@ the diffusion coefficient, and Laplacian of the elevation
 z_{t+ \Delta t_1} = z_t + \Delta z_s  
 }\end{equation}
 \begin{equation}
-\DIFadd{\label{eq:evolution_disc2} 
+\label{eq:evolution_disc2} 
 z_{t+\Delta t_1+\Delta t_2} = z_{t+\Delta t_1} + \Delta z_g 
-}\end{equation}
-{\small
-\DIFadd{where: }\\
-\noindent
-\DIFadd{\hspace*{0.5em} $\Delta z_s$ is elevation change caused by net erosion or deposition
-}[\unit{m}] \DIFadd{(Eq.~\ref{eq:evolution})}\\
+\end{equation}
+{\DIFadd{\small
+where: }\\
+\DIFadd{\noindent
+\hspace*{0.5em} $\Delta z_s$ is elevation change caused by net erosion or deposition
+}[\DIFadd{\unit{m}}] \DIFadd{(Eq.~\ref{eq:evolution})}\\
 \DIFadd{\hspace*{0.5em} $\Delta z_g$ is the diffusion driven elevation change
-}[\unit{m}] \DIFadd{(Eq.~\ref{eq:grav_diffusion})}\\
-\DIFadd{\hspace*{0.5em} $\Delta t_1$ is the time interval during a storm event }[\unit{s}]\\
+}[\DIFadd{\unit{m}}] \DIFadd{(Eq.~\ref{eq:grav_diffusion})}\\
+\DIFadd{\hspace*{0.5em} $\Delta t_1$ is the time interval during a storm event }[\DIFadd{\unit{s}}]\\
 \DIFadd{\hspace*{0.5em} $\Delta t_2$ is the time interval between events
-when gravitational diffusion changes the elevation surface }[\unit{s}]\DIFadd{.}\\
+when gravitational diffusion changes the elevation surface }[\DIFadd{\unit{s}}]\DIFadd{.}\\
 }
+%DIF > HM  we need to conclude this with reference to Thaxton? about delta z and stability of the solution
+%DIF > and/or that t1 and t2 can be different 
 
 \subsubsection{\DIFadd{Erosion-deposition regimes}}
 
@@ -627,7 +610,7 @@ to sediment transport capacity $T_c$ }[\DIFadd{$\unit kg~m^{-1}~s^{-1}$}]
 \DIFadd{is a conserved quantity (unity):
 }\begin{equation}
 \DIFadd{\label{eq:foster_law}
-}{\DIFadd{d_s \over D_c}} \DIFadd{+ }{\DIFadd{q_s \over T_c}} \DIFadd{= 1
+{d_s \over D_c} + }{\DIFadd{q_s \over T_c}} \DIFadd{= 1
 }\end{equation}
 \DIFadd{The net erosion and deposition rate $d_s$ can then be expressed 
 as being proportional to the difference between
@@ -721,7 +704,8 @@ equations and parameters developed for the WEPP model
 %DIF >  -------------------------- SIMWE -----------------------------
 \subsection{\DIFadd{Simulation of Water Erosion (SIMWE)}} \DIFaddend \label{simwe}
 %DIF <  simwe intro
-SIMWE \DIFdelbegin \DIFdel{-- the Simulation of Water Erosion model -- 
+SIMWE \DIFdelbegin \DIFdel{-- the Simulation of 
+Water Erosion model -- 
 }\DIFdelend is a physics-based simulation of shallow overland water and sediment flow
 that uses a path sampling method to solve the continuity \DIFdelbegin \DIFdel{and momentum }\DIFdelend equations 
 with a 2D diffusive wave approximation 
@@ -772,28 +756,40 @@ using the equations in \cite{Hofierka2009}.
 r.sim.terrain simulates unsteady-state flow regimes
 when the landscape evolution }\DIFaddend time step is less than the travel time 
 for a drop of water or a particle of sediment to cross the landscape\DIFaddbegin \DIFadd{,
-e.g.~when the time step is less than the time to concentration for the modeled watershed}\DIFaddend .
-With longer \DIFaddbegin \DIFadd{landscape evolution }\DIFaddend time steps the model simulates \DIFdelbegin \DIFdel{steady state dynamics}\DIFdelend \DIFaddbegin \DIFadd{a steady state regime}\DIFaddend . 
+e.g.~when the time step is less than the 
+time to concentration for the modeled watershed}\DIFaddend .
+With longer \DIFaddbegin \DIFadd{landscape evolution }\DIFaddend time steps 
+the model simulates \DIFdelbegin \DIFdel{steady state dynamics. 
+}%DIFDELCMD < 
 
-% ------------------------------------------------------------------------------
+%DIFDELCMD < %%%
+%DIF <  ------------------------------------------------------------------------------
+%DIFDELCMD < 
 
-\subsubsection{\DIFdelbegin \DIFdel{Erosion regime}\DIFdelend \DIFaddbegin \DIFadd{Shallow water flow}\DIFaddend }
+%DIFDELCMD < %%%
+\subsubsection{\DIFdel{Erosion regime}}
+%DIFAUXCMD
+\addtocounter{subsubsection}{-1}%DIFAUXCMD
+%DIFDELCMD < 
 
+%DIFDELCMD < %%%
 %DIF <  Erosion regime
-\DIFdelbegin \DIFdel{This model can switch erosion regimes at each time step
+\DIFdel{This model can switch erosion regimes at each time step
 based on the rainfall intensity ($i_r$)
 and the balance of the sediment detachment capacity ($D_c$)
 and the sediment transport capacity ($T_c$)
-represented by the first order reaction term $\sigma$, which depends on soiland landcoverproperties.
+represented by the first order reaction term $\sigma$, 
+which depends on soil and landcover properties.
 The detachment capacity is the maximum potential 
-detachment rate by overland flow, 
-while
+detachment rate by overland flow, while
 the sediment transport capacity 
 is the maximum potential sediment flow rate.
 When rainfall intensity is very high ($i_r \geq 60 \unit{mm~hr}^{-1}$)
 or $\sigma$ is low ($\sigma \leq 0.01 \unit{m}^{-1}$),
-then the regime is detachment capacity limited.%DIF < 
-When rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $)and $\sigma$ is high ($\sigma \geq 100 \unit{m}^{-1}$) ,
+then the regimeis detachment capacity limited. 
+%DIF < 
+When rainfall intensity is not very high ($i_r < 60 \unit{mm~hr}^{-1} $)
+and $\sigma$ is high ($\sigma \geq 100 \unit{m}^{-1}$),
 then the regime is transport capacity limited. 
 %DIF < 
 When rainfall intensity is not very high 
@@ -803,38 +799,82 @@ and $\sigma$ is neither high nor low
 then there is an variable erosion-deposition regime. }%DIFDELCMD < \\
 %DIFDELCMD < %%%
 %DIF <  erosion regime eq.
-%\begin{displaymath}
-%\DIFdel{%DIFDELCMD < \label{eq:regime}%%%
-%$\sigma = }{\DIFdel{D_c \over T_c}}$
-%\end{displaymath}
+\begin{displaymath}
+%DIFDELCMD < \label{eq:regime}%%%
+\sigma = {D_c \over T_c}
+\end{displaymath}
+{\DIFdel{\small
+\noindent
+where: }\\
+\DIFdel{\noindent
+\hspace*{0.5em} $\sigma$  is a first order reaction term }[\DIFdel{$\unit{m}^{-1}$}]\\
+\DIFdel{\hspace*{0.5em} $D_c$ is the sediment detachment capacity }[\DIFdel{$\unit{kg~m}^{-1}s^{-1}$}]\\
+\DIFdel{\hspace*{0.5em} $T_c$ is the sediment transport capacity }[\DIFdel{$\unit{kg~m}^{-1}s^{-1}$}]\\
+}
 %DIFAUXCMD
-\DIFdelend %DIF >  Shallow water flow
-\DIFaddbegin \DIFadd{The SIMWE model simulates shallow overland water flow
+\DIFdelend \DIFaddbegin \DIFadd{a steady state regime. 
+}\DIFaddend 
+
+% ------------------------------------------------------------------------------
+
+\subsubsection{Shallow water flow}
+
+% Shallow water flow
+The SIMWE model simulates shallow overland water flow
 controlled by spatially variable topographic, soil, landcover, 
-and rainfall parameters by solving the water flow continuity equation 
-using a Green's function Monte Carlo path sampling method:
-%DIF >  shallow water flow eq.
-}\begin{equation}
-\DIFadd{\label{eq:water}
-%DIF > {\partial h \over \partial t} =
+and rainfall parameters by solving the \DIFdelbegin \DIFdel{continuity and momentum equations 
+for steady state water flow with a }\DIFdelend \DIFaddbegin \DIFadd{water flow continuity equation 
+using a Green's function Monte Carlo }\DIFaddend path sampling method\DIFdelbegin \DIFdel{(Fig. 
+~\ref{fig:models}a ).
+Shallow water flow $q$ can be approximated by the bivariate form of the St.~Venant equation:
+}\DIFdelend \DIFaddbegin \DIFadd{:
+}\DIFaddend % shallow water flow eq.
+\DIFdelbegin \begin{displaymath}
+%DIFDELCMD < \label{eq:water}%%%
+{\partial h \over \partial t} =
+ i_e - \nabla ~ q
+\end{displaymath}
+{\DIFdel{\small
+\noindent
+where: }\\
+\DIFdel{\noindent
+\hspace*{0.5em} $x, y$ is the position }[\DIFdel{\unit{m}}]\\
+\DIFdel{\hspace*{0.5em} $t$ is the time }[\DIFdel{\unit{s}}] \\
+\DIFdel{\hspace*{0.5em} $h$ is the depth of overland flow }[\DIFdel{\unit{m}}]\\
+\DIFdel{\hspace*{0.5em} $i_e$ is the rainfall excess }[\DIFdel{\unit{m~s^{-1}}}] \\
+\DIFdel{\hspace*{0.5em} (i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)}\\
+\DIFdel{\hspace*{0.5em} $\nabla$ is the divergence of the flow vector field}\\
+\DIFdel{\hspace*{0.5em} $q$ is the water flow per unit width }[\DIFdel{$\unit{m}^2~\unit{s}^{-1}$}]\DIFdel{. }\\
+}
+%DIFAUXCMD
+\DIFdelend \DIFaddbegin \begin{equation}
+\label{eq:water}
+%{\partial h \over \partial t} =
 \nabla \cdot \vec{q} = i_e
-}\end{equation}
-\DIFaddend {\small
+\end{equation}
+{\DIFadd{\small
 \noindent
-\DIFdelbegin \DIFdel{where: }\DIFdelend \DIFaddbegin \DIFadd{where: }\DIFaddend \\
-\noindent
+where: }\\
+\DIFadd{\noindent
 %DIF > \hspace*{0.5em} $x, y$ is the position [\unit{m}]\\
 %DIF > \hspace*{0.5em} $t$ is the time [\unit{s}] \\
 %DIF > \hspace*{0.5em} $h$ is the depth of overland flow [\unit{m}]\\
-\hspace*{0.5em} \DIFdelbegin \DIFdel{$\sigma$  is a first order reaction term }\DIFdelend \DIFaddbegin \DIFadd{$i_e$ is the rainfall excess rate }\DIFaddend [\DIFdelbegin \DIFdel{$\unit{m}^{-1}$}%DIFDELCMD < ]%%%
-\DIFdelend \DIFaddbegin \DIFadd{$\unit{m~s^{-1}}$}]
-\DIFadd{(i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)}\DIFaddend \\
+\hspace*{0.5em} $i_e$ is the rainfall excess rate }[\DIFadd{$\unit{m~s^{-1}}$}]
+\DIFadd{(i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)}\\
 %DIF > \hspace*{0.5em} $\nabla$ is the divergence operator\\
-\hspace*{0.5em} \DIFdelbegin \DIFdel{$D_c$ is the sediment detachment capacity }\DIFdelend \DIFaddbegin \DIFadd{$\vec{q}$ is the water flow per unit width (vector) }\DIFaddend [\DIFdelbegin \DIFdel{$\unit{kg~m}^{-1}s^{-1}$}\DIFdelend \DIFaddbegin \DIFadd{$\unit{m}^2~\unit{s}^{-1}$}\DIFaddend ]\DIFaddbegin \DIFadd{. 
+\DIFadd{\hspace*{0.5em} $\vec{q}$ is the water flow per unit width (vector) }[\DIFadd{$\unit{m}^2~\unit{s}^{-1}$}]\DIFadd{. 
 }}
+\DIFaddend 
 
 \noindent
-\DIFadd{The path sampling method solves the continuity equation 
+\DIFdelbegin \DIFdel{Diffusive wave effects can be approximated
+so that water can flow through depressions 
+by integrating a diffusion term 
+$ \propto \nabla^2 [h^{5/3}]$
+into the solution of the continuity and momentum equations 
+for steady state water flow .
+This equation
+is solved }\DIFdelend \DIFaddbegin \DIFadd{The path sampling method solves the continuity equation 
 through the accumulation of the evolving source over the given time period. 
 This accumulation process can be interpreted as
 an approximation of a dynamic solution with diffusive wave effects
@@ -842,52 +882,20 @@ incorporated by adding a diffusion term proportional to
 $ \nabla^2 [h^{5/3}]$
 in the solution:
 }\begin{equation}
-\DIFadd{\label{eq:difwater}
--}{\DIFadd{\varepsilon_w\over 2 }}\DIFadd{\nabla^2 ~ h^{5/3}
+\label{eq:difwater}
+-{\varepsilon_w\over 2 }\nabla^2 ~ h^{5/3}
 +\nabla \cdot \vec{q} = i_e
-}\end{equation}
-{\small
+\end{equation}
+{\DIFadd{\small
 \noindent
- \DIFadd{where: }\DIFaddend \\
- \DIFaddbegin \noindent
- \DIFaddend \hspace*{0.5em} \DIFdelbegin \DIFdel{$T_c$ is the sediment transport capacity }\DIFdelend \DIFaddbegin \DIFadd{$\varepsilon_w$ is a spatially variable diffusion coefficient }\DIFaddend [\DIFdelbegin \DIFdel{$\unit{kg~m}^{-1}s^{-1}$}\DIFdelend \DIFaddbegin \DIFadd{$\unit{m}^{4/3}~\unit{s}^{-1}$}\DIFaddend ]\DIFaddbegin \DIFadd{. }\DIFaddend \\
+ where: }\\
+ \DIFadd{\noindent
+ \hspace*{0.5em} $\varepsilon_w$ is a spatially variable diffusion coefficient }[\DIFadd{$\unit{m}^{4/3}~\unit{s}^{-1}$}]\DIFadd{. }\\
 }
-\DIFdelbegin %DIFDELCMD < 
-
-%DIFDELCMD < %%%
-%DIF <  ------------------------------------------------------------------------------
-%DIFDELCMD < 
-
-%DIFDELCMD < %%%
-\subsubsection{\DIFdel{Shallow water flow}}
-%DIFAUXCMD
-\addtocounter{subsubsection}{-1}%DIFAUXCMD
-%DIFDELCMD < 
-
-%DIFDELCMD < %%%
-%DIF <  Shallow water flow
-\DIFdel{The SIMWE model
-simulates shallow overland water flow controlled by spatially variable topographic, soil, landcover, 
-and rainfall parameters
-by solving the continuity and momentum equations 
-for steady state water flow with a path sampling method
-(Fig. 
-~\ref{fig:models}a ). 
-Shallow water flow $q$ can be approximated by
-the bivariate form of }\DIFdelend \DIFaddbegin \DIFadd{See \cite{Mitasova2004} for more details 
+\DIFadd{See \cite{Mitasova2004} for more details 
 on this equation and its numerical solution.
 The solution assumes that water flow velocity 
-is largely controlled by }\DIFaddend the \DIFdelbegin \DIFdel{St.
-~Venant equation:
-%DIF <  shallow water flow eq.
-}
-%\begin{displaymath}
-%\DIFdel{%DIFDELCMD < \label{eq:water}%%%
-%}{\DIFdel{\partial h \over \partial t}} \DIFdel{=
-% i_e - \nabla ~ q
-%}\end{displaymath}
-%DIFAUXCMD
-\DIFdelend \DIFaddbegin \DIFadd{slope of the terrain and surface roughness 
+is largely controlled by the slope of the terrain and surface roughness 
 and that its change at a given location during the simulated event is negligible. 
 The water depth $h$ at time $\tau$ during the simulated rainfall event
 %DIF > HM note that we have several time steps in r.sim.terrain 
@@ -901,37 +909,20 @@ by finding a new position for each walker at time $\tau + \Delta \tau$:
 \DIFadd{\vec{r}_m^{new}=\vec{r}_m + \Delta \tau \vec{v} + \vec{g}
 }\end{equation}
 
-\DIFaddend {\small
+{\small
 \noindent
 where: \\
 \noindent
-\hspace*{0.5em} \DIFdelbegin \DIFdel{$x, y$ is the }\DIFdelend \DIFaddbegin \DIFadd{$\vec{r} = (x, y)$ is the $m^{th}$ walker }\DIFaddend position [\unit{m}]\\
-\hspace*{0.5em} \DIFdelbegin \DIFdel{$t$ is the time }\DIFdelend \DIFaddbegin \DIFadd{$\Delta \tau$ is the particle routing time step }\DIFaddend [\unit{s}]\\
-\hspace*{0.5em} \DIFdelbegin \DIFdel{$h$ is the depth of overland flow }\DIFdelend \DIFaddbegin \DIFadd{$\vec{g}$ is a random vector with gaussian components with variance $\Delta \tau$ }\DIFaddend [\unit{m}]\\
-\hspace*{0.5em} \DIFdelbegin \DIFdel{$i_e$ is the rainfall excess }\DIFdelend \DIFaddbegin \DIFadd{$\vec{v} $ is the water flow velocity vector }\DIFaddend [\DIFdelbegin %DIFDELCMD < \unit{m~s^{-1}}%%%
-\DIFdelend \DIFaddbegin \DIFadd{$\unit{m~s^{-1}}$}\DIFaddend ]
-\DIFdelbegin %DIFDELCMD < \\
-%DIFDELCMD < %%%
-\DIFdel{\hspace*{0.5em} (i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)}%DIFDELCMD < \\
-%DIFDELCMD < %%%
-\DIFdel{\hspace*{0.5em} $\nabla$ is the divergence of the flow vector field}%DIFDELCMD < \\
-%DIFDELCMD < %%%
-\DIFdel{\hspace*{0.5em} $q$ is the water flow per unit width }\DIFdelend \DIFaddbegin \DIFadd{whose magnitude is computed with the Manning's equation $v=n^{-1}~h^{2/3}~s^{1/2}$ 
-where $n$ is the Manning's coefficient }\DIFaddend [\DIFdelbegin \DIFdel{$\unit{m}^2~\unit{s}^{-1}$}\DIFdelend \DIFaddbegin \DIFadd{$\unit{s~m^{-1/3}}$}\DIFaddend ] \DIFaddbegin \DIFadd{and $s$ is slope}\DIFaddend .\\ 
+\hspace*{0.5em} $\vec{r} = (x, y)$ is the $m^{th}$ walker position [\unit{m}]\\
+\hspace*{0.5em} $\Delta \tau$ is the particle routing time step [\unit{s}]\\
+\hspace*{0.5em} $\vec{g}$ is a random vector with gaussian components with variance $\Delta \tau$ [\unit{m}]\\
+\hspace*{0.5em} $\vec{v} $ is the water flow velocity vector [$\unit{m~s^{-1}}$]
+whose magnitude is computed with the Manning's equation $v=n^{-1}~h^{2/3}~s^{1/2}$ 
+where $n$ is the Manning's coefficient [$\unit{s~m^{-1/3}}$] and $s$ is slope.\\ 
 }
-\DIFdelbegin %DIFDELCMD < 
-
-%DIFDELCMD < %%%
-\DIFdelend %DIF > 
+%DIF > 
 \noindent
-\DIFdelbegin \DIFdel{Diffusive wave effects can be approximated
-so that water can flow through depressions 
-by integrating a diffusion term 
-$ \propto \nabla^2 [h^{5/3}]$
-into the solution of the continuity and momentum equations 
-for steady state water flow .
-This equation
-is solved }\DIFdelend \DIFaddbegin \DIFadd{The mathematical background of the method,
+\DIFadd{The mathematical background of the method,
 including the incorporation of approximate momentum 
 through an increased diffusion rate in the prevailing direction of flow,
 is presented by \cite{Mitas1998} and \cite{Mitasova2004}.
@@ -948,21 +939,18 @@ with spatially variable overland flow, soil, and landcover properties
 by solving  the sediment flow continuity equation
 }\DIFaddend using a Green's function Monte Carlo path sampling method.
 %DIF <   diffuse wave eq.
-%\DIFdelbegin \begin{displaymath}
-%\DIFdel{%DIFDELCMD < \label{eq:difwater}%%%
-%-}
-%{\DIFdel{\varepsilon\over 2 }}\DIFdel{\nabla^2 }[\DIFdel{h^{5/3}}]
-%\DIFdel{+\nabla ~ }[ \DIFdel{h~v}] \DIFdel{= i_e
-%}\end{displaymath}
+\DIFdelbegin \begin{displaymath}
+%DIFDELCMD < \label{eq:difwater}%%%
+-{\varepsilon\over 2 }\nabla^2 [h^{5/3}]
++\nabla ~ [ h~v] = i_e
+\end{displaymath}
+{\DIFdel{\small
+\noindent
+ where: }\\
+ \DIFdel{\noindent
+ \hspace*{0.5em} $\varepsilon$ is a spatially variable diffusion coefficient. }\\
+}
 %DIFAUXCMD
-%DIFDELCMD < {\small
-%DIFDELCMD < \noindent
-%DIFDELCMD <  %%%
-\DIFdel{where: }%DIFDELCMD < \\
-%DIFDELCMD <  \noindent
-%DIFDELCMD <  %%%
-\DIFdel{\hspace*{0.5em} $\varepsilon$ is a spatially variable diffusion coefficient. }%DIFDELCMD < \\
-%DIFDELCMD < }
 %DIFDELCMD < 
 
 %DIFDELCMD < %%%
@@ -988,32 +976,24 @@ as }\DIFdelend \DIFaddbegin \DIFadd{to effective sources and sinks:
 }\end{equation}
 %DIF > 
 \noindent
-\DIFadd{The sediment-flow rate $\vec{q_s}$ is }\DIFaddend a function of water flow and sediment concentration
+\DIFadd{The sediment-flow rate $\vec{q_s}$ 
+is }\DIFaddend a function of water flow and sediment concentration
 \citep{Mitas1998}\DIFdelbegin \DIFdel{(Fig.~\ref{fig:models}b): %DIF < sediment flow equation
-}
-%\begin{displaymath}\DIFdel{%DIFDELCMD < \label{eq:sedflow} %%%
-%q_s=\rho_s ~ q
-%}\end{displaymath}
-%%DIFAUXCMD
-%\DIFdelend 
-\DIFaddbegin \DIFadd{: %DIF > (Fig.~\ref{fig:models}b)
-%DIF > 
-}\begin{equation}
-\DIFadd{\label{eq:sedflow}
-\vec{q_s} = \rho_s~c~\vec{q} = \rho_s~c~h~\vec{v} = \varrho~\vec{v}
-}\end{equation}
-\DIFaddend {\small
+}\begin{displaymath}%DIFDELCMD < \label{eq:sedflow} %%%
+q_s = \rho_s ~ q
+\end{displaymath}
+{\DIFdel{\small
 \noindent
-where: \\
-\hspace*{0.5em} \DIFdelbegin \DIFdel{$q_s$ is the sediment flow rate per unit width }\DIFdelend \DIFaddbegin \DIFadd{$\rho_s$ is sediment mass density in the water column }\DIFaddend [\unit{kg~m}\DIFdelbegin \DIFdel{$^{-1}$~}%DIFDELCMD < \unit{s}%%%
-\DIFdel{$^{-1}$}\DIFdelend \DIFaddbegin \DIFadd{$^{-3}$}\DIFaddend ]\\
-\hspace*{0.5em} \DIFdelbegin \DIFdel{$\rho_s$ is sediment mass density }\DIFdelend \DIFaddbegin \DIFadd{$c$ is sediment concentration }\DIFaddend [\DIFdelbegin %DIFDELCMD < \unit{kg~m}%%%
-\DIFdel{$^{-3}$}\DIFdelend \DIFaddbegin \DIFadd{$\unit{particle~m^{-3}}$}\DIFaddend ]\DIFdelbegin \DIFdel{.}\DIFdelend \\
-\DIFaddbegin \DIFadd{\hspace*{0.5em} $\varrho = \rho_s~c~h$ is the mass of sediment transported by water per unit area }[\DIFadd{$\unit{kg~m^{-2}}$}]\DIFadd{. 
-}\DIFaddend }
+where: }\\
+\DIFdel{\hspace*{0.5em} $q_s$ is the sediment flow rate per unit width }[\DIFdel{\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$}]\\
+\DIFdel{\hspace*{0.5em} $\rho_s$ is sediment mass density }[\DIFdel{\unit{kg~m}$^{-3}$}]\DIFdel{.}\\
+}
+%DIFAUXCMD
+%DIFDELCMD < 
 
+%DIFDELCMD < %%%
 %DIF <  ------------------------------------------------------------------------------
-\DIFdelbegin %DIFDELCMD < 
+%DIFDELCMD < 
 
 %DIFDELCMD < %%%
 \subsubsection{\DIFdel{Erosion-deposition}}
@@ -1031,49 +1011,63 @@ to model sediment storage and flow based on effective sources and sinks
 Net erosion-deposition $d_s$
 -- the difference between sources and sinks --
 is approximated by
-the steady state sediment flow equationwith diffusion :
-%DIF <  erosion-deposition equation
+the steady state sediment flow equationwith diffusion }\DIFdelend : %DIF <  erosion-deposition equation
+\DIFdelbegin \begin{displaymath}%DIFDELCMD < \label{eq:sediment} %%%
+d_s = 
+{\partial [\rho_s ~ h] \over \partial t} +
+\nabla~q_s
+\end{displaymath}
+{\DIFdel{\small
+\noindent
+where: }\\
+\DIFdel{\hspace*{0.5em} $d_s$ is net erosion-deposition }[\DIFdel{\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$}]\DIFdel{.}\\
 }
-%\begin{displaymath}\DIFdel{%DIFDELCMD < \label{eq:sediment} %%%
-%d_s = 
-%}{\DIFdel{\partial }[\DIFdel{\rho_s ~ h}] \DIFdel{\over \partial t}} \DIFdel{+
-%\nabla~q_s
-%}\end{displaymath}
 %DIFAUXCMD
+%DIFDELCMD < 
+
+%DIFDELCMD < %%%
+%DIF <  ------------------------------------------------------------------------------
+\DIFdelend %DIF > (Fig.~\ref{fig:models}b)
+%DIF > 
+\DIFaddbegin \begin{equation}
+\label{eq:sedflow}
+\vec{q_s} = \rho_s~c~\vec{q} = \rho_s~c~h~\vec{v} = \varrho~\vec{v}
+\end{equation}
+{\DIFadd{\small
+\noindent
+where: }\\
+\DIFadd{\hspace*{0.5em} $\rho_s$ is sediment mass density in the water column }[\DIFadd{\unit{kg~m}$^{-3}$}]\\
+\DIFadd{\hspace*{0.5em} $c$ is sediment concentration }[\DIFadd{$\unit{particle~m^{-3}}$}]\\
+\DIFadd{\hspace*{0.5em} $\varrho = \rho_s~c~h$ is the mass of sediment transported by water per unit area }[\DIFadd{$\unit{kg~m^{-2}}$}]\DIFadd{. 
+}}
+\DIFaddend 
+
+\DIFdelbegin \subsubsection{\DIFdel{Landscape evolution}}
+%DIFAUXCMD
+\addtocounter{subsubsection}{-1}%DIFAUXCMD
 \DIFdelend \DIFaddbegin \DIFadd{The sediment flow equation (\ref{eq:steady_sed}),
 like the water flow equation, 
 has been rewritten to include a small diffusion term that is
 proportional to the mass of water-carried sediment per unit area 
 $\nabla^2 \varrho$ \citep{Mitas1998}:
 }\begin{equation}
-\DIFadd{\label{eq:difsedim}
--}{\DIFadd{\varepsilon_s \over 2}}\DIFadd{\nabla^2 \varrho
-+ \nabla\cdot }[\DIFadd{\varrho \vec{v}}]
- \DIFadd{+ \varrho~}{\DIFadd{D_c \over T_c}}\DIFadd{~|}{\DIFadd{\bf v}}\DIFadd{|
+\label{eq:difsedim}
+-{\varepsilon_s \over 2}\nabla^2 \varrho
++ \nabla\cdot [\varrho \vec{v}]
+ + \varrho~{D_c \over T_c}~|{\bf v}|
 = D_c
-%DIF > \sigma(\vec{r}) T(\vec{r})=Dc/T * T=Dc
-}\end{equation}
-\DIFaddend {\small
+%\sigma(\vec{r}) T(\vec{r})=Dc/T * T=Dc
+\end{equation}
+{\DIFadd{\small
 \noindent
-where:\\
-\DIFdelbegin \DIFdel{\hspace*{0.5em} $d_s$ is net erosion-deposition }\DIFdelend \DIFaddbegin \noindent
-\DIFadd{\hspace*{0.5em} $\varepsilon_s$ is the diffusion constant }\DIFaddend [\DIFdelbegin %DIFDELCMD < \unit{kg~m}%%%
-\DIFdel{$^{-2}$~}%DIFDELCMD < \unit{s}%%%
-\DIFdel{$^{-1}$}\DIFdelend \DIFaddbegin \DIFadd{$\unit{m^2~s^{-1}}$}\DIFaddend ].\\
+where:}\\
+\DIFadd{\noindent
+\hspace*{0.5em} $\varepsilon_s$ is the diffusion constant }[\DIFadd{$\unit{m^2~s^{-1}}$}]\DIFadd{.}\\
 }
+\DIFaddend 
 
-%DIF <  ------------------------------------------------------------------------------
-\DIFdelbegin %DIFDELCMD < 
-
-%DIFDELCMD < %%%
-\subsubsection{\DIFdel{Landscape evolution}}
-%DIFAUXCMD
-\addtocounter{subsubsection}{-1}%DIFAUXCMD
-%DIFDELCMD < 
-
-%DIFDELCMD < %%%
 %DIF <  Landscape evolution
-\DIFdel{The simulated change in elevation $\Delta z$
+\DIFdelbegin \DIFdel{The simulated change in elevation $\Delta z$
 due to water erosion and deposition
 is a function of the change in time, 
 the net erosion-deposition rate}\DIFdelend \DIFaddbegin \DIFadd{On the left hand side of equation \ref{eq:difsedim}, 
@@ -1083,10 +1077,11 @@ and the \DIFdelbegin \DIFdel{sediment mass density
 \citep{Mitasova2013}:
 %DIF <  landscape evolution equation
 }
-%\begin{displaymath}
-%\DIFdel{%DIFDELCMD < \label{eq:evolution} %%%
-%}{\DIFdel{\Delta z = \Delta t ~ d_s ~ \rho_s^{-1} }}
-%\end{displaymath}
+\DIFdel{
+\begin{displaymath}
+%DIFDELCMD < \label{eq:evolution} %%%
+{\Delta z = \Delta t ~ d_s ~ \rho_s^{-1} }
+\end{displaymath}}
 %DIFAUXCMD
 %DIFDELCMD < 
 
@@ -1104,30 +1099,34 @@ by finding a new position for each the walker at time $\tau + \Delta \tau$:
 }\end{equation}
 \DIFadd{while the updated weight is:
 }\begin{equation}
-\DIFadd{w_m^{new}=w_m \exp[- \Delta \tau(u(\vec{r}_m^{new})+u(\vec{r}_m))/2]
-}\end{equation}
-{\small
+w_m^{new}=w_m \exp[- \Delta \tau(u(\vec{r}_m^{new})+u(\vec{r}_m))/2]
+\end{equation}
+{\DIFadd{\small
+\noindent
+where:}\\
+\DIFadd{\noindent
+\hspace*{0.5em} $u = {D_c / T_c}~|\vec{v}|$.}\\
+}
+%DIF > 
 \DIFaddend \noindent
 \DIFdelbegin \DIFdel{In a detachment limited erosion regime
 the simulated change in elevation $\Delta z$
 is a function of
-the change in time , the }\DIFdelend \DIFaddbegin \DIFadd{where:}\\
-\noindent
-\DIFadd{\hspace*{0.5em} $u = {D_c / T_c}~|\vec{v}|$.}\\
-}
-%DIF > 
-\noindent
-%DIF > The sediment flow rate is computed as weighted particle densities 
+the change in time , the }\DIFdelend %DIF > The sediment flow rate is computed as weighted particle densities 
 %DIF > multiplied by the unit vector in the direction of flow
-\DIFadd{The }\DIFaddend sediment flow rate \DIFdelbegin \DIFdel{, and the mass of water carried sediment per unit area
+\DIFaddbegin \DIFadd{The }\DIFaddend sediment flow rate \DIFdelbegin \DIFdel{, and the mass of water carried sediment per unit area
 \citep{Mitasova2013}:
 %DIF <  change in elevation (m) = change in time (s) * sediment flux (kg/ms) / mass of sediment per unit area (kg/m^2)
+}\begin{displaymath}
+\label{eq:flux_evolution} 
+{\Delta z = \Delta t ~ q_s~ \varrho_s^{-1} } 
+\end{displaymath}
+{\DIFdel{\small
+\noindent
+where: }\\
+\DIFdel{\noindent
+\hspace*{0.5em} $\varrho_s$ is the mass of sediment per unit area }[\DIFdel{\unit{kg ~ m}$^{-2}$}]\DIFdel{.}\\
 }
-%\begin{displaymath}
-%\DIFdel{\label{eq:flux_evolution} 
-%}
-%{\DIFdel{\Delta z = \Delta t ~ q_s~ \varrho_s^{-1} }} 
-%\end{displaymath}
 %DIFAUXCMD
 \DIFdelend \DIFaddbegin \DIFadd{is computed 
 as the product of weighted particle densities 
@@ -1135,81 +1134,59 @@ and the unit vector in the direction of flow
 $\vec{q_s} = \varrho~\vec{s_0}$.  %DIF > VERIFY 
 Then net erosion-deposition $d_s$ 
 is computed as the divergence of sediment flow using equation (\ref{eq:steady_sed}).
-}
+}\DIFaddend 
 
-\DIFadd{SIMWE estimates the detachment capacity $D_c $ and 
+%DIF <  ------------------------------------------------------------------------------
+\DIFaddbegin \DIFadd{SIMWE estimates the detachment capacity $D_c $ and 
 the sediment-transport capacity $T_c $ 
 as functions of shear stress and stream power respectively. 
 Specifically,  the detachment capacity is:
 }\begin{equation}
-\DIFadd{\label{eq:detach_cap}
+\label{eq:detach_cap}
 D_c =K_d  \bigl(\gamma - \gamma_0 \bigr)^b  
-}\end{equation}
-\DIFaddend {\small
+\end{equation}
+{\DIFadd{\small
 \noindent
-where: \\
-\noindent
-\hspace*{0.5em} \DIFdelbegin \DIFdel{$\varrho_s$ }\DIFdelend \DIFaddbegin \DIFadd{$K_d$ is the effective erodibility 
+where: }\\
+\DIFadd{\noindent
+\hspace*{0.5em} $K_d$ is the effective erodibility 
 (detachment-capacity coefficient) }[\DIFadd{$\unit{s~m^{-1}}$}] \DIFadd{for $b=1$}\\ %DIF > VERIFY
 \DIFadd{\hspace*{0.5em} $\gamma=\rho_w~g~h~\sin \beta$ is shear stress }[\DIFadd{$\unit{Pa=kg~m^{-2}}$}] \\
-\DIFadd{\hspace*{0.5em} $\rho_w$ }\DIFaddend is the mass \DIFdelbegin \DIFdel{of sediment per unit area }\DIFdelend \DIFaddbegin \DIFadd{density of water }\DIFaddend [\DIFdelbegin %DIFDELCMD < \unit{kg ~ m}%%%
-\DIFdel{$^{-2}$}\DIFdelend \DIFaddbegin \DIFadd{$\unit{kg~m^{-3}}$}\DIFaddend ] \DIFdelbegin \DIFdel{.}\DIFdelend \\
-\DIFaddbegin \DIFadd{\hspace*{0.5em} $g$ is gravitational acceleration }[\DIFadd{$\unit{m~s^{-2}}$}]\\
+\DIFadd{\hspace*{0.5em} $\rho_w$ is the mass density of water }[\DIFadd{$\unit{kg~m^{-3}}$}] \\
+\DIFadd{\hspace*{0.5em} $g$ is gravitational acceleration }[\DIFadd{$\unit{m~s^{-2}}$}]\\
 \DIFadd{\hspace*{0.5em} $\gamma_0$ is critical shear stress }[\DIFadd{Pa}] \\
 \DIFadd{\hspace*{0.5em} $b$ is an empirical exponent.
-}\DIFaddend }
+}}
+\DIFaddend 
 
-%DIF <  ------------------------------------------------------------------------------
-\DIFdelbegin %DIFDELCMD < 
-
-%DIFDELCMD < %%%
 %DIF <  gravitational diffusion
-\DIFdelend \noindent
+\noindent
 \DIFdelbegin \DIFdel{Gravitational diffusion is then applied to the evolved topography
-to simulate the settling of sediment particles. 
-The simulated change in elevation $\Delta z$ %DIF < $\Delta z(x,y,t)$
+to simulate the settling of sediment particles.The simulated change in elevation $\Delta z$ %DIF < $\Delta z(x,y,t)$
 due to gravitational diffusion 
 is }\DIFdelend \DIFaddbegin \DIFadd{Shear stress $\gamma $ is computed
-as }\DIFaddend a function of \DIFdelbegin \DIFdel{the change in time, the sediment mass density, 
-the gravitational diffusion coefficient, and topographic divergence 
--- i.e.~the sum of the second order derivatives of elevation
-\citep{Thaxton2004}:
-%DIF <  change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
-}
-%\begin{displaymath}
-%\DIFdel{\label{eq:grav_diffusion} 
-%}
-%{\DIFdel{\Delta z = \Delta t ~ \rho_s^{-1} ~ \varepsilon_g ~ \nabla}}
-%\end{displaymath}
-%DIFAUXCMD
-\DIFdelend \DIFaddbegin \DIFadd{water depth $h$ estimated by r.sim.water
+as a function of water depth $h$ estimated by r.sim.water
 and the surface slope angle $\beta$ }[\DIFadd{$\unit{\degree}$}]\DIFadd{.
 %DIF > 
-Sediment-transport capacity is computed as a function 
-of unit stream power $\omega$ \citep{Moore1986}:
+Sediment-transport capacity is computed as }\DIFaddend a function 
+of \DIFdelbegin \DIFdel{the change in time , the sediment mass density, 
+the gravitational diffusion coefficient, and topographic divergence 
+-- }\DIFdelend \DIFaddbegin \DIFadd{unit stream power $\omega$ \citep{Moore1986}:
 }\smallskip
 \begin{equation}
-\DIFadd{\label{eq:tc_streampower}
-T_c =K_s \omega = K_s~\gamma~|}{\DIFadd{\bf v}}\DIFadd{| =
+\label{eq:tc_streampower}
+T_c =K_s \omega = K_s~\gamma~|{\bf v}| =
 K_s~n^{-1}~g_w~h^m~(\sin \beta)^p
-}\end{equation}
-\DIFaddend {\small
+\end{equation}
+{\DIFadd{\small
 \noindent
-where: \\
-\noindent
-\hspace*{0.5em} \DIFdelbegin \DIFdel{$\varepsilon_g$ is the gravitational diffusion }\DIFdelend \DIFaddbegin \DIFadd{$K_s$ is the effective sediment-transport capacity }\DIFaddend coefficient [\DIFdelbegin %DIFDELCMD < \unit{m}%%%
-\DIFdel{$^{2}$~}%DIFDELCMD < \unit{s}%%%
-\DIFdel{$^{-1}$}\DIFdelend \DIFaddbegin \DIFadd{s}\DIFaddend ] \\
-\hspace*{0.5em} \DIFdelbegin \DIFdel{$\nabla$ is the topographic divergence }%DIFDELCMD < [\unit{m}%%%
-\DIFdel{$^{-1}$}%DIFDELCMD < ]%%%
-\DIFdel{.
-}%DIFDELCMD < \\
-%DIFDELCMD < %%%
-\DIFdelend \DIFaddbegin \DIFadd{$m$ and $p$ are empirical exponents.
-}\DIFaddend }
+where: }\\
+\DIFadd{\noindent
+\hspace*{0.5em} $K_s$ is the effective sediment-transport capacity coefficient }[\DIFadd{s}] \\
+\DIFadd{\hspace*{0.5em} $m$ and $p$ are empirical exponents.
+}}
 
 %DIF > CHECK implementation may have omega just power of gamma without velocity
-\DIFaddbegin 
 
 %DIF >  Erosion regime
 \DIFadd{This model can simulate erosion regimes 
@@ -1220,11 +1197,25 @@ At each landscape evolution time step, the regime can change based on
 the ratio between the sediment detachment capacity $D_c$
 and the sediment transport capacity $T_c$ and the actual sediment flow rate.
 If the landscape evolution time step is shorter than the time to concentration 
-(i.e.~the time for water to reach steady state)
-then net erosion-deposition is derived from unsteady flow.
+(}\DIFaddend i.e.~the \DIFdelbegin \DIFdel{sum of the second order derivatives of elevation
+\citep{thaxton2004}:
+%DIF <  change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
+}\begin{displaymath}
+\label{eq:grav_diffusion} 
+{\Delta z = \Delta t ~ \rho_s^{-1} ~ \varepsilon_g ~ \nabla}
+\end{displaymath}
+{\DIFdel{\small
+\noindent
+where: }\\
+\DIFdel{\noindent
+\hspace*{0.5em} $\varepsilon_g$ is the gravitational diffusion coefficient }[\DIFdel{\unit{m}$^{2}$~\unit{s}$^{-1}$}]\\ \DIFdel{\hspace*{0.5em} $\nabla$ is the topographic divergence }[\DIFdel{\unit{m}$^{-1}$}]\DIFdel{.}\\
 }
+%DIFAUXCMD
+\DIFdelend \DIFaddbegin \DIFadd{time for water to reach steady state)
+then net erosion-deposition is derived from unsteady flow.
+}\DIFaddend 
 
-\DIFaddend % -------------------------------- RUSLE --------------------------------
+% -------------------------------- RUSLE --------------------------------
 \subsection{Revised \DIFdelbegin \DIFdel{universal soil loss equation 3D model}\DIFdelend \DIFaddbegin \DIFadd{Universal Soil Loss Equation for Complex Terrain (RUSLE3D)}\DIFaddend }
 \label{rusle_model}
 \DIFdelbegin \DIFdel{The Revised Universal Soil Loss Equation for Complex Terrain (}\DIFdelend RUSLE3D
@@ -1298,11 +1289,10 @@ is derived at each time step as a function of
 kinetic energy, rainfall \DIFdelbegin \DIFdel{volume}\DIFdelend \DIFaddbegin \DIFadd{depth}\DIFaddend , rainfall intensity, and time.
 First rain energy is derived from rainfall intensity \DIFdelbegin \DIFdel{\citep{Brown1987}:
 %DIF < 
-}
-%\begin{displaymath}
-%\DIFdel{\label{eq:rain_energy}
-%}{\DIFdel{e_r = 0.29 ~ (1.-0.72 ~ exp(-0.05 ~ i_r))}}
-%\end{displaymath}
+}\DIFdel{\begin{displaymath}
+\label{eq:rain_energy}
+{e_r = 0.29 ~ (1.-0.72 ~ exp(-0.05 ~ i_r))}
+\end{displaymath}}
 %DIFAUXCMD
 \DIFdelend \DIFaddbegin \DIFadd{\citep{Brown1987,Yin2017}:
 %DIF > VERIFY UNITS FOR ALL EQS BELOW:
@@ -1310,7 +1300,7 @@ First rain energy is derived from rainfall intensity \DIFdelbegin \DIFdel{\citep
 
 \begin{equation}
 \DIFadd{\label{eq:rain_energy}
-}{\DIFadd{e_r \over e_0}} \DIFadd{= 1.- b ~ exp\bigl(}{\DIFadd{i_r \over i_0}} \DIFadd{\bigr)
+{e_r \over e_0} = 1.- b ~ exp\bigl(}{\DIFadd{i_r \over i_0}} \DIFadd{\bigr)
 }\end{equation}
 \DIFaddend %
 {\small
@@ -1332,16 +1322,15 @@ published for different regions by \cite{Panagos2017}.
 \DIFaddend Then the event-based erosivity index $R_e$ 
 is calculated as the product of 
 unit rain energy, rainfall \DIFdelbegin \DIFdel{volume}\DIFdelend \DIFaddbegin \DIFadd{depth}\DIFaddend , rainfall intensity, and time: 
-%\DIFdelbegin \begin{displaymath}
-%\DIFdel{\label{eq:erosivity_index}
-%}{\DIFdel{R_e = e_r ~ v_r ~ i_r ~ t_r}}
-%\end{displaymath}
-%%DIFAUXCMD
-%\DIFdelend 
-\DIFaddbegin \begin{equation}
+\DIFdelbegin \DIFdel{ \begin{displaymath}
+\label{eq:erosivity_index}
+{R_e = e_r ~ v_r ~ i_r ~ t_r}
+\end{displaymath}}
+%DIFAUXCMD
+\DIFdelend \DIFaddbegin \begin{equation}
 \DIFadd{\label{eq:erosivity_index}
-}{\DIFadd{R_e = e_r ~ v_r ~ i_r ~ \Delta t}}
-\end{equation}
+{R_e = e_r ~ v_r ~ i_r ~ \Delta t}
+}\end{equation}
 \DIFaddend %
 {\small
 \noindent
@@ -1448,18 +1437,16 @@ and 1.0 to 1.3 respectively
 with low values representing dominant sheet flow
 and high values representing dominant rill flow.
 %DIF < 
-}
-%\begin{displaymath}
-%\DIFdel{\label{eq:ls_factor}
-%}{\DIFdel{LS_{3D} = (m+1.0) ~ (a(x,y) ~ a_0^{-1})^{m} ~ (sin(\beta) ~ \beta_0^{-1})^{n}}}
-%\end{displaymath}
+}\DIFdel{ \begin{displaymath}
+\label{eq:ls_factor}
+{LS_{3D} = (m+1.0) ~ (a(x,y) ~ a_0^{-1})^{m} ~ (sin(\beta) ~ \beta_0^{-1})^{n}}
+\end{displaymath} }
 %DIFAUXCMD
-\DIFdelend 
-%\DIFaddbegin \begin{equation}
-%\DIFadd{\label{eq:ls_factor}
-%LS_{3D} = (m+1) ~ \left(}{\DIFadd{a \over a_0}}\DIFadd{\right)^m ~ \left(}{\DIFadd{\sin \beta \over \beta_0}}\DIFadd{\right)^n
-%}\end{equation}
-%\DIFaddend %
+\DIFdelend \DIFaddbegin \begin{equation} \DIFadd{
+\label{eq:ls_factor}
+LS_{3D} = (m+1) ~ \left({a \over a_0}\right)^m ~ \left({\sin \beta \over \beta_0}\right)^n
+}\end{equation}
+\DIFaddend %
 {\small
 \noindent
 where: \\
@@ -1514,8 +1501,8 @@ for landscape evolution in an detachment limited soil erosion regime
 and then equation \ref{eq:grav_diffusion}for the settling of sediment particles due to }\DIFdelend \DIFaddbegin \DIFadd{: 
 }\begin{equation}
 \DIFadd{\label{eq:dz_rusle}
-}{\DIFadd{\Delta z_s = D_c \rho_s^{-1} = E ~ \rho_s^{-1}}}
-\end{equation}
+{\Delta z_s = D_c \rho_s^{-1} = E ~ \rho_s^{-1}}
+}\end{equation}
 \DIFadd{which is combined with Eq. (\ref{eq:grav_diffusion})
 for }\DIFaddend gravitational diffusion.
 
@@ -1550,7 +1537,8 @@ the topographic sediment transport factor,
 and }\DIFdelend \DIFaddbegin \DIFadd{.
 Net erosion-deposition is then computed as }\DIFaddend the divergence of \DIFdelbegin \DIFdel{the }\DIFdelend sediment flow. 
 
-% Topographic sediment transport factor
+\DIFaddbegin \subsubsection{\DIFadd{Topographic sediment transport factor}}
+\DIFaddend % Topographic sediment transport factor
 \DIFdelbegin \DIFdel{The }\DIFdelend \DIFaddbegin \DIFadd{Using the unit stream power concept presented by \cite{Moore1986},
 the }\DIFaddend 3D topographic factor (Eq.~\ref{eq:ls_factor}) 
 for RUSLE3D is \DIFdelbegin \DIFdel{adapted }\DIFdelend \DIFaddbegin \DIFadd{modified }\DIFaddend to represent 
@@ -1558,16 +1546,15 @@ the topographic sediment transport factor (\DIFdelbegin \DIFdel{$LST$}\DIFdelend
 the topographic component 
 of overland flow at sediment transport capacity:
 %
-\DIFdelbegin 
-%\begin{displaymath}
-%\DIFdel{\label{eq:lst_factor}
-%}{\DIFdel{LST = a^{m} ~ (\sin \beta)^{n}}}
-%\end{displaymath}
+\DIFdelbegin \DIFdel{ \begin{displaymath}
+\label{eq:lst_factor}
+{LST = a^{m} ~ (\sin \beta)^{n}}
+\end{displaymath}}
 %DIFAUXCMD
 \DIFdelend \DIFaddbegin \begin{equation}
 \DIFadd{\label{eq:lst_factor}
-}{\DIFadd{LS_T = a^{m} ~ (\sin \beta)^{n}}}
-\end{equation}
+{LS_T = a^{m} ~ (\sin \beta)^{n}}
+}\end{equation}
 \DIFaddend %
 {\small
 \noindent
@@ -1580,50 +1567,74 @@ where: \\
 \hspace*{0.5em} $n$ is an empirical coefficient.\\
 }
 
-% Sediment flow at transport capacity
+\DIFaddbegin \subsubsection{\DIFadd{Transport limited sediment flow and net erosion-deposition}}
+\DIFaddend % Sediment flow at transport capacity
 \noindent
 \DIFdelbegin \DIFdel{The sediment }\DIFdelend \DIFaddbegin \DIFadd{Sediment }\DIFaddend flow at transport capacity is a function of 
 the event-based rainfall factor, \DIFdelbegin \DIFdel{the }\DIFdelend soil erodibility factor, 
 \DIFdelbegin \DIFdel{the }\DIFdelend topographic component of overland flow,
 \DIFdelbegin \DIFdel{the }\DIFdelend landcover factor, and \DIFdelbegin \DIFdel{the }\DIFdelend prevention measures factor:
 %
-\DIFdelbegin 
-%\begin{displaymath}
-%\DIFdel{%DIFDELCMD < \label{eq:usped}%%%
-%}{\DIFdel{T = R_e ~ K ~ C ~ P ~ LST}}
-%\end{displaymath}
+\DIFdelbegin \begin{displaymath}
+%DIFDELCMD < \label{eq:usped}%%%
+{T = R_e ~ K ~ C ~ P ~ LST}
+\end{displaymath}
+{\DIFdel{\small
+\noindent
+where: }\\
+\DIFdel{\noindent
+\hspace*{0.5em} $T$ is sediment flow at transport capacity }[\DIFdel{\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$}]\\ 
+\DIFdel{\hspace*{0.5em} $R_e$ is the event-based rainfall factor }[\DIFdel{\unit{MJ~mm~ha}$^{-1}$~\unit{hr}$^{-1}$}]\\
+\DIFdel{\hspace*{0.5em} $K$ is the soil erodibility factor }[\DIFdel{\unit{ton~ha~hr~ha}$^{-1}$~\unit{MJ}$^{-1}$~\unit{mm}$^{-1}$}]\\ 
+\DIFdel{\hspace*{0.5em} $C$ is the dimensionless land cover factor}\\
+\DIFdel{\hspace*{0.5em} $P$ is the dimensionless prevention measures factor.}\\
+}
 %DIFAUXCMD
 \DIFdelend \DIFaddbegin \begin{equation}
-\DIFadd{\label{eq:usped}
-}{\DIFadd{T = R_e ~ K ~ C ~ P ~ LS_T}}
+\label{eq:usped}
+{T = R_e ~ K ~ C ~ P ~ LS_T}
 \end{equation}
-\DIFaddend {\small
+{\DIFadd{\small
 \noindent
-where: \\
-\noindent
-\hspace*{0.5em} $T$ is sediment flow at transport capacity [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\ 
-\hspace*{0.5em} $R_e$ is the event-based rainfall factor [\unit{MJ~mm~ha}$^{-1}$~\unit{hr}$^{-1}$]\\
-\hspace*{0.5em} $K$ is the soil erodibility factor [\unit{ton~ha~hr~ha}$^{-1}$~\unit{MJ}$^{-1}$~\unit{mm}$^{-1}$]\\ 
-\hspace*{0.5em} $C$ is the dimensionless land cover factor\\
-\hspace*{0.5em} $P$ is the dimensionless prevention measures factor.\\
+where: }\\
+\DIFadd{\noindent
+\hspace*{0.5em} $T$ is sediment flow at transport capacity }[\DIFadd{\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$}]\\ 
+\DIFadd{\hspace*{0.5em} $R_e$ is the event-based rainfall factor }[\DIFadd{\unit{MJ~mm~ha}$^{-1}$~\unit{hr}$^{-1}$}]\\
+\DIFadd{\hspace*{0.5em} $K$ is the soil erodibility factor }[\DIFadd{\unit{ton~ha~hr~ha}$^{-1}$~\unit{MJ}$^{-1}$~\unit{mm}$^{-1}$}]\\ 
+\DIFadd{\hspace*{0.5em} $C$ is the dimensionless land cover factor}\\
+\DIFadd{\hspace*{0.5em} $P$ is the dimensionless prevention measures factor.}\\
 }
+\DIFaddend 
 
 %Erosion-deposition at transport capacity
 \noindent
 Net erosion-deposition \DIFdelbegin \DIFdel{at transport capacity }\DIFdelend is estimated as the divergence of sediment flow\DIFaddbegin \DIFadd{, 
 assuming that sediment flow is equal to sediment transport capacity}\DIFaddend : 
 %D = ∇ · (T s0) = ∂(T cos α)/∂x + ∂(T sin α)/∂y
-\begin{equation}\label{eq:usped_erdep} 
+\DIFdelbegin \begin{displaymath}\label{eq:usped_erdep} 
+d_s = 
+{\partial (T ~ \cos \alpha) \over \partial x} +
+{\partial (T ~ \sin \alpha) \over \partial y}
+\end{displaymath}
+{\DIFdel{\small
+\noindent
+where: }\\
+\DIFdel{\hspace*{0.5em} $d_s$ is net erosion-deposition }[\DIFdel{\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$}]\\
+\DIFdel{\hspace*{0.5em} $\alpha$ is the aspect of the topography }[\DIFdel{$\degree$}]\DIFdel{.}\\
+}
+%DIFAUXCMD
+\DIFdelend \DIFaddbegin \begin{equation}\label{eq:usped_erdep} 
 d_s = 
 {\partial (T ~ \cos \alpha) \over \partial x} +
 {\partial (T ~ \sin \alpha) \over \partial y}
 \end{equation}
-{\small
+{\DIFadd{\small
 \noindent
-where: \\
-\hspace*{0.5em} $d_s$ is net erosion-deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]\\
-\hspace*{0.5em} $\alpha$ is the aspect of the topography \DIFaddbegin \DIFadd{(i.e.~the direction of flow) }\DIFaddend [$\degree$].\\
+where: }\\
+\DIFadd{\hspace*{0.5em} $d_s$ is net erosion-deposition }[\DIFadd{\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$}]\\
+\DIFadd{\hspace*{0.5em} $\alpha$ is the aspect of the topography (i.e.~the direction of flow) }[\DIFadd{$\degree$}]\DIFadd{.}\\
 }
+\DIFaddend 
 
 %Landscape evolution
 \noindent
@@ -1659,19 +1670,19 @@ the maneuverability of troops and vehicles during training exercises,
 pervasive gullying across a landscape 
 can degrade an entire training area 
 \citep{Huang2014}.
+\DIFdelbegin %DIFDELCMD < 
 
+%DIFDELCMD < %%%
+\DIFdelend %DIF > 
 To test the effectiveness of the different models 
 in r.sim.terrain
 we compared the simulated evolution
-of a highly eroded subwatershed of 
-Patterson Branch \DIFdelbegin \DIFdel{Creek }\DIFdelend on Fort Bragg, North Carolina
+of a highly eroded subwatershed 
+of Patterson Branch \DIFdelbegin \DIFdel{Creek }\DIFdelend on Fort Bragg, North Carolina
 against a timeseries of airborne lidar surveys.
 The models -- SIMWE, RUSLE3D, and USPED --
 were tested in steady state and dynamic modes
-for \DIFdelbegin \DIFdel{constant rainfall, design storms , and recorded rainfall.
-}\DIFdelend \DIFaddbegin \DIFadd{design storms with constant rainfall.
-%DIF > for constant rainfall, design storms, and recorded rainfall.
-}\DIFaddend 
+for \DIFdelbegin \DIFdel{constant rainfall, design storms , and recorded }\DIFdelend \DIFaddbegin \DIFadd{design storms with constant }\DIFaddend rainfall.
 
 \subsection{Patterson Branch\DIFdelbegin \DIFdel{Creek}\DIFdelend }
 
@@ -1700,7 +1711,7 @@ with a Longleaf Pine and Wiregrass Ecosystem \citep{Sorrie2006}.
 %
 The study landscape 
 -- a subwatershed of Patterson Branch \DIFdelbegin \DIFdel{Creek 
-}\DIFdelend \DIFaddbegin \DIFadd{(Figure~\ref{fig:watershed}a) 
+}\DIFdelend \DIFaddbegin \DIFadd{(Figure~\ref{fig:watershed}) 
 }\DIFaddend in the Coleman Impact Area --
 is pitted with impact craters from artillery and mortar shells
 and has an active, approximately 2~\unit{m} deep gully. 
@@ -1766,7 +1777,7 @@ of automated landform classification
 based on the openness of terrain \citep{Jasiewicz2013}
 and the difference between the digital elevation models 
 to analyze the changing morphology of the study area
-(Figure~\ref{fig:study_area}\DIFdelbegin \DIFdel{d-f}\DIFdelend \DIFaddbegin \DIFadd{c-d}\DIFaddend ). 
+(\DIFdelbegin \DIFdel{Figure~\ref{fig:study_area} d-f}\DIFdelend \DIFaddbegin \DIFadd{Figures~\ref{fig:study_area} \& \ref{fig:study_area_detail}}\DIFaddend ). 
 %
 The 2~\unit{m} deep gully -- 
 its channels classified as valleys and 
@@ -1784,23 +1795,30 @@ A new branch has begun to form
 in a knickzone classified as a mix of valleys and hollows
 on a grassy swale on the northeast side of the gully.
 Between 2012 and 2016 a depositional ridge
-has developed at the foot of this nascent branch
+\DIFdelbegin \DIFdel{has }\DIFdelend developed at the foot of this nascent branch
 where it would meet the main channel. 
 %
-The difference in elevation between 2012 and 2016
-(Figure~\ref{fig:study_area}\DIFdelbegin \DIFdel{d}\DIFdelend \DIFaddbegin \DIFadd{c}\DIFaddend )
-shows a deepening of the main channel 
+The \DIFaddbegin \DIFadd{2016 minus 2012 DEM of Difference (DoD) -- 
+i.e.~ the }\DIFaddend difference in elevation 
+\DIFdelbegin \DIFdel{between 2012 and 2016
+(Figure~\ref{fig:study_area}d) }\DIFdelend \DIFaddbegin \DIFadd{(Figures~\ref{fig:study_area}c \& \ref{fig:study_area_detail}c) --
+}\DIFaddend shows a deepening of the main channel 
 by approximately 0.2~\unit{m} 
-and the scours pits
-by approximately 1~\unit{m},
+and \DIFdelbegin \DIFdel{the }\DIFdelend scours pits by approximately 1~\unit{m},
 while depositional ridges have formed and grown up to
-approximately 1~\unit{m} or more.
+approximately 1~\unit{m} \DIFdelbegin \DIFdel{or more.
+}\DIFdelend \DIFaddbegin \DIFadd{high.
+%DIF > 
+The DoD also shows that
+244.60 }\unit{m}\DIFadd{$^3$ of sediment were deposited
+on the depositional fan between 2012 and 2016.
+}\DIFaddend 
 
 % study area figure
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/study_area.pdf}
-\caption{\DIFaddbeginFL \DIFaddFL{Morphological Change, Drainage Area 1, Study }\DIFaddendFL Subwatershed, Patterson Branch\DIFdelbeginFL \DIFdelFL{Creek}\DIFdelendFL , Fort Bragg, NC, USA\DIFaddbeginFL \DIFaddFL{.
+\caption{\DIFaddbeginFL \DIFaddFL{Morphological Change, Study }\DIFaddendFL Subwatershed, Patterson Branch\DIFdelbeginFL \DIFdelFL{Creek}\DIFdelendFL , Fort Bragg, NC, USA\DIFaddbeginFL \DIFaddFL{.
 (a) Landcover in 2014, 
 (b) landforms in 2012,
 (c) elevation difference between 2012-2016 }[\DIFaddFL{m}]\DIFaddFL{, and
@@ -1809,7 +1827,20 @@ approximately 1~\unit{m} or more.
 \label{fig:study_area}
 \end{figure}
 
-% --------- SIMULATIONS ---------
+%DIF >  study area figure detail
+\DIFaddbegin \begin{figure}
+\center
+\includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/study_area_detail.pdf}
+\caption{\DIFaddFL{Detailed Morphological Change, Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC, USA.
+(a) Landcover in 2014, 
+(b) landforms in 2012,
+(c) elevation difference between 2012-2016 }[\DIFaddFL{m}]\DIFaddFL{, and
+(d) landforms in 2016.
+}}
+\label{fig:study_area_detail}
+\end{figure}
+
+\DIFaddend % --------- SIMULATIONS ---------
 \subsection{Simulations}
 %
 We ran a sequence of r.sim.terrain simulations 
@@ -1824,14 +1855,13 @@ of the }\DIFaddend RUSLE3D, \DIFdelbegin \DIFdel{and USPED}\DIFdelend \DIFaddbeg
 we compared 
 net differences in elevation
 morphological features,
-and linear regressions of elevation change.
-}
-
+and volumetric change.
+%DIF > 
 %DIF >  design storms
-\DIFadd{While r.sim.terrain can use rainfall records,
+While r.sim.terrain can use rainfall records,
 we used design storms to demonstrate and test 
 the basic capabilities of the model. 
-Our design storms are based off the peak rainfall values
+Our design storms were based off the peak rainfall values
 in records from the State Climate Office of North Carolina.
 %DIF >  parameters
 We used RUSLE3D to simulate landscape evolution
@@ -1843,7 +1873,7 @@ and a constant rainfall intensity }\DIFaddend of 50~\unit{mm~hr}$^{-1}$
 \DIFdelbegin \DIFdel{for detachment capacity limited soil erosion regimes
 for both dynamic and steady state flow regimes
 using RUSLE3D
-}\DIFdelend (Figure~\ref{fig:simulations}\DIFdelbegin \DIFdel{a-c}\DIFdelend \DIFaddbegin \DIFadd{a-b}\DIFaddend ).
+}\DIFdelend (Figure~\DIFdelbegin \DIFdel{\ref{fig:simulations}a-c}\DIFdelend \DIFaddbegin \DIFadd{\ref{fig:rusle_simulation}}\DIFaddend ).
 %
 \DIFdelbegin \DIFdel{USPED was used to simulate 120~}%DIFDELCMD < \unit{min} %%%
 \DIFdel{events
@@ -1856,7 +1886,7 @@ for both dynamic and steady state flow regimes
 for a 120~}\unit{min} \DIFadd{design storm
 with 3~}\unit{min} \DIFadd{intervals 
 and a constant rainfall intensity of 50~}\unit{mm~hr}\DIFadd{$^{-1}$
-}\DIFaddend (Figure~\ref{fig:simulations}\DIFdelbegin \DIFdel{d-f}\DIFdelend \DIFaddbegin \DIFadd{c-d}\DIFaddend ).
+}\DIFaddend (Figure~\DIFdelbegin \DIFdel{\ref{fig:simulations}d-f}\DIFdelend \DIFaddbegin \DIFadd{\ref{fig:usped_simulation}}\DIFaddend ).
 %
 \DIFdelbegin \DIFdel{SIMWE was used to simulate }\DIFdelend \DIFaddbegin \DIFadd{We used SIMWE to simulate landscape evolution
 in a steady state, variable erosion-deposition soil erosion regime
@@ -1866,7 +1896,7 @@ with a constant rainfall intensity }\DIFaddend of 50~\unit{mm~hr}$^{-1}$
 \DIFdelbegin \DIFdel{for erosion-deposition 
 and detachment limited soil erosion regimes 
 in steady state flow regimes
-}\DIFdelend (Figure~\ref{fig:simwe_simulations}\DIFaddbegin \DIFadd{a-b}\DIFaddend ). 
+}\DIFdelend (Figure~\DIFdelbegin \DIFdel{\ref{fig:simwe_simulations}}\DIFdelend \DIFaddbegin \DIFadd{\ref{fig:simwe_simulation}}\DIFaddend ). 
 %
 In all of the simulations 
 a sink filling algorithm
@@ -1914,92 +1944,130 @@ while \DIFdelbegin \DIFdel{steady state simulations for SIMWE each took
 %DIF <  dynamic model results
 %DIF >  --------- RESULT TABLES ---------
 \DIFaddbegin 
-
-%DIF >  table of simulations
+\DIFadd{
 \begin{table*}
 \small
-\caption{\DIFaddFL{Landscape evolution simulations}}
-%\begin{tabu} \DIFaddFL{to \textwidth }{\DIFaddFL{XXXXXllllX}}
-%\toprule
-%\DIFaddFL{Flow regime }& \DIFaddFL{Model }& \DIFaddFL{Intensity }& \DIFaddFL{Duration }& \DIFaddFL{Interval }& \DIFaddFL{m }& \DIFaddFL{n }& \DIFaddFL{$\rho_s$ }& \DIFaddFL{Threads }& \DIFaddFL{Runtime}\\
-%\midrule
-%\DIFaddFL{Dynamic }& \DIFaddFL{RUSLE3D }& \DIFaddFL{50~}\unit{mm~hr}\DIFaddFL{$^{-1}$ }& \DIFaddFL{120~}\unit{min} & \DIFaddFL{3~}\unit{min} &  \DIFaddFL{0.4 }& \DIFaddFL{1.3 }& & & \DIFaddFL{2~}\unit{min}\DIFaddFL{~36~}\unit{s}\\
-%\DIFaddFL{Dynamic }& \DIFaddFL{USPED }& \DIFaddFL{50~}\unit{mm~hr}\DIFaddFL{$^{-1}$ }& \DIFaddFL{120~}\unit{min} & \DIFaddFL{3~}\unit{min} &  \DIFaddFL{1.5 }& \DIFaddFL{1.2 }& \DIFaddFL{1.6 }& & \DIFaddFL{3~}\unit{min}\DIFaddFL{~14~}\unit{s}\\
-%\DIFaddFL{Steady state }& \DIFaddFL{SIMWE }& \DIFaddFL{50~}\unit{mm~hr}\DIFaddFL{$^{-1}$ }& \DIFaddFL{120~}\unit{min} & \DIFaddFL{120~}\unit{min} & & & \DIFaddFL{1.6 }& \DIFaddFL{6 }& \DIFaddFL{44~}\unit{min}\DIFaddFL{~51~}\unit{s}\\
-%\bottomrule
-%\\
-%\end{tabu}
+\caption{Landscape evolution simulations}
+\begin{tabu} to \textwidth {XXXXXllllX}
+\toprule
+Flow regime & Model & Intensity & Duration & Interval & m & n & $\rho_s$ & Threads & Runtime\\
+\midrule
+Dynamic & RUSLE3D & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 3~\unit{min} &  0.4 & 1.3 & & & 2~\unit{min}~36~\unit{s}\\
+Dynamic & USPED & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 3~\unit{min} &  1.5 & 1.2 & 1.6 & & 3~\unit{min}~14~\unit{s}\\
+Steady state & SIMWE & 50~\unit{mm~hr}$^{-1}$ & 120~\unit{min} & 120~\unit{min} & & & 1.6 & 6 & 44~\unit{min}~51~\unit{s}\\
+\bottomrule
+\\
+\end{tabu}
 \label{table:simulations} 
 \end{table*}
+}
+\DIFaddend
 
-%DIF >  linear regression table
+\DIFaddbegin 
+\DIFadd{
+% volumetric change table
 \begin{table*}
 \small
-\caption{\DIFaddFL{Linear regression of elevation maps for drainage area}}
-%\begin{tabu} \DIFaddFL{to \textwidth }{\DIFaddFL{lXXl}}
-%\toprule
-%\DIFaddFL{Elevation A }& \DIFaddFL{Elevation B }&  \DIFaddFL{Correlation coeff. (R) }& \DIFaddFL{Difference in R from 2012-2016 baseline }\\
-%\midrule
-%\DIFaddFL{2012 }& \DIFaddFL{2016 }& \DIFaddFL{0.999490 }& \DIFaddFL{0}\\
-%\DIFaddFL{2012 }& \DIFaddFL{simulated with RUSLE3D }& \DIFaddFL{0.999848 }& \DIFaddFL{-0.000483}\\
-%\DIFaddFL{2012 }& \DIFaddFL{simulated with USPED }& \DIFaddFL{0.999973 }& \DIFaddFL{-0.000253}\\
-%\DIFaddFL{2012 }& \DIFaddFL{simulated with SIMWE }& \DIFaddFL{0.998312 }& \DIFaddFL{0.001178}\\
-%\bottomrule
-%\\
-%\end{tabu}
-\label{table:linear_regression} 
+\caption{Volumetric change}
+\begin{tabu} to \textwidth {lXXXl}
+\toprule
+Difference of DEMs (DoD) & Threshold [m] &  Erosion [m$^3$] & Deposition [m$^3$] & Net change [m$^3$]\\
+\midrule
+2016 - 2012 & $\pm$0.18 & 152.96 & 807.74 & 654.77\\
+Simulated with RUSLE3D - 2012 & None & 1480.75 & 0 & -1480.75\\
+Simulated with USPED - 2012 & None & 1235.08 & 727.46 & -507.62\\
+Simulated with SIMWE -2012 & None & 758.56 & 608.91 & -149.66\\
+\bottomrule
+\\
+\end{tabu}
+\label{table:volumetric_change} 
 \end{table*}
+}
+\DIFaddend
 
 
 %DIF >  --------------------------------------------
 
-%DIF > Given the presence the mature gully 
-%DIF > with ridges along its banks,
-%DIF > this landscape had previously been dominated by 
-%DIF > a detachment limited soil erosion regime, but 
-%DIF > during our study period it was dominated by
-%DIF > a transport capacity limited or 
-%DIF > variable erosion-deposition soil erosion regime. 
+%DIF >  volumetric change
+\DIFadd{We used the Difference in DEMs
+to compute volumetric changes
+between the lidar surveys
+and the simulations
+(Table~\ref{table:volumetric_change}).
+We applied a threshold of $\pm$0.18 }\unit{m}
+\DIFadd{to the lidar surveys since they had a
+vertical accuracy at a 95\% confidence level
+of 18.15~}\unit{cm} 
+\DIFadd{based on a 9.25~}\unit{cm} \DIFadd{root mean square error (RMSEz) 
+for non vegetated areas in accordance with 
+the National Digital Elevation Program guidelines
+\citep{NCLidar2018}.
+%DIF > regime
+Given the presence of the mature gully 
+with ridges along its banks, 
+we hypothesize that
+the study landscape had previously been dominated by 
+a detachment limited soil erosion regime, 
+but -- given the net change of 654.77~}\unit{m}\DIFadd{$^3$ --
+had switched to a transport capacity limited or 
+variable erosion-deposition regime
+during our study period. 
+}
 
-\DIFaddend The dynamic RUSLE3D simulation
-deepened the main channel of the gully,
+%DIF >  rusle
+\DIFaddend The dynamic RUSLE3D \DIFdelbegin \DIFdel{simulation
+deepened the main channel of }\DIFdelend \DIFaddbegin \DIFadd{simulation 
+carved a deep incision 
+in }\DIFaddend the \DIFdelbegin \DIFdel{gully,
 while the dynamic USPED simulation
 eroded the banks of the gully
 and deposited in channels
 causing the gully grow wider and shallower
-(Figure~\ref{fig:simulations}). 
+}\DIFdelend \DIFaddbegin \DIFadd{main gully channel
+where water accumulated
+}\DIFaddend (Figure~\DIFdelbegin \DIFdel{\ref{fig:simulations}).
 %DIF < 
-%DIF >  rusle
-As a detachment capacity limited model
+}\DIFdelend \DIFaddbegin \DIFadd{\ref{fig:rusle_simulation}).
+}\DIFaddend As a detachment capacity limited model
 RUSLE3D's results were
 dominated by erosion and 
 thus negative elevation change.
 %DIF < 
-RUSLE3D carved a deep incision 
+\DIFdelbegin \DIFdel{RUSLE3D carved a deep incision 
 in the main gully channel
-where water \DIFdelbegin \DIFdel{and sediment flow }\DIFdelend accumulated
-(Figure~\ref{fig:simulations}\DIFdelbegin \DIFdel{c). 
+where water and sediment flow accumulated
+}\DIFdelend \DIFaddbegin \DIFadd{It eroded 1480.75~}\unit{m}\DIFadd{$^3$ of sediment
+with no deposition.
+}
+
+%DIF >  usped
+\DIFadd{The dynamic USPED simulation
+eroded the banks of the gully
+and deposited in channels
+causing the gully grow wider and shallower
+}\DIFaddend (Figure~\DIFdelbegin \DIFdel{\ref{fig:simulations}c). 
 %DIF < 
-}\DIFdelend \DIFaddbegin \DIFadd{b). 
+}\DIFdelend \DIFaddbegin \DIFadd{\ref{fig:usped_simulation}). 
 %DIF >  usped
 }\DIFaddend As a transport capacity limited model
 USPED generated a distributed pattern
-with both erosion and deposition and thus
-negative and positive elevation change.
+with both erosion and deposition\DIFdelbegin \DIFdel{and thus
+negative and positive elevation change . 
 %DIF < 
-While USPED's pattern of elevation change
+}\DIFdelend \DIFaddbegin \DIFadd{.
+Erosion far exceeded deposition with
+1235.08~}\unit{m}\DIFadd{$^3$ of sediment eroded 
+and 727.46~}\unit{m}\DIFadd{$^3$ deposited
+for a net change of -507.62~}\unit{m}\DIFadd{$^3$.
+}\DIFaddend While USPED's pattern of elevation change
 was grainy and fragmented, 
 it captured the process of channel 
 filling and widening expected with 
-a transport capacity limited soil erosion regime
-(Figure~\ref{fig:simulations}\DIFdelbegin \DIFdel{f). 
-}%DIFDELCMD < 
+a transport capacity limited soil erosion regime\DIFdelbegin \DIFdel{(Figure~\ref{fig:simulations}f)}\DIFdelend .
 
-%DIFDELCMD < %%%
 %DIF <  steady state model results
-\DIFdelend \DIFaddbegin \DIFadd{d). 
 %DIF >  simwe
-}\DIFaddend The steady state SIMWE \DIFdelbegin \DIFdel{simulations 
+The steady state SIMWE \DIFdelbegin \DIFdel{simulations 
 predicted more realistic patterns 
 of landscape evolution
 (Figure~\ref{fig:simwe_simulations}). 
@@ -2008,35 +2076,51 @@ For transport limited and
 }\DIFdelend \DIFaddbegin \DIFadd{simulation
 for a }\DIFaddend variable erosion-deposition \DIFdelbegin \DIFdel{regimes
 SIMWE simulated
-channel widening}\DIFdelend \DIFaddbegin \DIFadd{regime
+channel wideningand }\DIFdelend \DIFaddbegin \DIFadd{regime
 predicted the morphological processes and features
 expected of its regime including
 gradual aggradation,
 channel widening,
-}\DIFaddend and the formation of depositional ridges
-along the thalweg of the channel
-(Figure~\ref{fig:simwe_simulations}\DIFdelbegin \DIFdel{c).
+}\DIFaddend the formation of depositional ridges
+along the thalweg of the channel\DIFdelbegin \DIFdel{(Figure~\ref{fig:simwe_simulations}c).
 %DIF < 
 For a detachment limited soil erosion regime
 SIMWE simulated major erosion
 driving the continued development 
 of the gully network
-including the spread of rills and
-the evolution of the nascent branch
+including the spread of rills and the evolution of the nascent branch
 into a full fledged channel
-(Figure~\ref{fig:simwe_simulations}f).
+}\DIFdelend \DIFaddbegin \DIFadd{,
+and the development of the depositional fan
+}\DIFaddend (Figure~\DIFdelbegin \DIFdel{\ref{fig:simwe_simulations}f).
 %DIF < 
 The detachment limited simulation
 also formed extensive ridges
 beside the gully channels 
 (Figure~\ref{fig:simwe_simulations}f), 
-continuing the development of channel-side ridges
+continuing the development of 
+channel-side ridges
 observed in the 2012 and 2016 landform maps
 (Figure~\ref{fig:study_area}e-f). 
-}\DIFdelend \DIFaddbegin \DIFadd{b).
+}\DIFdelend \DIFaddbegin \DIFadd{\ref{fig:simwe_simulation}).
+%DIF >  volumetric change
+SIMWE was the closest to the observed baseline
+volumetric change.
+It balanced erosion and deposition with 
+785.56~}\unit{m}\DIFadd{$^3$ of sediment eroded
+and 608.91~}\unit{m}\DIFadd{$^3$ deposited
+for a net change of -149.66~}\unit{m}\DIFadd{$^3$.
+%DIF >  depositional fan
+Only the SIMWE simulation deposited sediment
+on the depositional fan. 
+While the difference of lidar surveys showed
+that 244.60~}\unit{m}\DIFadd{$^3$ of sediment 
+were deposited on the fan,
+SIMWE predicted that 54.05~}\unit{m}\DIFadd{$^3$
+would be deposited.
 }\DIFaddend 
 
-%DIF <  comparison of dynamic and steady state results
+% comparison of dynamic and steady state results
 \DIFdelbegin \DIFdel{Given the presence of an active gully 
 with ridges along its banks,
 this landscape is dominated by 
@@ -2051,34 +2135,32 @@ characteristic of its erosion regime,
 realistically simulating landscape evolution 
 at the scale of a subwatershed. 
 %DIF < 
-}\DIFdelend %DIF >  linear regression
-\DIFaddbegin \DIFadd{We used linear regressions to quantitatively analyze 
-observed versus simulated changes in topographic elevation
-(Table~\ref{table:linear_regression} \& Figure~\ref{fig:scatterplots}).
-}\DIFaddend The \DIFdelbegin \DIFdel{erosion-deposition and 
-transport limited 
+The erosion-deposition and transport limited 
 SIMWE simulations also generated 
 the morphological processes and features
 that would be expected in these regimes
 -- gradual aggradation
 and the formation of a depositional ridge 
-along the thalweg of the channel.
+along the thalweg of the channel. 
 }%DIFDELCMD < 
 
 %DIFDELCMD < %%%
-\DIFdel{While }\DIFdelend \DIFaddbegin \DIFadd{results of the USPED simulation closely fit
-the observed change in elevation between 2012-2016,
-while }\DIFaddend RUSLE3D \DIFdelbegin \DIFdel{and USPED produced less realistic patterns of landscape evolution
+\DIFdel{While RUSLE3D and USPED produced less realistic patterns of landscape evolution
 than SIMWE,
-these models were much faster }\DIFdelend \DIFaddbegin \DIFadd{overpredicted erosion }\DIFaddend and 
-\DIFdelbegin \DIFdel{still generated
-}\DIFdelend \DIFaddbegin \DIFadd{SIMWE overpredicted deposition.
-%DIF >  comparison of dynamic and steady state results
+these models were much faster and still generated
+}\DIFdelend \DIFaddbegin \DIFadd{SIMWE was unique in simulating unsteady flows 
+(Figure~\ref{fig:simwe_simulation}a)
+and fine-scale geomorphological processes 
+such as the development of depositional ridges 
+and a depositional fan. 
+%DIF > 
 While USPED generated a grainy pattern of erosion and deposition,
-it was much faster than SIMWE, most closely fit the observed change,
-and simulated }\DIFaddend the key morphological patterns and processes -- 
+it was much faster than SIMWE 
+(Table~\ref{table:simulations})
+and still simulated 
+}\DIFaddend the key morphological patterns and processes -- 
 channel incision, filling, and widening. 
-%DIF < 
+%
 Given their speed
 and approximate modeling of erosive processes, 
 RUSLE3D and USPED 
@@ -2093,137 +2175,83 @@ model erosion for the entire 650~\unit{km}$^{2}$
 Fort Bragg installation at 9~\unit{m} resolution
 \citep{Levine2018}. 
 
-%DIF <  --------- SIMULATION TABLE ---------
-%DIF >  --------- SCATTERPLOTS ---------
-
-%DIF <  table of simulations
-\DIFdelbegin %DIFDELCMD < \begin{table*}
-%DIFDELCMD < \small
-%DIFDELCMD < %%%
-\DIFdelendFL %DIF >  bivariate scatterplots
-\DIFaddbeginFL \begin{figure}
-\center
-\includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/scatterplots.pdf}
-\DIFaddendFL \caption{
-%\DIFdelbeginFL \DIFdelFL{Landscape evolution simulations}%DIFDELCMD < }
-%%DIFDELCMD < \begin{tabu} %%%
-%\DIFdelFL{to \textwidth }%DIFDELCMD < {%%%
-%\DIFdelFL{XXXXXllllllX}%DIFDELCMD < }
-%%DIFDELCMD < \toprule
-%%DIFDELCMD < %%%
-%\DIFdelFL{Dynamics }%DIFDELCMD < & %%%
-%\DIFdelFL{Model }%DIFDELCMD < & %%%
-%\DIFdelFL{Intensity }%DIFDELCMD < & %%%
-%\DIFdelFL{Duration }%DIFDELCMD < & %%%
-%\DIFdelFL{Interval }%DIFDELCMD < & %%%
-%\DIFdelFL{$D_c$ }%DIFDELCMD < & %%%
-%\DIFdelFL{$T_c$ }%DIFDELCMD < & %%%
-%\DIFdelFL{m }%DIFDELCMD < & %%%
-%\DIFdelFL{n }%DIFDELCMD < & %%%
-%\DIFdelFL{$\rho_s$ }%DIFDELCMD < & %%%
-%\DIFdelFL{Threads }%DIFDELCMD < & %%%
-%\DIFdelFL{Runtime}%DIFDELCMD < \\
-%%DIFDELCMD < \midrule
-%%DIFDELCMD < %%%
-%\DIFdelFL{Dynamic }%DIFDELCMD < & %%%
-%\DIFdelFL{RUSLE3D }%DIFDELCMD < & %%%
-%\DIFdelFL{50~}%DIFDELCMD < \unit{mm~hr}%%%
-%\DIFdelFL{$^{-1}$ }%DIFDELCMD < & %%%
-%\DIFdelFL{120~}%DIFDELCMD < \unit{min} & %%%
-%\DIFdelFL{3~}%DIFDELCMD < \unit{min} &  &  & %%%
-%\DIFdelFL{0.4 }%DIFDELCMD < & %%%
-%\DIFdelFL{1.3 }%DIFDELCMD < & & & %%%
-%\DIFdelFL{2~}%DIFDELCMD < \unit{min}%%%
-%\DIFdelFL{~36~}%DIFDELCMD < \unit{s}\\
-%%DIFDELCMD < %%%
-%\DIFdelFL{Dynamic }%DIFDELCMD < & %%%
-%\DIFdelendFL 
-\DIFaddbeginFL \DIFaddFL{Bivariate scatterplots of observed change in elevation from 2012-2016
-versus the change simulated with 
-(a) }\DIFaddendFL USPED \DIFdelbeginFL %DIFDELCMD < & %%%
-%\DIFdelFL{50~}%DIFDELCMD < \unit{mm~hr}%%%
-%\DIFdelFL{$^{-1}$ }%DIFDELCMD < & %%%
-%\DIFdelFL{120~}%DIFDELCMD < \unit{min} & %%%
-%\DIFdelFL{3~}%DIFDELCMD < \unit{min} &  &  & %%%
-%\DIFdelFL{1.5 }%DIFDELCMD < & %%%
-%\DIFdelFL{1.2 }%DIFDELCMD < & %%%
-%\DIFdelFL{1.6 }%DIFDELCMD < & & %%%
-%\DIFdelFL{3~}%DIFDELCMD < \unit{min}%%%
-%\DIFdelFL{~14~}%DIFDELCMD < \unit{s}\\
-%%DIFDELCMD < %%%
-%\DIFdelFL{Steady state }%DIFDELCMD < & %%%
-%\DIFdelFL{SIMWE }%DIFDELCMD < & %%%
-%\DIFdelFL{50~}%DIFDELCMD < \unit{mm~hr}%%%
-%\DIFdelFL{$^{-1}$ }%DIFDELCMD < & %%%
-%\DIFdelFL{120~}%DIFDELCMD < \unit{min} & %%%
-%\DIFdelFL{120~}%DIFDELCMD < \unit{min} & %%%
-%\DIFdelFL{0.001 }%DIFDELCMD < & & & & %%%
-%\DIFdelFL{1.6 }%DIFDELCMD < & %%%
-%\DIFdelFL{6 }%DIFDELCMD < & %%%
-%\DIFdelFL{84~}%DIFDELCMD < \unit{min}%%%
-%\DIFdelFL{~13~}%DIFDELCMD < \unit{s}\\
-%%DIFDELCMD < %%%
-%\DIFdelFL{Steady state }%DIFDELCMD < & %%%
-%\DIFdelFL{SIMWE }%DIFDELCMD < & %%%
-%\DIFdelFL{25~}%DIFDELCMD < \unit{mm~hr}%%%
-%\DIFdelFL{$^{-1}$ }%DIFDELCMD < & %%%
-%\DIFdelFL{120~}%DIFDELCMD < \unit{min} & %%%
-%\DIFdelFL{120~}%DIFDELCMD < \unit{min} & %%%
-%\DIFdelFL{0.0001 }%DIFDELCMD < & %%%
-%\DIFdelFL{0.01 }%DIFDELCMD < & & & %%%
-%\DIFdelFL{1.6 }%DIFDELCMD < & %%%
-%\DIFdelFL{6 }%DIFDELCMD < & %%%
-%\DIFdelFL{84~}%DIFDELCMD < \unit{min}%%%
-%\DIFdelFL{~13~}%DIFDELCMD < \unit{s}\\
-%DIFDELCMD < \bottomrule
-%DIFDELCMD < \\
-%DIFDELCMD < \end{tabu}
-%DIFDELCMD < %DIFDELCMD < \label{table:simulations} %%%
-%DIFDELCMD < \end{table*}
-%DIFDELCMD < %%%
-%\DIFdelend 
-%\DIFaddbegin 
-%\DIFadd{
-and (b) RUSLE3D.}%}
-\label{fig:scatterplots}
-\end{figure}
-%\DIFaddend 
-
-% --------- SIMULATION FIGURES ---------
-
-% dynamic figure
+\DIFaddbegin
+\DIFadd{
+% rusle figure
 \begin{figure}
 \center
-\includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/simulations.pdf}
-\caption{Dynamic \DIFaddbeginFL \DIFaddFL{simulations with (a-b) }\DIFaddendFL RUSLE3D and \DIFaddbeginFL \DIFaddFL{(c-d) }\DIFaddendFL USPED
-\DIFdelbeginFL \DIFdelFL{simulations
-}\DIFdelendFL for a 120~\unit{min} event with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$
-\DIFaddbeginFL \DIFaddFL{at 1~}\unit{m} \DIFaddFL{resolution for
-Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC.
-The (a) net difference }[\unit{m}] \DIFaddFL{and 
-(b) landforms for the RUSLE3D simulation.
-The (c) net difference }[\unit{m}] \DIFaddFL{and 
-(d) landforms for the USPED simulation.
-}\DIFaddendFL }
-\label{fig:simulations}
+\includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/rusle.pdf}
+\caption{Dynamic simulation with RUSLE3D 
+for a 120~\unit{min} event 
+with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$
+at 1~\unit{m} resolution for
+the Study Subwatershed (a-b)
+and Drainage Area 1 (c-d)
+on Patterson Branch, Fort Bragg, NC.
+The (a) flow accumulation  and
+(b) erosion [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]
+for the Study Subwatershed in the final 3~\unit{min} timestep.
+The (c) net difference [\unit{m}] and (d) landforms 
+for Drainage Area 1.
+}
+\label{fig:rusle_simulation}
 \end{figure}
+}
+\DIFaddend
+
+
+
+
+
+
+
+\begin{figure}
+\center
+\DIFdelbeginFL %DIFDELCMD < \includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/simulations.pdf}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=\textwidth,height=0.925\textheight,keepaspectratio]{figures/usped.pdf}
+\DIFaddendFL \caption{Dynamic \DIFdelbeginFL \DIFdelFL{RUSLE3D and }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{simulation with }\DIFaddendFL USPED
+\DIFdelbeginFL \DIFdelFL{simulations
+}\DIFdelendFL for a 120~\unit{min} event 
+with a rainfall intensity of 50~\unit{mm~hr}$^{-1}$
+\DIFaddbeginFL \DIFaddFL{at 1~}\unit{m} \DIFaddFL{resolution for
+the Study Subwatershed (a-b)
+and Drainage Area 1 (c-d)
+on Patterson Branch, Fort Bragg, NC.
+The (a) flow accumulation and
+(b) erosion-deposition }[\unit{kg~m}\DIFaddFL{$^{-2}$~}\unit{s}\DIFaddFL{$^{-1}$}]
+\DIFaddFL{for the Study Subwatershed in the final 3~}\unit{min} \DIFaddFL{timestep.
+The (c) net difference }[\unit{m}] \DIFaddFL{and (d) landforms 
+for Drainage Area 1.
+}\DIFaddendFL }
+\DIFdelbeginFL %DIFDELCMD < %DIFDELCMD < \label{fig:simulations}%%%
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \label{fig:usped_simulation}
+\DIFaddendFL \end{figure}
 
 % steady state simwe figure
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/simwe.pdf}
-\caption{\DIFdelbeginFL \DIFdelFL{Steady state }\DIFdelendFL 
-\DIFaddbeginFL \DIFaddFL{The (a) net difference }[\unit{m}] \DIFaddFL{and
-(b) landforms
-simulated with }\DIFaddendFL SIMWE \DIFdelbeginFL \DIFdelFL{simulations
-}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{at steady state 
-}\DIFaddendFL for \DIFaddbeginFL \DIFaddFL{a }\DIFaddendFL 120~\unit{min} \DIFdelbeginFL \DIFdelFL{events }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{event }\DIFaddendFL with \DIFaddbeginFL \DIFaddFL{a }\DIFaddendFL rainfall \DIFdelbeginFL \DIFdelFL{intensities }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{intensity }\DIFaddendFL of 50~\unit{mm~hr}$^{-1}$
-\DIFdelbeginFL \DIFdelFL{and 25}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{at 1}\DIFaddendFL ~\DIFdelbeginFL %DIFDELCMD < \unit{mm~hr}%%%
-\DIFdelFL{$^{-1}$}\DIFdelendFL \DIFaddbeginFL \unit{m} \DIFaddFL{resolution for
-Drainage Area 1, Study Subwatershed, Patterson Branch, Fort Bragg, NC.
+\caption{
+Steady state SIMWE simulations 
+for \DIFaddbeginFL \DIFaddFL{a }\DIFaddendFL 120~\unit{min} \DIFdelbeginFL \DIFdelFL{events }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{event 
+}\DIFaddendFL with \DIFaddbeginFL \DIFaddFL{a }\DIFaddendFL rainfall \DIFdelbeginFL \DIFdelFL{intensities }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{intensity }\DIFaddendFL of 50~\unit{mm~hr}$^{-1}$
+\DIFaddbeginFL \DIFaddFL{at 1~}\unit{m} \DIFaddFL{resolution for the
+Study Subwatershed (a-b)
+}\DIFaddendFL and \DIFdelbeginFL \DIFdelFL{25}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{Drainage Area 1 (c-d)
+on Patterson Branch, Fort Bragg, NC.
+The (a) depth of unsteady flow }[\unit{m}] \DIFaddFL{and
+(b) erosion-deposition }[\unit{kg~m}\DIFaddFL{$^{-2}$}\DIFaddendFL ~\DIFdelbeginFL %DIFDELCMD < \unit{mm~hr}%%%
+\DIFdelendFL \DIFaddbeginFL \unit{s}\DIFaddendFL $^{-1}$\DIFaddbeginFL ]
+\DIFaddFL{for the Study Subwatershed.
+The (c) net difference }[\unit{m}] \DIFaddFL{and (d) landforms
+for Drainage Area 1.
 }\DIFaddendFL }
-\label{fig:simwe_simulations}
-\end{figure}
+\DIFdelbeginFL %DIFDELCMD < \label{fig:simwe_simulations}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \label{fig:simwe_simulation}
+\DIFaddendFL \end{figure}
 
 %DIF >  -------------------- Discussion ---------------------------------
 \DIFaddbegin \section{\DIFadd{Discussion}}
@@ -2235,7 +2263,8 @@ r.sim.terrain only models shallow overland flows,
 not fluvial processes or subsurface flows.
 It requires data -- including 
 elevation and rainfall intensity -- in metric units. 
-The SIMWE model is computationally intensive 
+The implementation of SIMWE in GRASS GIS
+is computationally intensive 
 and may require long computation times even with multithreading.
 Because SIMWE uses a Green's function Monte Carlo solution 
 of the sediment transport equation, 
@@ -2251,6 +2280,23 @@ that can be easily processed with SIMWE,
 while RUSLE3D and USPED are much faster, computationally efficient,
 and can easily be run on much larger rasters. 
 }
+
+%DIF > It is challenging to quantitatively assess the performance of
+%DIF > landscape evolution models at a watershed scale.
+%DIF > While geomorphological statistics 
+%DIF > like slope-area relationships and catchment hypsometry
+%DIF > are used to assess model results \citep{Tucker2010}, 
+%DIF > the drainage networks generated 
+%DIF > may have similar statistics, 
+%DIF > but very different spatial patterns \citep{Ijjasz1992}.
+%DIF > Furthermore drainage networks 
+%DIF > are sensitive to initial conditions
+%DIF > with errors propagating exponentially over time
+%DIF > \citep{Ijjasz1992}. 
+%DIF > Measured versus simulated erosion and deposition values
+%DIF > can be compared through landscape element classes 
+%DIF > based on slope and contributing area
+%DIF > \citep{Peeters2006,Temme2011}.
 
 %DIF >  future work
 \DIFadd{In the future we plan to assess this model
@@ -2275,7 +2321,9 @@ The short-term landscape evolution model
 r.sim.terrain can \DIFdelbegin \DIFdel{realistically }\DIFdelend simulate the development of 
 gullies, rills, and hillslopes by overland water erosion
 for a range of hydrologic and soil erosion regimes.
-The landscape evolution model was tested
+The \DIFaddbegin \DIFadd{model is novel for simulating landscape evolution
+based on unsteady flows. 
+The }\DIFaddend landscape evolution model was tested
 with a series of simulations for different 
 hydrologic and soil erosion regimes
 for a highly eroded sub-watershed on Fort Bragg
@@ -2294,10 +2342,11 @@ channel incision, channel widening, and
 the development of knickzones, rills, and scour pits.
 For transport limited and }\DIFdelend \DIFaddbegin \DIFadd{for a }\DIFaddend variable erosion-deposition \DIFdelbegin \DIFdel{regimes,
 it simulated processes such as 
-channel aggradation, }\DIFdelend \DIFaddbegin \DIFadd{regime such as 
+channel aggradation, scouring, and }\DIFdelend \DIFaddbegin \DIFadd{regime such as 
 gradual aggradation, channel widening, 
-}\DIFaddend scouring, and the development of
-depositional ridges along the thalweg.
+scouring, }\DIFaddend the development of
+depositional ridges along the thalweg\DIFaddbegin \DIFadd{,
+and the growth of the depositional fan}\DIFaddend .
 % empirical models
 The empirical RUSLE3D \DIFdelbegin \DIFdel{and USPED models
 approximated short-term topographic change
@@ -2309,12 +2358,12 @@ while for transport limited regimes
 USPED }\DIFdelend \DIFaddbegin \DIFadd{regime,
 while the semi-empirical USPED model
 }\DIFaddend simulated channel widening and filling
-\DIFaddbegin \DIFadd{in a transport limited regime. 
-The elevation change simulated with the USPED model
-most closely fit the observed change in the study landscape}\DIFaddend .
-% uses & implications
-Since \DIFdelbegin \DIFdel{it }\DIFdelend \DIFaddbegin \DIFadd{r.sim.terrain }\DIFaddend is a GIS-based model 
-that \DIFdelbegin \DIFdel{realistically }\DIFdelend simulates fine-scale morphological processes and features,
+\DIFdelbegin \DIFdel{. 
+%DIF <  uses & implications
+Since it }\DIFdelend \DIFaddbegin \DIFadd{in a transport limited regime. 
+%DIF >  applications
+Since r.sim.terrain }\DIFaddend is a GIS-based model that \DIFdelbegin \DIFdel{realistically }\DIFdelend simulates 
+fine-scale morphological processes and features,
 \DIFdelbegin \DIFdel{r.sim.terrain }\DIFdelend \DIFaddbegin \DIFadd{it }\DIFaddend can easily and effectively be used 
 in conjunction with other GIS-based tools
 for geomorphological research,
