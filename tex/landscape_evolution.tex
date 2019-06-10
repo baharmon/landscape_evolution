@@ -478,7 +478,7 @@ expressed as the divergence of sediment flow  \citep{Tucker2001}:
 % landscape evolution equation
 \begin{equation}
 \label{eq:evolution} 
-{\partial z \over \partial t } = \left (-\nabla \cdot {\bf q_s}i \right ) ~ \rho_s^{-1} = d_s ~ \rho_s^{-1} 
+{\partial z \over \partial t } = \left (-\nabla \cdot {\bf q_s} \right ) ~ \rho_s^{-1} = d_s ~ \rho_s^{-1} 
 \end{equation}
 {\small
 where: \\
@@ -621,14 +621,14 @@ expressed as power functions of water-flow properties and slope angle.
 %using topographic analysis functions to compute the slope 
 %and flow-routing tools to compute the upslope contributing area 
 %as an input for estimating unit water flow.
-The relation between the topographic parameters 
+The relations between the topographic parameters 
 of well known empirical equations for erosion modeling, 
 such as USLE and stream power, were presented by \citep{Moore1986} 
 and used to develop simple, GIS-based models for limiting erosion-deposition cases 
 such as RUSLE3D and USPED \citep{Mitasova2001}.
 The SIMWE model estimates $T_c$ and $D_c$ using modified 
 equations and parameters developed for the WEPP model 
-\citep{Flanagan2013,Mitasova2001}.
+\citep{Flanagan2013,Mitasova2013}.
 
 The simulation modes in r.sim.terrain include:
 \begin{itemize}
@@ -710,8 +710,7 @@ through the accumulation of the evolving source over the given time period.
 This accumulation process can be interpreted as
 an approximation of a dynamic solution with diffusive wave effects
 incorporated by adding a diffusion term proportional to
-$ \nabla^2 [h^{5/3}]$
-in the solution:
+$ \nabla^2 [h^{5/3}]$:
 \begin{equation}
 \label{eq:difwater}
 -{\varepsilon_w\over 2 }\nabla^2 ~ h^{5/3}
@@ -803,7 +802,7 @@ $\nabla^2 \varrho$ \citep{Mitas1998}:
 \label{eq:difsedim}
 -{\varepsilon_s \over 2}\nabla^2 \varrho
 + \nabla\cdot [\varrho \vec{v}]
- + \varrho~{D_c \over T_c}~|{\bf v}|
+ + \varrho~{D_c \over T_c}~|\vec{v}|
 = D_c
 %\sigma(\vec{r}) T(\vec{r})=Dc/T * T=Dc
 \end{equation}
@@ -848,13 +847,7 @@ $\vec{q_s} = \varrho~\vec{s_0}$.  %VERIFY
 Then net erosion-deposition $d_s$ 
 is computed as the divergence of sediment flow using equation (\ref{eq:steady_sed}).
 
-SIMWE estimates the detachment capacity $D_c $ and 
-the sediment-transport capacity $T_c $ 
-as functions of shear stress and stream power respectively. 
-Both $D_c$ and $T_c$ are computed using water depth simulated by r.sim.water, slope estimated by r.slope.aspect
-and FINISH
-\citep{Flanagan2013,Mitasova2001}.
-
+%HM we already explained how D_c and T_c is computed in section about regimes
 %Specifically,  the detachment capacity is:
 %\begin{equation}
 %\label{eq:detach_cap}
@@ -1233,8 +1226,8 @@ assuming that sediment flow is equal to sediment transport capacity:
 %D = ∇ · (T s0) = ∂(T cos α)/∂x + ∂(T sin α)/∂y
 \begin{equation}\label{eq:usped_erdep} 
 d_s = 
-{\partial (T ~ \cos \alpha) \over \partial x} +
-{\partial (T ~ \sin \alpha) \over \partial y}
+{\partial (T_c ~ \cos \alpha) \over \partial x} +
+{\partial (T_c ~ \sin \alpha) \over \partial y}
 \end{equation}
 {\small
 \noindent
