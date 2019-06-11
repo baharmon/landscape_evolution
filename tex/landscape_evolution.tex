@@ -82,11 +82,11 @@ The digital elevation model (DEM)
 (a) before and (b) after
 simulated landscape evolution with r.sim.terrain 
 for a subwatershed of Patterson Branch, Fort Bragg, NC, USA. 
-(a) The before DEM was generated from an airborne lidar survey in 2012. 
-This simulation used the SIMWE model
+The before DEM was generated from an airborne lidar data acquired in 2012. 
+The simulation used the SIMWE model
 for a 120~\unit{min} rainfall event with 50~\unit{mm~hr}$^{-1}$
 for a variable erosion-deposition regime at steady state.
-(b) In the evolved DEM 
+In the evolved DEM 
 the gully channel has widened 
 with depositional ridges forming along its thalweg.}
 \label{fig:evolution}
@@ -128,14 +128,14 @@ and visualization,
 there are few GIS-based soil erosion models (see Table~\ref{table:erosion_models})
 or landscape evolution models.
 % r.terradyn
-\cite{Thaxton2004} developed the model r.terradyn 
+\citet{Thaxton2004} developed the model r.terradyn 
 as a GRASS GIS shell script module 
 to simulate terrain evolution 
 by steady state net erosion-deposition rates
 estimated by the Simulation of Water Erosion (SIMWE) model \citep{Mitas1998}
 and gravitational diffusion. 
 % r.landscape.evol
-\cite{Barton2010} developed a long term landscape evolution model
+\citet{Barton2010} developed a long term landscape evolution model
 in GRASS GIS called r.landscape.evol that integrates 
 the Unit Stream Power Erosion Deposition (USPED) model,
 fluvial erosion, and gravitational diffusion.
@@ -310,7 +310,7 @@ a time-series of airborne lidar surveys.
 \center
 \includegraphics[width=\textwidth,keepaspectratio]{figures/concept.pdf}
 \caption{Conceptual diagram for r.sim.terrain.}
-\label{fig:concept}
+\label{fig:diagram}
 \end{figure}
 
 % ---------------------------------
@@ -323,7 +323,7 @@ across a range of spatiotemporal scales and soil erosion regimes
 using either
 the Simulated Water Erosion (SIMWE) model, 
 the 3-Dimensional Revised Universal Soil Loss Equation (RUSLE 3D) model,
-or the Unit Stream Power Erosion Deposition (USPED) model (Figure~\ref{fig:concept}).  
+or the Unit Stream Power Erosion Deposition (USPED) model (Figure \ref {fig:diagram}).  
 The r.sim.terrain model
 can simulate either steady state or dynamic flow regimes.
 % simwe
@@ -423,7 +423,7 @@ g.extension extension=r.sim.terrain
 % table of erosion models
 \begin{table*}
 \small
-\caption{Geospatial soil erosion models}
+\caption{Examples of geospatial soil erosion models}
 \begin{tabu} to \textwidth {XXXXXl}
 \toprule
 Model & Spatial scale &  Temporal scale & Representation & Implementation & Reference\\
@@ -451,13 +451,14 @@ USPED & watershed & continuous & raster & map algebra & \citep{Mitasova1996}\\
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/models.pdf}
-\caption{Water and sediment flows 
-modeled by (a \& c) SIMWE and (b \& d) RUSLE3D with spatially variable landcover 
-for (a \& b) a subwatershed and (c \& d) drainage area of Patterson Branch, Fort Bragg, NC.
-(a) Water depth [m] simulated by SIMWE for a 10~\unit{min} event with 50~\unit{mm~hr}$^{-1}$ in the subwatershed.
-(b) Flow accumulation for RUSLE3D in the subwatershed.
-(c) Erosion and deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] simulated by SIMWE in drainage area 1.
+\caption{Water and sediment flows modeled with spatially variable landcover:
+%modeled by (a \& c) SIMWE and (b \& d) RUSLE3D with spatially variable landcover 
+(a) Water depth [m] simulated by SIMWE for a 10~\unit{min} event with 50~\unit{mm~hr}$^{-1}$ in the subwatershed
+of Patterson Branch, Fort Bragg, NC;
+(b) Flow accumulation for RUSLE3D in the subwatershed;
+(c) Erosion and deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] simulated by SIMWE in drainage area 1;
 (d) Erosion [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] modeled by RUSLE3D in drainage area 1.
+%for a (a \& b) subwatershed and (c \& d) drainage area of Patterson Branch, Fort Bragg, NC.
 }
 \label{fig:models}
 \end{figure}
@@ -467,7 +468,7 @@ for (a \& b) a subwatershed and (c \& d) drainage area of Patterson Branch, Fort
 \subsection{Landscape evolution}
 
 Landscape evolution in r.sim.terrain 
-is driven by the change in the elevation surface 
+is driven by change in the elevation surface 
 caused by soil erosion and deposition.
 During storm events overland flow erodes soil, 
 transports sediment across landscape, and 
@@ -484,14 +485,14 @@ expressed as the divergence of sediment flow  \citep{Tucker2001}:
 % landscape evolution equation
 \begin{equation}
 \label{eq:evolution} 
-{\partial z \over \partial t } = \left (-\nabla \cdot {\bf q_s} \right ) ~ \rho_s^{-1} = d_s ~ \rho_s^{-1} 
+{\partial z \over \partial t } = \left (-\nabla \cdot \vec{q_s} \right ) ~ \rho_s^{-1} = d_s ~ \rho_s^{-1} 
 \end{equation}
 {\small
 where: \\
 \noindent
 \hspace*{0.5em} $z$ is elevation [\unit{m}] \\
 \hspace*{0.5em} $t$ is time [\unit{s}] \\
-\hspace*{0.5em} ${\bf q_s}$ is sediment flow per unit width (vector) [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
+\hspace*{0.5em} $\vec {q_s}$ is sediment flow per unit width (vector) [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
 \hspace*{0.5em} $d_s$ is the net erosion-deposition rate [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]\\
 \hspace*{0.5em} $\rho_s$ is sediment mass density [\unit{kg~m}$^{-3}$].\\
 }
@@ -503,11 +504,12 @@ Gravitational diffusion is then applied to the changed topography
 to simulate the smoothing effects 
 of localized soil transport between rainfall events.
 The change in elevation due to gravitational diffusion
-is a function of the sediment mass density,
-the diffusion coefficient, and the Laplacian of the elevation
+is a function of the diffusion coefficient and the Laplacian of the elevation
 %-- i.e.~the sum of the second order derivatives of elevation
 \citep{Thaxton2004}:
 % change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
+%HM I have removed sed. mass density - to fix the units for diffusion coef, the sed density would be there is we 
+% apply laplacian to sediment concentrations rather than elevation. Your original text did not have any variable.
 \begin{equation}
 \label{eq:grav_diffusion} 
 {\partial z \over \partial t } =  \varepsilon_g ~ \nabla^2 z 
@@ -515,7 +517,7 @@ the diffusion coefficient, and the Laplacian of the elevation
 %HM this should be \nabla^2 z, \nabla is an operator so there should be a variable upon which it is applied
 %HM see eq 4.41 in Thaxton, also from Willgoose, the second term
 \noindent
-where $\varepsilon_g$ is the diffusion coefficient [\unit{kg~m}$^{2}$~\unit{s}$^{-1}$].
+where $\varepsilon_g$ is the diffusion coefficient [\unit{m}$^2$\unit{s}$^{-1}$].
 %HM we can write $\varepsilon_g=c~\varepsilon$ where c[kg] to keep the diffusion coef units the same as in literature
 %If it is the same time step we have
 %\begin{equation}
@@ -526,7 +528,7 @@ where $\varepsilon_g$ is the diffusion coefficient [\unit{kg~m}$^{2}$~\unit{s}$^
 %HM VERIFY whether this is acceptable
 
 \noindent
-The discrete implementation follows \cite{Thaxton2004}:
+The discrete implementation follows \citet{Thaxton2004}:
 \begin{equation}
 \label{eq:evolution_disc1} 
 z_{t+ \Delta t_1} = z_t + \Delta z_s  
@@ -538,9 +540,9 @@ z_{t+\Delta t_1+\Delta t_2} = z_{t+\Delta t_1} + \Delta z_g
 {\small
 where: \\
 \noindent
-\hspace*{0.5em} $\Delta z_s$ is elevation change [\unit{m}] caused by net erosion or deposition during time interval $\Delta t_1$ [\unit{s}]
-(Eq.~\ref{eq:evolution})\\
-\hspace*{0.5em} $\Delta z_g$ is the diffusion driven elevation change [\unit{m}] during time interval $\Delta t_1$ [\unit{s}] 
+\hspace*{0.5em} $\Delta z_s$ is elevation change [\unit{m}] caused by net erosion or deposition during time interval $\Delta t_1$,
+(Eq.~\ref{eq:evolution}),\\
+\hspace*{0.5em} $\Delta z_g$ is the diffusion driven elevation change [\unit{m}] during time interval $\Delta t_1$ 
 (Eq.~\ref{eq:grav_diffusion}).\\
 }
 %HM  we need to conclude this with reference to Thaxton? about delta z and stability of the solution
@@ -557,7 +559,7 @@ where: \\
 %d_s = \nabla\cdot {\bf q_s} 
 %\end{equation}
 Following experimental observations and qualitative arguments, 
-\cite{Foster1977} proposed that the sum of 
+\citet{Foster1977} proposed that the sum of 
 the ratio of the net erosion-deposition rate $d_s$ 
 to the detachment capacity  $D_c$  [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] 
 and the ratio of the sediment flow rate $q_s = |{\bf q_s}|$ 
@@ -637,7 +639,7 @@ The SIMWE model estimates $T_c$ and $D_c$ using modified
 equations and parameters developed for the WEPP model 
 \citep{Flanagan2013,Mitasova2013}.
 
-The simulation modes in r.sim.terrain include:
+The simulation modes in r.sim.terrain include (Figure~\ref{fig:diagram}):
 \begin{itemize}
   \item the process-based SIMWE model 
   for steady state and unsteady shallow overland flow 
@@ -667,14 +669,14 @@ r.sim.terrain:
 \begin{itemize}
 \item computes the first order partial derivatives of the elevation surface
 $\partial z / \partial x$ and $\partial z / \partial y$,
-% using the GRASS GIS module r.slope.aspect (see the equations in \cite{hofierka2009}),
+% using the GRASS GIS module r.slope.aspect (see the equations in \citet{hofierka2009}),
 \item simulates shallow water flow depth, sediment flow, and the net erosion-deposition rate, 
 \item and then evolves the topography based on the erosion-deposition rate and gravitational diffusion. 
 \end{itemize}
 %
 The first order partial derivatives of the elevation surface
 are computed using the GRASS GIS module r.slope.aspect 
-using the equations in \cite{Hofierka2009}.
+using the equations in \citet{Hofierka2009}.
 r.sim.terrain simulates unsteady state flow regimes
 when the landscape evolution time step is less than the travel time 
 for a drop of water or a particle of sediment to cross the landscape,
@@ -690,13 +692,14 @@ the model simulates a steady state regime.
 % Shallow water flow
 The SIMWE model simulates shallow overland water flow
 controlled by spatially variable topographic, soil, landcover, 
-and rainfall parameters by solving the water flow continuity equation 
-using a Green's function Monte Carlo path sampling method:
+and rainfall parameters using a Green's function Monte Carlo path sampling method.
+The steady state shallow water flow continuity equation relates the change in water depth across space 
+to source, defined in our case as rainfall excess rate: 
 % shallow water flow eq.
 \begin{equation}
 \label{eq:water}
 %{\partial h \over \partial t} =
-\nabla \cdot \vec{q} = i_e
+\nabla \cdot \vec{q} = \nabla \cdot (h~\vec{v}) = \nabla \cdot (n^{-1}~h^{5/3}s^{1/2}\vec{s_0}) = i_e
 \end{equation}
 {\small
 \noindent
@@ -704,24 +707,25 @@ where: \\
 \noindent
 %\hspace*{0.5em} $x, y$ is the position [\unit{m}]\\
 %\hspace*{0.5em} $t$ is the time [\unit{s}] \\
-%\hspace*{0.5em} $h$ is the depth of overland flow [\unit{m}]\\
+\hspace*{0.5em} $\vec{q}$ is the water flow per unit width (vector) [$\unit{m}^2~\unit{s}^{-1}$]\\
+\hspace*{0.5em} $h$ is the depth of overland flow [\unit{m}]\\
+\hspace*{0.5em} $\vec{v} $ is the water flow velocity vector [$\unit{m~s^{-1}}$]
+whose magnitude is computed with the Manning's equation $v=n^{-1}~h^{2/3}~s^{1/2}$\\
+\hspace*{0.5em} $n$ is the Manning's coefficient [$\unit{s~m^{-1/3}}$] \\
+\hspace*{0.5em} $s$ is slope (unitless)\\
 \hspace*{0.5em} $i_e$ is the rainfall excess rate [$\unit{m~s^{-1}}$]
-(i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept)\\
+(i.e.~rainfall intensity $-$ infiltration $-$ vegetation intercept).\\
 %\hspace*{0.5em} $\nabla$ is the divergence operator\\
-\hspace*{0.5em} $\vec{q}$ is the water flow per unit width (vector) [$\unit{m}^2~\unit{s}^{-1}$]. 
+%\hspace*{0.5em} $\vec{q}$ is the water flow per unit width (vector) [$\unit{m}^2~\unit{s}^{-1}$]. 
 }
 
 \noindent
-The path sampling method solves the continuity equation 
-through the accumulation of the evolving source over the given time period. 
-This accumulation process can be interpreted as
-an approximation of a dynamic solution with diffusive wave effects
-incorporated by adding a diffusion term proportional to
+An approximation of diffusive wave effects is incorporated by adding a diffusion term proportional to
 $ \nabla^2 [h^{5/3}]$:
 \begin{equation}
 \label{eq:difwater}
 -{\varepsilon_w\over 2 }\nabla^2 ~ h^{5/3}
-+\nabla \cdot \vec{q} = i_e
++\nabla \cdot (n^{-1}~h^{5/3}s^{1/2}\vec{s_0}) = i_e
 \end{equation}
 {\small
 \noindent
@@ -729,17 +733,16 @@ $ \nabla^2 [h^{5/3}]$:
  \noindent
  \hspace*{0.5em} $\varepsilon_w$ is a spatially variable diffusion coefficient [$\unit{m}^{4/3}~\unit{s}^{-1}$]. \\
 }
-See \cite{Mitasova2004} for more details 
-on this equation and its numerical solution.
+The path sampling method solves the continuity equation for $h^{5/3}$ 
+through the accumulation of the evolving source \citep{Mitasova2004}.
 The solution assumes that water flow velocity 
 is largely controlled by the slope of the terrain and surface roughness 
 and that its change at a given location during the simulated event is negligible. 
-The water depth $h$ at time $\tau$ during the simulated rainfall event
+The initial number of particles per grid cell is proportional to the rainfall excess rate $i_e$ (source).
+The water depth $h^{5/3}$ at time $\tau$ during the simulated rainfall event
 %HM note that we have several time steps in r.sim.terrain 
 %- topo evolution time step, water flow time step and sediment flow time step
- is computed as a function of particle (walkers) density at each grid cell. 
-The initial number of particles per grid cell 
-is proportional to the rainfall excess rate $i_e$ (source).
+is computed as a function of particle (walkers) density at each grid cell. 
 Particles are then routed across the landscape 
 by finding a new position for each walker at time $\tau + \Delta \tau$:
 \begin{equation}
@@ -752,17 +755,19 @@ where: \\
 \noindent
 \hspace*{0.5em} $\vec{r} = (x, y)$ is the $m^{th}$ walker position [\unit{m}]\\
 \hspace*{0.5em} $\Delta \tau$ is the particle routing time step [\unit{s}]\\
-\hspace*{0.5em} $\vec{g}$ is a random vector with gaussian components with variance $\Delta \tau$ [\unit{m}]\\
-\hspace*{0.5em} $\vec{v} $ is the water flow velocity vector [$\unit{m~s^{-1}}$]
-whose magnitude is computed with the Manning's equation $v=n^{-1}~h^{2/3}~s^{1/2}$\\
-\hspace*{0.5em} where $n$ is the Manning's coefficient [$\unit{s~m^{-1/3}}$] and $s$ is slope.\\ 
+\hspace*{0.5em} $\vec{g}$ is a random vector with gaussian components with variance $\Delta \tau$ [\unit{m}].\\
+%\hspace*{0.5em} $\vec{v} $ is the water flow velocity vector [$\unit{m~s^{-1}}$]
+%whose magnitude is computed with the Manning's equation $v=n^{-1}~h^{2/3}~s^{1/2}$ 
+%where $n$ is the Manning's coefficient [$\unit{s~m^{-1/3}}$] and $s$ is slope.\\ 
 }
 %
 \noindent
-The mathematical background of the method,
-including the incorporation of approximate momentum 
+The mathematical background of the method, 
+including the computation 
+of the temporal evolution of water depth
+and incorporation of approximate momentum 
 through an increased diffusion rate in the prevailing direction of flow,
-is presented by \cite{Mitas1998} and \cite{Mitasova2004}.
+is presented by \citet{Mitas1998} and \citet{Mitasova2004}.
 
 % ------------------------------------------------------------------------------
 \subsubsection{Sediment flow and net erosion-deposition}
@@ -806,7 +811,7 @@ $\nabla^2 \varrho$ \citep{Mitas1998}:
 \begin{equation}
 \label{eq:difsedim}
 -{\varepsilon_s \over 2}\nabla^2 \varrho
-+ \nabla\cdot [\varrho \vec{v}]
++ \nabla\cdot (\varrho \vec{v})
  + \varrho~{D_c \over T_c}~|\vec{v}|
 = D_c
 %\sigma(\vec{r}) T(\vec{r})=Dc/T * T=Dc
@@ -818,7 +823,7 @@ where:\\
 \hspace*{0.5em} $\varepsilon_s$ is the diffusion constant [$\unit{m^2~s^{-1}}$].\\
 }
 
-On the left hand side of equation \ref{eq:difsedim}, 
+On the left hand side of equation (\ref{eq:difsedim}), 
 the first term describes local diffusion, 
 the second term is drift driven by the water flow,
 and the third term represents a velocity dependent `potential'
@@ -839,20 +844,19 @@ w_m^{new}=w_m \exp[- \Delta \tau(u(\vec{r}_m^{new})+u(\vec{r}_m))/2]
 \noindent
 where:\\
 \noindent
-\hspace*{0.5em} $u = {D_c / T_c}~|\vec{v}|$.\\
+\hspace*{0.5em} $u = (D_c / T_c)~|\vec{v}|$.\\
 }
 %
 \noindent
 %The sediment flow rate is computed as weighted particle densities 
 %multiplied by the unit vector in the direction of flow
-The sediment flow rate is computed 
+Sediment flow is computed 
 as the product of weighted particle densities 
 and the unit vector in the direction of flow
 $\vec{q_s} = \varrho~\vec{s_0}$.  %VERIFY 
-Then net erosion-deposition $d_s$ 
+Then the net erosion-deposition rate $d_s$ 
 is computed as the divergence of sediment flow using equation (\ref{eq:steady_sed}).
-See \citet{Mitas1998} and \citet{Mitasova2004} 
-for more details on the Green's function
+See \citet{Mitas1998} and \citet{Mitasova2004} for more details on the Green's function
 Monte Carlo solution and equations for computing $D_c$ and $T_c$.
 
 %HM we already explained how D_c and T_c is computed in section about regimes
@@ -992,7 +996,7 @@ where: \\
 
 \noindent
 The parameters for this equation were derived from observed data
-published for different regions by \cite{Panagos2017}.
+published for different regions by \citet{Panagos2017}.
 % erosivity per time step
 \noindent
 Then the event-based erosivity index $R_e$ 
@@ -1182,7 +1186,7 @@ Net erosion-deposition is then computed as the divergence of sediment flow.
 
 \subsubsection{Topographic sediment transport factor}
 % Topographic sediment transport factor
-Using the unit stream power concept presented by \cite{Moore1986},
+Using the unit stream power concept presented by \citet{Moore1986},
 the 3D topographic factor (Eq.~\ref{eq:ls_factor}) 
 for RUSLE3D is modified to represent 
 the topographic sediment transport factor ($LS_T$) --
