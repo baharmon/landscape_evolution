@@ -310,7 +310,7 @@ a time-series of airborne lidar surveys.
 \center
 \includegraphics[width=\textwidth,keepaspectratio]{figures/concept.pdf}
 \caption{Conceptual diagram for r.sim.terrain.}
-\label{fig:evolution}
+\label{fig:concept}
 \end{figure}
 
 % ---------------------------------
@@ -323,7 +323,7 @@ across a range of spatiotemporal scales and soil erosion regimes
 using either
 the Simulated Water Erosion (SIMWE) model, 
 the 3-Dimensional Revised Universal Soil Loss Equation (RUSLE 3D) model,
-or the Unit Stream Power Erosion Deposition (USPED) model (Figure~\ref{fig:evolution}).  
+or the Unit Stream Power Erosion Deposition (USPED) model (Figure~\ref{fig:concept}).  
 The r.sim.terrain model
 can simulate either steady state or dynamic flow regimes.
 % simwe
@@ -764,8 +764,6 @@ including the incorporation of approximate momentum
 through an increased diffusion rate in the prevailing direction of flow,
 is presented by \cite{Mitas1998} and \cite{Mitasova2004}.
 
-%ADD COMPUTATION OF WALKER DENSITY HERE 
-
 % ------------------------------------------------------------------------------
 \subsubsection{Sediment flow and net erosion-deposition}
 
@@ -853,6 +851,9 @@ and the unit vector in the direction of flow
 $\vec{q_s} = \varrho~\vec{s_0}$.  %VERIFY 
 Then net erosion-deposition $d_s$ 
 is computed as the divergence of sediment flow using equation (\ref{eq:steady_sed}).
+See \citet{Mitas1998} and \citet{Mitasova2004} 
+for more details on the Green's function
+Monte Carlo solution and equations for computing $D_c$ and $T_c$.
 
 %HM we already explained how D_c and T_c is computed in section about regimes
 %Specifically,  the detachment capacity is:
