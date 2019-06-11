@@ -305,7 +305,7 @@ a time-series of airborne lidar surveys.
 \center
 \includegraphics[width=\textwidth,keepaspectratio]{figures/concept.pdf}
 \caption{Conceptual diagram for r.sim.terrain.}
-\label{fig:evolution}
+\label{fig:diagram}
 \end{figure}
 
 % ---------------------------------
@@ -318,7 +318,7 @@ across a range of spatiotemporal scales and soil erosion regimes
 using either
 the Simulated Water Erosion (SIMWE) model, 
 the 3-Dimensional Revised Universal Soil Loss Equation (RUSLE 3D) model,
-or the Unit Stream Power Erosion Deposition (USPED) model (Figure \ref {fig:evolution}).  
+or the Unit Stream Power Erosion Deposition (USPED) model (Figure \ref {fig:diagram}).  
 The r.sim.terrain model
 can simulate either steady state or dynamic flow regimes.
 % simwe
@@ -452,7 +452,7 @@ of Patterson Branch, Fort Bragg, NC;
 (b) Flow accumulation for RUSLE3D in the subwatershed;
 (c) Erosion and deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] simulated by SIMWE in drainage area 1;
 (d) Erosion [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] modeled by RUSLE3D in drainage area 1.
-for a (a \& b) subwatershed and (c \& d) drainage area of Patterson Branch, Fort Bragg, NC.
+%for a (a \& b) subwatershed and (c \& d) drainage area of Patterson Branch, Fort Bragg, NC.
 }
 \label{fig:models}
 \end{figure}
@@ -462,7 +462,7 @@ for a (a \& b) subwatershed and (c \& d) drainage area of Patterson Branch, Fort
 \subsection{Landscape evolution}
 
 Landscape evolution in r.sim.terrain 
-is driven by the change in the elevation surface 
+is driven by change in the elevation surface 
 caused by soil erosion and deposition.
 During storm events overland flow erodes soil, 
 transports sediment across landscape, and 
@@ -479,14 +479,14 @@ expressed as the divergence of sediment flow  \citep{Tucker2001}:
 % landscape evolution equation
 \begin{equation}
 \label{eq:evolution} 
-{\partial z \over \partial t } = \left (-\nabla \cdot {\bf q_s} \right ) ~ \rho_s^{-1} = d_s ~ \rho_s^{-1} 
+{\partial z \over \partial t } = \left (-\nabla \cdot \vec{q_s} \right ) ~ \rho_s^{-1} = d_s ~ \rho_s^{-1} 
 \end{equation}
 {\small
 where: \\
 \noindent
 \hspace*{0.5em} $z$ is elevation [\unit{m}] \\
 \hspace*{0.5em} $t$ is time [\unit{s}] \\
-\hspace*{0.5em} ${\bf q_s}$ is sediment flow per unit width (vector) [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
+\hspace*{0.5em} $\vec {q_s}$ is sediment flow per unit width (vector) [\unit{kg~m}$^{-1}$~\unit{s}$^{-1}$]\\
 \hspace*{0.5em} $d_s$ is the net erosion-deposition rate [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$]\\
 \hspace*{0.5em} $\rho_s$ is sediment mass density [\unit{kg~m}$^{-3}$].\\
 }
@@ -497,11 +497,12 @@ Gravitational diffusion is then applied to the changed topography
 to simulate the smoothing effects 
 of localized soil transport between rainfall events.
 The change in elevation due to gravitational diffusion
-is a function of the sediment mass density,
-the diffusion coefficient, and Laplacian of the elevation
+is a function of the diffusion coefficient and Laplacian of the elevation
 %-- i.e.~the sum of the second order derivatives of elevation
 \citep{Thaxton2004}:
 % change in elevation (m) = elevation (m) - (change in time (s) / sediment mass density (kg/m^3) * gravitational diffusion coefficient (m^2/s) * divergence (m^-1))
+%HM I have removed sed. mass density - to fix the units for diffusion coef, the sed density would be there is we 
+% apply laplacian to sediment concentrations rather than elevation. Your original text did not have any variable.
 \begin{equation}
 \label{eq:grav_diffusion} 
 {\partial z \over \partial t } =  \varepsilon_g ~ \nabla^2 z 
@@ -509,7 +510,7 @@ the diffusion coefficient, and Laplacian of the elevation
 %HM this should be \nabla^2 z, \nabla is an operator so there should be a variable upon which it is applied
 %HM see eq 4.41 in Thaxton, also from Willgoose, the second term
 \noindent
-where $\varepsilon_g$ is the diffusion coefficient [\unit{kg~m}$^{2}$~\unit{s}$^{-1}$].
+where $\varepsilon_g$ is the diffusion coefficient [\unit{m}$^2$\unit{s}$^{-1}$].
 %HM we can write $\varepsilon_g=c~\varepsilon$ where c[kg] to keep the diffusion coef units the same as in literature
 %If it is the same time step we have
 %\begin{equation}
@@ -532,10 +533,10 @@ z_{t+\Delta t_1+\Delta t_2} = z_{t+\Delta t_1} + \Delta z_g
 {\small
 where: \\
 \noindent
-\hspace*{0.5em} $\Delta z_s$ is elevation change [\unit{m}] caused by net erosion or deposition during time interval $\Delta t_1$ [\unit{s}],
-(Eq.~\ref{eq:evolution})\\
-\hspace*{0.5em} $\Delta z_g$ is the diffusion driven elevation change [\unit{m}] during time interval $\Delta t_1$ [\unit{s}] 
-(Eq.~\ref{eq:grav_diffusion})\\
+\hspace*{0.5em} $\Delta z_s$ is elevation change [\unit{m}] caused by net erosion or deposition during time interval $\Delta t_1$,
+(Eq.~\ref{eq:evolution}),\\
+\hspace*{0.5em} $\Delta z_g$ is the diffusion driven elevation change [\unit{m}] during time interval $\Delta t_1$ 
+(Eq.~\ref{eq:grav_diffusion}).\\
 }
 %HM  we need to conclude this with reference to Thaxton? about delta z and stability of the solution
 %and/or that t1 and t2 can be different 
@@ -616,7 +617,7 @@ and depends on the difference between the sediment transport capacity
 and the actual sediment flow rate at the given location.
 
 The detachment capacity $D_c $  and the sediment-transport capacity $T_c $  
-are estimated using shear stress and stream power equations respectively
+are estimated using shear stress and stream power equations respectively,
 expressed as power functions of water-flow properties and slope angle.    
 %For a given rainfall rate and surface roughness, these two variables can be derived from a DEM
 %using topographic analysis functions to compute the slope 
@@ -624,14 +625,14 @@ expressed as power functions of water-flow properties and slope angle.
 %as an input for estimating unit water flow.
 The relations between the topographic parameters 
 of well known empirical equations for erosion modeling, 
-such as USLE and stream power, were presented by \citep{Moore1986} 
+such as USLE and stream power, were presented by \cite{Moore1986} 
 and used to develop simple, GIS-based models for limiting erosion-deposition cases 
 such as RUSLE3D and USPED \citep{Mitasova2001}.
 The SIMWE model estimates $T_c$ and $D_c$ using modified 
 equations and parameters developed for the WEPP model 
 \citep{Flanagan2013,Mitasova2013}.
 
-The simulation modes in r.sim.terrain include:
+The simulation modes in r.sim.terrain include (Figure~\ref{fig:diagram}):
 \begin{itemize}
   \item the process-based SIMWE model 
   for steady state and unsteady shallow overland flow 
