@@ -82,11 +82,11 @@ The digital elevation model (DEM)
 (a) before and (b) after
 simulated landscape evolution with r.sim.terrain 
 for a subwatershed of Patterson Branch, Fort Bragg, NC, USA. 
-(a) The before DEM was generated from an airborne lidar survey in 2012. 
-This simulation used the SIMWE model
+The before DEM was generated from an airborne lidar data aqcuired in 2012. 
+The simulation used the SIMWE model
 for a 120~\unit{min} rainfall event with 50~\unit{mm~hr}$^{-1}$
 for a variable erosion-deposition regime at steady state.
-(b) In the evolved DEM 
+In the evolved DEM 
 the gully channel has widened 
 with depositional ridges forming along its thalweg.}
 \label{fig:evolution}
@@ -318,7 +318,7 @@ across a range of spatiotemporal scales and soil erosion regimes
 using either
 the Simulated Water Erosion (SIMWE) model, 
 the 3-Dimensional Revised Universal Soil Loss Equation (RUSLE 3D) model,
-or the Unit Stream Power Erosion Deposition (USPED) model (\ref {fig:evolution}).  
+or the Unit Stream Power Erosion Deposition (USPED) model (Figure \ref {fig:evolution}).  
 The r.sim.terrain model
 can simulate either steady state or dynamic flow regimes.
 % simwe
@@ -417,7 +417,7 @@ g.extension extension=r.sim.terrain
 % table of erosion models
 \begin{table*}
 \small
-\caption{Geospatial soil erosion models}
+\caption{Examples of geospatial soil erosion models}
 \begin{tabu} to \textwidth {XXXXXl}
 \toprule
 Model & Spatial scale &  Temporal scale & Representation & Implementation & Reference\\
@@ -445,13 +445,14 @@ USPED & watershed & continuous & raster & map algebra & \citep{Mitasova1996}\\
 \begin{figure}
 \center
 \includegraphics[width=\textwidth,height=0.95\textheight,keepaspectratio]{figures/models.pdf}
-\caption{Water and sediment flows 
-modeled by (a \& c) SIMWE and (b \& d) RUSLE3D with spatially variable landcover 
-for a (a \& b) subwatershed and (c \& d) drainage area of Patterson Branch, Fort Bragg, NC.
-(a) Water depth [m] simulated by SIMWE for a 10~\unit{min} event with 50~\unit{mm~hr}$^{-1}$ in the subwatershed.
-(b) Flow accumulation for RUSLE3D in the subwatershed.
-(c) Erosion and deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] simulated by SIMWE in drainage area 1.
+\caption{Water and sediment flows modeled with spatially variable landcover:
+%modeled by (a \& c) SIMWE and (b \& d) RUSLE3D with spatially variable landcover 
+(a) Water depth [m] simulated by SIMWE for a 10~\unit{min} event with 50~\unit{mm~hr}$^{-1}$ in the subwatershed
+of Patterson Branch, Fort Bragg, NC;
+(b) Flow accumulation for RUSLE3D in the subwatershed;
+(c) Erosion and deposition [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] simulated by SIMWE in drainage area 1;
 (d) Erosion [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] modeled by RUSLE3D in drainage area 1.
+for a (a \& b) subwatershed and (c \& d) drainage area of Patterson Branch, Fort Bragg, NC.
 }
 \label{fig:models}
 \end{figure}
