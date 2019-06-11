@@ -804,7 +804,7 @@ $\nabla^2 \varrho$ \citep{Mitas1998}:
 \begin{equation}
 \label{eq:difsedim}
 -{\varepsilon_s \over 2}\nabla^2 \varrho
-+ \nabla\cdot [\varrho \vec{v}]
++ \nabla\cdot (\varrho \vec{v})
  + \varrho~{D_c \over T_c}~|\vec{v}|
 = D_c
 %\sigma(\vec{r}) T(\vec{r})=Dc/T * T=Dc
@@ -816,7 +816,7 @@ where:\\
 \hspace*{0.5em} $\varepsilon_s$ is the diffusion constant [$\unit{m^2~s^{-1}}$].\\
 }
 
-On the left hand side of equation \ref{eq:difsedim}, 
+On the left hand side of equation (\ref{eq:difsedim}), 
 the first term describes local diffusion, 
 the second term is drift driven by the water flow,
 and the third term represents a velocity dependent `potential'
@@ -837,18 +837,20 @@ w_m^{new}=w_m \exp[- \Delta \tau(u(\vec{r}_m^{new})+u(\vec{r}_m))/2]
 \noindent
 where:\\
 \noindent
-\hspace*{0.5em} $u = {D_c / T_c}~|\vec{v}|$.\\
+\hspace*{0.5em} $u = (D_c / T_c)~|\vec{v}|$.\\
 }
 %
 \noindent
 %The sediment flow rate is computed as weighted particle densities 
 %multiplied by the unit vector in the direction of flow
-The sediment flow rate is computed 
+The sediment flow is computed 
 as the product of weighted particle densities 
 and the unit vector in the direction of flow
 $\vec{q_s} = \varrho~\vec{s_0}$.  %VERIFY 
-Then net erosion-deposition $d_s$ 
+Then the net erosion-deposition rate $d_s$ 
 is computed as the divergence of sediment flow using equation (\ref{eq:steady_sed}).
+See \citep{Mitas1998} and \citep{Mitasova2004} for more details on the Green's function
+Monte Carlo solution and equations for computing $D_c$ and $T_c$.
 
 %HM we already explained how D_c and T_c is computed in section about regimes
 %Specifically,  the detachment capacity is:
