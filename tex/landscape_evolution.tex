@@ -564,7 +564,7 @@ Following experimental observations and qualitative arguments,
 \citet{Foster1977} proposed that the sum of 
 the ratio of the net erosion-deposition rate $d_s$ 
 to the detachment capacity  $D_c$  [\unit{kg~m}$^{-2}$~\unit{s}$^{-1}$] 
-and the ratio of the sediment flow rate $q_s = |{\bf q_s}|$ 
+and the ratio of the sediment flow rate $q_s = |\vec{q_s}|$ 
 to the sediment transport capacity $T_c$ [$\unit kg~m^{-1}~s^{-1}$]
 is a conserved quantity (unity):
 \begin{equation}
@@ -745,7 +745,7 @@ The water depth $h^{5/3}$ at time $\tau$ during the simulated rainfall event
 %HM note that we have several time steps in r.sim.terrain 
 %- topo evolution time step, water flow time step and sediment flow time step
 is computed as a function of particle (walkers) density at each grid cell. 
-Particles are then routed across the landscape 
+Particles are routed across the landscape 
 by finding a new position for each walker at time $\tau + \Delta \tau$:
 \begin{equation}
 \vec{r}_m^{new}=\vec{r}_m + \Delta \tau \vec{v} + \vec{g}
