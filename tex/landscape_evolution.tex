@@ -815,7 +815,7 @@ $\nabla^2 \varrho$ \citep{Mitas1998}:
 -{\varepsilon_s \over 2}\nabla^2 \varrho
 + \nabla\cdot (\varrho \vec{v})
  + \varrho~{D_c \over T_c}~|\vec{v}|
-= D_c
+= d_s
 %\sigma(\vec{r}) T(\vec{r})=Dc/T * T=Dc
 \end{equation}
 {\small
@@ -854,9 +854,9 @@ where:\\
 %multiplied by the unit vector in the direction of flow
 Sediment flow is computed 
 as the product of weighted particle densities 
-and the unit vector in the direction of flow
-$\vec{q_s} = \varrho~\vec{s_0}$.  %VERIFY 
-Then the net erosion-deposition rate $d_s$ 
+and the water flow velocity (Eq.~\ref{eq:sedflow}) and 
+%$\vec{q_s} = \varrho~\vec{s_0}$.  %VERIFY 
+the net erosion-deposition rate $d_s$ 
 is computed as the divergence of sediment flow using Eq.~(\ref{eq:steady_sed}).
 See \citet{Mitas1998} and \citet{Mitasova2004} for more details on the Green's function
 Monte Carlo solution and equations for computing $D_c$ and $T_c$.
