@@ -1,0 +1,469 @@
+% !TEX encoding = UTF-8 Unicode
+
+% Geoscientific Model Development (gmd)
+\documentclass[gmd, manuscript]{copernicus}
+
+% packages
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage[percent]{overpic}
+\usepackage{pdfpages}
+
+\begin{document}
+
+\title{\lowercase{r.sim.terrain 1.0}: a landscape evolution model with dynamic hydrology} 
+
+\Author[1]{Brendan Alexander}{Harmon}
+\Author[2,3]{Helena}{Mitasova}
+\Author[2,3]{Anna}{Petrasova}
+\Author[2,3]{Vaclav}{Petras}
+
+\affil[1]{Robert Reich School of Landscape Architecture, Louisiana State University, Baton Rouge, Louisiana, USA}
+\affil[2]{Center for Geospatial Analytics, North Carolina State University, Raleigh, North Carolina, USA}
+\affil[3]{Department of Marine, Earth, and Atmospheric Sciences, North Carolina State University, Raleigh, North Carolina, USA}
+
+\runningtitle{\lowercase{r.sim.terrain 1.0}: a landscape evolution model with dynamic hydrology} 
+
+\runningauthor{Brendan Harmon}
+
+\correspondence{Brendan Harmon (baharmon@lsu.edu)}
+
+\received{}
+\pubdiscuss{}
+\revised{}
+\accepted{}
+\published{}
+
+\firstpage{1}
+
+\maketitle
+
+\noindent
+Nota bene: since we have restructured the manuscript, the references to sections, equations, figures, and tables in our responses refer to the revised paper. 
+
+
+\section{Reviewer 1}
+
+\noindent\textbf{Comment}
+Although the difference between steady-state and dynamic flow regimes is discussed, the differences between the erosion regimes (e.g. detachment capacity limited, transport capacity limited, erosion-deposition and detachment limited) are less clear. A more thorough discussion of those regimes and their differences would allow for a clearer understanding of the results of the model compared to the typical characteristics associated with these regimes. On P16 L24 to L27, the results of SIMWE were compared to the characteristics typical of the simulated erosion regime. Establishing the characteristics of the erosion regimes earlier, perhaps after the explanation of the flow regimes, would give the reader more clarity regarding what influences these regimes and how the model compares to real-world characteristics.
+\\
+
+\noindent\textbf{Response}
+We have restructured the paper and now thoroughly discuss soil erosion-deposition regimes in Section 2.1.2 with equations 6-9. 
+\\
+
+\noindent\textbf{Comment}
+Given that the study area has information for 2012 and 2016, one possible improvement is to compare the model results to the observed difference between those two years. Although the results section on P16 compares the modelled characteristics with typical erosion regime characteristics, the comparison to the 2012-2016 data is limited to P16 L23. Adding validation of model results against observed landscape evolution would show the strengths of the model.
+\\
+
+\noindent\textbf{Response}
+This is a model description paper, rather than a model evaluation paper. While we have added a quantitative comparison of volumetric change to the paper, we plan to conduct a rigorous quantitative evaluation of r.sim.terrain in future work. Because the models are for different erosion regimes, different study sites each with a different dominant regime would be needed to quantitatively assess each model against a relevant baseline. A more accurate, higher frequency of high resolution topographic surveying is also needed, ie. monthly surveys with terrestrial lidar or unmanned aerial systems. We have added plans for future work to the new Discussion section.
+\\
+
+\noindent\textbf{Comment}
+Another possible improvement is to more clearly present the limitations of the model in their own section. On P4 L22, the model limitation of not modelling fluvial processes is mentioned. By having a clear limitations section with information about model assumptions, the reader is more informed about the model and how it may affect results.
+\\
+
+\noindent\textbf{Response}
+We have added a paragraph on the limitations of the model to a new Discussion section.
+\\
+
+\noindent\textbf{Comment}
+The quality of the figures and the presentation of spatial data is a major issue of the paper. With the exception of Figure 1, many of the figures are too small to be analysed in detail. The legends are pixelated (Figure 4c, 4e, and 4f) or cut off (Figure 5a and 5d). The legends for the landform maps (Figures 5b, 5e, 6b, and 6e) would benefit from the labels presented in Figures 4e and 4f. The colours chosen for the figures could also be improved. For example, Figure 2b shows a landscape with yellow/orange/blue colours but the colour bar only shows a scale of yellow to orange. Using the hillshade layer seems to darken the colours within the gully and the reader is unable to clearly see those colours. The use of a 3D top-down view in Figure 5 makes it difficult to see what is occurring within the gully area where the differences are most important. Some figures are presenting differences (Figure 5c, 5f, 6c) that cannot be visualised clearly because most of them are occurring within the gully area and thus “blocked” by the 3D view and hillshade. Overall, the figures can be improved, especially for visualisation of the key results and differences, and that would contribute to the overall quality of the paper. The differences may be better visualised through 2D top-down view, or 2D cross-sections, or even zooming into the most critical areas of the gully. At the watershed scale and using the current visualisation, the results are difficult to visually interpret and do not supplement the written results well.
+\\
+
+\noindent\textbf{Response}
+All figures have been redone. They have newer higher resolution legends, scale bars, and north arrows. Figures 3 and 6-9  include details zoomed in on a drainage area (Drainage Area 1) within the subwatershed. These figures are now focused on the main channel of the gully and should show more legible detail. Figure 4b shows the drainage areas. In addition to zooming in on Drainage Area 1, Figures 6-9 are now presented in 2x2 columns and rows, rather than 2x3 columns and rows so that the images are larger and more detail is visible. Selected figures are now 2D rather than 3D maps. We have changed or removed hill shading from select maps to improve their legibility.
+\\
+
+\noindent\textbf{Comment}
+P3, L22: According to Dabney et al. (2014), RUSLER refers to RUSLE2-Raster which is a distributed form of the Revised Universal Soil Loss Equation Version 2, which is normally referred to as RUSLE2. The paper is referring to the Revised Universal Soil Loss Equation Version 2 when it is using the RUSLE2-Raster acronym. Please clarify if the paper is referring to RUSLER or RUSLE2.
+\\
+
+\noindent\textbf{Response}
+We have replaced this with: ``Gully erosion has been simulated with RUSLE2-Raster (RUSLER) in conjunction with the Ephemeral Gully Erosion Estimator (EphGEE) (Dabney et al., 2014).''
+\\
+
+\noindent\textbf{Comment}
+P6, L11 to P7, L6: This paragraph would be better presented in a table or a flowchart showing how the model switches erosion regimes based on rainfall intensity.
+\\
+
+\noindent\textbf{Response}
+To more clearly present how  soil erosion regimes are handled in this model we have added Section 2.1.2 Erosion-Deposition Regimes. We have also removed the detachment limited and transport limited cases for SIMWE to avoid unnecessary complexity in the paper and results.
+\\
+
+\noindent\textbf{Comment}
+P14, L11 to L13: Additional detail about how the information about K-factor, C-factors, Manning’s, and runoff rates were derived would be useful for those who wish to apply the model in their study area.
+\\
+
+\noindent\textbf{Response}
+We have added links to detailed instructions for deriving these maps  in the tutorial. We have also added a link to our data log with a complete record of the commands used to process the sample data.
+\\
+
+\noindent\textbf{Comment}
+P3, L17: Since LIDAR is an acronym for Light Detection and Ranging, mentions of LIDAR should be in capitals and the first instance should have the accompanying meaning of LIDAR.
+\\
+
+\noindent\textbf{Response}
+We have followed the recommendation in the paper ``Let's agree on the casing of lidar'' ( Deering \& Stoker, 2014), which shows that 65\% of  literature uses lidar (including USGS), while 17\% use LIDAR and 14\% use LiDAR. Their reasoning is that lidar is the most common usage, the original usage, and the  usage recommended by style manuals  However, the latest issues of ISPRS journals use LiDAR, so we will defer to the journal editor on what their standard should be. For our part we prefer to follow USGS usage of lidar.\\
+
+\noindent
+Deering, Carol \& Stoker, Jason. (2014). Let's agree on the casing of lidar. Lidar Magazine. 4. 48-51. \url{http://lidarmag.com/wp-content/uploads/PDF/LiDARNewsMagazine_DeeringStoker-CasingOfLiDAR_Vol4No6.pdf}
+\\
+
+\noindent\textbf{Comment}
+P4, L28 and similar headings: For these headings, referee suggests formatting as follows ``Simulation of Water Erosion Model (SIMWE)'' and only using the acronym on the following line.
+\\
+
+\noindent\textbf{Response}
+Reformatted as recommended.\\
+
+\noindent\textbf{Comment}
+P6, Table 1: Citation of ``(Dennis C. Flanagan et al., 2013)'' should just be ``(Flanagan et al., 2013)''.
+\\
+
+\noindent\textbf{Response}
+Citation fixed as recommended.\\
+
+\noindent\textbf{Comment}
+P10, L15: The addition of ``(a)'' after ``The upslope contributing area per unit width'' would allow for a clearer connection to Equation 12.
+\\
+
+\noindent\textbf{Response}
+Variable added as recommended.
+\\
+
+\noindent\textbf{Comment}
+P13, L14 and P14, L1: Scientific names should be italicised.
+\\
+
+\noindent\textbf{Response}
+Scientific names have been italicized. 
+\\
+
+\section{Reviewer 2}
+
+\noindent\textbf{Comment}
+The text has detailed descriptions of the underlying theory behind many components of the overall simulation model (section 2) but does not indicate how these relate to one another. While there are many colorful figures of landscape evolution results, there is no representation of the model itself (e.g., UML or other flow-chart-like visualization) -- nor is there much in the way of narrative description of how the model actually works to combine the described elements.
+\\
+
+\noindent\textbf{Response}
+We have added a conceptual diagram of the model as Figure 2.
+\\
+
+\noindent\textbf{Comment}
+Section 3.2 describes several experimental runs with the simulation model. These experiments are summarized in Table 3. However, we have no quantitative information about the results of the experiments. There is no information about whether each experiment was run only once or repeated–or whether repetition is needed or not because each parameter setting produces or does not produce only one outcome. Although the simulation is situated in a realistic setting based on digital data from Ft. Bragg, NC, the rationale for some of the parameterizations are not given, particularly the important rainfall settings. These might be completely reasonable, but the authors should indicate if these are based on empirical rainfall data or have another basis (e.g., extreme values to test the model sensitivity).
+\\
+
+\noindent\textbf{Response}
+Repeat runs are not needed because RUSLE and USPED are empirical, non-stochastic models and produce only one outcome. SIMWE path sampling method includes stochastic component for solving the continuity equations but this relates to the accuracy of the solution,  e.g., a high number of walkers reduces the numerical error associated with the path sampling solution. We have added a discussion of this to the paragraph on limitations. We have added more information about the parameters of the simulations in subsections 3.1 and 3.2 on the study site and simulations. This includes a link to detailed instructions for the sample data and a discussion of the design storms and their rationale. 
+\\
+
+\noindent\textbf{Comment}
+The authors have collected detailed, time series, LiDAR and orthophoto data from the test area represented in the simulation. But they make no attempt to compare the simulation experiments with these data in any quantitative sense. Rather they give only brief, subjective assessments of model behavior. It would seem rather easy to compare the model with the empirical data to see which experiments are better or worse fits and in what ways.
+\\
+
+\noindent\textbf{Response}
+ We consider this manuscript  a model description paper, rather than a model evaluation paper. While we have added a quantitative comparison of volumetric change to the paper, we plan to conduct a rigorous quantitative evaluation of r.sim.terrain in future work. Because the models are for different erosion regimes, different study sites  with a different dominant regimes may be needed to quantitatively assess each model against a relevant baseline. A higher frequency of high resolution topographic surveying would also help, ie. monthly surveys with terrestrial lidar or unmanned aerial systems. We have added plans for future work to the conclusion.
+\\
+
+\noindent\textbf{Comment}
+Finally, I downloaded and installed r.sim.terrain into GRASS and tried to run it. I strongly commend the authors for making the model code and test data available. This is critically important for research based on modeling like this paper. I installed r.sim.terrain into the most current version of GRASS according to the directions in the manuscript (i.e., using g.extension). Unfortunately I ran into several problems that made testing the the model impossible. First, there is a link to the test dataset in the model online help, but this link does not work. Using information in the paper, I was able to go to the GitHub site and poke around until I found the test data set and installed it into my GRASS data directory. I then followed the steps in the tutorial to simply see how it ran–thinking to compare the different overland flow and erosion/deposition methods, and time series vs. event. The command given to test the model failed initially because it was missing the rather critical ``elevation'' argument. So I added that. Then it started but rapidly bombed with errors related to the time series part. I copy these below. So I never did get it to run.
+\\
+
+\noindent\textbf{Response}
+We have updated the documentation both on the manual page and the GitHub repository with the tutorial. The reviewer's run of the model failed due to incomplete documentation rather than bugs. The input elevation raster must be in the current mapset (for registration in the temporal database), so it should be copied from the PERMANENT mapset to the current working mapset before the model is run. We have added a section with basic instructions to the manual page (\url{https://grass.osgeo.org/grass76/manuals/addons/r.sim.terrain.html}) and to the repository readme (\url{https://github.com/baharmon/landscape_evolution}). We have also written a longer tutorial (\url{https://github.com/baharmon/landscape_evolution/blob/master/tutorial.md}) that details running each model with instructions and examples for RUSLE3D, USPED, and SIMWE.
+\\
+
+\noindent\textbf{Comment}
+However, the authors need to do a better job of explaining how the model works and not just the conceptual components included in the model. They also need to provide more information about the four experiments performed and their parameter settings. They need to provide some quantitative evaluation of the model results, including comparison with the empirical data they have collected. Finally, they need to fix some probably minor but annoying bugs in the code available for evaluation.
+\\
+
+\noindent\textbf{Response}
+We have added a conceptual diagram of the model (Figure 2) and  rewritten and expanded subsection 3.2  on the simulations and their parameters. We have added quantitative evaluation and comparison of the models and explained its limitations. We, however, would like to reiterate that this is a model description rather than evaluation paper. Finally, while there were no bugs in the code, we have fixed and expanded the documentation, which was incomplete. 
+\\
+
+\section{Reviewer 3}
+
+\noindent\textbf{Comment}
+1/title - This is a total quibble, and please feel free to ignore it, but my first reaction to `dynamic landscape evolution model' was to ask (rhetorically) `is there any other kind'? Consider `landscape evolution model with dynamic hydrology' as an alternative (admittedly a less pithy one). 
+\\
+
+\noindent\textbf{Response}
+Titled changed to ``r.sim.terrain: a landscape evolution model with dynamic hydrology'' as recommended. 
+\\
+
+\noindent\textbf{Comment}
+1/5 `steady state or dynamic model' could be read as implying that the entire model is steady state, not just the surface water flow rates. Suggest re-wording: `using either a steady state or dynamic representation of overland flow ...'
+\\
+
+\noindent\textbf{Response}
+Reworded as recommended. 
+\\
+
+\noindent\textbf{Comment}
+2/2 I agree with the sentiment, but suggest rewording to `a landscape evolution model that includes time-evolving surface water discharge', to avoid confusion over which aspect of the model is dynamic.
+\\
+
+\noindent\textbf{Response}
+Replaced with ``A landscape evolution model with dynamic water and sediment flow…''
+\\
+
+\noindent\textbf{Comment}
+3/8 The phrase `until water flow reaches steady state' suggests that the positive feedback (presumably between deepening/widening and attraction of more surface water flow) stops at this point. I don't think that is necessarily true; you could have a feedback between morphology and flow under steady runoff too.
+\\
+
+\noindent\textbf{Response}
+An excellent point. Revised simply by cutting ``until water flow reaches steady state.''
+\\
+
+\noindent\textbf{Response}
+3/11 Please explain what is meant by erosion-deposition regime.
+\\
+
+\noindent\textbf{Comment}
+We have added a new Section 2.1.2 describing erosion-deposition regimes. This includes equations 7-11. 
+\\
+
+\noindent\textbf{Response}
+3/14 Detachment vs transport capacity: this sounds backwards\ldots
+\\
+
+\noindent\textbf{Comment}
+Detachment capacity and transport capacity are now more clearly explained in Section 2.1.2 Erosion-Deposition Regimes. 
+\\
+
+\noindent\textbf{Response}
+3/18-19 There are plenty of other papers that could be cited here, in which one or more of the listed methods was used to study gully erosion. (For example, here's a review paper that cites some TLS applications to gully erosion: \\
+Telling, J., Lyda, A., Hartzell, P., \& Glennie, C. (2017). Review of Earth science research using terrestrial laser scanning. Earth-Science Reviews, 169, 35-68.)
+\\
+
+\noindent\textbf{Response}
+This paragraph was just meant to be a brief overview of methods, not a comprehensive review, but we have added many more references to the introduction.\\
+
+\noindent\textbf{Comment}
+Figure 2: please give location in caption. Also, numbers on color bars and scale bar are barely legible.
+\\
+
+\noindent\textbf{Response}
+We added the location to the caption and have redone the legends and scale bars at higher resolution.
+\\
+
+\noindent\textbf{Comment}
+6/2 typo.
+\\
+
+\noindent\textbf{Response}
+The typo has been fixed. 
+\\
+
+\noindent\textbf{Comment}
+6/2 I guess `partial derivatives of the topography' means a numerical approximation of the derivative of the elevation field with respect to the two cardinal grid directions. Recommend more precision in wording here.\\
+
+\noindent\textbf{Response}
+We have more clearly phrased this, explained briefly how it is computed, and added a reference to the chapter Geomorphometry in GRASS GIS (Hofierka et al., 2009) that explains the math and implementation.
+\\
+
+\noindent\textbf{Comment}
+6/9 `steady state dynamics' - I think I understand what you mean here, but the phrase itself is awkward (it is self-contradictory).
+\\
+
+\noindent\textbf{Response}
+Replaced with: ``r.sim.terrain simulates unsteady-state flow regimes when the landscape evolution time step is less than the travel time for a drop of water or a particle of sediment to cross the landscape, e.g. when the time step is less than the time to concentration for the modeled watershed. With longer landscape evolution time steps the model simulates a steady state regime.''
+\\
+
+\noindent\textbf{Comment}
+Table 2: this is only a partial list of codes that have been published in, say, the last ten years. Why choose these particular ones?
+\\
+
+\noindent\textbf{Response}
+We removed the table and instead list or briefly discuss these landscape evolution models and others in the body of the Introduction.
+\\
+
+\noindent\textbf{Comment}
+Table 2: Be careful about giving the spatial scale for these models. At least some of these codes have been used and published at a variety of different spatial scales, from say the size of a rilled hillslope to that of a small country; and in some cases (e.g., SIBERIA) is sometimes presented in a dimensionless mode in which no spatial scale at all is given or implied. As to temporal scale, I thought that at least some of these can also be run in `event' mode. Also, my understanding is that Landlab is not itself a model, but rather is a programming library that contains components that can be used to build various types of model, including landscape evolution. That said, people seem to have built landscape evolution models using Landlab (the Landlab website lists some of these). Maybe it would make sense to label this entry as `Landlab-built erosion models' or something like that.
+\\
+
+\noindent\textbf{Response}
+We removed the table and instead list or briefly discuss these libraries and landscape evolution models in the text.
+\\
+
+\noindent\textbf{Comment}
+Section 2.1 generally: I like the way that this is carefully organised into sub-sections. However, the order of presentation confused me. Often, authors presenting a set of governing equations will start with the high-level conservation law(s), and then define each term more precisely. As noted below, there’s an opportunity to do this at least partly in subsection 2.1.1.
+\\
+
+\noindent\textbf{Response}
+We agree and we have started this description with the general  equation for change in elevation (continuous form of eq. 7) followed by general equation for $d_s$.  See e.g. eq. (9) in Mitasova et al. 2005 $(D(r,t)$ is our $d_s$).
+\\
+
+\noindent\textbf{Comment}
+Equation 2: it would be helpful to give some context and referencing. I think this idea comes from Foster and Meyer (1972), right? If I remember correctly, their key assumption was that the ratio of transport rate to transport capacity, plus the ratio of detachment rate to detachment capacity, sum to unity. Assuming I did the math right, this leads to a first-order reaction-like equation: $dz/dt = ds = sigma (qs - Tc)$ I recommend presenting it this way here in section 2.1.1 (in addition to the definition given in eq 2), because this relates transport and detachment to the rate of change of elevation, and motivates the need for definitions for qs, Tc, and Dc. Note that there seems to be a problem with units in one of the factors in eq 2: if Tc and Dc had the same units (as is listed), then sigma would be dimensionless. I suspect Dc is actually in $kg m^{-2} s^{-1}$ (detached mass per unit area per time).
+\\
+
+\noindent\textbf{Response}
+We have added a more complete explanation of the Foster and Meyer relationship and the related parameters and fixed the units for $D_c$ (eq. 12-13 in Mitasova et al. 2005).
+\\
+
+\noindent\textbf{Comment}
+Equation 4: symbol v is used without being introduced. Presumably it is the depth averaged flow velocity vector in (x,y). Either define v or use q (which you’ve defined already).
+\\
+
+\noindent\textbf{Response}
+We modified the equation according to the reviewer’s suggestion.
+\\
+
+\noindent\textbf{Comment}
+Also, whereas the paper is premised on the value of having a dynamic representation of surface-water hydrology (which eq 3 is), equation 4 is actually a steady solution, is it not? If the model indeed uses a fully time-varying flow model, the equations presented in this sub-section should show this. In addition, it would be helpful to provide a reference for this form of the diffusion-wave approximation (could be to a hydrology text that gives the derivation and assumptions).
+\\
+
+\noindent\textbf{Response}
+The in-depth explanation of mathematical foundations for the shallow water flow simulation has been addressed in several previously published papers, for example Mitasova et al. 2005, and we tried to avoid repeating text presented there, unfortunately this makes some of the concepts and reasoning behind the methods less clear.  Therefore, we have rewritten the entire section 2 including more detailed explanation of the method and more specific references.\\
+
+\noindent\textbf{Comment}
+“Please give units of epsilon.”
+\\
+
+\noindent\textbf{Response}
+Units for epsilon are now given in the text.
+\\
+
+\noindent\textbf{Comment}
+8/10 suggest specifying `...density in the water column', so it is clear that this is a mass concentration rather than a bulk density of resting sediment.
+\\
+
+\noindent\textbf{Response}
+Changed as recommended by reviewer. 
+\\
+
+\noindent\textbf{Comment}
+8/15 ``steady state sediment flow with diffusion'' - I’m confused by this. The equation is time-dependent, so how is it steady state? And the definition of qs above is advective, not diffusive. 
+\\
+
+\noindent\textbf{Response}
+We added the  equation with diffusion term used in the path sampling solution, see e.g. Mitasova et al. 2005 eq. 16.
+\\
+
+\noindent\textbf{Comment}
+8/17 So we need a definition for ds, which as suggested above, you could provide in section 2.1.1.
+\\
+
+\noindent\textbf{Response}
+Agreed. We rewrote section 2.1 and included a definition of ds.
+\\
+
+\noindent\textbf{Comment}
+8/23 In the previous equation, you used a continuum formulation, whereas here you’re giving a discretized-in-time form. Please be consistent. I suggest sticking with continuum forms, because these don’t require you to make any statements about numerical approximation. And in fact, as noted above, I recommend putting equation 7 in section 2.1.1.
+\\
+
+\noindent\textbf{Response}
+We have rewritten the equation into continuum form and moved section 2.1.5 to section 2.1.1 following the reviewer’s recommendation.
+\\
+
+\noindent\textbf{Comment}
+Equation 8: this equation is not dimensionally consistent. If you write it in continuum form, $dz/dt = -(1/rho) qs$ you have m/s on the left and m2/s on the right. I’m also not convinced that the equation expresses the idea you want. I’m guessing that a detachment-limited regime would look more like $dz/dt = -(1/rho) Dc$. Then it becomes a question of what is your detachment capacity law? You’ve already introduced detachment capacity in $Dc = sigma Tc$ (eq 2). In order to close the equations, you need either a definition of Dc or Tc. Presumably these depend in some fashion on water discharge or velocity or boundary shear stress. Please specify (or, if I have misunderstood, explain why the equation set given is sufficient to describe the SIMWE module). Actually, after reading farther in the manuscript, I think the idea is that the RUSLE equation can be used for Dc in detachment-limited mode. If that’s correct, then say something to the effect that the definition of Dc will be given in section so-and-so, and then use the symbol Dc in that section. Regarding the role of qs, I suspect what you’re after is the notion that qs is the upstream/upslope integral of ds, is that right? If so, it would be helpful to present the math.
+\\
+
+\noindent\textbf{Response}
+You are correct, using $q_s$ here was an oversight. Eq. 8 is not really needed, because $d_s$ in  DLC is erosion rate given by eq 13 which is detachment rate (soil loss)  not sediment flow. We have removed this equation.
+\\
+
+\noindent\textbf{Comment}
+9/21 please give the functional form of this relationship.
+\\
+
+\noindent\textbf{Response}
+The equation for this relationship is given in the section 2.2.3.
+\\
+
+
+\noindent\textbf{Comment}
+10/2 I get that there’s a long tradition of practical empiricism in soil-erosion research. But what about pushing ever so gently back on it by presenting equation 10 in a slightly less brutally ugly form? Something like: $er / e_ref = 1 - a exp( -ir / i_ref )$ where $e_ref$ is reference energy equal to ... and $i_ref$ is reference rainfall intensity equal to.
+\\
+
+\noindent\textbf{Response}
+Thank you for the suggestion. We have modified the equation accordingly.
+\\
+
+\noindent\textbf{Comment}
+“10/7 shouldn’t this be rainfall depth rather than volume? Equation 11: again the units seem to be off here (apart from the oddity of having an ’index’ that has [weird] units). I get the right side as being: $MJ ha^{-1} mm^{-1} x mm x s = MJ ha^{-1} s$?”
+\\
+
+\noindent\textbf{Response}
+We have revised this equation, checked the units, and introduced it with  Equation 2 from Panagos et al. 2015 from which it is derived. 
+\\
+
+\noindent\textbf{Comment}
+11/3 the subsection is called `Sediment flow' but it reads like an erosion rate. Though I guess it works given that you're defining it as mass flow per time per area.
+\\
+
+\noindent\textbf{Response}
+You are right -- it is an erosion rate (soil loss: mass per area per time). In this paper we were using the term sediment flow for sediment flow per unit width mass per length per time). We have retitled this subsection as Detachment Limited Erosion Rate and replaced sediment flow with erosion rate throughout the paper for this case. 
+\\
+
+\noindent\textbf{Comment}
+Equation 13: again I'm struggling with units. I get: $(MJ mm ha^{-1} hr^{-1}) x (ton ha hr ha^{-1} MJ^{-1} mm^{-1}) = (ha^{-1}) x (ton)$ which are not the units given for E.
+\\
+
+\noindent\textbf{Response}
+We have revised the units for E and R. 
+\\
+
+\noindent\textbf{Comment}
+11/16-17 it's not clear to me how these equations relate. Maybe you mean that the definition of E in equation 13 is the SAME AS ds (or -ds) for transport-limited conditions, and Dc for detachment-limited conditions? In that case, it might suffice to simply call equation 13 the definition of Dc. You could then give the definition of Tc as sigma = Dc/Tc ==> Tc = Dc/sigma (Note: it would be more intuitive to think in terms of a length scale, L = 1 / sigma, which is then the characteristic distance over which steady, uniform overland flow reaches its carrying capacity on a planar slope).
+\\
+
+\noindent\textbf{Response}
+We have renamed this section and revised the text following the reviewer suggestion. The equation 8 was removed (see the related answer above).
+\\
+
+\noindent\textbf{Comment}
+11/29 not clear to me what `topographic component of overland flow' means.
+\\
+
+\noindent\textbf{Response}
+We revised section 2.4.1 ``Topographic sediment transport factor''.
+\\
+
+\noindent\textbf{Comment}
+Equation 15: is $T$ the same as $T_c$? Also, again, I’m not sure the units are correct here, please check, and correct if necessary.
+\\
+
+\noindent\textbf{Response}
+Yes, $T$ is $T_c$. We have unified the symbols and checked the units. \\
+
+\noindent\textbf{Comment}
+Figures 5 and 6: why the different color schemes in two of the three comparisons (top and bottom rows)?
+\\
+
+\noindent\textbf{Response}
+We have redone these figures (now 7-9). The subfigures showing the net difference may appear different, but have the same color table. Since the detachment limited regime only has negative values, the upper range of the color table does not appear.\\
+
+\noindent\textbf{Comment}
+Figure 6: if the figure is meant to compare runs with two different rainfall intensities, which intensity was used for the upper and middle figures? 
+\\
+
+\noindent\textbf{Response}
+We have completely redone these figures, removed SIMWE’s detachment and transport limited cases, and laid out the figures for more direct comparison. 
+\\
+
+\noindent\textbf{Comment}
+Software: I tested the model software by installing the latest stable release of GRASS GIS, then going to the GitHub repository for the model’s source code. By following the "Basic Instructions" listed there, I was able to install the r.sim.terrain extension and run the example.
+
+\clearpage
+
+\includepdf[
+pages={-},
+%scale={1},
+offset={24mm -24mm},
+%%width=\textwidth,
+%height=\textheight,
+keepaspectratio,
+noautoscale={true}
+]{markedup_manuscript.pdf}
+
+\noappendix 
+\end{document}
