@@ -1,0 +1,60 @@
+
+% --------------------------- EI_30 ---------------------------------------
+
+%% single storm erosivity
+%\noindent The erosivity of a single rainfall event $EI_{30}$
+%divided into $m$ total periods
+%can be calculated as
+%\citep{Panagos2015,Panagos2017}:
+%%
+%\begin{equation}
+%\label{eq:erosivity_index}
+%EI_{30} = \Bigg(\sum_{r=1}^{m}~ e_r ~ v_r \Bigg) ~ I_{30}
+%\end{equation}
+%%
+%{\small
+%\noindent
+%where: \\
+%\hspace*{0.5em} $EI_{30}$ is the rainfall erosivity index of a single event [\unit{MJ~mm~ha}$^{-1}$~\unit{hr}$^{-1}$]\\
+%\hspace*{0.5em} $e_r$ is the unit rainfall energy [\unit{MJ~ha}$^{-1}$~\unit{mm}$^{-1}$]\\
+%\hspace*{0.5em} $v_r$ is the rainfall volume [\unit{mm}] during time period $r$\\
+%\hspace*{0.5em} $I_{30}$ is the maximum rainfall intensity during a 30-min period of the rainfall event [\unit{mm}~\unit{hr}$^{-1}$].
+%}
+%%
+%\noindent In this model, however, the erosivity factor
+%is derived at each time step $r$ as a function of
+%kinetic energy ($e_r$), rainfall volume ($v_r$), rainfall intensity ($i_r$). 
+%First rain energy is derived from rainfall intensity \citep{Brown1987}: 
+
+%\begin{equation}
+%\label{eq:rain_energy}
+%{e_r = 0.29 ~ (1.-0.72 ~ exp(-0.05 ~ i_r))}
+%\end{equation}
+%%
+%{\small
+%\noindent
+%where: \\
+%\noindent
+%\hspace*{0.5em} $e_r$is unit rain energy [\unit{MJ~ha}$^{-1}$~\unit{mm}${^-1}$]\\
+%\hspace*{0.5em} $i_r$ is rainfall intensity [\unit{mm~h}$^{-1}$].\\
+%}
+
+%% erosivity per time step
+%\noindent
+%Then the erosivity per time step %$EI_r$ 
+%is calculated as the product of 
+%unit rain energy, rainfall volume, rainfall intensity, and time:  
+%%
+%\begin{equation}
+%\label{eq:erosivity_index}
+%EI_{r} = e_r ~ v_r ~ i_{r}
+%\end{equation}
+%%
+%{\small
+%\noindent
+%where: \\
+%\hspace*{0.5em} $EI_r$ is the rainfall erosivity during time $r$ [\unit{MJ~mm~ha}$^{-1}$~\unit{hr}$^{-1}$].
+%%\hspace*{0.5em} $e_r$ is the unit rainfall energy [\unit{MJ~ha}$^{-1}$~\unit{mm}$^{-1}$]\\
+%%\hspace*{0.5em} $v_r$ is the rainfall volume [\unit{mm}] during time period $r$\\
+%%\hspace*{0.5em} $i_r$ is the rainfall intensity during time period $r$ [\unit{mm}~\unit{hr}$^{-1}$].
+%}

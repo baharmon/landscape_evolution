@@ -1,0 +1,46 @@
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass{standalone}
+
+% packages
+\usepackage{float}
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[export]{adjustbox}
+\usepackage[utf8]{inputenc}
+%\usepackage[active,pdftex,tightpage]{preview}
+\usepackage{newtxtext,newtxmath}
+\usepackage[percent]{overpic}
+\usepackage[outline]{contour}
+
+\begin{document}
+
+%\sf
+\scriptsize
+\centering 
+
+\contourlength{0.06em}
+
+\begin{tabular}{m{0.5\textwidth} m{0.5\textwidth}}
+%
+\hspace*{-0.7cm}
+%
+\begin{overpic}[height=55mm]{../../images/sample_data_3d/naip_2014.png}
+\put(3,0){\includegraphics[height=55mm,center]{../../images/sample_data_3d/map_elements.png}}  
+\end{overpic} &
+\hspace*{-0.2cm}
+\begin{overpic}[height=60mm,center]{../../images/sample_data/imagery_subwatersheds.png}
+\put (26,50) {\contour{white}{1}}
+\put (49,45) {\contour{white}{2}}
+\put (29,30) {\contour{white}{3}}
+\hspace*{-0.2cm}
+\put(0,0){\includegraphics[height=75mm,center]{../../images/sample_data/map_elements.png}}
+\end{overpic} \\
+%
+\multicolumn{1}{c}{a.} & \multicolumn{1}{c}{b.}\\
+%
+\end{tabular}
+
+\end{document}
