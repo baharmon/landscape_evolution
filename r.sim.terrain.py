@@ -1776,11 +1776,9 @@ class DynamicEvolution:
 
             # update the elevation
             evol.elevation = evolved_elevation
-            print evol.elevation
 
             # update time
             evol.start = time
-            print evol.start
 
             # derive excess water (mm/hr) from rainfall rate (mm/hr)
             # plus the depth (m) per rainfall interval (min)
