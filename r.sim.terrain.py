@@ -544,6 +544,21 @@ def main():
             expression="k_factor = {k_factor_value}".format(**locals()),
             overwrite=True)
 
+    # copy the elevation raster if it is not in the current mapset
+    name = elevation.split("@")[0]
+    filename = gscript.read_command(
+        'g.list',
+        type='raster',
+        pattern=name,
+        mapset='.',
+        flags='m')
+    if not filename:
+        gscript.run_command(
+            'g.copy',
+            raster='{fullname},{name}'.format(fullname=elevation, name=name),
+            overwrite=True)
+        elevation = name
+
     # create dynamic_evolution object
     dynamics = DynamicEvolution(elevation=elevation,
         mode=mode,
