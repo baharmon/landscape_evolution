@@ -1694,31 +1694,31 @@ class DynamicEvolution:
         i = 0
         while i < iterations:
 
-            # derive excess water (mm/hr) from rainfall rate (mm/hr)
-            # plus the depth (m) per rainfall interval (min)
-            gscript.run_command(
-                'r.mapcalc',
-                expression="{rain_excess}"
-                "={rain_intensity}"
-                "+{depth}"
-                "/1000."
-                "/{rain_interval}"
-                "*60.".format(
-                    rain_excess=rain_excess,
-                    rain_intensity=self.rain_intensity,
-                    depth=depth,
-                    rain_interval=self.rain_interval),
-                overwrite=True)
-
-            # update excess rainfall
-            rain_intensity = 'rain_intensity'
-            gscript.run_command(
-                'r.mapcalc',
-                expression="{rain_intensity} = {rain_excess}".format(
-                    rain_intensity='rain_intensity',
-                    rain_excess=rain_excess),
-                overwrite=True)
-            evol.rain_intensity = rain_intensity
+            if i > 0:
+                # derive excess water (mm/hr) from rainfall rate (mm/hr)
+                # plus the depth (m) per rainfall interval (min)
+                gscript.run_command(
+                    'r.mapcalc',
+                    expression="{rain_excess}"
+                    "={rain_intensity}"
+                    "+{depth}"
+                    "/1000."
+                    "/{rain_interval}"
+                    "*60.".format(
+                        rain_excess=rain_excess,
+                        rain_intensity=self.rain_intensity,
+                        depth=depth,
+                        rain_interval=self.rain_interval),
+                    overwrite=True)
+                # update excess rainfall
+                rain_intensity = 'rain_intensity'
+                gscript.run_command(
+                    'r.mapcalc',
+                    expression="{rain_intensity} = {rain_excess}".format(
+                        rain_intensity='rain_intensity',
+                        rain_excess=rain_excess),
+                    overwrite=True)
+                evol.rain_intensity = rain_intensity
 
             # determine mode and run model
             if self.mode == "simwe_mode":
