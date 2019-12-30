@@ -997,8 +997,8 @@ class Evolution:
             'r.mapcalc',
             expression="{difference} = {evolved_elevation}-{elevation}".format(
                 difference=difference,
-                elevation=self.elevation,
-                evolved_elevation=evolved_elevation),
+                evolved_elevation=evolved_elevation,
+                elevation=self.elevation),
             overwrite=True)
         # gscript.write_command(
         #     'r.colors',
@@ -1691,94 +1691,8 @@ class DynamicEvolution:
             threads=self.threads,
             fill_depressions=self.fill_depressions)
 
-        # determine mode and run model
-        if self.mode == 'simwe_mode':
-            (evolved_elevation, time, depth, erosion_deposition,
-            difference) = evol.erosion_deposition()
-            # remove relative timestamps from r.sim.water and r.sim.sediment
-            gscript.run_command(
-                'r.timestamp',
-                map=depth,
-                date='none')
-            gscript.run_command(
-                'r.timestamp',
-                map=erosion_deposition,
-                date='none')
-
-        elif self.mode == "usped_mode":
-            (evolved_elevation, time, depth, erosion_deposition,
-            difference) = evol.usped()
-
-        elif self.mode == "rusle_mode":
-            (evolved_elevation, time, depth, sediment_flux,
-            difference) = evol.rusle()
-
-        else:
-            raise RuntimeError(
-                '{mode} mode does not exist').format(mode=self.mode)
-
-        # register the evolved maps
-        gscript.run_command(
-            't.register',
-            type=raster,
-            input=self.elevation_timeseries,
-            maps=evolved_elevation,
-            start=evol.start,
-            increment=increment,
-            flags='i',
-            overwrite=True)
-        gscript.run_command(
-            't.register',
-            type=raster,
-            input=self.depth_timeseries,
-            maps=depth,
-            start=evol.start,
-            increment=increment,
-            flags='i',
-            overwrite=True)
-        try:
-            gscript.run_command(
-                't.register',
-                type=raster,
-                input=self.erdep_timeseries,
-                maps=erosion_deposition,
-                start=evol.start,
-                increment=increment,
-                flags='i',
-                overwrite=True)
-        except (NameError, CalledModuleError):
-            pass
-        try:
-            gscript.run_command(
-                't.register',
-                type=raster,
-                input=self.flux_timeseries,
-                maps=sediment_flux,
-                start=evol.start,
-                increment=increment,
-                flags='i', overwrite=True)
-        except (NameError, CalledModuleError):
-            pass
-        gscript.run_command(
-            't.register',
-            type=raster,
-            input=self.difference_timeseries,
-            maps=difference,
-            start=evol.start,
-            increment=increment,
-            flags='i',
-            overwrite=True)
-
-        # run the landscape evolution model
-        # as a series of rainfall intervals in a rainfall event
-        i = 1
+        i = 0
         while i < iterations:
-
-            # update the elevation
-            evol.elevation = evolved_elevation
-
-            # update time
-            evol.start = time
 
             # derive excess water (mm/hr) from rainfall rate (mm/hr)
             # plus the depth (m) per rainfall interval (min)
@@ -1892,6 +1806,13 @@ class DynamicEvolution:
                 name=['rain_excess'],
                 flags='f')
 
+            # update elevation
+            evol.elevation = evolved_elevation
+
+            # advance time
+            evol.start = time
+
+            # advance iterator
             i = i+1
 
         # compute net elevation change
