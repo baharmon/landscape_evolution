@@ -71,7 +71,7 @@ r.sim.terrain -f elevation=elevation_2016 runs=event mode=rusle_mode rain_intens
 * For more detailed instructions see the [Tutorial](tutorial.md)
 
 ## Documentation
-* Paper: [r.sim.terrain: a dynamic landscape evolution model](tex/landscape_evolution.pdf)
+* Paper: [r.sim.terrain 1.0: a landscape evolution model with dynamic hydrology](tex/landscape_evolution.pdf)
 * [Manual page](r.sim.terrain.html)
 * [Tutorial](tutorial.md)
 * [Notebook](https://mybinder.org/v2/gh/baharmon/landscape_evolution/master)
@@ -84,7 +84,7 @@ and orthoimagery
 for a highly eroded subwatershed of Patterson Branch Creek, Fort Bragg, NC, USA.
 
 ## Replicability
-The results in the paper [r.sim.terrain: a dynamic landscape evolution model](tex/landscape_evolution.pdf)
+The results in the paper [r.sim.terrain 1.0: a landscape evolution model with dynamic hydrology](tex/landscape_evolution.pdf)
 can be replicated by downloading the
 [sample dataset](https://github.com/baharmon/landscape_evolution_dataset),
 launching GRASS GIS in the sample location,
