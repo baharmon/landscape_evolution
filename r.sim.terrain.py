@@ -559,7 +559,7 @@ def main():
             overwrite=True)
         elevation = name
 
-    # create dynamic_evolution object
+    # create dynamic evolution object
     dynamics = DynamicEvolution(elevation=elevation,
         mode=mode,
         precipitation=precipitation,
@@ -1015,11 +1015,6 @@ class Evolution:
                 evolved_elevation=evolved_elevation,
                 elevation=self.elevation),
             overwrite=True)
-        # gscript.write_command(
-        #     'r.colors',
-        #     map=difference,
-        #     rules='-',
-        #     stdin=difference_colors)
         gscript.run_command(
             'r.colors',
             map=difference,
@@ -1919,6 +1914,7 @@ class DynamicEvolution:
             start=self.start,
             rain_intensity=self.rain_intensity,
             rain_interval=self.rain_interval,
+            rain_duration=self.rain_duration,
             walkers=self.walkers,
             runoff=self.runoff,
             mannings=self.mannings,
@@ -1938,7 +1934,7 @@ class DynamicEvolution:
             fill_depressions=self.fill_depressions)
 
         # open txt file with precipitation data
-        with open(evol.precipitation) as csvfile:
+        with open(evol.precipitation, newline='') as csvfile:
 
             # check for header
             has_header = csv.Sniffer().has_header(csvfile.read(1024))
@@ -2175,13 +2171,15 @@ class DynamicEvolution:
                     increment=increment,
                     flags='i',
                     overwrite=True)
-
-                # remove temporary maps
-                gscript.run_command(
-                    'g.remove',
-                    type='raster',
-                    name=['rain_excess'],
-                    flags='f')
+                try:
+                    # remove temporary maps
+                    gscript.run_command(
+                        'g.remove',
+                        type='raster',
+                        name=['rain_excess'],
+                        flags='f')
+                except (NameError, CalledModuleError):
+                    pass
 
             # compute net elevation change
             gscript.run_command(
