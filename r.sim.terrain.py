@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 MODULE:    r.sim.terrain
@@ -379,13 +378,10 @@ COPYRIGHT: (C) 2016 Brendan Harmon and the GRASS Development Team
 #% description: Fill depressions
 #%end
 
-
-import os
 import sys
 import atexit
 import csv
 import datetime
-from math import exp
 import grass.script as gscript
 from grass.exceptions import CalledModuleError
 
@@ -696,7 +692,6 @@ class Evolution:
 
         # assign variables
         slope = "slope"
-        aspect = "aspect"
         dx = "dx"
         dy = "dy"
 
@@ -908,7 +903,6 @@ class Evolution:
 
         # assign variables
         erdep = "erdep"  # kg/m^2s
-        sedflux = "flux"  # kg/ms
 
         # parse, advance, and stamp time
         (
@@ -1309,6 +1303,7 @@ class DynamicEvolution:
         elevation,
         mode,
         precipitation,
+        start,
         rain_intensity,
         rain_duration,
         rain_interval,
@@ -1328,7 +1323,6 @@ class DynamicEvolution:
         difference_timeseries,
         difference_title,
         difference_description,
-        start,
         walkers,
         runoff,
         mannings,
@@ -1724,7 +1718,7 @@ class DynamicEvolution:
         with open(evol.precipitation, newline="") as csvfile:
 
             # check for header
-            has_header = csv.Sniffer().has_header(csvfile.read(1024))
+            has_header = csv.Sniffer().has_header(csvfile.readline())
 
             # rewind
             csvfile.seek(0)
@@ -1978,7 +1972,7 @@ class DynamicEvolution:
                     gscript.run_command(
                         "g.remove", type="raster", name=["rain_excess"], flags="f"
                     )
-                except (NameError, CalledModuleError):
+                except (CalledModuleError):
                     pass
 
             # compute net elevation change
